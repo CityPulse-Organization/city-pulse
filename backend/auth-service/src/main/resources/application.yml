@@ -1,0 +1,30 @@
+app:
+  api:
+    version: v1
+  jwt:
+    key-id: ${APP_JWT_KEY_ID:key-1}
+    keys:
+      private-key-path: classpath:keys/private.pem
+      public-key-path: classpath:keys/public.pem
+
+spring:
+  application:
+    name: auth-service
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+server:
+  port: ${APP_PORT:8080}
+
+logging:
+  level:
+    org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer: ERROR

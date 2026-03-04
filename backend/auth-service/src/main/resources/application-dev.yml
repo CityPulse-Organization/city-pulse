@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/auth_db
+    username: dev_user
+    password: dev_password
+    driver-class-name: org.postgresql.Driver
+
+app:
+  base-path: /api/${app.api.version}
+  jwt:
+    access-token-ttl-ms: 1000000
+    refresh-token-ttl-ms: 604_800_000
+    iss: localhost:${server.port}
