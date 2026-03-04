@@ -1,0 +1,26 @@
+networks:
+  city-pulse-network:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: city-pulse-postgres
+    environment:
+      POSTGRES_USER: dev_user
+      POSTGRES_PASSWORD: dev_password
+    ports:
+      - "5433:5432"
+    networks:
+      - city-pulse-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dev_user"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
