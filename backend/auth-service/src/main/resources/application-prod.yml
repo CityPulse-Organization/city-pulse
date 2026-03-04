@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+app:
+  base-path: /api/${app.api.version}
+  jwt:
+    access-token-ttl-ms: ${APP_JWT_ACCESS_TOKEN_TTL_MS}
+    refresh-token-ttl-ms: ${APP_JWT_REFRESH_TOKEN_TTL_MS}
+    iss: ${APP_JWT_ISSUER}
