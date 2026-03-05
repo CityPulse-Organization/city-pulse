@@ -9,7 +9,7 @@ RUN mvn dependency:go-offline
 COPY src src
 RUN mvn package -DskipTests
 
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
 COPY --from=builder /app/target/auth-service-v1.0.jar auth-service-v1.0.jar
