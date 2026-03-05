@@ -22,5 +22,21 @@ services:
       timeout: 5s
       retries: 5
 
+  auth-service:
+    image: denys1204/city-pulse-auth-service:latest
+    container_name: city-pulse-auth-service
+    ports:
+      - "8080:8080"
+    networks:
+      - city-pulse-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/auth_db
+      - SPRING_DATASOURCE_USERNAME=dev_user
+      - SPRING_DATASOURCE_PASSWORD=dev_password
+
 volumes:
   postgres_data:
