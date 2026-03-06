@@ -14,6 +14,6 @@ WORKDIR /app
 
 COPY --from=builder /app/target/auth-service-v1.0.jar auth-service-v1.0.jar
 
-EXPOSE 8080
+EXPOSE 8081
 
 ENTRYPOINT ["java","-jar","auth-service-v1.0.jar"]
