@@ -1,4 +1,4 @@
-import { UIButton, UIText } from "@/src/ui";
+import { scale, UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import * as MediaLibrary from "expo-media-library";
@@ -10,25 +10,25 @@ import {
 } from "react-native-unistyles";
 
 export type IconProps = {
-  username?: string;
   profileImageUrl?: string;
   isBroadCasting?: boolean;
   isLoading?: boolean;
+  borderColor?: string;
 } & UnistylesVariants<typeof styles>;
 
 export const Icon = memo(
   ({
-    username,
     profileImageUrl,
     size,
     isBroadCasting = false,
     isLoading = false,
+    borderColor,
   }: IconProps) => {
     const { theme } = useUnistyles();
     const [imageUri, setImageUri] = useState<string | undefined>(
       profileImageUrl,
     );
-    styles.useVariants({ size: size });
+    styles.useVariants({ size: size, borderColor: borderColor });
 
     useEffect(() => {
       if (!profileImageUrl) {
@@ -36,9 +36,7 @@ export const Icon = memo(
         return;
       }
 
-      // Convert ph:// URLs to file:// URIs for expo-image
       if (profileImageUrl.startsWith("ph://")) {
-        // Extract asset ID from ph:// URL format: ph://ID/PATH
         const assetId = profileImageUrl.replace("ph://", "").split("/")[0];
         MediaLibrary.getAssetInfoAsync(assetId)
           .then((assetInfo) => {
@@ -49,7 +47,6 @@ export const Icon = memo(
             }
           })
           .catch(() => {
-            // Fallback to original URI if conversion fails
             setImageUri(profileImageUrl);
           });
       } else {
@@ -57,19 +54,32 @@ export const Icon = memo(
       }
     }, [profileImageUrl]);
 
+    const getFallbackIconSize = () => {
+      switch (size) {
+        case "medium":
+          return scale(60);
+        case "comment":
+          return scale(24);
+        case "small":
+          return scale(18);
+        default:
+          return scale(28);
+      }
+    };
+
     return (
       <UIButton style={styles.button} onPress={() => {}} isLoading={isLoading}>
         {imageUri ? (
           <Image
             source={{ uri: imageUri }}
-            style={styles.icon}
+            style={styles.image}
             cachePolicy="memory-disk"
             priority="normal"
           />
         ) : (
           <Ionicons
-            color={theme.colors.white}
-            size={styles.icon.height}
+            color={theme.colors.iconColor}
+            size={getFallbackIconSize()}
             name="person"
           />
         )}
@@ -79,33 +89,54 @@ export const Icon = memo(
             LIVE
           </UIText>
         ) : null}
-        {username ? <UIText style={styles.username}>{username}</UIText> : null}
       </UIButton>
     );
   },
 );
 
 const styles = StyleSheet.create((theme) => ({
-  icon: {
-    alignItems: "center",
-    borderRadius: 999,
-    variants: {
-      size: {
-        default: {
-          width: 50,
-          height: 50,
-        },
-        medium: {
-          height: 130,
-          width: 130,
-        },
-      },
-    },
-  },
   button: {
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
+    borderRadius: 999,
+
+    variants: {
+      size: {
+        default: {
+          width: scale(50),
+          height: scale(50),
+        },
+        medium: {
+          height: scale(100),
+          width: scale(100),
+        },
+        small: {
+          height: scale(30),
+          width: scale(30),
+        },
+        comment: {
+          height: scale(40),
+          width: scale(40),
+        },
+      },
+      borderColor: {
+        default: {},
+        violet: {
+          borderWidth: 2,
+          borderColor: theme.colors.darkViolet,
+        },
+        faint: {
+          borderWidth: 2,
+          borderColor: theme.colors.faintColor,
+        },
+      },
+    },
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 999,
   },
   iconText: {
     position: "absolute",
@@ -113,7 +144,7 @@ const styles = StyleSheet.create((theme) => ({
     alignSelf: "center",
     color: theme.colors.white,
     backgroundColor: theme.colors.alert,
-    paddingHorizontal: 6,
+    paddingHorizontal: 4,
     paddingVertical: 2,
     borderRadius: 6,
     overflow: "hidden",

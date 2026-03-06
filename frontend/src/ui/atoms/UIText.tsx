@@ -1,14 +1,15 @@
 import { Skeleton } from "moti/skeleton";
-import { Text, TextStyle } from "react-native";
+import { StyleProp, Text, TextStyle } from "react-native";
 import {
   StyleSheet,
   UnistylesRuntime,
   UnistylesVariants,
 } from "react-native-unistyles";
+import { scale } from "../unistyles";
 
 type UITextProps = {
   children: React.ReactNode;
-  style?: TextStyle;
+  style?: StyleProp<TextStyle>;
   isLoading?: boolean;
 } & UnistylesVariants<typeof styles> &
   React.ComponentProps<typeof Text>;
@@ -38,31 +39,31 @@ const styles = StyleSheet.create((theme) => ({
     variants: {
       size: {
         default: {
-          fontSize: 16,
+          fontSize: scale(16),
         },
         xxs: {
-          fontSize: 10,
+          fontSize: scale(10),
           fontWeight: 400,
         },
         xs: {
-          fontSize: 12,
+          fontSize: scale(12),
         },
         sm: {
-          fontSize: 14,
+          fontSize: scale(14),
         },
         md: {
-          fontSize: 18,
+          fontSize: scale(18),
         },
         lg: {
-          fontSize: 20,
+          fontSize: scale(20),
         },
         xl: {
-          fontSize: 22,
+          fontSize: scale(22),
         },
         xxl: {
-          fontSize: 24,
+          fontSize: scale(24),
         },
-        extraLarge: { fontSize: 36 },
+        extraLarge: { fontSize: scale(36) },
       },
       weight: {
         default: {

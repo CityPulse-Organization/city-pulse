@@ -32,6 +32,5 @@ const styles = StyleSheet.create((theme) => ({
     flex: 1,
     width: "100%",
     alignItems: "stretch",
-    backgroundColor: theme.colors.backgroundColor,
   },
 }));

@@ -9,7 +9,11 @@ export type IconInfoProps = {
   isBroadCasting?: boolean;
   isLoading?: boolean;
   username: string;
+  usernameSize?: "sm";
+  usernameWeight?: "bold";
   statusText?: string;
+  iconSize?: "small";
+  iconBorderColor?: "violet" | "faint";
 };
 
 export const IconInfo = memo(
@@ -19,6 +23,10 @@ export const IconInfo = memo(
     isLoading,
     username,
     statusText,
+    iconSize,
+    iconBorderColor,
+    usernameSize,
+    usernameWeight,
   }: IconInfoProps) => {
     return (
       <View style={styles.container}>
@@ -26,14 +34,20 @@ export const IconInfo = memo(
           <Icon
             profileImageUrl={profileImageUrl}
             isBroadCasting={isBroadCasting}
+            size={iconSize}
+            borderColor={iconBorderColor}
           />
         </UIButton>
 
         <View style={styles.textWrapper}>
-          <UIText size="md" style={styles.username}>
+          <UIText
+            size={usernameSize}
+            weight={usernameWeight}
+            style={styles.username}
+          >
             {username}
           </UIText>
-          <UIText style={styles.statusText} size="sm">
+          <UIText style={styles.statusText} size="xs">
             {statusText}
           </UIText>
         </View>
@@ -44,12 +58,12 @@ export const IconInfo = memo(
 
 const styles = StyleSheet.create((theme) => ({
   container: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     gap: theme.utils.ms(10),
   },
   textWrapper: {
+    flexShrink: 1,
     gap: 4,
   },
   username: { color: theme.colors.iconInfoUsernameTextColor },

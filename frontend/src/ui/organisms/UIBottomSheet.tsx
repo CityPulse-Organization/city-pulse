@@ -8,6 +8,7 @@ import {
 import React, { forwardRef, useCallback } from "react";
 import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
 import { UIText } from "../atoms";
+import { scale } from "../unistyles";
 
 type UIBottomSheetProps = {
   children: React.ReactNode;
@@ -41,7 +42,7 @@ export const UIBottomSheet = forwardRef<BottomSheetModal, UIBottomSheetProps>(
         maxDynamicContentSize={700}
         {...props}
       >
-        <BottomSheetScrollView style={styles.bottomSheetView}>
+        <BottomSheetScrollView contentContainerStyle={styles.bottomSheetView}>
           {typeof header === "string" ? (
             <UIText size="xxl" style={styles.header}>
               {header}
@@ -62,10 +63,9 @@ const styles = StyleSheet.create((theme) => ({
     textAlign: "center",
   },
   bottomSheetView: {
-    paddingBottom: 250,
-
-    padding: 20,
-    gap: 30,
+    paddingHorizontal: 16,
+    paddingBottom: 40,
+    paddingTop: 10,
     width: "100%",
     variants: {
       bottomSheetTheme: {
@@ -82,14 +82,15 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.black,
   },
   handleStyle: {
-    backgroundColor: theme.colors.bottomSheetColor,
-    borderRadius: 30,
+    backgroundColor: theme.colors.bottomSheetBackgroundColor,
+    borderTopLeftRadius: scale(14),
+    borderTopRightRadius: scale(14),
   },
   backgroundStyle: {
-    backgroundColor: theme.colors.bottomSheetColor,
+    backgroundColor: theme.colors.bottomSheetBackgroundColor,
   },
   handleIndicatorStyle: {
-    backgroundColor: theme.colors.bottomSheetIndicatorStyle,
+    backgroundColor: theme.colors.darkViolet,
     width: 40,
   },
 }));

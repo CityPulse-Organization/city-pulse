@@ -4,116 +4,133 @@ import React, { memo } from "react";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { UIButton, UIImage, UIText } from "../ui";
+import { IconInfo } from "./IconInfo";
 
 export type PostItem = {
   id: string;
   username: string;
   accidentTime: string;
-  imageUrl: string;
+  imagesUrl: string[];
   description?: string;
   profileImageUrl?: string;
   isBroadcasting?: boolean;
+  location: string;
 };
 
-export type PostOptionItem = {
-  id: string;
-  title: string;
-  iconName: string;
-  color?: string;
-  onClick: () => void;
-};
+export const POSTS: PostItem[] = [
+  {
+    id: "1",
+    username: "kyrylo",
+    accidentTime: "13 dec. 2024 15:00",
+    imagesUrl: [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYnQuzFNBCJZNp9-J1KoMQFDjsSVhxp5JxJQ&s",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1vyTJ-5AwLNQQKGBmcZn0kIDiXuduEKG5fg&s",
+    ],
+    profileImageUrl:
+      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
+    isBroadcasting: false,
+    description:
+      "Aura Airways Flight 762, route from Singapore to Zurich, was forced to make an emergency landing in Dubai (DXB) after the crew reported a fire in the number two engine (Rolls-Royce Trent XWB). Captain Eva Rostova immediately declared a 'Mayday' and initiated emergency procedures. The Airbus A350-900, carrying 287 passengers, landed safely on runway 30L. No injuries were reported. UAE authorities have launched a full investigation into the incident, and the airline praised the crew's exceptional professionalism.",
+    location: "Lublin, Poland",
+  },
+  {
+    id: "2",
+    username: "kyrylo",
+    accidentTime: "13 dec. 2024 15:00",
+    imagesUrl: [
+      "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
+    ],
+    profileImageUrl:
+      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
+    isBroadcasting: false,
+    description:
+      "Aura Airways Flight 762, route from Singapore to Zurich, was forced to make an emergency landing in Dubai (DXB) after the crew reported a fire in the number two engine (Rolls-Royce Trent XWB). Captain Eva Rostova immediately declared a 'Mayday' and initiated emergency procedures. The Airbus A350-900, carrying 287 passengers, landed safely on runway 30L. No injuries were reported. UAE authorities have launched a full investigation into the incident, and the airline praised the crew's exceptional professionalism.",
+    location: "Kyiv, Ukraine",
+  },
+  {
+    id: "3",
+    username: "kyrylo",
+    accidentTime: "13 dec. 2024 15:00",
+    description:
+      "Aura Airways Flight 762, route from Singapore to Zurich, was forced to make an emergency landing in Dubai (DXB) after the crew reported a fire in the number two engine (Rolls-Royce Trent XWB). Captain Eva Rostova immediately declared a 'Mayday' and initiated emergency procedures. The Airbus A350-900, carrying 287 passengers, landed safely on runway 30L. No injuries were reported. UAE authorities have launched a full investigation into the incident, and the airline praised the crew's exceptional professionalism.",
+    imagesUrl: [
+      "https://i0.wp.com/picjumbo.com/wp-content/uploads/silhouettes-of-hawaiian-palms-at-a-gorgeous-sunset-free-image.jpeg?h=800&quality=80",
+    ],
+    isBroadcasting: false,
+    location: "Lublin, Poland",
+  },
+  {
+    id: "4",
+    username: "kyrylo",
+    accidentTime: "13 dec. 2024 15:00",
+    imagesUrl: [
+      "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
+    ],
+    profileImageUrl:
+      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
+    isBroadcasting: true,
+    location: "Lublin, Poland",
+  },
+];
 
 type PostProps = {
-  username: string;
-  imageUrl: string;
-  description?: string;
-  profileImageUrl?: string;
-  accidentTime?: string;
+  data: PostItem;
   isLoading?: boolean;
   onPress: () => void;
 };
 
-export const Post = memo(
-  ({
-    username,
-    imageUrl,
-    description,
-    profileImageUrl,
-    accidentTime,
-    isLoading = false,
-    onPress,
-  }: PostProps) => {
-    return (
-      <View style={styles.itemWrapper}>
-        <UIButton onPress={onPress} style={styles.card}>
-          <UIImage
-            isLoading={isLoading}
-            isAspectRatio={true}
-            size="masonry"
-            borderRound="medium"
-            imageUrl={imageUrl}
-            style={styles.image}
-          />
+export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => (
+  <View style={styles.itemWrapper}>
+    <UIButton onPress={onPress} style={styles.card}>
+      <UIImage
+        isLoading={isLoading}
+        isAspectRatio={true}
+        size="masonry"
+        borderRound="medium"
+        imageUrl={data.imagesUrl[0]}
+        style={styles.image}
+      />
 
-          <View style={styles.overlayWrapper}>
-            <View style={styles.topFlexWrapper}>
-              {description && (
-                <LinearGradient
-                  colors={["rgba(0,0,0,0.8)", "rgba(0,0,0,0)"]}
-                  style={styles.topOverlay}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 0, y: 1 }}
-                >
-                  <UIText
-                    size="sm"
-                    numberOfLines={3}
-                    ellipsizeMode="tail"
-                    style={styles.overlayText}
-                  >
-                    {description}
-                  </UIText>
-                </LinearGradient>
-              )}
-            </View>
+      <View style={styles.overlayWrapper}>
+        <View style={styles.topFlexWrapper}>
+          {data.description && (
+            <LinearGradient
+              colors={["rgba(0,0,0,0.8)", "rgba(0,0,0,0)"]}
+              style={styles.topOverlay}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+            >
+              <UIText
+                size="sm"
+                numberOfLines={3}
+                ellipsizeMode="tail"
+                style={styles.overlayText}
+              >
+                {data.description}
+              </UIText>
+            </LinearGradient>
+          )}
+        </View>
 
-            <View style={styles.bottomOverlayContainer}>
-              <BlurView intensity={30} tint="dark" style={styles.blurContainer}>
-                <View style={styles.userInfoRow}>
-                  {profileImageUrl && (
-                    <UIImage
-                      imageUrl={profileImageUrl}
-                      style={styles.avatar}
-                      size="small"
-                    />
-                  )}
-                  <View style={styles.infoCol}>
-                    <UIText size="md" style={styles.usernameText}>
-                      {username}
-                    </UIText>
-                    {accidentTime && (
-                      <UIText size="xs" style={styles.timeText}>
-                        {accidentTime}
-                      </UIText>
-                    )}
-                  </View>
-                </View>
-              </BlurView>
+        <View style={styles.bottomOverlayContainer}>
+          <BlurView intensity={30} tint="dark" style={styles.blurContainer}>
+            <View style={styles.userInfoRow}>
+              <IconInfo
+                profileImageUrl={data.profileImageUrl}
+                isBroadCasting={false}
+                username={data.username}
+                statusText={data.accidentTime}
+                iconSize="small"
+                iconBorderColor="faint"
+                usernameSize="sm"
+              />
             </View>
-          </View>
-        </UIButton>
+          </BlurView>
+        </View>
       </View>
-    );
-  },
-  (prevProps, nextProps) => {
-    return (
-      prevProps.imageUrl === nextProps.imageUrl &&
-      prevProps.profileImageUrl === nextProps.profileImageUrl &&
-      prevProps.description === nextProps.description &&
-      prevProps.username === nextProps.username &&
-      prevProps.accidentTime === nextProps.accidentTime
-    );
-  },
-);
+    </UIButton>
+  </View>
+));
 
 const styles = StyleSheet.create((theme) => ({
   itemWrapper: { flex: 1, padding: theme.utils.s(12) / 2, minWidth: 0 },
@@ -143,6 +160,7 @@ const styles = StyleSheet.create((theme) => ({
     paddingTop: theme.utils.s(16),
     paddingBottom: theme.utils.s(32),
   },
+
   bottomOverlayContainer: {
     borderBottomLeftRadius: theme.utils.ms(22),
     borderBottomRightRadius: theme.utils.ms(22),
@@ -158,29 +176,9 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: "center",
     gap: theme.utils.s(10),
   },
-  avatar: {
-    width: theme.utils.s(28),
-    height: theme.utils.s(28),
-    borderRadius: theme.utils.s(14),
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.4)",
-  },
-  infoCol: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  usernameText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  timeText: {
-    color: "rgba(255,255,255,0.7)",
-    marginTop: theme.utils.s(2),
-  },
   overlayText: {
-    color: "#fff",
-    fontWeight: "500",
-    textShadowColor: "rgba(0,0,0,0.5)",
+    color: theme.colors.textColor,
+    textShadowColor: theme.colors.darkViolet,
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
     lineHeight: theme.utils.s(18),
