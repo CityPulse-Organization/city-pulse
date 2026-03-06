@@ -39,9 +39,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=dev_password
 
   api-gateway:
-    build:
-      context: ./backend/api-gateway
-    image: denys1204/city-pulse-api-gateway:latest
+    image: denys1204/city-pulse-api-gateway:${API_GATEWAY_VERSION:-latest}
     container_name: city-pulse-api-gateway
     ports:
       - "8080:8080"
