@@ -32,8 +32,12 @@ jobs:
 
       - name: Sanitize Docker Tag
         run: |
-          CLEAN_TAG=$(echo "${{ github.ref_name }}" | tr '/' '-')
-          echo "DOCKER_TAG=$CLEAN_TAG" >> $GITHUB_ENV
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "DOCKER_TAG=latest" >> $GITHUB_ENV
+          else
+            CLEAN_TAG=$(echo "${{ github.ref_name }}" | tr '/' '-')
+            echo "DOCKER_TAG=$CLEAN_TAG" >> $GITHUB_ENV
+          fi
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
