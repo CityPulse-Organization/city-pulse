@@ -10,6 +10,6 @@ spring:
         webflux:
           routes:
             - id: auth-service-route
-              uri: http://localhost:8081
+              uri: http://auth-service:8081
               predicates:
                 - Path=/api/v1/auth/**
