@@ -1,7 +1,6 @@
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
-import { UIButton, UIText } from "../../ui";
-
+import { UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { memo } from "react";
@@ -16,39 +15,46 @@ export const ProfileHeader = memo(() => {
   };
   return (
     <View style={styles.headerContainer}>
-      <Icon
-        size="medium"
-        profileImageUrl="https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg"
-      />
+      <View style={styles.iconContainer}>
+        <Icon
+          size="medium"
+          profileImageUrl="https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg"
+          borderColor="violet"
+        />
+      </View>
 
       <View style={styles.infoContainer}>
         <View style={styles.row}>
-          <UIText size="lg" style={styles.biographyText}>
+          <UIText
+            size="xl"
+            weight="bold"
+            style={{ color: theme.colors.profileTextColor }}
+          >
             Kyrylo
           </UIText>
 
           <UIButton onPress={onPress} isLoading={false}>
             <Ionicons
-              color={theme.colors.iconColor}
-              size={26}
+              color={theme.colors.profileIconColor}
+              size={18}
               name="color-wand"
             />
           </UIButton>
         </View>
 
         <View style={styles.row}>
-          <UIText size="sm" style={styles.jobStatusText}>
+          <UIText size="sm" style={{ color: theme.colors.lightViolet }}>
             Boss
           </UIText>
 
           <Ionicons
-            color={theme.colors.iconColor}
-            size={24}
+            color={theme.colors.lightViolet}
+            size={16}
             name="checkmark-circle"
           />
         </View>
 
-        <UIText size="sm" style={styles.biographyText}>
+        <UIText size="sm" style={{ color: theme.colors.faintColor }}>
           Hey! I'm Kyrylo 👋 A boss passionate about telling stories that
           matter.
         </UIText>
@@ -63,7 +69,11 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 10,
-    gap: 30,
+    gap: 20,
+  },
+  iconContainer: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   infoContainer: {
     flex: 1,
@@ -72,12 +82,6 @@ const styles = StyleSheet.create((theme) => ({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-  },
-  biographyText: {
-    color: theme.colors.profileTextColor,
-  },
-  jobStatusText: {
-    color: theme.colors.lightGray,
+    gap: 6,
   },
 }));

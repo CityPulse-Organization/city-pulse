@@ -2,12 +2,12 @@ const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 export default {
   expo: {
-    name: "city-pulse-mobile",
-    slug: "city-pulse-mobile",
+    name: "city-pulse",
+    slug: "city-pulse",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
-    scheme: "citypulsemobile",
+    scheme: "citypulse",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     splash: {
@@ -17,7 +17,7 @@ export default {
     },
     ios: {
       supportsTablet: true,
-      bundleIdentifier: "com.anonymous.citypulsemobile",
+      bundleIdentifier: "com.anonymous.citypulse",
       infoPlist: {
         NSCameraUsageDescription:
           "Allow City Pulse to access your camera to take profile and post pictures.",
@@ -35,7 +35,7 @@ export default {
       },
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
-      package: "com.anonymous.citypulsemobile",
+      package: "com.anonymous.citypul",
       permissions: [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",

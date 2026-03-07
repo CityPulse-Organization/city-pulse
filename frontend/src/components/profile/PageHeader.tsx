@@ -26,7 +26,7 @@ export const NavigationHeader = memo(
           <UIButton onPress={onLeftAction} isLoading={false}>
             <Ionicons
               color={theme.colors.iconColor}
-              size={28}
+              size={20}
               name={"chevron-back-outline"}
             />
           </UIButton>
@@ -45,7 +45,7 @@ export const NavigationHeader = memo(
         <View style={styles.headerRight}>
           <UIButton onPress={onRightAction} isLoading={false}>
             <UIText
-              style={{ color: theme.colors.newPostShareButtonColor }}
+              style={{ color: theme.colors.lightViolet }}
               size="lg"
               weight="bold"
             >

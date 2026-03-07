@@ -1,9 +1,9 @@
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
-import { UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { ComponentProps, memo } from "react";
 import { ScrollView, View } from "react-native";
+import { UIButton, UIText } from "../../ui";
 
 type IconName = ComponentProps<typeof Ionicons>["name"];
 const statsData: {
@@ -51,17 +51,17 @@ const StatsButton = memo(({ title, iconName, quantity }: StatsButtonProps) => {
   const onPress = () => {};
   return (
     <UIButton style={styles.statButton} onPress={onPress} isLoading={false}>
-      <UIText style={styles.text} size="xs">
+      <UIText style={styles.text} size="sm">
         {title}
       </UIText>
 
       <Ionicons
         color={theme.colors.profileIconColor}
-        size={24}
+        size={20}
         name={iconName}
       />
 
-      <UIText style={styles.text} size="md">
+      <UIText style={styles.text} size="md" weight="bold">
         {quantity}
       </UIText>
     </UIButton>
@@ -76,18 +76,18 @@ const styles = StyleSheet.create((theme) => ({
   },
   scrollViewContent: {
     alignItems: "center",
-    gap: 20,
+    gap: 14,
   },
   statButton: {
-    width: 94,
-    height: 110,
+    width: 100,
+    height: 120,
     backgroundColor: theme.colors.profileBottonBackgroundColor,
     borderColor: theme.colors.profileButtonBorderColor,
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
-    gap: 6,
+    gap: 8,
   },
   text: {
     color: theme.colors.profileTextColor,

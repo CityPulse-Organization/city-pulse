@@ -81,53 +81,49 @@ export default function EditProfileScreen() {
 
   return (
     <ThemedBackground style={styles.page}>
-      <HeaderSection
-        avatarUrl={formData.avatarUrl}
-        onSave={onSave}
-        onCancel={onCancel}
-        onAvatarPress={onAvatarPress}
-      />
+      <HeaderSection onSave={onSave} onCancel={onCancel} />
+
+      <UIButton
+        style={styles.avatarContainer}
+        onPress={onAvatarPress}
+        isLoading={false}
+      >
+        <View pointerEvents="none">
+          <Icon size="medium" profileImageUrl={formData.avatarUrl} />
+        </View>
+      </UIButton>
+
       <FormSection formData={formData} onChange={handleInputChange} />
     </ThemedBackground>
   );
 }
 
 type HeaderSectionProps = {
-  avatarUrl?: string;
   onCancel: () => void;
   onSave: () => void;
-  onAvatarPress: () => void;
 };
 
-const HeaderSection = memo(
-  ({ avatarUrl, onCancel, onSave, onAvatarPress }: HeaderSectionProps) => {
-    return (
-      <View style={styles.headerContainer}>
-        <UIButton onPress={onCancel} isLoading={false}>
-          <UIText style={styles.headerActionText} size="md">
-            Cancel
-          </UIText>
-        </UIButton>
+const HeaderSection = memo(({ onCancel, onSave }: HeaderSectionProps) => {
+  return (
+    <View style={styles.headerContainer}>
+      <UIButton onPress={onCancel} isLoading={false}>
+        <UIText style={[styles.headerActionText, styles.cancelText]} size="md">
+          Cancel
+        </UIText>
+      </UIButton>
 
-        <UIButton
-          style={styles.avatarContainer}
-          onPress={onAvatarPress}
-          isLoading={false}
+      <UIButton onPress={onSave} isLoading={false}>
+        <UIText
+          style={[styles.headerActionText, styles.doneText]}
+          size="md"
+          weight="bold"
         >
-          <View pointerEvents="none">
-            <Icon size="medium" profileImageUrl={avatarUrl} />
-          </View>
-        </UIButton>
-
-        <UIButton onPress={onSave} isLoading={false}>
-          <UIText style={styles.headerActionText} size="md" weight="normal">
-            Done
-          </UIText>
-        </UIButton>
-      </View>
-    );
-  },
-);
+          Done
+        </UIText>
+      </UIButton>
+    </View>
+  );
+});
 
 type FormSectionProps = {
   formData: ProfileData;
@@ -181,7 +177,7 @@ const ProfileInput = memo(
         ]}
       >
         <Ionicons
-          color={theme.colors.editProfileDescription}
+          color={theme.colors.faintColor}
           size={18}
           name={iconName}
           style={isMultiline ? { marginTop: 14 } : undefined}
@@ -191,7 +187,7 @@ const ProfileInput = memo(
           style={[styles.defaultInput, isMultiline && styles.biographyInput]}
           multiline={isMultiline}
           placeholder={placeholder}
-          placeholderTextColor={theme.colors.editProfileDescription}
+          placeholderTextColor={theme.colors.faintColor}
           autoCapitalize={autoCapitalize}
           value={value}
           onChangeText={onChangeText}
@@ -212,13 +208,20 @@ const styles = StyleSheet.create((theme) => ({
     alignSelf: "stretch",
   },
   headerActionText: {
-    color: theme.colors.profileTextColor,
     paddingHorizontal: 5,
     paddingVertical: 10,
   },
+  cancelText: {
+    color: theme.colors.faintColor,
+  },
+  doneText: {
+    color: theme.colors.lightViolet,
+  },
   avatarContainer: {
-    marginTop: 16,
-    borderRadius: 100,
+    marginBottom: 20,
+    borderRadius: 999,
+    backgroundColor: theme.colors.defauldIconBackgroundColor,
+    alignSelf: "center",
   },
   formContainer: {
     alignSelf: "stretch",
@@ -228,7 +231,7 @@ const styles = StyleSheet.create((theme) => ({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderColor: theme.colors.editProfileDescription,
+    borderColor: theme.colors.faintColor,
     borderBottomWidth: 1,
     gap: 10,
   },

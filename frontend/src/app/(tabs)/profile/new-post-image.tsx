@@ -1,4 +1,6 @@
+import { InteractiveImagePreview, NavigationHeader, ThemedBackground } from "@/src/components";
 import { UIButton, UIText } from "@/src/ui";
+import { handleImagePickerError } from "@/src/ui/molecules/mediaErrorHandler";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
@@ -8,35 +10,6 @@ import { memo, useCallback, useEffect, useState } from "react";
 import { Dimensions, View } from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
-
-import {
-  InteractiveImagePreview,
-  NavigationHeader,
-  ThemedBackground,
-} from "@/src/components";
-import { Alert, Linking } from "react-native";
-
-export const handleImagePickerError = (error: any) => {
-  console.log("Image processing failed/cancelled", error);
-
-  const code = error?.code;
-  const message = error?.message || "";
-
-  if (code === "E_PERMISSION_MISSING" || message.includes("permission")) {
-    Alert.alert(
-      "No media access",
-      "To take a photo, you need to allow the app to access the photos in your phone’s settings",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Open Settings", onPress: () => Linking.openSettings() },
-      ],
-    );
-  } else if (code === "E_PICKER_CANCELLED") {
-    console.log("User cancelled image selection");
-  } else {
-    console.log("Camera/Gallery error:", error);
-  }
-};
 
 const CONFIG = {
   SCREEN_WIDTH: Dimensions.get("window").width,
@@ -49,7 +22,10 @@ const CONFIG = {
     mediaType: "photo" as const,
   },
 };
-export const ITEM_SIZE = CONFIG.SCREEN_WIDTH / CONFIG.COLUMN_COUNT;
+
+const GAP = 4;
+export const ITEM_SIZE =
+  (CONFIG.SCREEN_WIDTH - GAP * (CONFIG.COLUMN_COUNT - 1)) / CONFIG.COLUMN_COUNT;
 
 type Asset = MediaLibrary.Asset;
 
@@ -308,11 +284,19 @@ const processSelectedImages = async (
   }
 };
 
-const CameraItem = memo(({ onPress }: { onPress: () => void }) => (
-  <UIButton onPress={onPress} style={styles.cameraItem}>
-    <Ionicons name="camera-outline" size={30} color={"white"} />
-  </UIButton>
-));
+const CameraItem = memo(({ onPress }: { onPress: () => void }) => {
+  const { theme } = useUnistyles();
+
+  return (
+    <UIButton onPress={onPress} style={styles.cameraItem}>
+      <Ionicons
+        name="camera-outline"
+        size={30}
+        color={theme.colors.profileIconColor}
+      />
+    </UIButton>
+  );
+});
 
 type GalleryItemProps = {
   item: Asset;
@@ -349,13 +333,22 @@ const GalleryItem = memo(
     return (
       <UIButton
         onPress={() => onPress(item)}
-        style={{ opacity: isPreviewing ? 0.5 : 1 }}
+        style={styles.galleryCell}
+        disabled={isPreviewing}
       >
         <Image
           source={{ uri: imageUri }}
-          style={{ width: ITEM_SIZE, height: ITEM_SIZE }}
+          style={[
+            {
+              width: ITEM_SIZE,
+              height: ITEM_SIZE,
+            },
+            isPreviewing && styles.dimmedImage,
+          ]}
           contentFit="cover"
         />
+
+        {isPreviewing && <View style={styles.previewBorder} />}
 
         {isMultiSelectMode && isSelected && (
           <View style={styles.selectionBadge}>
@@ -382,16 +375,16 @@ const GalleryHeader = memo(
       <View style={styles.headerContainer}>
         <View style={styles.textContainer}>
           <UIText
-            size="lg"
-            weight="bold"
+            size="md"
+            weight="normal"
             style={{ color: theme.colors.profileTextColor }}
           >
             Recents
           </UIText>
           <Ionicons
             name="chevron-forward-outline"
-            size={18}
-            color={theme.colors.iconColor}
+            size={14}
+            color={theme.colors.profileIconColor}
           />
         </View>
 
@@ -405,7 +398,11 @@ const GalleryHeader = memo(
           <Ionicons
             name="albums-outline"
             size={20}
-            color={isMultiSelectMode ? "black" : "white"}
+            color={
+              isMultiSelectMode
+                ? theme.colors.black
+                : theme.colors.profileIconColor
+            }
           />
         </UIButton>
       </View>
@@ -422,17 +419,16 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 20,
+    padding: 14,
   },
   textContainer: {
     alignItems: "baseline",
     flexDirection: "row",
-    gap: 4,
+    gap: 6,
   },
   multiplyPhotosButton: {
     padding: 4,
     borderRadius: 100,
-    backgroundColor: theme.colors.backgroundMultiplyPhotosButton,
   },
   multiplyPhotosButtonActive: {
     backgroundColor: theme.colors.white,
@@ -444,9 +440,21 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: "center",
     alignItems: "center",
   },
-  imageItem: {
-    width: ITEM_SIZE,
-    height: ITEM_SIZE,
+  galleryCell: {
+    marginRight: GAP,
+    marginBottom: GAP,
+  },
+  previewBorder: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderWidth: 2.4,
+    borderColor: theme.colors.lightViolet,
+  },
+  dimmedImage: {
+    opacity: 0.5,
   },
   listContent: {
     paddingBottom: 100,
@@ -458,7 +466,7 @@ const styles = StyleSheet.create((theme) => ({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: theme.colors.backgroundSelectionBadge,
+    backgroundColor: theme.colors.darkViolet,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
