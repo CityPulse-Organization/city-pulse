@@ -1,15 +1,24 @@
-import { StyleSheet } from "react-native-unistyles";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 import { memo } from "react";
 import { View } from "react-native";
 
-export const UIDivider = memo(() => {
-  return <View style={styles.divider} />;
-});
+type UIDividerProps = {
+  color?: string;
+  height?: number;
+};
+
+export const UIDivider = memo(({ color, height }: UIDividerProps) => (
+  <View style={[
+    styles.divider,
+    color ? { backgroundColor: color } : null,
+    height ? { height: height } : null,
+  ]} />
+));
 
 const styles = StyleSheet.create((theme) => ({
   divider: {
-    height: 2,
+    height: 1,
     backgroundColor: theme.colors.dividerColor,
     alignSelf: "stretch",
   },

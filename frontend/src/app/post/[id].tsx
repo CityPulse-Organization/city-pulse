@@ -6,10 +6,12 @@ import {
   POSTS,
   ThemedBackground,
 } from "@/src/components";
-import { moderateScale, scale, UIButton, UIImage, UIText } from "@/src/ui";
+import { moderateScale, scale, UIButton, UIDivider, UIImage, UIText } from "@/src/ui";
 import { UIBottomSheet } from "@/src/ui/organisms/UIBottomSheet";
 import { Ionicons } from "@expo/vector-icons";
 import {
+  BottomSheetFlatList,
+  BottomSheetFooter,
   BottomSheetModal,
   BottomSheetTextInput,
   SCREEN_WIDTH,
@@ -54,6 +56,66 @@ export const MOCK_COMMENTS: CommentItem[] = [
     timeAgo: "12m ago",
     profileImageUrl: undefined,
   },
+  {
+    username: "kyrylo",
+    commentText: "Looks serious. Hope everyone is ok.",
+    timeAgo: "2m ago",
+    profileImageUrl:
+      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
+  },
+  {
+    username: "alex",
+    commentText: "Any updates? Which street is blocked? Anything else?",
+    timeAgo: "5m ago",
+    profileImageUrl:
+      "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
+  },
+  {
+    username: "maria",
+    commentText: "Thanks for sharing. Stay safe!",
+    timeAgo: "12m ago",
+    profileImageUrl: undefined,
+  },
+  {
+    username: "kyrylo",
+    commentText: "Looks serious. Hope everyone is ok.",
+    timeAgo: "2m ago",
+    profileImageUrl:
+      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
+  },
+  {
+    username: "alex",
+    commentText: "Any updates? Which street is blocked? Anything else?",
+    timeAgo: "5m ago",
+    profileImageUrl:
+      "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
+  },
+  {
+    username: "maria",
+    commentText: "Thanks for sharing. Stay safe!",
+    timeAgo: "12m ago",
+    profileImageUrl: undefined,
+  },
+  {
+    username: "kyrylo",
+    commentText: "Looks serious. Hope everyone is ok.",
+    timeAgo: "2m ago",
+    profileImageUrl:
+      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
+  },
+  {
+    username: "alex",
+    commentText: "Any updates? Which street is blocked? Anything else?",
+    timeAgo: "5m ago",
+    profileImageUrl:
+      "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
+  },
+  {
+    username: "maria",
+    commentText: "Thanks for sharing. Stay safe!",
+    timeAgo: "12m ago",
+    profileImageUrl: undefined,
+  },
 ];
 
 export const MOCK_LIKE_COUNT = 12;
@@ -70,19 +132,83 @@ const CommentsHeader = () => {
   const { theme } = useUnistyles();
 
   return (
-    <View style={styles.commentsHeader}>
-      <Ionicons
-        name="chatbubble-outline"
-        size={scale(20)}
-        color={theme.colors.lightViolet}
-      />
+    <View style={styles.commentsHeaderContainer}>
+      <View style={styles.commentsHeader}>
+        <Ionicons
+          name="chatbubble-outline"
+          size={scale(20)}
+          color={theme.colors.lightViolet}
+        />
 
-      <UIText size="md" weight="normal" style={styles.commentsHeaderText}>
-        Comments
-      </UIText>
+        <UIText size="md" weight="normal" style={styles.commentsHeaderText}>
+          Comments
+        </UIText>
+
+      </View>
+
+      <UIDivider color={theme.colors.commentDividerColor} />
     </View>
+
   );
 };
+
+type CommentsFooterProps = {
+  bottomSheetProps: any;
+  insetsBottom: number;
+  profileImageUrl: string;
+};
+
+const CommentsFooter = React.memo(({ bottomSheetProps, insetsBottom, profileImageUrl }: CommentsFooterProps) => {
+  const { theme } = useUnistyles();
+  const [commentText, setCommentText] = useState("");
+
+  return (
+    <BottomSheetFooter {...bottomSheetProps}>
+      <View style={styles.footerContainer}>
+
+        <UIDivider height={0.5} />
+
+        <View
+          style={[
+            styles.commentInputBar,
+            { paddingBottom: Math.max(insetsBottom, scale(12)) },
+          ]}
+        >
+          <Icon
+            profileImageUrl={profileImageUrl}
+            size="comment"
+            borderColor="faint"
+          />
+
+          <BottomSheetTextInput
+            style={styles.commentInput}
+            placeholder="Add a comment..."
+            placeholderTextColor={theme.colors.faintColor}
+            onChangeText={setCommentText}
+            value={commentText}
+          />
+
+          <UIButton
+            style={[
+              styles.sendButton,
+              commentText.trim()
+                ? { backgroundColor: theme.colors.lightViolet }
+                : { backgroundColor: theme.colors.inputCommentBackgroundColor },
+            ]}
+            onPress={() => setCommentText("")}
+          >
+            <Ionicons
+              name="send-outline"
+              size={scale(18)}
+              color={commentText.trim() ? theme.colors.white : theme.colors.faintColor}
+            />
+          </UIButton>
+
+        </View>
+      </View>
+    </BottomSheetFooter>
+  );
+});
 
 export default function PostDetailScreen() {
   const router = useRouter();
@@ -137,6 +263,15 @@ export default function PostDetailScreen() {
     commentsBottomSheetRef.current?.present();
   };
 
+  const renderFooter = useCallback((props: any) => (
+    <CommentsFooter
+      bottomSheetProps={props}
+      insetsBottom={insets.bottom}
+      profileImageUrl={profileImageUrl}
+    />
+  ), [insets.bottom, profileImageUrl]);
+
+
   const menuOptions: PostElipsisOptionItem[] = useMemo(() => {
     if (isOwnPost) {
       return [
@@ -161,7 +296,7 @@ export default function PostDetailScreen() {
         id: "share",
         title: "Share",
         iconName: "share-social-outline",
-        onClick: () => {},
+        onClick: () => { },
       },
       {
         id: "report",
@@ -210,7 +345,6 @@ export default function PostDetailScreen() {
     [theme, handleOptionClick, menuOptions.length],
   );
 
-  const [commentText, setCommentText] = useState("");
 
   return (
     <ThemedBackground style={styles.page} withSafeArea={false}>
@@ -336,44 +470,23 @@ export default function PostDetailScreen() {
         </View>
       </ScrollView>
 
-      <UIBottomSheet header={<CommentsHeader />} ref={commentsBottomSheetRef}>
-        <FlashList
+      <UIBottomSheet
+        header={<CommentsHeader />}
+        ref={commentsBottomSheetRef}
+        snapPoints={["75%", "100%"]}
+        keyboardBehavior="interactive"
+        keyboardBlurBehavior="restore"
+        topInset={insets.top}
+        footerComponent={renderFooter}
+      >
+        <BottomSheetFlatList
           data={MOCK_COMMENTS}
-          contentContainerStyle={{ paddingBottom: 250 }}
+          keyExtractor={(_: CommentItem, index: number) => index.toString()}
+          contentContainerStyle={{ paddingBottom: scale(70), paddingHorizontal: 10 }}
           renderItem={({ item }: { item: CommentItem }) => (
             <Comment comment={item} />
           )}
         />
-
-        <View
-          style={[
-            styles.commentInputBar,
-            { paddingBottom: Math.max(insets.bottom, scale(12)) },
-          ]}
-        >
-          <Icon
-            profileImageUrl={profileImageUrl}
-            size="comment"
-            borderColor="violet"
-          />
-          <BottomSheetTextInput
-            style={styles.commentInput}
-            placeholder="Add a comment..."
-            placeholderTextColor={theme.colors.faintColor}
-            onChangeText={setCommentText}
-            value={commentText}
-          />
-          <UIButton
-            style={styles.sendButton}
-            onPress={() => setCommentText("")}
-          >
-            <Ionicons
-              name="send"
-              size={scale(18)}
-              color={commentText.trim() ? "#C7B4FD" : "rgba(255,255,255,0.3)"}
-            />
-          </UIButton>
-        </View>
       </UIBottomSheet>
 
       <View
@@ -410,16 +523,52 @@ export default function PostDetailScreen() {
         </UIButton>
       </View>
 
-      <UIBottomSheet ref={ellipsisBottomSheetRef}>
-        <FlashList data={menuOptions} renderItem={renderOptionItem} />
+      <UIBottomSheet ref={ellipsisBottomSheetRef} snapPoints={["20%"]} >
+        <FlashList
+          data={menuOptions}
+          renderItem={renderOptionItem}
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+        />
       </UIBottomSheet>
     </ThemedBackground>
   );
 }
 
 const styles = StyleSheet.create((theme, rt) => ({
+  footerContainer: {
+    backgroundColor: theme.colors.bottomSheetBackgroundColor,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    gap: theme.utils.s(14),
+  },
+  commentInputBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.utils.s(10),
+    paddingHorizontal: theme.utils.s(10),
+  },
+  commentInput: {
+    flex: 1,
+    backgroundColor: theme.colors.inputCommentBackgroundColor,
+    borderRadius: 999,
+    paddingHorizontal: theme.utils.s(16),
+    paddingVertical: theme.utils.s(10),
+    color: theme.colors.textColor,
+    fontSize: theme.utils.ms(14),
+    borderWidth: 1,
+    borderColor: theme.colors.inputCommentBorderColor,
+  },
+  sendButton: {
+    paddingHorizontal: theme.utils.s(10),
+    paddingVertical: theme.utils.s(10),
+    borderRadius: 999,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   contentContainerStyle: {
-    paddingBottom: rt.insets.bottom + theme.utils.s(40),
+    paddingBottom: rt.insets.bottom + theme.utils.s(10),
   },
   ellipseOptionButton: {
     flexDirection: "row",
@@ -431,10 +580,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     marginBottom: scale(8),
     borderRadius: moderateScale(22),
   },
-  container: {
-    flex: 1,
-    backgroundColor: "rgba(23,23,23,1)", // match theme generally or use theme color
-  },
+
 
   page: {
     flex: 1,
@@ -542,15 +688,18 @@ const styles = StyleSheet.create((theme, rt) => ({
     lineHeight: moderateScale(22),
   },
 
+  commentsHeaderContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: theme.utils.s(16),
+    paddingBottom: theme.utils.s(20),
+  },
   commentsHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: theme.utils.s(12),
-    marginBottom: theme.utils.s(20),
-    borderBottomWidth: 0.5,
-    borderBottomColor: theme.colors.darkViolet,
-    paddingBottom: theme.utils.s(20),
   },
   commentsHeaderText: {
     color: theme.colors.textColor,
@@ -579,31 +728,5 @@ const styles = StyleSheet.create((theme, rt) => ({
     zIndex: 10,
   },
 
-  commentInputBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: theme.utils.s(10),
-    paddingHorizontal: theme.utils.s(16),
-    paddingTop: theme.utils.s(12),
-    borderTopWidth: 1,
-    borderTopColor: "rgba(255,255,255,0.07)",
-  },
-  commentInput: {
-    flex: 1,
-    backgroundColor: "rgba(255,255,255,0.07)",
-    borderRadius: 999,
-    paddingHorizontal: theme.utils.s(16),
-    paddingVertical: theme.utils.s(10),
-    color: "#fff",
-    fontSize: theme.utils.ms(14),
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-  },
-  sendButton: {
-    width: theme.utils.s(36),
-    height: theme.utils.s(36),
-    borderRadius: 999,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+
 }));

@@ -3,18 +3,17 @@ import {
   BottomSheetBackdropProps,
   BottomSheetModal,
   BottomSheetModalProps,
-  BottomSheetScrollView,
+  BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import React, { forwardRef, useCallback } from "react";
-import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 import { UIText } from "../atoms";
-import { scale } from "../unistyles";
+import { View } from "react-native";
 
 type UIBottomSheetProps = {
   children: React.ReactNode;
   header?: string | React.ReactNode;
-} & UnistylesVariants<typeof styles> &
-  BottomSheetModalProps;
+} & BottomSheetModalProps;
 
 export const UIBottomSheet = forwardRef<BottomSheetModal, UIBottomSheetProps>(
   ({ children, header, ...props }, ref) => {
@@ -22,6 +21,7 @@ export const UIBottomSheet = forwardRef<BottomSheetModal, UIBottomSheetProps>(
       (props: BottomSheetBackdropProps) => (
         <BottomSheetBackdrop
           {...props}
+
           disappearsOnIndex={-1}
           appearsOnIndex={0}
           opacity={0.5}
@@ -38,59 +38,55 @@ export const UIBottomSheet = forwardRef<BottomSheetModal, UIBottomSheetProps>(
         handleStyle={styles.handleStyle}
         backgroundStyle={styles.backgroundStyle}
         ref={ref}
+        enableDynamicSizing={false}
         handleIndicatorStyle={styles.handleIndicatorStyle}
-        maxDynamicContentSize={700}
         {...props}
       >
-        <BottomSheetScrollView contentContainerStyle={styles.bottomSheetView}>
-          {typeof header === "string" ? (
-            <UIText size="xxl" style={styles.header}>
-              {header}
-            </UIText>
-          ) : header ? (
-            header
-          ) : null}
+        <View style={{ flex: 1 }}>
+
+          {header != null && (
+            <View style={styles.headerView}>
+              {typeof header === "string" ? (
+                <UIText size="xxl" style={styles.header}>
+                  {header}
+                </UIText>
+              ) : (
+                header
+              )}
+            </View>
+          )}
+
           {children}
-        </BottomSheetScrollView>
+
+        </View>
       </BottomSheetModal>
     );
   },
 );
 
 const styles = StyleSheet.create((theme) => ({
+
   header: {
     color: theme.colors.primaryTextColor,
     textAlign: "center",
   },
-  bottomSheetView: {
-    paddingHorizontal: 16,
-    paddingBottom: 40,
-    paddingTop: 10,
+  headerView: {
+    paddingTop: theme.utils.s(10),
     width: "100%",
-    variants: {
-      bottomSheetTheme: {
-        default: {
-          backgroundColor: theme.colors.black,
-        },
-        light: {
-          backgroundColor: theme.colors.white,
-        },
-      },
-    },
   },
   backdrop: {
     backgroundColor: theme.colors.black,
   },
   handleStyle: {
     backgroundColor: theme.colors.bottomSheetBackgroundColor,
-    borderTopLeftRadius: scale(14),
-    borderTopRightRadius: scale(14),
+    borderTopLeftRadius: theme.utils.s(14),
+    borderTopRightRadius: theme.utils.s(14),
   },
   backgroundStyle: {
     backgroundColor: theme.colors.bottomSheetBackgroundColor,
   },
   handleIndicatorStyle: {
     backgroundColor: theme.colors.darkViolet,
-    width: 40,
+    width: theme.utils.s(40),
   },
 }));

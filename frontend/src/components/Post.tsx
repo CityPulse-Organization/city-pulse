@@ -95,7 +95,7 @@ export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => (
         <View style={styles.topFlexWrapper}>
           {data.description && (
             <LinearGradient
-              colors={["rgba(0,0,0,0.8)", "rgba(0,0,0,0)"]}
+              colors={["rgba(0,0,0,0.85)", "rgba(0,0,0,0)"]}
               style={styles.topOverlay}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
@@ -178,7 +178,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   overlayText: {
     color: theme.colors.textColor,
-    textShadowColor: theme.colors.darkViolet,
+    textShadowColor: theme.colors.black,
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
     lineHeight: theme.utils.s(18),

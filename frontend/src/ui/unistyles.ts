@@ -91,6 +91,10 @@ const colors = {
   editProfileDescription: "#969696",
   newPostShareButtonColor: "#739676ff",
   backgroundSelectionBadge: "#995400ff",
+  commentDividerColor: "#602c8b68",
+  inputCommentBackgroundColor: "rgba(255,255,255,0.07)",
+  inputCommentBorderColor: "rgba(255, 255, 255, 0.17)",
+
 };
 
 const lightTheme = {
@@ -134,6 +138,11 @@ const darkTheme = {
     postEllipseButtonBackground: "#29292ac1",
     editProfileDescription: "#969696",
     newPostShareButtonColor: "#426f40ff",
+    commentDividerColor: "#602c8b68",
+    inputCommentBackgroundColor: "rgba(255,255,255,0.07)",
+    inputCommentBorderColor: "rgba(255, 255, 255, 0.17)",
+
+
   },
   utils: {
     s: scale,

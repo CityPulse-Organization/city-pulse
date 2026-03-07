@@ -76,7 +76,7 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     flex: 1,
     borderBottomWidth: 0.5,
-    borderBottomColor: theme.colors.darkViolet,
+    borderBottomColor: theme.colors.commentDividerColor,
     paddingBottom: theme.utils.s(16),
     marginBottom: theme.utils.s(12),
   },
