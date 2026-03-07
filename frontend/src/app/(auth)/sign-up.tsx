@@ -1,7 +1,9 @@
 import { AuthButton } from "@/src/components";
+import { useRegister } from "@/src/hooks";
 import { UIButton, UIInput, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useCallback } from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -12,6 +14,14 @@ import {
 import { StyleSheet } from "react-native-unistyles";
 
 export default function SignUpPage() {
+  const { mutateAsync: register } = useRegister();
+  const onPress = useCallback(() => {
+    register({
+      username: "user2",
+      email: "user-email2@mail.com",
+      password: "user123",
+    });
+  }, []);
   return (
     <View style={styles.mainContainer}>
       <Image
@@ -72,7 +82,7 @@ export default function SignUpPage() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-      <AuthButton label="Next" onPress={() => router.push("/(tabs)")} />
+      <AuthButton label="Next" onPress={onPress} />
     </View>
   );
 }

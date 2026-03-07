@@ -14,7 +14,7 @@ export default function IntroPage() {
       <AuthButton
         label="Start"
         variant="default"
-        onPress={() => router.push("/(auth)/sign-up")}
+        onPress={() => router.push("/sign-up")}
       />
     </View>
   );
