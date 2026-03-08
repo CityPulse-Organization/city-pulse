@@ -6,16 +6,16 @@ import {
   POSTS,
   ThemedBackground,
 } from "@/src/components";
-import { moderateScale, scale, UIButton, UIDivider, UIImage, UIText } from "@/src/ui";
+import { UIButton, UIDivider, UIImage, UIText } from "@/src/ui";
 import { UIBottomSheet } from "@/src/ui/organisms/UIBottomSheet";
 import { Ionicons } from "@expo/vector-icons";
 import {
   BottomSheetFlatList,
   BottomSheetFooter,
+  BottomSheetFooterProps,
   BottomSheetModal,
   BottomSheetTextInput,
 } from "@gorhom/bottom-sheet";
-import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -26,7 +26,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Dimensions, FlatList, ScrollView, View, ViewToken } from "react-native";
+import { ActivityIndicator, Dimensions, FlatList, ScrollView, View, ViewToken } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   StyleSheet,
@@ -34,82 +34,67 @@ import {
   useUnistyles,
 } from "react-native-unistyles";
 
+
+
 export const MOCK_COMMENTS: CommentItem[] = [
   {
+    id: "c1",
     username: "kyrylo",
     commentText: "Looks serious. Hope everyone is ok.",
     timeAgo: "2m ago",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
+    profileImageUrl: "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
   },
   {
+    id: "c2",
     username: "alex",
     commentText: "Any updates? Which street is blocked? Anything else?",
     timeAgo: "5m ago",
-    profileImageUrl:
-      "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
+    profileImageUrl: "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
   },
   {
+    id: "c3",
     username: "maria",
     commentText: "Thanks for sharing. Stay safe!",
     timeAgo: "12m ago",
     profileImageUrl: undefined,
   },
   {
+    id: "c4",
     username: "kyrylo",
     commentText: "Looks serious. Hope everyone is ok.",
     timeAgo: "2m ago",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
+    profileImageUrl: "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
   },
   {
+    id: "c5",
     username: "alex",
     commentText: "Any updates? Which street is blocked? Anything else?",
     timeAgo: "5m ago",
-    profileImageUrl:
-      "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
+    profileImageUrl: "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
   },
   {
+    id: "c6",
     username: "maria",
     commentText: "Thanks for sharing. Stay safe!",
     timeAgo: "12m ago",
     profileImageUrl: undefined,
   },
   {
+    id: "c7",
     username: "kyrylo",
     commentText: "Looks serious. Hope everyone is ok.",
     timeAgo: "2m ago",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
+    profileImageUrl: "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
   },
   {
+    id: "c8",
     username: "alex",
     commentText: "Any updates? Which street is blocked? Anything else?",
     timeAgo: "5m ago",
-    profileImageUrl:
-      "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
+    profileImageUrl: "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
   },
   {
-    username: "maria",
-    commentText: "Thanks for sharing. Stay safe!",
-    timeAgo: "12m ago",
-    profileImageUrl: undefined,
-  },
-  {
-    username: "kyrylo",
-    commentText: "Looks serious. Hope everyone is ok.",
-    timeAgo: "2m ago",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-  },
-  {
-    username: "alex",
-    commentText: "Any updates? Which street is blocked? Anything else?",
-    timeAgo: "5m ago",
-    profileImageUrl:
-      "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
-  },
-  {
+    id: "c9",
     username: "maria",
     commentText: "Thanks for sharing. Stay safe!",
     timeAgo: "12m ago",
@@ -120,17 +105,26 @@ export const MOCK_COMMENTS: CommentItem[] = [
 export const MOCK_LIKE_COUNT = 12;
 
 
+
+
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-type PostElipsisOptionItem = {
+
+
+
+type PostMenuOptionItem = {
   id: string;
   title: string;
   iconName: ComponentProps<typeof Ionicons>["name"];
   color?: string;
-  onClick: () => void;
+  onExecuteAction: () => void;
 };
 
-const CommentsHeader = () => {
+
+
+
+
+const CommentsHeader = React.memo(() => {
   const { theme } = useUnistyles();
 
   return (
@@ -138,79 +132,87 @@ const CommentsHeader = () => {
       <View style={styles.commentsHeader}>
         <Ionicons
           name="chatbubble-outline"
-          size={scale(20)}
+          size={theme.utils.s(20)}
           color={theme.colors.lightViolet}
         />
-
         <UIText size="md" weight="normal" style={styles.commentsHeaderText}>
           Comments
         </UIText>
-
       </View>
-
       <UIDivider color={theme.colors.commentDividerColor} />
     </View>
-
   );
-};
+});
+
+
+
 
 type CommentsFooterProps = {
-  bottomSheetProps: any;
+  bottomSheetProps: BottomSheetFooterProps;
   insetsBottom: number;
   profileImageUrl: string;
 };
 
-const CommentsFooter = React.memo(({ bottomSheetProps, insetsBottom, profileImageUrl }: CommentsFooterProps) => {
-  const { theme } = useUnistyles();
-  const [commentText, setCommentText] = useState("");
+const CommentsFooter = React.memo(
+  ({ bottomSheetProps, insetsBottom, profileImageUrl }: CommentsFooterProps) => {
+    const { theme } = useUnistyles();
+    const [commentText, setCommentText] = useState("");
 
-  return (
-    <BottomSheetFooter {...bottomSheetProps}>
-      <View style={styles.footerContainer}>
+    const isCommentValid = commentText.trim().length > 0;
 
-        <UIDivider height={0.5} />
+    const handleSendComment = useCallback(() => {
+      setCommentText("");
+    }, []);
 
-        <View
-          style={[
-            styles.commentInputBar,
-            { paddingBottom: Math.max(insetsBottom, scale(12)) },
-          ]}
-        >
-          <Icon
-            profileImageUrl={profileImageUrl}
-            size="comment"
-            borderColor="faint"
-          />
+    return (
+      <BottomSheetFooter {...bottomSheetProps}>
+        <View style={styles.footerContainer}>
 
-          <BottomSheetTextInput
-            style={styles.commentInput}
-            placeholder="Add a comment..."
-            placeholderTextColor={theme.colors.faintColor}
-            onChangeText={setCommentText}
-            value={commentText}
-          />
+          <UIDivider height={theme.utils.vs(0.5)} />
 
-          <UIButton
+          <View
             style={[
-              styles.sendButton,
-              commentText.trim()
-                ? { backgroundColor: theme.colors.lightViolet }
-                : { backgroundColor: theme.colors.inputCommentBackgroundColor },
+              styles.commentInputBar,
+              { paddingBottom: Math.max(insetsBottom, theme.utils.vs(30)) },
             ]}
-            onPress={() => setCommentText("")}
           >
-            <Ionicons
-              name="send-outline"
-              size={scale(18)}
-              color={commentText.trim() ? theme.colors.white : theme.colors.faintColor}
+            <Icon
+              profileImageUrl={profileImageUrl}
+              size="comment"
+              borderColor="violet"
             />
-          </UIButton>
 
+            <BottomSheetTextInput
+              style={styles.commentInput}
+              placeholder="Add a comment..."
+              placeholderTextColor={theme.colors.faintColor}
+              onChangeText={setCommentText}
+              value={commentText}
+            />
+
+            <UIButton
+              style={[
+                styles.sendButton,
+                isCommentValid
+                  ? { backgroundColor: theme.colors.lightViolet }
+                  : { backgroundColor: theme.colors.inputCommentBackgroundColor },
+              ]}
+              onPress={handleSendComment}
+              disabled={!isCommentValid}
+            >
+              <Ionicons
+                name="send-outline"
+                size={theme.utils.s(18)}
+                color={isCommentValid ? theme.colors.white : theme.colors.faintColor}
+              />
+            </UIButton>
+
+          </View>
         </View>
-      </View>
-    </BottomSheetFooter>
-  );
-});
+      </BottomSheetFooter>
+    );
+  },
+);
 
 export default function PostDetailScreen() {
   const router = useRouter();
@@ -218,77 +220,111 @@ export default function PostDetailScreen() {
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams();
 
-  const postId = params.id as string;
+  const activePostId = params.id as string;
   const isOwnPost = params.isOwnPost === "true";
 
-  const post = POSTS.find((post) => post.id === postId);
+  const currentPostData = POSTS.find((mockPost) => mockPost.id === activePostId);
 
-  if (!post) {
-    return <UIText>Post nie istnieje</UIText>;
-  }
-  const imagesUrl = post.imagesUrl || [];
-  const description = post.description || "";
-  const username = post.username;
-  const profileImageUrl = post.profileImageUrl || "";
-  const accidentTime = post.accidentTime;
-  const location = post.location || "";
-  const isBroadcasting = post.isBroadcasting;
 
-  const viewConfigRef = useRef({
-    viewAreaCoveragePercentThreshold: 50,
-  });
+  const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
+  const [activeCarouselIndex, setActiveCarouselIndex] = useState(0);
 
-  const [activeIndex, setActiveIndex] = useState(0);
-  const onViewRef = useRef(
+  const handleViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       if (viewableItems.length > 0) {
-        setActiveIndex(viewableItems[0].index ?? 0);
+        setActiveCarouselIndex(viewableItems[0].index ?? 0);
       }
     },
-  );
+  ).current;
 
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(MOCK_LIKE_COUNT);
 
-  const handleLike = () => {
-    setLiked(!liked);
-    setLikeCount(liked ? likeCount - 1 : likeCount + 1);
-  };
 
-  const [saved, setSaved] = useState(false);
-  const handleSave = () => {
-    setSaved(!saved);
-  };
+  const [isLikedByCurrentUser, setIsLikedByCurrentUser] = useState(false);
+  const [totalLikeCount, setTotalLikeCount] = useState(MOCK_LIKE_COUNT);
+
+  const toggleLikeStatus = useCallback(() => {
+    setIsLikedByCurrentUser((prev) => {
+      const nextStatus = !prev;
+      setTotalLikeCount((currentCount) => (nextStatus ? currentCount + 1 : currentCount - 1));
+      return nextStatus;
+    });
+  }, []);
+
+
+
+  const [isSavedByCurrentUser, setIsSavedByCurrentUser] = useState(false);
+
+  const toggleSaveStatus = useCallback(() => {
+    setIsSavedByCurrentUser((prev) => !prev);
+  }, []);
+
+
 
   const commentsBottomSheetRef = useRef<BottomSheetModal>(null);
-  const handleOpenComments = () => {
+
+  const presentCommentsSheet = useCallback(() => {
     commentsBottomSheetRef.current?.present();
-  };
-
-  const renderFooter = useCallback((props: any) => (
-    <CommentsFooter
-      bottomSheetProps={props}
-      insetsBottom={insets.bottom}
-      profileImageUrl={profileImageUrl}
-    />
-  ), [insets.bottom, profileImageUrl]);
+  }, []);
 
 
-  const menuOptions: PostElipsisOptionItem[] = useMemo(() => {
+  const renderCommentsFooter = useCallback(
+    (footerProps: BottomSheetFooterProps) => (
+      <CommentsFooter
+        bottomSheetProps={footerProps}
+        insetsBottom={insets.bottom}
+        profileImageUrl={currentPostData?.profileImageUrl ?? ""}
+      />
+    ),
+    [insets.bottom, currentPostData?.profileImageUrl],
+  );
+
+
+  const [comments, setComments] = useState<CommentItem[]>([]);
+  const [isLoadingMoreComments, setIsLoadingMoreComments] = useState(false);
+  const isLoadingMoreCommentsRef = useRef(false);
+
+  const handleLoadMoreComments = useCallback(() => {
+    if (isLoadingMoreCommentsRef.current) return;
+    isLoadingMoreCommentsRef.current = true;
+    setIsLoadingMoreComments(true);
+
+    setComments((prevComments) => {
+      const nextBatch = MOCK_COMMENTS.slice(prevComments.length, prevComments.length + 20);
+      return nextBatch.length === 0 ? prevComments : [...prevComments, ...nextBatch];
+    });
+    setIsLoadingMoreComments(false);
+    isLoadingMoreCommentsRef.current = false;
+  }, []);
+
+
+
+
+  const ellipsisBottomSheetRef = useRef<BottomSheetModal>(null);
+
+  const presentEllipsisSheet = useCallback(() => {
+    ellipsisBottomSheetRef.current?.present();
+  }, []);
+
+  const executeMenuOption = useCallback((callback: () => void) => {
+    ellipsisBottomSheetRef.current?.close();
+    callback();
+  }, []);
+
+  const postMenuOptions: PostMenuOptionItem[] = useMemo(() => {
     if (isOwnPost) {
       return [
         {
           id: "edit",
           title: "Edit",
           iconName: "pencil-outline",
-          onClick: () => router.navigate("/(tabs)/profile/edit-post"),
+          onExecuteAction: () => router.navigate("/(tabs)/profile/edit-post"),
         },
         {
           id: "delete",
           title: "Delete",
           iconName: "trash-outline",
           color: "red",
-          onClick: () => console.log("Usuwanie posta..."),
+          onExecuteAction: () => console.log("Usuwanie posta..."),
         },
       ];
     }
@@ -298,54 +334,67 @@ export default function PostDetailScreen() {
         id: "share",
         title: "Share",
         iconName: "share-social-outline",
-        onClick: () => { },
+        onExecuteAction: () => { },
       },
       {
         id: "report",
         title: "Report",
         iconName: "alert-circle-outline",
         color: "red",
-        onClick: function (): void {
+        onExecuteAction: () => {
           throw new Error("Function not implemented.");
         },
       },
     ];
   }, [isOwnPost, router]);
 
-  const ellipsisBottomSheetRef = useRef<BottomSheetModal>(null);
-  const handleOpenEllipsisButton = () => {
-    ellipsisBottomSheetRef.current?.present();
-  };
-
-  const handleOptionClick = useCallback(
-    (callback: () => void) => {
-      ellipsisBottomSheetRef.current?.close();
-      callback();
-    },
-    [ellipsisBottomSheetRef],
-  );
-
-  const renderOptionItem = useCallback(
-    ({ item, index }: { item: PostElipsisOptionItem; index: number }) => {
+  const renderPostMenuOptionItem = useCallback(
+    ({ item }: { item: PostMenuOptionItem }) => {
       const itemColor = item.color ?? theme.colors.lightViolet;
       const textColor = item.color ?? theme.colors.textColor;
 
       return (
-        <View>
-          <UIButton
-            onPress={() => handleOptionClick(item.onClick)}
-            style={styles.ellipseOptionButton}
-          >
-            <Ionicons color={itemColor} size={24} name={item.iconName} />
-            <UIText size="md" style={{ color: textColor }}>
-              {item.title}
-            </UIText>
-          </UIButton>
-        </View>
+        <UIButton
+          onPress={() => executeMenuOption(item.onExecuteAction)}
+          style={styles.ellipseOptionButton}
+        >
+          <Ionicons color={itemColor} size={theme.utils.s(24)} name={item.iconName} />
+          <UIText size="md" style={{ color: textColor }}>
+            {item.title}
+          </UIText>
+        </UIButton>
       );
     },
-    [theme, handleOptionClick, menuOptions.length],
+    [theme, executeMenuOption],
   );
+
+  const renderCarouselSlide = useCallback(
+    ({ item: imageUrl }: { item: string }) => (
+      <View style={styles.carouselSlide}>
+        <UIImage
+          imageUrl={imageUrl}
+          isAspectRatio={false}
+          style={styles.headerImage}
+        />
+      </View>
+    ),
+    [],
+  );
+
+
+
+  if (!currentPostData) return null;
+
+  const {
+    imagesUrl = [],
+    description = "",
+    username,
+    profileImageUrl = "",
+    accidentTime,
+    location = "",
+    isBroadcasting,
+  } = currentPostData;
+
 
 
   return (
@@ -361,55 +410,47 @@ export default function PostDetailScreen() {
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => item}
+            keyExtractor={(imageUrl) => imageUrl}
             viewabilityConfig={viewConfigRef.current}
-            onViewableItemsChanged={onViewRef.current}
-            renderItem={({ item }) => (
-              <View style={styles.carouselSlide}>
-                <UIImage
-                  imageUrl={item}
-                  isAspectRatio={false}
-                  style={styles.headerImage}
-                />
-              </View>
-            )}
+            onViewableItemsChanged={handleViewableItemsChanged}
+            renderItem={renderCarouselSlide}
           />
 
           <LinearGradient
-            colors={[
-              "rgba(0, 0, 0, 0.6)",
-              "rgba(0,0,0,0)",
-              "rgba(0, 0, 0, 0.8)",
-            ]}
+            colors={["rgba(0, 0, 0, 0.6)", "rgba(0,0,0,0)", "rgba(0, 0, 0, 0.8)"]}
             locations={[0.1, 0.4, 1]}
             style={styles.gradient}
             pointerEvents="none"
           />
 
-          <View style={styles.locationContainer} pointerEvents="none">
-            <Ionicons
-              name="location-outline"
-              size={scale(14)}
-              color={theme.colors.lightViolet}
-            />
-            <UIText size="sm" style={styles.locationText}>
-              {location}
-            </UIText>
-          </View>
-
-          <View style={styles.carouselFooter} pointerEvents="none">
-            <View style={styles.dotsRow}>
-              {imagesUrl.map((_, i) => (
-                <View
-                  key={i}
-                  style={[
-                    styles.dot,
-                    i === activeIndex ? styles.dotActive : styles.dotInactive,
-                  ]}
-                />
-              ))}
+          {location ? (
+            <View style={styles.locationContainer} pointerEvents="none">
+              <Ionicons
+                name="location-outline"
+                size={theme.utils.s(14)}
+                color={theme.colors.lightViolet}
+              />
+              <UIText size="sm" style={styles.locationText}>
+                {location}
+              </UIText>
             </View>
-          </View>
+          ) : null}
+
+          {imagesUrl.length > 1 && (
+            <View style={styles.carouselFooter} pointerEvents="none">
+              <View style={styles.dotsRow}>
+                {imagesUrl.map((_, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.dot,
+                      index === activeCarouselIndex ? styles.dotActive : styles.dotInactive,
+                    ]}
+                  />
+                ))}
+              </View>
+            </View>
+          )}
         </View>
 
         <View style={styles.contentContainer}>
@@ -424,35 +465,33 @@ export default function PostDetailScreen() {
             />
 
             <View style={styles.actionsRow}>
-              <UIButton onPress={handleLike} style={styles.actionPost}>
+              <UIButton onPress={toggleLikeStatus} style={styles.actionPost}>
                 <Ionicons
-                  name={liked ? "heart" : "heart-outline"}
-                  size={scale(20)}
-                  color={liked ? theme.colors.lightRed : theme.colors.iconColor}
+                  name={isLikedByCurrentUser ? "heart" : "heart-outline"}
+                  size={theme.utils.s(20)}
+                  color={isLikedByCurrentUser ? theme.colors.lightRed : theme.colors.iconColor}
                 />
                 <UIText weight="normal" style={styles.actionCount}>
-                  {likeCount}
+                  {totalLikeCount}
                 </UIText>
               </UIButton>
 
-              <UIButton onPress={handleOpenComments} style={styles.actionPost}>
+              <UIButton onPress={presentCommentsSheet} style={styles.actionPost}>
                 <Ionicons
                   name="chatbubble-outline"
-                  size={scale(20)}
+                  size={theme.utils.s(20)}
                   color={theme.colors.iconColor}
                 />
                 <UIText style={styles.actionCount}>
-                  {MOCK_COMMENTS.length}
+                  {MOCK_COMMENTS.length /* TODO: replace with total from API */}
                 </UIText>
               </UIButton>
 
-              <UIButton onPress={handleSave} style={styles.actionPost}>
+              <UIButton onPress={toggleSaveStatus} style={styles.actionPost}>
                 <Ionicons
-                  name={saved ? "bookmark" : "bookmark-outline"}
-                  size={scale(20)}
-                  color={
-                    saved ? theme.colors.darkViolet : theme.colors.iconColor
-                  }
+                  name={isSavedByCurrentUser ? "bookmark" : "bookmark-outline"}
+                  size={theme.utils.s(20)}
+                  color={isSavedByCurrentUser ? theme.colors.darkViolet : theme.colors.iconColor}
                 />
               </UIButton>
             </View>
@@ -472,21 +511,25 @@ export default function PostDetailScreen() {
         </View>
       </ScrollView>
 
+
       <UIBottomSheet
         header={<CommentsHeader />}
         ref={commentsBottomSheetRef}
-        snapPoints={["75%", "100%"]}
+        snapPoints={["75%"]}
         keyboardBehavior="interactive"
-        keyboardBlurBehavior="restore"
+        keyboardBlurBehavior="none"
         topInset={insets.top}
-        footerComponent={renderFooter}
+        footerComponent={renderCommentsFooter}
       >
         <BottomSheetFlatList
-          data={MOCK_COMMENTS}
-          keyExtractor={(_: CommentItem, index: number) => index.toString()}
-          contentContainerStyle={{ paddingBottom: scale(70), paddingHorizontal: 10 }}
-          renderItem={({ item }: { item: CommentItem }) => (
-            <Comment comment={item} />
+          data={comments}
+          keyExtractor={(commentData: CommentItem) => commentData.id}
+          contentContainerStyle={{ paddingBottom: theme.utils.vs(100), paddingHorizontal: theme.utils.s(10) }}
+          onEndReached={handleLoadMoreComments}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={isLoadingMoreComments ? <ActivityIndicator size="small" /> : null}
+          renderItem={({ item: commentData }: { item: CommentItem }) => (
+            <Comment comment={commentData} />
           )}
         />
       </UIBottomSheet>
@@ -494,14 +537,14 @@ export default function PostDetailScreen() {
       <View
         style={[
           styles.backButtonContainer,
-          { top: Math.max(insets.top, scale(50)) },
+          { top: Math.max(insets.top, theme.utils.vs(50)) },
         ]}
       >
         <UIButton onPress={() => router.back()}>
           <BlurView intensity={80} tint="dark" style={styles.backButton}>
             <Ionicons
               name="chevron-back"
-              size={20}
+              size={theme.utils.s(20)}
               color={theme.colors.white}
             />
           </BlurView>
@@ -511,14 +554,14 @@ export default function PostDetailScreen() {
       <View
         style={[
           styles.menuButtonContainer,
-          { top: Math.max(insets.top, scale(50)) },
+          { top: Math.max(insets.top, theme.utils.vs(50)) },
         ]}
       >
-        <UIButton onPress={handleOpenEllipsisButton}>
+        <UIButton onPress={presentEllipsisSheet}>
           <BlurView intensity={80} tint="dark" style={styles.backButton}>
             <Ionicons
               name="ellipsis-vertical"
-              size={20}
+              size={theme.utils.s(20)}
               color={theme.colors.white}
             />
           </BlurView>
@@ -526,10 +569,10 @@ export default function PostDetailScreen() {
       </View>
 
       <UIBottomSheet ref={ellipsisBottomSheetRef} snapPoints={["20%"]} >
-        <FlashList
-          data={menuOptions}
-          renderItem={renderOptionItem}
-          contentContainerStyle={{ paddingHorizontal: 20 }}
+        <BottomSheetFlatList
+          data={postMenuOptions}
+          renderItem={renderPostMenuOptionItem}
+          contentContainerStyle={{ paddingHorizontal: theme.utils.s(20) }}
         />
       </UIBottomSheet>
     </ThemedBackground>
@@ -541,7 +584,6 @@ const styles = StyleSheet.create((theme, rt) => ({
     backgroundColor: theme.colors.bottomSheetBackgroundColor,
     alignItems: "center",
     justifyContent: "center",
-    flexDirection: "column",
     gap: theme.utils.s(14),
   },
   commentInputBar: {
@@ -575,73 +617,90 @@ const styles = StyleSheet.create((theme, rt) => ({
   ellipseOptionButton: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    gap: scale(16),
+    paddingHorizontal: theme.utils.s(20),
+    paddingVertical: theme.utils.vs(16),
+    gap: theme.utils.s(16),
     backgroundColor: theme.colors.postEllipseButtonBackground,
-    marginBottom: scale(8),
-    borderRadius: moderateScale(22),
+    marginBottom: theme.utils.vs(8),
+    borderRadius: theme.utils.ms(22),
   },
-
 
   page: {
     flex: 1,
-    gap: 10,
   },
 
   imageContainer: {
     width: "100%",
-    height: theme.utils.s(450),
+    height: theme.utils.vs(440),
     position: "relative",
   },
   carouselSlide: {
     width: SCREEN_WIDTH,
-    height: theme.utils.s(450),
+    height: theme.utils.vs(440),
   },
   headerImage: {
     width: "100%",
     height: "100%",
   },
+
   gradient: {
     ...StyleSheet.absoluteFillObject,
   },
 
+  locationContainer: {
+    position: "absolute",
+    bottom: theme.utils.vs(40),
+    left: theme.utils.s(16),
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.utils.s(6),
+    borderWidth: 1,
+    backgroundColor: theme.colors.postPreviewItemBackgroundColor,
+    borderColor: theme.colors.darkViolet,
+    borderRadius: 999,
+    paddingHorizontal: theme.utils.s(12),
+    paddingVertical: theme.utils.vs(6),
+  },
+  locationText: {
+    color: theme.colors.lightViolet,
+  },
+
   carouselFooter: {
     position: "absolute",
-    bottom: scale(20),
+    bottom: theme.utils.vs(20),
     left: 0,
     right: 0,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: scale(8),
+    gap: theme.utils.s(8),
   },
   dotsRow: {
     flexDirection: "row",
-    gap: scale(6),
+    gap: theme.utils.s(6),
   },
   dot: {
-    height: scale(6),
+    height: theme.utils.vs(6),
     borderRadius: 999,
   },
   dotActive: {
-    width: scale(22),
+    width: theme.utils.s(22),
     backgroundColor: theme.colors.darkViolet,
   },
   dotInactive: {
-    width: scale(6),
+    width: theme.utils.s(6),
     backgroundColor: theme.colors.faintColor,
   },
 
   contentContainer: {
     paddingHorizontal: theme.utils.s(20),
-    marginTop: theme.utils.s(10),
+    marginTop: theme.utils.vs(10),
   },
   userInfoRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: theme.utils.s(20),
+    marginBottom: theme.utils.vs(20),
   },
   actionsRow: {
     flexDirection: "row",
@@ -658,36 +717,18 @@ const styles = StyleSheet.create((theme, rt) => ({
     fontSize: theme.utils.ms(14),
   },
 
-  locationContainer: {
-    position: "absolute",
-    bottom: theme.utils.s(40),
-    left: theme.utils.s(16),
-    flexDirection: "row",
-    alignItems: "center",
-    gap: theme.utils.s(6),
-    borderWidth: 1,
-    backgroundColor: theme.colors.postPreviewItemBackgroundColor,
-    borderColor: theme.colors.darkViolet,
-    borderRadius: 999,
-    paddingHorizontal: theme.utils.s(12),
-    paddingVertical: theme.utils.s(6),
-  },
-  locationText: {
-    color: theme.colors.lightViolet,
-  },
-
   descriptionCard: {
     backgroundColor: theme.colors.postPreviewItemBackgroundColor,
-    padding: scale(20),
-    borderRadius: moderateScale(22),
+    padding: theme.utils.s(20),
+    borderRadius: theme.utils.ms(22),
     borderWidth: 1,
     borderColor: theme.colors.darkViolet,
-    marginBottom: scale(32),
+    marginBottom: theme.utils.vs(32),
     opacity: 0.9,
   },
   descriptionText: {
     color: theme.colors.textColor,
-    lineHeight: moderateScale(22),
+    lineHeight: theme.utils.ms(22),
   },
 
   commentsHeaderContainer: {
@@ -695,7 +736,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     alignItems: "center",
     justifyContent: "center",
     gap: theme.utils.s(16),
-    paddingBottom: theme.utils.s(20),
+    paddingBottom: theme.utils.vs(20),
   },
   commentsHeader: {
     flexDirection: "row",
@@ -706,16 +747,15 @@ const styles = StyleSheet.create((theme, rt) => ({
   commentsHeaderText: {
     color: theme.colors.textColor,
   },
-
   backButtonContainer: {
     position: "absolute",
     left: theme.utils.s(20),
     zIndex: 10,
-    top: Math.max(rt.insets.top, theme.utils.s(10)),
+    top: Math.max(rt.insets.top, theme.utils.vs(10)),
   },
   backButton: {
     paddingHorizontal: theme.utils.s(8),
-    paddingVertical: theme.utils.s(8),
+    paddingVertical: theme.utils.vs(8),
     borderRadius: 999,
     justifyContent: "center",
     alignItems: "center",
@@ -723,12 +763,9 @@ const styles = StyleSheet.create((theme, rt) => ({
     borderWidth: 0.5,
     borderColor: theme.colors.white,
   },
-
   menuButtonContainer: {
     position: "absolute",
     right: theme.utils.s(16),
     zIndex: 10,
   },
-
-
 }));

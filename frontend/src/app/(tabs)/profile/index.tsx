@@ -1,31 +1,22 @@
-import { StyleSheet } from "react-native-unistyles";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import {
-  NewPostButton,
+  Icon,
   Post,
   PostItem,
   POSTS,
-  ProfileHeader,
-  StatsPanel,
   ThemedBackground,
 } from "@/src/components";
-import { UIDivider } from "@/src/ui";
+import { UIButton, UIDivider, UIText } from "@/src/ui";
 import { FlashList } from "@shopify/flash-list";
 import { useRouter } from "expo-router";
-import { memo, useCallback } from "react";
-
-const ListHeader = memo(() => (
-  <>
-    <ProfileHeader />
-    <UIDivider />
-    <StatsPanel />
-    <NewPostButton />
-  </>
-));
+import { ComponentProps, memo, useCallback } from "react";
+import { ScrollView, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function ProfileScreen() {
   const router = useRouter();
 
-  const handlePostPress = useCallback(
+  const navigateToPostDetails = useCallback(
     (id: string) => {
       router.push({
         pathname: `/post/[id]`,
@@ -38,17 +29,17 @@ export default function ProfileScreen() {
     [router],
   );
 
-  const renderPost = useCallback(
-    ({ item }: { item: PostItem }) => (
+  const renderPostItem = useCallback(
+    ({ item: postData }: { item: PostItem }) => (
       <Post
-        data={item}
-        onPress={handlePostPress}
+        data={postData}
+        onPress={navigateToPostDetails}
       />
     ),
-    [router],
+    [navigateToPostDetails],
   );
 
-  const keyExtractor = useCallback((item: PostItem) => item.id, []);
+  const keyExtractor = useCallback((postData: PostItem) => postData.id, []);
 
   return (
     <ThemedBackground style={styles.page}>
@@ -59,13 +50,177 @@ export default function ProfileScreen() {
         data={POSTS}
         style={styles.list}
         keyExtractor={keyExtractor}
-        renderItem={renderPost}
+        renderItem={renderPostItem}
         contentContainerStyle={styles.postsContainer}
         ListHeaderComponent={<ListHeader />}
       />
     </ThemedBackground>
   );
 }
+
+const ListHeader = memo(() => (
+  <>
+    <ProfileHeader />
+    <UIDivider />
+    <StatsPanel />
+    <NewPostButton />
+  </>
+));
+
+const ProfileHeader = memo(() => {
+  const { theme } = useUnistyles();
+  const router = useRouter();
+
+  const navigateToEditProfile = useCallback(() => {
+    router.navigate("/(tabs)/profile/edit-profile");
+  }, [router]);
+
+  return (
+    <View style={styles.headerContainer}>
+      <View style={styles.avatarContainer}>
+        <Icon
+          size="medium"
+          profileImageUrl="https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg"
+          borderColor="violet"
+        />
+      </View>
+
+      <View style={styles.infoContainer}>
+        <View style={styles.row}>
+          <UIText
+            size="xl"
+            weight="bold"
+            style={styles.profileNameText}
+          >
+            Kyrylo
+          </UIText>
+
+          <UIButton onPress={navigateToEditProfile} isLoading={false}>
+            <Ionicons
+              color={theme.colors.profileIconColor}
+              size={theme.utils.s(18)}
+              name="color-wand"
+            />
+          </UIButton>
+        </View>
+
+        <View style={styles.row}>
+          <UIText size="sm" style={styles.roleText}>
+            Boss
+          </UIText>
+
+          <Ionicons
+            color={theme.colors.lightViolet}
+            size={theme.utils.s(16)}
+            name="checkmark-circle"
+          />
+        </View>
+
+        <UIText size="sm" style={styles.bioText}>
+          Hey! I'm Kyrylo 👋 A boss passionate about telling stories that
+          matter.
+        </UIText>
+      </View>
+    </View>
+  );
+});
+
+
+
+type IconName = ComponentProps<typeof Ionicons>["name"];
+
+const PROFILE_STATS_CONFIG: {
+  id: string;
+  title: string;
+  iconName: IconName;
+  quantity: number;
+}[] = [
+    { id: "1", title: "Followers", iconName: "people-outline", quantity: 398 },
+    { id: "2", title: "Likes", iconName: "thumbs-up-outline", quantity: 398 },
+    { id: "3", title: "Posts", iconName: "newspaper-outline", quantity: 398 },
+    { id: "4", title: "Subscriptions", iconName: "keypad-outline", quantity: 34 },
+    { id: "5", title: "Favourites", iconName: "heart-outline", quantity: 34 },
+  ];
+
+
+const StatsPanel = memo(() => {
+  return (
+    <View style={styles.statsContainer}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContent}
+      >
+        {PROFILE_STATS_CONFIG.map((statConfig) => (
+          <StatsButton
+            key={statConfig.id}
+            title={statConfig.title}
+            iconName={statConfig.iconName}
+            quantity={statConfig.quantity}
+          />
+        ))}
+      </ScrollView>
+    </View>
+  );
+});
+
+type StatsButtonProps = {
+  title: string;
+  iconName: IconName;
+  quantity: number;
+};
+
+const StatsButton = memo(({ title, iconName, quantity }: StatsButtonProps) => {
+  const { theme } = useUnistyles();
+
+  const handleStatPress = useCallback(() => { }, []);
+
+  return (
+    <UIButton style={styles.statButton} onPress={handleStatPress} isLoading={false}>
+      <UIText style={styles.text} size="sm">
+        {title}
+      </UIText>
+
+      <Ionicons
+        color={theme.colors.profileIconColor}
+        size={theme.utils.s(20)}
+        name={iconName}
+      />
+
+      <UIText style={styles.text} size="md" weight="bold">
+        {quantity}
+      </UIText>
+    </UIButton>
+  );
+});
+
+const NewPostButton = memo(() => {
+  const { theme } = useUnistyles();
+  const router = useRouter();
+
+  const navigateToNewPost = useCallback(() => {
+    router.navigate("/(tabs)/profile/new-post-image");
+  }, [router]);
+
+  return (
+    <View style={styles.buttonContainer}>
+      <UIButton
+        style={styles.newPostButton}
+        onPress={navigateToNewPost}
+        isLoading={false}
+      >
+        <Ionicons
+          color={theme.colors.profileTextColor}
+          size={theme.utils.s(22)}
+          name="add-outline"
+        />
+        <UIText style={styles.text} size="md">
+          Create new post
+        </UIText>
+      </UIButton>
+    </View>
+  );
+});
 
 const styles = StyleSheet.create((theme) => ({
   page: {
@@ -77,5 +232,76 @@ const styles = StyleSheet.create((theme) => ({
   postsContainer: {
     paddingBottom: theme.utils.vs(80),
   },
-  headerItem: { width: "100%" },
+
+  headerContainer: {
+    paddingBottom: theme.utils.vs(20),
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: theme.utils.s(10),
+    gap: theme.utils.s(20),
+  },
+  avatarContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  infoContainer: {
+    flex: 1,
+    gap: theme.utils.s(10),
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.utils.s(6),
+  },
+
+  profileNameText: {
+    color: theme.colors.profileTextColor,
+  },
+  roleText: {
+    color: theme.colors.lightViolet,
+  },
+  bioText: {
+    color: theme.colors.faintColor,
+  },
+
+  buttonContainer: {
+    paddingTop: theme.utils.vs(10),
+    paddingBottom: theme.utils.vs(20),
+    paddingHorizontal: theme.utils.s(26),
+  },
+  newPostButton: {
+    paddingVertical: theme.utils.vs(14),
+    backgroundColor: theme.colors.profileBottonBackgroundColor,
+    borderColor: theme.colors.profileButtonBorderColor,
+    borderWidth: 2,
+    borderRadius: theme.utils.ms(20),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: theme.utils.s(10),
+  },
+  text: {
+    color: theme.colors.profileTextColor,
+  },
+
+  statsContainer: {
+    height: theme.utils.vs(160),
+    paddingVertical: theme.utils.vs(16),
+    paddingHorizontal: theme.utils.s(10),
+  },
+  scrollViewContent: {
+    alignItems: "center",
+    gap: theme.utils.s(14),
+  },
+  statButton: {
+    width: theme.utils.s(96),
+    height: theme.utils.vs(116),
+    backgroundColor: theme.colors.profileBottonBackgroundColor,
+    borderColor: theme.colors.profileButtonBorderColor,
+    borderWidth: 2,
+    borderRadius: theme.utils.ms(16),
+    alignItems: "center",
+    justifyContent: "center",
+    gap: theme.utils.s(8),
+  },
 }));

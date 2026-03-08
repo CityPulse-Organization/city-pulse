@@ -149,7 +149,7 @@ const styles = StyleSheet.create((theme) => ({
     borderColor: theme.colors.postBorderColor,
   },
   image: {
-    minHeight: theme.utils.vs(260),
+    minHeight: theme.utils.vs(240),
   },
 
   overlayWrapper: {

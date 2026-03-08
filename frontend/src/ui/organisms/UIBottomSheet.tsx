@@ -21,7 +21,6 @@ export const UIBottomSheet = memo(
         (backdropProps: BottomSheetBackdropProps) => (
           <BottomSheetBackdrop
             {...backdropProps}
-
             disappearsOnIndex={-1}
             appearsOnIndex={0}
             opacity={0.5}
@@ -42,23 +41,21 @@ export const UIBottomSheet = memo(
           handleIndicatorStyle={styles.handleIndicatorStyle}
           {...props}
         >
-          <View style={{ flex: 1 }}>
 
-            {header != null && (
-              <View style={styles.headerView}>
-                {typeof header === "string" ? (
-                  <UIText size="xxl" style={styles.header}>
-                    {header}
-                  </UIText>
-                ) : (
-                  header
-                )}
-              </View>
-            )}
+          {header != null && (
+            <View style={styles.headerView}>
+              {typeof header === "string" ? (
+                <UIText size="xxl" style={styles.header}>
+                  {header}
+                </UIText>
+              ) : (
+                header
+              )}
+            </View>
+          )}
 
-            {children}
+          {children}
 
-          </View>
         </BottomSheetModal>
       );
     },
@@ -66,7 +63,6 @@ export const UIBottomSheet = memo(
 );
 
 const styles = StyleSheet.create((theme) => ({
-
   header: {
     color: theme.colors.primaryTextColor,
     textAlign: "center",

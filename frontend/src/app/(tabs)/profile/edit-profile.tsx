@@ -87,11 +87,11 @@ export default function EditProfileScreen() {
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.keyboardAvoiding}
+        style={{ flex: 1 }}
         keyboardVerticalOffset={theme.utils.vs(60)}
       >
         <ScrollView
-          contentContainerStyle={[styles.scrollContainer]}
+          contentContainerStyle={{ gap: theme.utils.s(20) }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
@@ -241,13 +241,6 @@ const styles = StyleSheet.create((theme) => ({
   },
   doneText: {
     color: theme.colors.lightViolet,
-  },
-
-  keyboardAvoiding: {
-    flex: 1,
-  },
-  scrollContainer: {
-    gap: theme.utils.s(20),
   },
 
   avatarContainer: {

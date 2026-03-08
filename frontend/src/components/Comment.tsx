@@ -7,6 +7,7 @@ import { UIButton, UIText } from "../ui";
 import { Icon } from "./Icon";
 
 export type CommentItem = {
+  id: string;
   username: string;
   commentText: string;
   timeAgo: string;
