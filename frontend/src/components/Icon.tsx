@@ -1,13 +1,22 @@
 import { scale, UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import * as MediaLibrary from "expo-media-library";
-import { memo, useEffect, useState } from "react";
+import { memo } from "react";
 import {
   StyleSheet,
   UnistylesVariants,
   useUnistyles,
 } from "react-native-unistyles";
+
+
+const FALLBACK_ICON_SIZES = {
+  medium: scale(60),
+  comment: scale(24),
+  small: scale(18),
+  default: scale(28),
+} as const;
+
+
 
 export type IconProps = {
   profileImageUrl?: string;
@@ -25,53 +34,15 @@ export const Icon = memo(
     borderColor,
   }: IconProps) => {
     const { theme } = useUnistyles();
-    const [imageUri, setImageUri] = useState<string | undefined>(
-      profileImageUrl,
-    );
     styles.useVariants({ size: size, borderColor: borderColor });
 
-    useEffect(() => {
-      if (!profileImageUrl) {
-        setImageUri(undefined);
-        return;
-      }
-
-      if (profileImageUrl.startsWith("ph://")) {
-        const assetId = profileImageUrl.replace("ph://", "").split("/")[0];
-        MediaLibrary.getAssetInfoAsync(assetId)
-          .then((assetInfo) => {
-            if (assetInfo.localUri) {
-              setImageUri(assetInfo.localUri);
-            } else {
-              setImageUri(profileImageUrl);
-            }
-          })
-          .catch(() => {
-            setImageUri(profileImageUrl);
-          });
-      } else {
-        setImageUri(profileImageUrl);
-      }
-    }, [profileImageUrl]);
-
-    const getFallbackIconSize = () => {
-      switch (size) {
-        case "medium":
-          return scale(60);
-        case "comment":
-          return scale(24);
-        case "small":
-          return scale(18);
-        default:
-          return scale(28);
-      }
-    };
+    const fallbackSize = FALLBACK_ICON_SIZES[size as keyof typeof FALLBACK_ICON_SIZES] || FALLBACK_ICON_SIZES.default;
 
     return (
-      <UIButton style={styles.button} onPress={() => {}} isLoading={isLoading}>
-        {imageUri ? (
+      <UIButton style={styles.button} onPress={() => { }} isLoading={isLoading}>
+        {profileImageUrl ? (
           <Image
-            source={{ uri: imageUri }}
+            source={{ uri: profileImageUrl }}
             style={styles.image}
             cachePolicy="memory-disk"
             priority="normal"
@@ -79,7 +50,7 @@ export const Icon = memo(
         ) : (
           <Ionicons
             color={theme.colors.iconColor}
-            size={getFallbackIconSize()}
+            size={fallbackSize}
             name="person"
           />
         )}
@@ -100,24 +71,25 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: "center",
     position: "relative",
     borderRadius: 999,
+    padding: theme.utils.s(2),
 
     variants: {
       size: {
         default: {
-          width: scale(50),
-          height: scale(50),
+          width: theme.utils.s(50),
+          height: theme.utils.s(50),
         },
         medium: {
-          height: scale(100),
-          width: scale(100),
+          height: theme.utils.s(100),
+          width: theme.utils.s(100),
         },
         small: {
-          height: scale(30),
-          width: scale(30),
+          height: theme.utils.s(34),
+          width: theme.utils.s(34),
         },
         comment: {
-          height: scale(40),
-          width: scale(40),
+          height: theme.utils.s(40),
+          width: theme.utils.s(40),
         },
       },
       borderColor: {
@@ -140,18 +112,18 @@ const styles = StyleSheet.create((theme) => ({
   },
   iconText: {
     position: "absolute",
-    bottom: -8,
+    bottom: theme.utils.vs(-8),
     alignSelf: "center",
     color: theme.colors.white,
     backgroundColor: theme.colors.alert,
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-    borderRadius: 6,
+    paddingHorizontal: theme.utils.s(4),
+    paddingVertical: theme.utils.vs(2),
+    borderRadius: theme.utils.ms(6),
     overflow: "hidden",
     textAlign: "center",
   },
   username: {
     color: theme.colors.white,
-    paddingBottom: 10,
+    paddingBottom: theme.utils.vs(10),
   },
 }));

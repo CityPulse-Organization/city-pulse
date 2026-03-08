@@ -14,7 +14,6 @@ import {
   BottomSheetFooter,
   BottomSheetModal,
   BottomSheetTextInput,
-  SCREEN_WIDTH,
 } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
@@ -27,7 +26,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { FlatList, ScrollView, View, ViewToken } from "react-native";
+import { Dimensions, FlatList, ScrollView, View, ViewToken } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   StyleSheet,
@@ -119,6 +118,9 @@ export const MOCK_COMMENTS: CommentItem[] = [
 ];
 
 export const MOCK_LIKE_COUNT = 12;
+
+
+const SCREEN_WIDTH = Dimensions.get("window").width;
 
 type PostElipsisOptionItem = {
   id: string;
@@ -594,7 +596,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   carouselSlide: {
     width: SCREEN_WIDTH,
-    height: scale(400),
+    height: theme.utils.s(450),
   },
   headerImage: {
     width: "100%",

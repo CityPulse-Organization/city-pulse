@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-import { UIButton, UIText } from "../ui";
+import { UIText } from "../ui";
 import { Icon } from "./Icon";
 
 export type IconInfoProps = {
@@ -12,8 +12,9 @@ export type IconInfoProps = {
   usernameSize?: "sm";
   usernameWeight?: "bold";
   statusText?: string;
-  iconSize?: "small";
+  iconSize?: "small" | "medium" | "comment";
   iconBorderColor?: "violet" | "faint";
+  onPress?: () => void;
 };
 
 export const IconInfo = memo(
@@ -30,14 +31,13 @@ export const IconInfo = memo(
   }: IconInfoProps) => {
     return (
       <View style={styles.container}>
-        <UIButton isLoading={isLoading} onPress={() => {}}>
-          <Icon
-            profileImageUrl={profileImageUrl}
-            isBroadCasting={isBroadCasting}
-            size={iconSize}
-            borderColor={iconBorderColor}
-          />
-        </UIButton>
+        <Icon
+          profileImageUrl={profileImageUrl}
+          isLoading={isLoading}
+          isBroadCasting={isBroadCasting}
+          size={iconSize}
+          borderColor={iconBorderColor}
+        />
 
         <View style={styles.textWrapper}>
           <UIText
@@ -64,7 +64,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   textWrapper: {
     flexShrink: 1,
-    gap: 4,
+    gap: theme.utils.s(4),
   },
   username: { color: theme.colors.iconInfoUsernameTextColor },
   statusText: { color: theme.colors.iconInfoStatusTextColor },

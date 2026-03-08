@@ -10,9 +10,11 @@ import { Icon } from "../Icon";
 export const ProfileHeader = memo(() => {
   const { theme } = useUnistyles();
   const router = useRouter();
+
   const onPress = () => {
     router.navigate("/(tabs)/profile/edit-profile");
   };
+
   return (
     <View style={styles.headerContainer}>
       <View style={styles.iconContainer}>
@@ -36,7 +38,7 @@ export const ProfileHeader = memo(() => {
           <UIButton onPress={onPress} isLoading={false}>
             <Ionicons
               color={theme.colors.profileIconColor}
-              size={18}
+              size={theme.utils.s(18)}
               name="color-wand"
             />
           </UIButton>
@@ -49,7 +51,7 @@ export const ProfileHeader = memo(() => {
 
           <Ionicons
             color={theme.colors.lightViolet}
-            size={16}
+            size={theme.utils.s(16)}
             name="checkmark-circle"
           />
         </View>
@@ -65,11 +67,11 @@ export const ProfileHeader = memo(() => {
 
 const styles = StyleSheet.create((theme) => ({
   headerContainer: {
-    paddingBottom: 20,
+    paddingBottom: theme.utils.vs(20),
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 10,
-    gap: 20,
+    paddingHorizontal: theme.utils.s(10),
+    gap: theme.utils.s(20),
   },
   iconContainer: {
     alignItems: "center",
@@ -77,11 +79,11 @@ const styles = StyleSheet.create((theme) => ({
   },
   infoContainer: {
     flex: 1,
-    gap: 10,
+    gap: theme.utils.s(10),
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: theme.utils.s(6),
   },
 }));

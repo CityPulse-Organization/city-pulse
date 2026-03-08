@@ -1,14 +1,12 @@
 import { Image, ImageProps } from "expo-image";
-import * as MediaLibrary from "expo-media-library";
 import { Skeleton } from "moti/skeleton";
-import { memo, useEffect, useState } from "react";
-import { Image as RNImage, View } from "react-native";
+import { memo, useCallback, useState } from "react";
+import { View } from "react-native";
 import {
   StyleSheet,
   UnistylesRuntime,
   UnistylesVariants,
 } from "react-native-unistyles";
-import { moderateScale, scale, verticalScale } from "../unistyles";
 
 type UIImageProps = {
   imageUrl: string | undefined;
@@ -28,71 +26,36 @@ export const UIImage = memo(
     ...props
   }: UIImageProps) => {
     const [imagePreparing, setImagePreparing] = useState(true);
-    const [resolvedUri, setResolvedUri] = useState<string | undefined>(
-      imageUrl,
-    );
+    const [aspectRatio, setAspectRatio] = useState<number | undefined>(undefined);
+
     styles.useVariants({ size: size, borderRound: borderRound });
     const themeName = UnistylesRuntime.themeName;
 
-    const [aspectRatio, setAspectRatio] = useState<number | undefined>(
-      undefined,
-    );
-
-    useEffect(() => {
-      if (!imageUrl) {
-        setResolvedUri(undefined);
-        return;
-      }
-
-      if (imageUrl.startsWith("ph://")) {
-        const assetId = imageUrl.replace("ph://", "").split("/")[0];
-        MediaLibrary.getAssetInfoAsync(assetId)
-          .then((assetInfo) => {
-            if (assetInfo.localUri) {
-              setResolvedUri(assetInfo.localUri);
-            } else {
-              setResolvedUri(imageUrl);
-            }
-          })
-          .catch(() => {
-            setResolvedUri(imageUrl);
-          });
-      } else {
-        setResolvedUri(imageUrl);
-      }
-    }, [imageUrl]);
-
-    useEffect(() => {
-      if (!isAspectRatio || !resolvedUri) {
-        setAspectRatio(undefined);
-        return;
-      }
-
-      if (resolvedUri.startsWith("ph://")) {
-        return;
-      }
-
-      RNImage.getSize(resolvedUri, (width, height) => {
-        if (width > 0 && height > 0) {
-          setAspectRatio(width / height);
-        }
-      });
-    }, [resolvedUri, isAspectRatio]);
 
     const dynamicStyle = aspectRatio ? { aspectRatio: aspectRatio } : {};
+
+    const handleLoadStart = useCallback(() => setImagePreparing(true), []);
+    const handleLoadEnd = useCallback(() => setImagePreparing(false), []);
+
+    const handleLoad = useCallback((event: { source: { width: number; height: number } }) => {
+      if (isAspectRatio && event.source.width && event.source.height) {
+        setAspectRatio(event.source.width / event.source.height);
+      }
+    },
+      [isAspectRatio],
+    );
 
     return (
       <View style={[styles.image, dynamicStyle, style]}>
         <Skeleton show={imagePreparing || isLoading} colorMode={themeName}>
           <Image
             {...props}
+            source={{ uri: imageUrl }}
             style={[styles.image, dynamicStyle, style]}
             contentFit="cover"
-            onLoadStart={() => setImagePreparing(true)}
-            onLoadEnd={() => setImagePreparing(false)}
-            source={{
-              uri: resolvedUri,
-            }}
+            onLoadStart={handleLoadStart}
+            onLoad={handleLoad}
+            onLoadEnd={handleLoadEnd}
           />
         </Skeleton>
       </View>
@@ -104,32 +67,35 @@ const styles = StyleSheet.create((theme, rt) => ({
   image: {
     variants: {
       size: {
-        default: { width: scale(40), height: scale(40) },
+        default: {
+          width: theme.utils.s(40),
+          height: theme.utils.vs(40)
+        },
         liveIcon: {
-          width: scale(50),
-          height: scale(50),
+          width: theme.utils.s(50),
+          height: theme.utils.vs(50),
         },
         masonry: {
           width: "100%",
         },
         small: {
-          width: rt.screen.width - scale(170),
-          height: verticalScale(120),
+          width: rt.screen.width - theme.utils.s(170),
+          height: theme.utils.vs(120),
         },
         medium: {
-          width: rt.screen.width - scale(120),
-          height: verticalScale(150),
+          width: rt.screen.width - theme.utils.s(120),
+          height: theme.utils.vs(150),
         },
         large: {
-          width: rt.screen.width - scale(70),
-          height: verticalScale(170),
+          width: rt.screen.width - theme.utils.s(70),
+          height: theme.utils.vs(170),
         },
         full: {
           width: rt.screen.width,
           height: rt.screen.height,
         },
         post: {
-          width: rt.screen.width - 60,
+          width: rt.screen.width - theme.utils.s(60),
         },
       },
       borderRound: {
@@ -137,13 +103,13 @@ const styles = StyleSheet.create((theme, rt) => ({
           borderRadius: 0,
         },
         small: {
-          borderRadius: moderateScale(4),
+          borderRadius: theme.utils.ms(4),
         },
         medium: {
-          borderRadius: moderateScale(8),
+          borderRadius: theme.utils.ms(8),
         },
         large: {
-          borderRadius: moderateScale(16),
+          borderRadius: theme.utils.ms(16),
         },
         full: {
           borderRadius: 999,

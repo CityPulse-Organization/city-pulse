@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { UIButton, UIImage, UIText } from "../ui";
@@ -76,77 +76,82 @@ export const POSTS: PostItem[] = [
 type PostProps = {
   data: PostItem;
   isLoading?: boolean;
-  onPress: () => void;
+  onPress: (id: string) => void;
 };
 
-export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => (
-  <View style={styles.itemWrapper}>
-    <UIButton onPress={onPress} style={styles.card}>
-      <UIImage
-        isLoading={isLoading}
-        isAspectRatio={true}
-        size="masonry"
-        borderRound="medium"
-        imageUrl={data.imagesUrl[0]}
-        style={styles.image}
-      />
+export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => {
+  const handlePress = useCallback(() => {
+    onPress(data.id);
+  }, [data.id, onPress]);
 
-      <View style={styles.overlayWrapper}>
-        <View style={styles.topFlexWrapper}>
-          {data.description && (
-            <LinearGradient
-              colors={["rgba(0,0,0,0.85)", "rgba(0,0,0,0)"]}
-              style={styles.topOverlay}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-            >
-              <UIText
-                size="sm"
-                numberOfLines={3}
-                ellipsizeMode="tail"
-                style={styles.overlayText}
+  return (
+    <View style={styles.itemWrapper}>
+      <UIButton onPress={handlePress} style={styles.card}>
+        <UIImage
+          isLoading={isLoading}
+          isAspectRatio={true}
+          size="masonry"
+          borderRound="medium"
+          imageUrl={data.imagesUrl[0]}
+          style={styles.image}
+        />
+
+        <View style={styles.overlayWrapper}>
+          <View style={styles.topFlexWrapper}>
+            {data.description && (
+              <LinearGradient
+                colors={["rgba(0,0,0,0.85)", "rgba(0,0,0,0)"]}
+                style={styles.topOverlay}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
               >
-                {data.description}
-              </UIText>
-            </LinearGradient>
-          )}
-        </View>
+                <UIText
+                  size="sm"
+                  numberOfLines={3}
+                  ellipsizeMode="tail"
+                  style={styles.overlayText}
+                >
+                  {data.description}
+                </UIText>
+              </LinearGradient>
+            )}
+          </View>
 
-        <View style={styles.bottomOverlayContainer}>
-          <BlurView intensity={30} tint="dark" style={styles.blurContainer}>
-            <View style={styles.userInfoRow}>
-              <IconInfo
-                profileImageUrl={data.profileImageUrl}
-                isBroadCasting={false}
-                username={data.username}
-                statusText={data.accidentTime}
-                iconSize="small"
-                iconBorderColor="faint"
-                usernameSize="sm"
-              />
-            </View>
+          <BlurView intensity={100} tint="dark" style={styles.blurContainer}>
+            <IconInfo
+              profileImageUrl={data.profileImageUrl}
+              isBroadCasting={false}
+              username={data.username}
+              statusText={data.accidentTime}
+              iconSize="small"
+              iconBorderColor="faint"
+              usernameSize="sm"
+            />
           </BlurView>
         </View>
-      </View>
-    </UIButton>
-  </View>
-));
+      </UIButton>
+    </View>
+  )
+});
 
 const styles = StyleSheet.create((theme) => ({
-  itemWrapper: { flex: 1, padding: theme.utils.s(12) / 2, minWidth: 0 },
+  itemWrapper: {
+    flex: 1,
+    padding: theme.utils.s(12) / 2,
+    minWidth: 0
+  },
   card: {
     width: "100%",
     position: "relative",
     overflow: "hidden",
     borderRadius: theme.utils.s(22),
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    minHeight: theme.utils.s(180),
+    borderColor: theme.colors.postBorderColor,
   },
   image: {
-    width: "100%",
-    minHeight: theme.utils.s(180),
+    minHeight: theme.utils.vs(260),
   },
+
   overlayWrapper: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: "space-between",
@@ -160,27 +165,17 @@ const styles = StyleSheet.create((theme) => ({
     paddingTop: theme.utils.s(16),
     paddingBottom: theme.utils.s(32),
   },
-
-  bottomOverlayContainer: {
-    borderBottomLeftRadius: theme.utils.ms(22),
-    borderBottomRightRadius: theme.utils.ms(22),
-    overflow: "hidden",
-  },
-  blurContainer: {
-    paddingHorizontal: theme.utils.s(12),
-    paddingVertical: theme.utils.s(2),
-    backgroundColor: "rgba(0,0,0,0.3)",
-  },
-  userInfoRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: theme.utils.s(10),
-  },
   overlayText: {
     color: theme.colors.textColor,
     textShadowColor: theme.colors.black,
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 2,
     lineHeight: theme.utils.s(18),
+  },
+
+  blurContainer: {
+    paddingHorizontal: theme.utils.s(12),
+    paddingTop: theme.utils.s(8),
+    paddingBottom: theme.utils.s(10),
   },
 }));

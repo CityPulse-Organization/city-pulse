@@ -34,11 +34,13 @@ export default {
         backgroundColor: "#ffffff",
       },
       edgeToEdgeEnabled: true,
+      softwareKeyboardLayoutMode: "resize",
       predictiveBackGestureEnabled: false,
       package: "com.anonymous.citypul",
       permissions: [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA",
       ],
       config: {
         googleMaps: {

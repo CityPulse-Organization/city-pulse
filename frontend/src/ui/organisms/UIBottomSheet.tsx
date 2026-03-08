@@ -3,9 +3,8 @@ import {
   BottomSheetBackdropProps,
   BottomSheetModal,
   BottomSheetModalProps,
-  BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import React, { forwardRef, useCallback } from "react";
+import React, { forwardRef, memo, useCallback } from "react";
 import { StyleSheet } from "react-native-unistyles";
 import { UIText } from "../atoms";
 import { View } from "react-native";
@@ -15,53 +14,55 @@ type UIBottomSheetProps = {
   header?: string | React.ReactNode;
 } & BottomSheetModalProps;
 
-export const UIBottomSheet = forwardRef<BottomSheetModal, UIBottomSheetProps>(
-  ({ children, header, ...props }, ref) => {
-    const renderBackdrop = useCallback(
-      (props: BottomSheetBackdropProps) => (
-        <BottomSheetBackdrop
+export const UIBottomSheet = memo(
+  forwardRef<BottomSheetModal, UIBottomSheetProps>(
+    ({ children, header, ...props }, ref) => {
+      const renderBackdrop = useCallback(
+        (backdropProps: BottomSheetBackdropProps) => (
+          <BottomSheetBackdrop
+            {...backdropProps}
+
+            disappearsOnIndex={-1}
+            appearsOnIndex={0}
+            opacity={0.5}
+            pressBehavior="close"
+            style={[backdropProps.style, styles.backdrop]}
+          />
+        ),
+        [],
+      );
+
+      return (
+        <BottomSheetModal
+          backdropComponent={renderBackdrop}
+          handleStyle={styles.handleStyle}
+          backgroundStyle={styles.backgroundStyle}
+          ref={ref}
+          enableDynamicSizing={false}
+          handleIndicatorStyle={styles.handleIndicatorStyle}
           {...props}
+        >
+          <View style={{ flex: 1 }}>
 
-          disappearsOnIndex={-1}
-          appearsOnIndex={0}
-          opacity={0.5}
-          pressBehavior="close"
-          style={styles.backdrop}
-        />
-      ),
-      [],
-    );
+            {header != null && (
+              <View style={styles.headerView}>
+                {typeof header === "string" ? (
+                  <UIText size="xxl" style={styles.header}>
+                    {header}
+                  </UIText>
+                ) : (
+                  header
+                )}
+              </View>
+            )}
 
-    return (
-      <BottomSheetModal
-        backdropComponent={renderBackdrop}
-        handleStyle={styles.handleStyle}
-        backgroundStyle={styles.backgroundStyle}
-        ref={ref}
-        enableDynamicSizing={false}
-        handleIndicatorStyle={styles.handleIndicatorStyle}
-        {...props}
-      >
-        <View style={{ flex: 1 }}>
+            {children}
 
-          {header != null && (
-            <View style={styles.headerView}>
-              {typeof header === "string" ? (
-                <UIText size="xxl" style={styles.header}>
-                  {header}
-                </UIText>
-              ) : (
-                header
-              )}
-            </View>
-          )}
-
-          {children}
-
-        </View>
-      </BottomSheetModal>
-    );
-  },
+          </View>
+        </BottomSheetModal>
+      );
+    },
+  )
 );
 
 const styles = StyleSheet.create((theme) => ({

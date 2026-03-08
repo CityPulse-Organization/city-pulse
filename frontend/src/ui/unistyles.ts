@@ -94,7 +94,6 @@ const colors = {
   commentDividerColor: "#602c8b68",
   inputCommentBackgroundColor: "rgba(255,255,255,0.07)",
   inputCommentBorderColor: "rgba(255, 255, 255, 0.17)",
-
 };
 
 const lightTheme = {
@@ -141,8 +140,6 @@ const darkTheme = {
     commentDividerColor: "#602c8b68",
     inputCommentBackgroundColor: "rgba(255,255,255,0.07)",
     inputCommentBorderColor: "rgba(255, 255, 255, 0.17)",
-
-
   },
   utils: {
     s: scale,

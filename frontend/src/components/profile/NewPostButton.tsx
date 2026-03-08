@@ -8,9 +8,11 @@ import { StyleSheet, useUnistyles } from "react-native-unistyles";
 export const NewPostButton = memo(() => {
   const { theme } = useUnistyles();
   const router = useRouter();
+
   const onPress = () => {
     router.navigate("/(tabs)/profile/new-post-image");
   };
+
   return (
     <View style={styles.buttonContainer}>
       <UIButton
@@ -20,7 +22,7 @@ export const NewPostButton = memo(() => {
       >
         <Ionicons
           color={theme.colors.profileTextColor}
-          size={22}
+          size={theme.utils.s(22)}
           name={"add-outline"}
         />
         <UIText style={styles.text} size="md">
@@ -33,20 +35,20 @@ export const NewPostButton = memo(() => {
 
 const styles = StyleSheet.create((theme) => ({
   buttonContainer: {
-    paddingTop: 10,
-    paddingBottom: 30,
-    paddingHorizontal: 20,
+    paddingTop: theme.utils.vs(10),
+    paddingBottom: theme.utils.vs(30),
+    paddingHorizontal: theme.utils.s(20),
   },
   newPostButton: {
-    paddingVertical: 14,
+    paddingVertical: theme.utils.vs(14),
     backgroundColor: theme.colors.profileBottonBackgroundColor,
     borderColor: theme.colors.profileButtonBorderColor,
     borderWidth: 2,
-    borderRadius: 20,
+    borderRadius: theme.utils.ms(20),
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
+    gap: theme.utils.s(10),
   },
   text: {
     color: theme.colors.profileTextColor,

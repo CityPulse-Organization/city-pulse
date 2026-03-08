@@ -2,8 +2,8 @@ import { Icon, ThemedBackground } from "@/src/components";
 import { UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { ComponentProps, memo, useCallback, useState } from "react";
-import { TextInput, View } from "react-native";
+import { ComponentProps, memo, useCallback, useEffect, useState } from "react";
+import { Keyboard, KeyboardAvoidingView, KeyboardAvoidingViewProps, Platform, ScrollView, TextInput, View } from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
@@ -40,6 +40,7 @@ const FORM_FIELDS_CONFIG: FormFieldConfig[] = [
 
 export default function EditProfileScreen() {
   const router = useRouter();
+  const { theme } = useUnistyles()
 
   const [formData, setFormData] = useState<ProfileData>({
     nickname: "",
@@ -48,15 +49,15 @@ export default function EditProfileScreen() {
     avatarUrl: "",
   });
 
-  const onCancel = () => {
+  const onCancel = useCallback(() => {
     router.back();
-  };
+  }, [router]);
 
-  const onSave = () => {
+  const onSave = useCallback(() => {
     router.back();
-  };
+  }, [router]);
 
-  const onAvatarPress = async () => {
+  const onAvatarPress = useCallback(async () => {
     ImagePicker.openPicker({
       cropping: true,
       cropperCircleOverlay: true,
@@ -70,7 +71,7 @@ export default function EditProfileScreen() {
       .catch((error) => {
         console.log("Image picker cancelled or failed", error);
       });
-  };
+  }, []);
 
   const handleInputChange = useCallback(
     (fieldId: keyof ProfileData, text: string) => {
@@ -79,24 +80,40 @@ export default function EditProfileScreen() {
     [],
   );
 
+
   return (
     <ThemedBackground style={styles.page}>
       <HeaderSection onSave={onSave} onCancel={onCancel} />
 
-      <UIButton
-        style={styles.avatarContainer}
-        onPress={onAvatarPress}
-        isLoading={false}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.keyboardAvoiding}
+        keyboardVerticalOffset={theme.utils.vs(60)}
       >
-        <View pointerEvents="none">
-          <Icon size="medium" profileImageUrl={formData.avatarUrl} />
-        </View>
-      </UIButton>
+        <ScrollView
+          contentContainerStyle={[styles.scrollContainer]}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <UIButton
+            style={styles.avatarContainer}
+            onPress={onAvatarPress}
+            isLoading={false}
+          >
+            <View pointerEvents="none">
+              <Icon size="medium" profileImageUrl={formData.avatarUrl} />
+            </View>
+          </UIButton>
 
-      <FormSection formData={formData} onChange={handleInputChange} />
+          <FormSection formData={formData} onChange={handleInputChange} />
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+
     </ThemedBackground>
   );
 }
+
 
 type HeaderSectionProps = {
   onCancel: () => void;
@@ -136,12 +153,13 @@ const FormSection = memo(({ formData, onChange }: FormSectionProps) => {
       {FORM_FIELDS_CONFIG.map((field) => (
         <ProfileInput
           key={field.id}
+          id={field.id}
           iconName={field.iconName}
           placeholder={field.placeholder}
           isMultiline={field.isMultiline}
           autoCapitalize={field.autoCapitalize}
           value={formData[field.id]}
-          onChangeText={(text) => onChange(field.id, text)}
+          onChangeText={onChange}
         />
       ))}
     </View>
@@ -151,16 +169,18 @@ const FormSection = memo(({ formData, onChange }: FormSectionProps) => {
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
 type ProfileInputProps = {
+  id: keyof ProfileData;
   iconName: IconName;
   placeholder: string;
   isMultiline?: boolean;
   autoCapitalize?: "none";
   value: string;
-  onChangeText: (text: string) => void;
+  onChangeText: (id: keyof ProfileData, text: string) => void;
 };
 
 const ProfileInput = memo(
   ({
+    id,
     iconName,
     placeholder,
     isMultiline = false,
@@ -169,6 +189,11 @@ const ProfileInput = memo(
     onChangeText,
   }: ProfileInputProps) => {
     const { theme } = useUnistyles();
+
+    const handleChangeText = useCallback((text: string) => {
+      onChangeText(id, text);
+    }, [id, onChangeText]);
+
     return (
       <View
         style={[
@@ -180,7 +205,7 @@ const ProfileInput = memo(
           color={theme.colors.faintColor}
           size={18}
           name={iconName}
-          style={isMultiline ? { marginTop: 14 } : undefined}
+          style={isMultiline ? { marginTop: theme.utils.vs(12) } : undefined}
         />
 
         <TextInput
@@ -190,7 +215,7 @@ const ProfileInput = memo(
           placeholderTextColor={theme.colors.faintColor}
           autoCapitalize={autoCapitalize}
           value={value}
-          onChangeText={onChangeText}
+          onChangeText={handleChangeText}
         />
       </View>
     );
@@ -199,17 +224,17 @@ const ProfileInput = memo(
 
 const styles = StyleSheet.create((theme) => ({
   page: {
-    gap: 20,
-    paddingHorizontal: 20,
+    gap: theme.utils.s(20),
   },
+
   headerContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignSelf: "stretch",
   },
   headerActionText: {
-    paddingHorizontal: 5,
-    paddingVertical: 10,
+    paddingHorizontal: theme.utils.s(5),
+    paddingVertical: theme.utils.vs(10),
   },
   cancelText: {
     color: theme.colors.faintColor,
@@ -217,35 +242,43 @@ const styles = StyleSheet.create((theme) => ({
   doneText: {
     color: theme.colors.lightViolet,
   },
+
+  keyboardAvoiding: {
+    flex: 1,
+  },
+  scrollContainer: {
+    gap: theme.utils.s(20),
+  },
+
   avatarContainer: {
-    marginBottom: 20,
-    borderRadius: 999,
+    borderRadius: theme.utils.ms(999),
     backgroundColor: theme.colors.defauldIconBackgroundColor,
     alignSelf: "center",
   },
+
   formContainer: {
     alignSelf: "stretch",
-    paddingHorizontal: 30,
-    gap: 14,
+    paddingHorizontal: theme.utils.s(30),
+    gap: theme.utils.s(14),
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     borderColor: theme.colors.faintColor,
     borderBottomWidth: 1,
-    gap: 10,
+    gap: theme.utils.s(10),
   },
   inputContainerMultiline: {
     alignItems: "flex-start",
   },
   defaultInput: {
     flex: 1,
-    minHeight: 46,
-    fontSize: 17,
+    minHeight: theme.utils.vs(46),
+    fontSize: theme.utils.ms(16),
     color: theme.colors.profileTextColor,
   },
   biographyInput: {
-    maxHeight: 360,
+    maxHeight: theme.utils.vs(360),
     textAlignVertical: "top",
   },
 }));

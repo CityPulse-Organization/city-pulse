@@ -1,13 +1,12 @@
 import { InteractiveImagePreview, NavigationHeader, ThemedBackground } from "@/src/components";
 import { UIButton, UIText } from "@/src/ui";
-import { handleImagePickerError } from "@/src/ui/molecules/mediaErrorHandler";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
 import * as MediaLibrary from "expo-media-library";
 import { useRouter } from "expo-router";
-import { memo, useCallback, useEffect, useState } from "react";
-import { Dimensions, View } from "react-native";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { Alert, Dimensions, Linking, View } from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
@@ -27,9 +26,8 @@ const GAP = 4;
 export const ITEM_SIZE =
   (CONFIG.SCREEN_WIDTH - GAP * (CONFIG.COLUMN_COUNT - 1)) / CONFIG.COLUMN_COUNT;
 
-type Asset = MediaLibrary.Asset;
 
-type GridItem = Asset | { id: "camera-id" };
+type GridItem = MediaLibrary.Asset | { id: "camera-id" };
 
 export default function AddNewPostImageScreen() {
   const router = useRouter();
@@ -44,21 +42,18 @@ export default function AddNewPostImageScreen() {
     handleSelectImage,
   } = useGallerySelection();
 
-  const { photos, loadAssets } = useMediaLibrary(
-    useCallback(
-      (firstImage) => {
-        setPreviewImage(firstImage);
-        setSelectedImages([firstImage]);
-      },
-      [setPreviewImage, setSelectedImages],
-    ),
-  );
+  const onInitialLoad = useCallback((firstImage: MediaLibrary.Asset) => {
+    setPreviewImage(firstImage);
+    setSelectedImages([firstImage]);
+  }, [setPreviewImage, setSelectedImages]);
 
-  const gridItems: GridItem[] = [{ id: "camera-id" }, ...photos];
+  const { photos, loadAssets } = useMediaLibrary(onInitialLoad);
+
+  const gridItems: GridItem[] = useMemo(() => [{ id: "camera-id" }, ...photos], [photos]);
 
   const onCancel = () => router.back();
 
-  const onDone = async () => {
+  const onDone = useCallback(async () => {
     const processedUris = await processSelectedImages(selectedImages);
 
     if (processedUris) {
@@ -70,9 +65,9 @@ export default function AddNewPostImageScreen() {
             : { uris: processedUris },
       });
     }
-  };
+  }, [selectedImages, router]);
 
-  const openCamera = () => {
+  const openCamera = useCallback(() => {
     ImagePicker.openCamera({
       width: CONFIG.CROPPER.width,
       height: CONFIG.CROPPER.height,
@@ -86,18 +81,17 @@ export default function AddNewPostImageScreen() {
           params: { imageUri: image.path },
         });
       })
-      .catch((e) => {
+      .catch((e: unknown) => {
         handleImagePickerError(e);
       });
-  };
+  }, [router]);
 
   const renderItem = useCallback(
     ({ item }: { item: GridItem }) => {
-      if (item.id === "camera-id") {
+      if (!("uri" in item)) {
         return <CameraItem onPress={openCamera} />;
       }
 
-      item = item as Asset;
       const selectionIndex = selectedImages.findIndex(
         (img) => img.id === item.id,
       );
@@ -115,7 +109,7 @@ export default function AddNewPostImageScreen() {
         />
       );
     },
-    [selectedImages, previewImage, isMultiSelectMode, handleSelectImage],
+    [selectedImages, previewImage?.id, isMultiSelectMode, handleSelectImage, openCamera],
   );
 
   return (
@@ -152,9 +146,14 @@ export default function AddNewPostImageScreen() {
   );
 }
 
+
+
+
+
+
 const useGallerySelection = () => {
-  const [selectedImages, setSelectedImages] = useState<Asset[]>([]);
-  const [previewImage, setPreviewImage] = useState<Asset | null>(null);
+  const [selectedImages, setSelectedImages] = useState<MediaLibrary.Asset[]>([]);
+  const [previewImage, setPreviewImage] = useState<MediaLibrary.Asset | null>(null);
   const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
 
   const toggleMultiSelect = useCallback(() => {
@@ -170,7 +169,7 @@ const useGallerySelection = () => {
   }, [previewImage]);
 
   const handleSelectImage = useCallback(
-    (item: Asset) => {
+    (item: MediaLibrary.Asset) => {
       setPreviewImage(item);
 
       if (!isMultiSelectMode) {
@@ -206,9 +205,11 @@ const useGallerySelection = () => {
   };
 };
 
-const useMediaLibrary = (onInitialLoad: (firstAsset: Asset) => void) => {
+const useMediaLibrary = (
+  onInitialLoad: (firstAsset: MediaLibrary.Asset) => void,
+) => {
   const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
-  const [photos, setPhotos] = useState<Asset[]>([]);
+  const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
   const [endCursor, setEndCursor] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -221,7 +222,7 @@ const useMediaLibrary = (onInitialLoad: (firstAsset: Asset) => void) => {
         await MediaLibrary.getAssetsAsync({
           first: CONFIG.FETCH_LIMIT,
           mediaType: ["photo"],
-          sortBy: ["creationTime"],
+          sortBy: ["modificationTime"],
           after: endCursor,
         });
 
@@ -246,7 +247,7 @@ const useMediaLibrary = (onInitialLoad: (firstAsset: Asset) => void) => {
     } else if (permissionResponse?.canAskAgain) {
       requestPermission();
     }
-  }, [permissionResponse?.status, requestPermission]);
+  }, [permissionResponse?.status, requestPermission, loadAssets]);
 
   return {
     photos,
@@ -256,7 +257,7 @@ const useMediaLibrary = (onInitialLoad: (firstAsset: Asset) => void) => {
 };
 
 const processSelectedImages = async (
-  selectedImages: Asset[],
+  selectedImages: MediaLibrary.Asset[],
 ): Promise<string[] | null> => {
   if (selectedImages.length === 0) return null;
 
@@ -268,7 +269,6 @@ const processSelectedImages = async (
         height: CONFIG.CROPPER.height,
         compressImageMaxWidth: CONFIG.CROPPER.width,
         compressImageMaxHeight: CONFIG.CROPPER.height,
-        multiple: true,
         cropping: true,
         cropperCircleOverlay: false,
         freeStyleCropEnabled: true,
@@ -276,13 +276,48 @@ const processSelectedImages = async (
       });
       return [image.path];
     } else {
-      return selectedImages.map((img) => img.uri);
+      return selectedImages.map((image) => image.uri);
     }
-  } catch (e: any) {
+  } catch (e: unknown) {
     handleImagePickerError(e);
     return null;
   }
 };
+
+const handleImagePickerError = (error: unknown) => {
+  console.log("Image processing failed/cancelled", error);
+
+  if (typeof error !== 'object' || error === null) {
+    console.log("Unknown error format:", error);
+    return;
+  }
+
+  const pickerError = error as { code?: string; message?: string };
+
+  const code = pickerError?.code;
+  const message = pickerError?.message || "";
+
+  if (code === 'E_PERMISSION_MISSING' || message.includes('permission')) {
+    Alert.alert(
+      "No media access",
+      "To take a photo, you need to allow the app to access the photos in your phone’s settings",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Open Settings", onPress: () => Linking.openSettings() }
+      ]
+    );
+  } else if (code === 'E_PICKER_CANCELLED') {
+    console.log("User cancelled image selection");
+  } else {
+    console.log("Camera/Gallery error:", error);
+  }
+};
+
+
+
+
+
+
 
 const CameraItem = memo(({ onPress }: { onPress: () => void }) => {
   const { theme } = useUnistyles();
@@ -291,7 +326,7 @@ const CameraItem = memo(({ onPress }: { onPress: () => void }) => {
     <UIButton onPress={onPress} style={styles.cameraItem}>
       <Ionicons
         name="camera-outline"
-        size={30}
+        size={theme.utils.s(30)}
         color={theme.colors.profileIconColor}
       />
     </UIButton>
@@ -299,12 +334,12 @@ const CameraItem = memo(({ onPress }: { onPress: () => void }) => {
 });
 
 type GalleryItemProps = {
-  item: Asset;
+  item: MediaLibrary.Asset;
   isSelected: boolean;
   selectionIndex: number;
   isPreviewing: boolean;
   isMultiSelectMode: boolean;
-  onPress: (item: Asset) => void;
+  onPress: (item: MediaLibrary.Asset) => void;
 };
 
 const GalleryItem = memo(
@@ -316,20 +351,6 @@ const GalleryItem = memo(
     isMultiSelectMode,
     onPress,
   }: GalleryItemProps) => {
-    const [imageUri, setImageUri] = useState<string>(item.uri);
-
-    useEffect(() => {
-      if (item.uri.startsWith("ph://")) {
-        MediaLibrary.getAssetInfoAsync(item.id)
-          .then((assetInfo) => {
-            if (assetInfo.localUri) {
-              setImageUri(assetInfo.localUri);
-            }
-          })
-          .catch(() => {});
-      }
-    }, [item.uri, item.id]);
-
     return (
       <UIButton
         onPress={() => onPress(item)}
@@ -337,7 +358,7 @@ const GalleryItem = memo(
         disabled={isPreviewing}
       >
         <Image
-          source={{ uri: imageUri }}
+          source={{ uri: item.uri }}
           style={[
             {
               width: ITEM_SIZE,
@@ -383,7 +404,7 @@ const GalleryHeader = memo(
           </UIText>
           <Ionicons
             name="chevron-forward-outline"
-            size={14}
+            size={theme.utils.s(14)}
             color={theme.colors.profileIconColor}
           />
         </View>
@@ -397,7 +418,7 @@ const GalleryHeader = memo(
         >
           <Ionicons
             name="albums-outline"
-            size={20}
+            size={theme.utils.s(20)}
             color={
               isMultiSelectMode
                 ? theme.colors.black
@@ -413,22 +434,22 @@ const GalleryHeader = memo(
 const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
-    paddingTop: 10,
+    paddingTop: theme.utils.vs(10),
   },
   headerContainer: {
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 14,
+    padding: theme.utils.s(14),
   },
   textContainer: {
     alignItems: "baseline",
     flexDirection: "row",
-    gap: 6,
+    gap: theme.utils.s(6),
   },
   multiplyPhotosButton: {
-    padding: 4,
-    borderRadius: 100,
+    padding: theme.utils.s(4),
+    borderRadius: theme.utils.ms(100),
   },
   multiplyPhotosButtonActive: {
     backgroundColor: theme.colors.white,
@@ -457,15 +478,15 @@ const styles = StyleSheet.create((theme) => ({
     opacity: 0.5,
   },
   listContent: {
-    paddingBottom: 100,
+    paddingBottom: theme.utils.vs(80),
   },
   selectionBadge: {
     position: "absolute",
-    top: 5,
-    right: 5,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    top: theme.utils.vs(5),
+    right: theme.utils.s(5),
+    width: theme.utils.s(24),
+    height: theme.utils.vs(24),
+    borderRadius: theme.utils.ms(12),
     backgroundColor: theme.colors.darkViolet,
     justifyContent: "center",
     alignItems: "center",

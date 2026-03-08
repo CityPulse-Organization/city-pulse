@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native-unistyles";
-
 import {
   NewPostButton,
   Post,
@@ -26,19 +25,24 @@ const ListHeader = memo(() => (
 export default function ProfileScreen() {
   const router = useRouter();
 
+  const handlePostPress = useCallback(
+    (id: string) => {
+      router.push({
+        pathname: `/post/[id]`,
+        params: {
+          id: id,
+          isOwnPost: "true",
+        },
+      });
+    },
+    [router],
+  );
+
   const renderPost = useCallback(
     ({ item }: { item: PostItem }) => (
       <Post
         data={item}
-        onPress={() => {
-          router.push({
-            pathname: `/post/[id]`,
-            params: {
-              id: item.id,
-              isOwnPost: "true",
-            },
-          });
-        }}
+        onPress={handlePostPress}
       />
     ),
     [router],
@@ -66,13 +70,12 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create((theme) => ({
   page: {
     flex: 1,
-    gap: 10,
-    paddingTop: 20,
-    paddingHorizontal: 10,
+    gap: theme.utils.s(10),
+    paddingTop: theme.utils.vs(20),
   },
   list: { flex: 1, width: "100%" },
   postsContainer: {
-    paddingBottom: 100,
+    paddingBottom: theme.utils.vs(80),
   },
   headerItem: { width: "100%" },
 }));
