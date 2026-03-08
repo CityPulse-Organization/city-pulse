@@ -2,7 +2,7 @@ const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 export default {
   expo: {
-    name: "city-pulse-mobile",
+    name: "City Pulse",
     slug: "city-pulse-mobile",
     version: "1.0.0",
     orientation: "portrait",
@@ -10,11 +10,7 @@ export default {
     scheme: "citypulsemobile",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
-    splash: {
-      image: "./assets/images/splash-icon.png",
-      resizeMode: "contain",
-      backgroundColor: "#ffffff",
-    },
+
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.anonymous.citypulsemobile",
@@ -30,8 +26,8 @@ export default {
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: "./assets/images/adaptive-icon.png",
-        backgroundColor: "#ffffff",
+        foregroundImage: "./assets/images/icon.png",
+        backgroundColor: "#111b24",
       },
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
@@ -66,6 +62,15 @@ export default {
           photosPermission: "Allow City Pulse to access your photos.",
           savePhotosPermission: "Allow City Pulse to save photos.",
           isAccessMediaLocationEnabled: true,
+        },
+      ],
+      [
+        "expo-splash-screen",
+        {
+          backgroundColor: "#111b24",
+          image: "./assets/images/icon.png",
+          imageWidth: 600,
+          resizeMode: "cover",
         },
       ],
     ],
