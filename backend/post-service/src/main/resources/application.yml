@@ -2,6 +2,13 @@ app:
   api:
     version: v1
   base-path: /api/${app.api.version}
+  firebase:
+    config: ${FIREBASE_CONFIG:classpath:db/data/firebase-service-account.json}
+
+firebase:
+  baseurl: https://storage.googleapis.com
+  bucket:
+    name: citypulse-post-service.firebasestorage.app
 
 spring:
   application:

@@ -9,18 +9,20 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.Resource;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.core.io.ClassPathResource;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @Getter
 @Configuration
-@Profile("prod")
 public class FirebaseConfig {
-    @Value("${firebase.service-account.path}")
-    private Resource serviceAccountResource;
+    @Value("${app.firebase.config:classpath:db/data/firebase-service-account.json}")
+    private String firebaseConfigRaw;
 
     @Value("${firebase.bucket.name}")
     private String bucketName;
@@ -31,7 +33,14 @@ public class FirebaseConfig {
     @PostConstruct
     public void initialize() {
         try {
-            var serviceAccount = serviceAccountResource.getInputStream();
+            InputStream serviceAccount;
+
+            if (firebaseConfigRaw.trim().startsWith("{")) {
+                serviceAccount = new ByteArrayInputStream(firebaseConfigRaw.getBytes(StandardCharsets.UTF_8));
+            } else {
+                String path = firebaseConfigRaw.replace("classpath:", "");
+                serviceAccount = new ClassPathResource(path).getInputStream();
+            }
 
             var options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))

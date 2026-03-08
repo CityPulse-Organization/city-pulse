@@ -16,13 +16,6 @@ spring:
       max-file-size: 10MB
       max-request-size: 12MB
 
-firebase:
-  baseurl: https://storage.googleapis.com
-  service-account:
-    path: classpath:db/data/firebase-service-account.json
-  bucket:
-    name: citypulse-post-service.firebasestorage.app
-
 storage:
   endpoint: ${STORAGE_ENDPOINT:http://localhost:9000}
   access-key: ${STORAGE_ACCESS_KEY:dev_minio_user}
