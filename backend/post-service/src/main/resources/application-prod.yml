@@ -9,8 +9,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://auth-service:8080/api/v1/auth/.well-known/jwks.json
-          issuer-uri: http://auth-service:8080
+          jwk-set-uri: http://auth-service:8081/api/v1/auth/.well-known/jwks.json
+          issuer-uri: http://auth-service:8081
   servlet:
     multipart:
       max-file-size: 10MB
