@@ -12,8 +12,8 @@ RUN mvn package -DskipTests
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-COPY --from=builder /app/target/post-service-v1.0.jar post-service-v1.0.jar
+COPY --from=builder /app/target/post-service-v1.0.jar app.jar
 
 EXPOSE 8082
 
-ENTRYPOINT ["java","-jar","post-service-v1.0.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]

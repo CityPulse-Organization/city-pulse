@@ -126,6 +126,7 @@
     </dependencies>
 
     <build>
+        <finalName>post-service-v1.0</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
