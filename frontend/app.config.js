@@ -8,7 +8,7 @@ export default {
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
-    scheme: "citypulsemobile",
+    scheme: "citypulse",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     extra: {
@@ -18,7 +18,7 @@ export default {
     },
     ios: {
       supportsTablet: true,
-      bundleIdentifier: "com.anonymous.citypulsemobile",
+      bundleIdentifier: "com.citypulse.app",
       infoPlist: {
         NSCameraUsageDescription:
           "Allow City Pulse to access your camera to take profile and post pictures.",
@@ -36,7 +36,7 @@ export default {
       },
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
-      package: "com.anonymous.citypulsemobile",
+      package: "com.citypulse.app",
       permissions: [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
