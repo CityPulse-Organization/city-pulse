@@ -30,12 +30,11 @@ yarn-debug.*
 yarn-error.*
 
 # macOS
-.DS_Store
 *.pem
 
 # local env files
 .env*.local
-.env
+.env-auth
 
 # typescript
 *.tsbuildinfo

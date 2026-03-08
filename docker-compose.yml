@@ -32,11 +32,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/auth_db
-      - SPRING_DATASOURCE_USERNAME=dev_user
-      - SPRING_DATASOURCE_PASSWORD=dev_password
+    env_file:
+      - .env-auth
 
   api-gateway:
     image: denys1204/city-pulse-api-gateway:${API_GATEWAY_VERSION:-latest}
