@@ -36,6 +36,7 @@ yarn-error.*
 .env*.local
 .env
 .env-auth
+.env-post
 
 # typescript
 *.tsbuildinfo
@@ -48,3 +49,5 @@ android/
 
 .expo/
 frontend/.expo
+
+backend/post-service/src/main/resources/db/data/firebase-service-account.json

@@ -21,9 +21,24 @@ spring:
               filters:
                 - RewritePath=/v3/api-docs/auth, /v3/api-docs
 
+            - id: post-service-route
+              uri: http://post-service:8082
+              predicates:
+                - Path=/api/v1/posts/**, /api/v1/comments/**
+
+            - id: post-service-openapi
+              uri: http://post-service:8082
+              predicates:
+                - Path=/v3/api-docs/post
+              filters:
+                - RewritePath=/v3/api-docs/post, /v3/api-docs
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
     urls:
       - name: Auth Service
         url: /v3/api-docs/auth
+
+      - name: Post Service
+        url: /v3/api-docs/post

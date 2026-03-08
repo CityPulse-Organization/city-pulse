@@ -10,4 +10,4 @@ app:
   jwt:
     access-token-ttl-ms: 1000000
     refresh-token-ttl-ms: 604_800_000
-    iss: localhost:${server.port}
+    iss: http://auth-service.com
