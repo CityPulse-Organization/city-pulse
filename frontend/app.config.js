@@ -3,14 +3,19 @@ const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 export default {
   expo: {
     name: "City Pulse",
-    slug: "city-pulse-mobile",
+    slug: "city-pulse",
+    owner: "kyrylokap",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
     scheme: "citypulsemobile",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
-
+    extra: {
+      eas: {
+        projectId: "bf44a233-69a7-4e88-a2ed-8317f8f1cde1",
+      },
+    },
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.anonymous.citypulsemobile",
