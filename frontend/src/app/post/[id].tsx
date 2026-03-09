@@ -21,6 +21,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, {
   ComponentProps,
+  memo,
   useCallback,
   useMemo,
   useRef,
@@ -30,7 +31,6 @@ import { ActivityIndicator, Dimensions, FlatList, ScrollView, View, ViewToken } 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   StyleSheet,
-  UnistylesRuntime,
   useUnistyles,
 } from "react-native-unistyles";
 
@@ -110,21 +110,341 @@ export const MOCK_LIKE_COUNT = 12;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 
+export default function PostDetailScreen() {
+  const router = useRouter();
+  const { theme } = useUnistyles();
+  const insets = useSafeAreaInsets();
+  const params = useLocalSearchParams();
+
+  const activePostId = params.id as string;
+  const isOwnPost = params.isOwnPost === "true";
+
+  const currentPostData = useMemo(
+    () => POSTS.find((mockPost) => mockPost.id === activePostId),
+    [activePostId],
+  );
+
+  const commentsBottomSheetRef = useRef<BottomSheetModal>(null);
+  const openPresentCommentsSheet = useCallback(() => {
+    commentsBottomSheetRef.current?.present();
+  }, []);
+
+  const handleBack = useCallback(() => router.back(), [router]);
+
+  const backButtonContainerStyle = useMemo(
+    () => [styles.backButtonContainer, { top: Math.max(insets.top, theme.utils.vs(50)) }],
+    [insets.top, theme.utils],
+  );
 
 
-type PostMenuOptionItem = {
-  id: string;
-  title: string;
-  iconName: ComponentProps<typeof Ionicons>["name"];
-  color?: string;
-  onExecuteAction: () => void;
-};
+  if (!currentPostData) return null;
+
+  const {
+    imagesUrl = [],
+    description = "",
+    username,
+    profileImageUrl = "",
+    accidentTime,
+    location = "",
+    isBroadcasting = false,
+  } = currentPostData;
+
+
+  return (
+    <ThemedBackground style={styles.page} withSafeArea={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.contentContainerStyle}
+        bounces={false}
+      >
+        <ImagesPreview imagesUrl={imagesUrl} location={location} />
+
+        <View style={styles.contentContainer}>
+          <UserInfoRow
+            profileImageUrl={profileImageUrl}
+            username={username}
+            accidentTime={accidentTime}
+            isBroadcasting={isBroadcasting}
+            openPresentCommentsSheet={openPresentCommentsSheet}
+          />
+
+          {!!description && (
+            <BlurView
+              intensity={10}
+              tint={"dark"}
+              style={styles.descriptionCard}
+            >
+              <UIText size="sm" style={styles.descriptionText}>
+                {description}
+              </UIText>
+            </BlurView>
+          )}
+        </View>
+
+      </ScrollView>
+
+      <Comments profileImageUrl={profileImageUrl} commentsBottomSheetRef={commentsBottomSheetRef} />
+      <MenuOption isOwnPost={isOwnPost} />
+
+      <View style={backButtonContainerStyle}>
+        <UIButton onPress={handleBack}>
+          <BlurView intensity={80} tint="dark" style={styles.backButton}>
+            <Ionicons
+              name="chevron-back"
+              size={theme.utils.s(20)}
+              color={theme.colors.white}
+            />
+          </BlurView>
+        </UIButton>
+      </View>
+
+    </ThemedBackground>
+  );
+}
+
+
+
+const ImagesPreview = memo(({ imagesUrl, location }: { imagesUrl: string[], location: string }) => {
+  const { theme } = useUnistyles();
+
+  const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
+  const [activeCarouselIndex, setActiveCarouselIndex] = useState(0);
+
+  const handleViewableItemsChanged = useRef(
+    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+      if (viewableItems.length > 0) {
+        setActiveCarouselIndex(viewableItems[0].index ?? 0);
+      }
+    },
+  ).current;
+
+  const renderCarouselSlide = useCallback(
+    ({ item: imageUrl }: { item: string }) => (
+      <View style={styles.carouselSlide}>
+        <UIImage
+          imageUrl={imageUrl}
+          isAspectRatio={false}
+          style={styles.headerImage}
+        />
+      </View>
+    ),
+    [],
+  );
+
+  return (
+    <View style={styles.imageContainer}>
+      <FlatList
+        data={imagesUrl}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={(imageUrl) => imageUrl}
+        viewabilityConfig={viewConfigRef.current}
+        onViewableItemsChanged={handleViewableItemsChanged}
+        renderItem={renderCarouselSlide}
+      />
+
+      <LinearGradient
+        colors={["rgba(0, 0, 0, 0.6)", "rgba(0,0,0,0)", "rgba(0, 0, 0, 0.8)"]}
+        locations={[0.1, 0.4, 1]}
+        style={styles.gradient}
+        pointerEvents="none"
+      />
+
+      {location ? (
+        <View style={styles.locationContainer} pointerEvents="none">
+          <Ionicons
+            name="location-outline"
+            size={theme.utils.s(14)}
+            color={theme.colors.lightViolet}
+          />
+          <UIText size="sm" style={styles.locationText}>
+            {location}
+          </UIText>
+        </View>
+      ) : null}
+
+      {imagesUrl.length > 1 && (
+        <View style={styles.carouselFooter} pointerEvents="none">
+          <View style={styles.dotsRow}>
+            {imagesUrl.map((imageUrl, index) => (
+              <View
+                key={imageUrl}
+                style={[
+                  styles.dot,
+                  index === activeCarouselIndex ? styles.dotActive : styles.dotInactive,
+                ]}
+              />
+            ))}
+          </View>
+        </View>
+      )}
+    </View>
+  )
+})
 
 
 
 
+type UserInfoRowProps = {
+  profileImageUrl: string,
+  username: string,
+  accidentTime: string,
+  isBroadcasting: boolean,
+  openPresentCommentsSheet: () => void,
+}
 
-const CommentsHeader = React.memo(() => {
+
+const UserInfoRow = memo(({ profileImageUrl, username, accidentTime, isBroadcasting, openPresentCommentsSheet }: UserInfoRowProps) => {
+  const { theme } = useUnistyles();
+
+  const [isLikedByCurrentUser, setIsLikedByCurrentUser] = useState(false);
+  const [totalLikeCount, setTotalLikeCount] = useState(MOCK_LIKE_COUNT);
+  const toggleLikeStatus = useCallback(() => {
+    setIsLikedByCurrentUser((prev) => {
+      const nextStatus = !prev;
+      setTotalLikeCount((currentCount) => (nextStatus ? currentCount + 1 : currentCount - 1));
+      return nextStatus;
+    });
+  }, []);
+
+
+  const [isSavedByCurrentUser, setIsSavedByCurrentUser] = useState(false);
+  const toggleSaveStatus = useCallback(() => {
+    setIsSavedByCurrentUser((prev) => !prev);
+  }, []);
+
+
+  return (
+    <View style={styles.userInfoRow}>
+      <IconInfo
+        profileImageUrl={profileImageUrl}
+        username={username}
+        statusText={accidentTime}
+        isBroadCasting={isBroadcasting}
+        iconBorderColor="violet"
+        usernameWeight="bold"
+      />
+
+      <View style={styles.actionsRow}>
+        <UIButton onPress={toggleLikeStatus} style={styles.actionPost}>
+          <Ionicons
+            name={isLikedByCurrentUser ? "heart" : "heart-outline"}
+            size={theme.utils.s(20)}
+            color={isLikedByCurrentUser ? theme.colors.lightRed : theme.colors.iconColor}
+          />
+          <UIText weight="normal" style={styles.actionCount}>
+            {totalLikeCount}
+          </UIText>
+        </UIButton>
+
+        <UIButton onPress={openPresentCommentsSheet} style={styles.actionPost}>
+          <Ionicons
+            name="chatbubble-outline"
+            size={theme.utils.s(20)}
+            color={theme.colors.iconColor}
+          />
+          <UIText style={styles.actionCount}>
+            {MOCK_COMMENTS.length}
+          </UIText>
+        </UIButton>
+
+        <UIButton onPress={toggleSaveStatus} style={styles.actionPost}>
+          <Ionicons
+            name={isSavedByCurrentUser ? "bookmark" : "bookmark-outline"}
+            size={theme.utils.s(20)}
+            color={isSavedByCurrentUser ? theme.colors.darkViolet : theme.colors.iconColor}
+          />
+        </UIButton>
+      </View>
+    </View>
+  )
+})
+
+
+
+
+type CommentsProps = {
+  profileImageUrl: string;
+  commentsBottomSheetRef: React.RefObject<BottomSheetModal | null>;
+}
+
+
+const Comments = memo(({ profileImageUrl, commentsBottomSheetRef }: CommentsProps) => {
+  const { theme } = useUnistyles();
+  const insets = useSafeAreaInsets();
+
+
+  const [footerHeight, setFooterHeight] = useState(0);
+
+  const renderCommentsFooter = useCallback(
+    (footerProps: BottomSheetFooterProps) => (
+      <CommentsFooter
+        bottomSheetProps={footerProps}
+        insetsBottom={insets.bottom}
+        profileImageUrl={profileImageUrl}
+        onHeightChange={setFooterHeight}
+      />
+    ),
+    [insets.bottom, profileImageUrl],
+  );
+
+
+  const [comments, setComments] = useState<CommentItem[]>([]);
+  const [isLoadingMoreComments, setIsLoadingMoreComments] = useState(false);
+  const isLoadingMoreCommentsRef = useRef(false);
+
+  const handleLoadMoreComments = useCallback(() => {
+    if (isLoadingMoreCommentsRef.current) return;
+
+    isLoadingMoreCommentsRef.current = true;
+    setIsLoadingMoreComments(true);
+
+    setTimeout(() => {
+      setComments((prevComments) => {
+        const nextBatch = MOCK_COMMENTS.slice(prevComments.length, prevComments.length + 40);
+
+        if (nextBatch.length === 0) {
+          isLoadingMoreCommentsRef.current = true;
+          return prevComments;
+        }
+
+        return [...prevComments, ...nextBatch];
+      });
+
+      setIsLoadingMoreComments(false);
+      isLoadingMoreCommentsRef.current = false;
+    }, 1000);
+  }, []);
+
+  return (
+    <UIBottomSheet
+      header={<CommentsHeader />}
+      ref={commentsBottomSheetRef}
+      snapPoints={["75%"]}
+      keyboardBehavior="interactive"
+      keyboardBlurBehavior="none"
+      topInset={insets.top}
+      footerComponent={renderCommentsFooter}
+    >
+      <BottomSheetFlatList
+        data={comments}
+        keyExtractor={(commentData: CommentItem) => commentData.id}
+        contentContainerStyle={{ paddingBottom: footerHeight, paddingHorizontal: theme.utils.s(10) }}
+        onEndReached={handleLoadMoreComments}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={isLoadingMoreComments ? <ActivityIndicator size="small" color={theme.colors.lightViolet} /> : null}
+        renderItem={({ item: commentData }: { item: CommentItem }) => (
+          <Comment comment={commentData} />
+        )}
+      />
+    </UIBottomSheet>
+  )
+})
+
+
+
+const CommentsHeader = memo(() => {
   const { theme } = useUnistyles();
 
   return (
@@ -151,164 +471,94 @@ type CommentsFooterProps = {
   bottomSheetProps: BottomSheetFooterProps;
   insetsBottom: number;
   profileImageUrl: string;
+  onHeightChange: (height: number) => void;
 };
 
-const CommentsFooter = React.memo(
-  ({ bottomSheetProps, insetsBottom, profileImageUrl }: CommentsFooterProps) => {
-    const { theme } = useUnistyles();
-    const [commentText, setCommentText] = useState("");
+const CommentsFooter = memo(({
+  bottomSheetProps,
+  insetsBottom,
+  profileImageUrl,
+  onHeightChange
+}: CommentsFooterProps) => {
+  const { theme } = useUnistyles();
+  const [commentText, setCommentText] = useState("");
 
-    const isCommentValid = commentText.trim().length > 0;
+  const isCommentValid = commentText.trim().length > 0;
 
-    const handleSendComment = useCallback(() => {
-      setCommentText("");
-    }, []);
+  const handleSendComment = useCallback(() => {
+    setCommentText("");
+  }, []);
 
-    return (
-      <BottomSheetFooter {...bottomSheetProps}>
-        <View style={styles.footerContainer}>
+  return (
+    <BottomSheetFooter {...bottomSheetProps}>
+      <View
+        style={styles.footerContainer}
+        onLayout={(e) => onHeightChange(e.nativeEvent.layout.height)}
+      >
 
-          <UIDivider height={theme.utils.vs(0.5)} />
+        <UIDivider height={theme.utils.vs(0.5)} />
 
-          <View
+        <View
+          style={[
+            styles.commentInputBar,
+            { paddingBottom: Math.max(insetsBottom, theme.utils.vs(30)) },
+          ]}
+        >
+          <Icon
+            profileImageUrl={profileImageUrl}
+            size="comment"
+            borderColor="violet"
+          />
+
+          <BottomSheetTextInput
+            style={styles.commentInput}
+            placeholder="Add a comment..."
+            placeholderTextColor={theme.colors.faintColor}
+            onChangeText={setCommentText}
+            value={commentText}
+          />
+
+          <UIButton
             style={[
-              styles.commentInputBar,
-              { paddingBottom: Math.max(insetsBottom, theme.utils.vs(30)) },
+              styles.sendButton,
+              isCommentValid
+                ? { backgroundColor: theme.colors.lightViolet }
+                : { backgroundColor: theme.colors.inputCommentBackgroundColor },
             ]}
+            onPress={handleSendComment}
+            disabled={!isCommentValid}
           >
-            <Icon
-              profileImageUrl={profileImageUrl}
-              size="comment"
-              borderColor="violet"
+            <Ionicons
+              name="send-outline"
+              size={theme.utils.s(18)}
+              color={isCommentValid ? theme.colors.white : theme.colors.faintColor}
             />
+          </UIButton>
 
-            <BottomSheetTextInput
-              style={styles.commentInput}
-              placeholder="Add a comment..."
-              placeholderTextColor={theme.colors.faintColor}
-              onChangeText={setCommentText}
-              value={commentText}
-            />
-
-            <UIButton
-              style={[
-                styles.sendButton,
-                isCommentValid
-                  ? { backgroundColor: theme.colors.lightViolet }
-                  : { backgroundColor: theme.colors.inputCommentBackgroundColor },
-              ]}
-              onPress={handleSendComment}
-              disabled={!isCommentValid}
-            >
-              <Ionicons
-                name="send-outline"
-                size={theme.utils.s(18)}
-                color={isCommentValid ? theme.colors.white : theme.colors.faintColor}
-              />
-            </UIButton>
-
-          </View>
         </View>
-      </BottomSheetFooter>
-    );
-  },
+      </View>
+    </BottomSheetFooter>
+  );
+},
 );
 
-export default function PostDetailScreen() {
-  const router = useRouter();
+
+
+
+type PostMenuOptionItem = {
+  id: string;
+  title: string;
+  iconName: ComponentProps<typeof Ionicons>["name"];
+  color?: string;
+  onExecuteAction: () => void;
+};
+
+
+const MenuOption = memo(({ isOwnPost }: { isOwnPost: boolean }) => {
   const { theme } = useUnistyles();
+  const router = useRouter();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams();
 
-  const activePostId = params.id as string;
-  const isOwnPost = params.isOwnPost === "true";
-
-  const currentPostData = POSTS.find((mockPost) => mockPost.id === activePostId);
-
-
-  const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
-  const [activeCarouselIndex, setActiveCarouselIndex] = useState(0);
-
-  const handleViewableItemsChanged = useRef(
-    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      if (viewableItems.length > 0) {
-        setActiveCarouselIndex(viewableItems[0].index ?? 0);
-      }
-    },
-  ).current;
-
-
-
-  const [isLikedByCurrentUser, setIsLikedByCurrentUser] = useState(false);
-  const [totalLikeCount, setTotalLikeCount] = useState(MOCK_LIKE_COUNT);
-
-  const toggleLikeStatus = useCallback(() => {
-    setIsLikedByCurrentUser((prev) => {
-      const nextStatus = !prev;
-      setTotalLikeCount((currentCount) => (nextStatus ? currentCount + 1 : currentCount - 1));
-      return nextStatus;
-    });
-  }, []);
-
-
-
-  const [isSavedByCurrentUser, setIsSavedByCurrentUser] = useState(false);
-
-  const toggleSaveStatus = useCallback(() => {
-    setIsSavedByCurrentUser((prev) => !prev);
-  }, []);
-
-
-
-  const commentsBottomSheetRef = useRef<BottomSheetModal>(null);
-
-  const presentCommentsSheet = useCallback(() => {
-    commentsBottomSheetRef.current?.present();
-  }, []);
-
-
-  const renderCommentsFooter = useCallback(
-    (footerProps: BottomSheetFooterProps) => (
-      <CommentsFooter
-        bottomSheetProps={footerProps}
-        insetsBottom={insets.bottom}
-        profileImageUrl={currentPostData?.profileImageUrl ?? ""}
-      />
-    ),
-    [insets.bottom, currentPostData?.profileImageUrl],
-  );
-
-
-  const [comments, setComments] = useState<CommentItem[]>([]);
-  const [isLoadingMoreComments, setIsLoadingMoreComments] = useState(false);
-  const isLoadingMoreCommentsRef = useRef(false);
-
-  const handleLoadMoreComments = useCallback(() => {
-    if (isLoadingMoreCommentsRef.current) return;
-    isLoadingMoreCommentsRef.current = true;
-    setIsLoadingMoreComments(true);
-
-    setComments((prevComments) => {
-      const nextBatch = MOCK_COMMENTS.slice(prevComments.length, prevComments.length + 20);
-      return nextBatch.length === 0 ? prevComments : [...prevComments, ...nextBatch];
-    });
-    setIsLoadingMoreComments(false);
-    isLoadingMoreCommentsRef.current = false;
-  }, []);
-
-
-
-
-  const ellipsisBottomSheetRef = useRef<BottomSheetModal>(null);
-
-  const presentEllipsisSheet = useCallback(() => {
-    ellipsisBottomSheetRef.current?.present();
-  }, []);
-
-  const executeMenuOption = useCallback((callback: () => void) => {
-    ellipsisBottomSheetRef.current?.close();
-    callback();
-  }, []);
 
   const postMenuOptions: PostMenuOptionItem[] = useMemo(() => {
     if (isOwnPost) {
@@ -348,6 +598,19 @@ export default function PostDetailScreen() {
     ];
   }, [isOwnPost, router]);
 
+
+  const ellipsisBottomSheetRef = useRef<BottomSheetModal>(null);
+
+  const presentEllipsisSheet = useCallback(() => {
+    ellipsisBottomSheetRef.current?.present();
+  }, []);
+
+  const executeMenuOption = useCallback((callback: () => void) => {
+    ellipsisBottomSheetRef.current?.close();
+    callback();
+  }, []);
+
+
   const renderPostMenuOptionItem = useCallback(
     ({ item }: { item: PostMenuOptionItem }) => {
       const itemColor = item.color ?? theme.colors.lightViolet;
@@ -368,189 +631,8 @@ export default function PostDetailScreen() {
     [theme, executeMenuOption],
   );
 
-  const renderCarouselSlide = useCallback(
-    ({ item: imageUrl }: { item: string }) => (
-      <View style={styles.carouselSlide}>
-        <UIImage
-          imageUrl={imageUrl}
-          isAspectRatio={false}
-          style={styles.headerImage}
-        />
-      </View>
-    ),
-    [],
-  );
-
-
-
-  if (!currentPostData) return null;
-
-  const {
-    imagesUrl = [],
-    description = "",
-    username,
-    profileImageUrl = "",
-    accidentTime,
-    location = "",
-    isBroadcasting,
-  } = currentPostData;
-
-
-
   return (
-    <ThemedBackground style={styles.page} withSafeArea={false}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.contentContainerStyle}
-        bounces={false}
-      >
-        <View style={styles.imageContainer}>
-          <FlatList
-            data={imagesUrl}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(imageUrl) => imageUrl}
-            viewabilityConfig={viewConfigRef.current}
-            onViewableItemsChanged={handleViewableItemsChanged}
-            renderItem={renderCarouselSlide}
-          />
-
-          <LinearGradient
-            colors={["rgba(0, 0, 0, 0.6)", "rgba(0,0,0,0)", "rgba(0, 0, 0, 0.8)"]}
-            locations={[0.1, 0.4, 1]}
-            style={styles.gradient}
-            pointerEvents="none"
-          />
-
-          {location ? (
-            <View style={styles.locationContainer} pointerEvents="none">
-              <Ionicons
-                name="location-outline"
-                size={theme.utils.s(14)}
-                color={theme.colors.lightViolet}
-              />
-              <UIText size="sm" style={styles.locationText}>
-                {location}
-              </UIText>
-            </View>
-          ) : null}
-
-          {imagesUrl.length > 1 && (
-            <View style={styles.carouselFooter} pointerEvents="none">
-              <View style={styles.dotsRow}>
-                {imagesUrl.map((_, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.dot,
-                      index === activeCarouselIndex ? styles.dotActive : styles.dotInactive,
-                    ]}
-                  />
-                ))}
-              </View>
-            </View>
-          )}
-        </View>
-
-        <View style={styles.contentContainer}>
-          <View style={styles.userInfoRow}>
-            <IconInfo
-              profileImageUrl={profileImageUrl}
-              username={username}
-              statusText={accidentTime}
-              isBroadCasting={isBroadcasting}
-              iconBorderColor="violet"
-              usernameWeight="bold"
-            />
-
-            <View style={styles.actionsRow}>
-              <UIButton onPress={toggleLikeStatus} style={styles.actionPost}>
-                <Ionicons
-                  name={isLikedByCurrentUser ? "heart" : "heart-outline"}
-                  size={theme.utils.s(20)}
-                  color={isLikedByCurrentUser ? theme.colors.lightRed : theme.colors.iconColor}
-                />
-                <UIText weight="normal" style={styles.actionCount}>
-                  {totalLikeCount}
-                </UIText>
-              </UIButton>
-
-              <UIButton onPress={presentCommentsSheet} style={styles.actionPost}>
-                <Ionicons
-                  name="chatbubble-outline"
-                  size={theme.utils.s(20)}
-                  color={theme.colors.iconColor}
-                />
-                <UIText style={styles.actionCount}>
-                  {MOCK_COMMENTS.length /* TODO: replace with total from API */}
-                </UIText>
-              </UIButton>
-
-              <UIButton onPress={toggleSaveStatus} style={styles.actionPost}>
-                <Ionicons
-                  name={isSavedByCurrentUser ? "bookmark" : "bookmark-outline"}
-                  size={theme.utils.s(20)}
-                  color={isSavedByCurrentUser ? theme.colors.darkViolet : theme.colors.iconColor}
-                />
-              </UIButton>
-            </View>
-          </View>
-
-          {!!description && (
-            <BlurView
-              intensity={10}
-              tint={UnistylesRuntime.themeName}
-              style={styles.descriptionCard}
-            >
-              <UIText size="sm" style={styles.descriptionText}>
-                {description}
-              </UIText>
-            </BlurView>
-          )}
-        </View>
-      </ScrollView>
-
-
-      <UIBottomSheet
-        header={<CommentsHeader />}
-        ref={commentsBottomSheetRef}
-        snapPoints={["75%"]}
-        keyboardBehavior="interactive"
-        keyboardBlurBehavior="none"
-        topInset={insets.top}
-        footerComponent={renderCommentsFooter}
-      >
-        <BottomSheetFlatList
-          data={comments}
-          keyExtractor={(commentData: CommentItem) => commentData.id}
-          contentContainerStyle={{ paddingBottom: theme.utils.vs(100), paddingHorizontal: theme.utils.s(10) }}
-          onEndReached={handleLoadMoreComments}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={isLoadingMoreComments ? <ActivityIndicator size="small" /> : null}
-          renderItem={({ item: commentData }: { item: CommentItem }) => (
-            <Comment comment={commentData} />
-          )}
-        />
-      </UIBottomSheet>
-
-      <View
-        style={[
-          styles.backButtonContainer,
-          { top: Math.max(insets.top, theme.utils.vs(50)) },
-        ]}
-      >
-        <UIButton onPress={() => router.back()}>
-          <BlurView intensity={80} tint="dark" style={styles.backButton}>
-            <Ionicons
-              name="chevron-back"
-              size={theme.utils.s(20)}
-              color={theme.colors.white}
-            />
-          </BlurView>
-        </UIButton>
-      </View>
-
+    <>
       <View
         style={[
           styles.menuButtonContainer,
@@ -567,7 +649,6 @@ export default function PostDetailScreen() {
           </BlurView>
         </UIButton>
       </View>
-
       <UIBottomSheet ref={ellipsisBottomSheetRef} snapPoints={["20%"]} >
         <BottomSheetFlatList
           data={postMenuOptions}
@@ -575,9 +656,12 @@ export default function PostDetailScreen() {
           contentContainerStyle={{ paddingHorizontal: theme.utils.s(20) }}
         />
       </UIBottomSheet>
-    </ThemedBackground>
-  );
-}
+    </>
+  )
+})
+
+
+
 
 const styles = StyleSheet.create((theme, rt) => ({
   footerContainer: {
