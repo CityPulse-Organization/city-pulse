@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 @Getter
 @Configuration
 public class FirebaseConfig {
-    @Value("${app.firebase.config:classpath:db/data/firebase-service-account.json}")
+    @Value("${app.firebase.config:classpath:db/data/city-pulse-google-cloud-account.json}")
     private String firebaseConfigRaw;
 
     @Value("${firebase.bucket.name}")
