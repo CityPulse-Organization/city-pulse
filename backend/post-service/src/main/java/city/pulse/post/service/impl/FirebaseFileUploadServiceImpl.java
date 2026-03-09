@@ -3,9 +3,9 @@ package city.pulse.post.service.impl;
 import city.pulse.post.config.FirebaseConfig;
 import city.pulse.post.exception.FileUploadingException;
 import city.pulse.post.service.FileUploadService;
-import com.google.cloud.storage.Acl;
 import com.google.cloud.storage.Bucket;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Set;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @Profile("prod")
 @RequiredArgsConstructor
@@ -36,9 +37,9 @@ public class FirebaseFileUploadServiceImpl implements FileUploadService {
         var fileName = UUID.randomUUID() + "|=" + file.getOriginalFilename();
 
         try {
-            var blob = bucket.create(fileName, file.getBytes(), file.getContentType());
-            blob.createAcl(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
+            bucket.create(fileName, file.getBytes(), file.getContentType());
         } catch (Exception ex) {
+            log.error("Error uploading file to Firebase Storage", ex);
             throw new FileUploadingException(ex.getMessage());
         }
 
@@ -55,7 +56,7 @@ public class FirebaseFileUploadServiceImpl implements FileUploadService {
                 blob.delete();
             }
         } catch (Exception ex) {
-            System.err.println("Failed to delete file from Firebase: " + ex.getMessage());
+            log.error("Failed to delete file from Firebase: {}", imageUrl, ex);
         }
     }
 }
