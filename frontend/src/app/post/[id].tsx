@@ -245,8 +245,8 @@ const ImagesPreview = memo(({ imagesUrl, location }: { imagesUrl: string[], loca
       />
 
       <LinearGradient
-        colors={["rgba(0, 0, 0, 0.6)", "rgba(0,0,0,0)", "rgba(0, 0, 0, 0.8)"]}
-        locations={[0.1, 0.4, 1]}
+        colors={theme.colors.gradientOverlay}
+        locations={[0, 0.6, 1]}
         style={styles.gradient}
         pointerEvents="none"
       />
@@ -256,7 +256,7 @@ const ImagesPreview = memo(({ imagesUrl, location }: { imagesUrl: string[], loca
           <Ionicons
             name="location-outline"
             size={theme.utils.s(14)}
-            color={theme.colors.lightViolet}
+            color={theme.colors.accent}
           />
           <UIText size="sm" style={styles.locationText}>
             {location}
@@ -331,7 +331,7 @@ const UserInfoRow = memo(({ profileImageUrl, username, accidentTime, isBroadcast
           <Ionicons
             name={isLikedByCurrentUser ? "heart" : "heart-outline"}
             size={theme.utils.s(20)}
-            color={isLikedByCurrentUser ? theme.colors.lightRed : theme.colors.iconColor}
+            color={isLikedByCurrentUser ? theme.colors.lightRed : theme.colors.icon}
           />
           <UIText weight="normal" style={styles.actionCount}>
             {totalLikeCount}
@@ -342,7 +342,7 @@ const UserInfoRow = memo(({ profileImageUrl, username, accidentTime, isBroadcast
           <Ionicons
             name="chatbubble-outline"
             size={theme.utils.s(20)}
-            color={theme.colors.iconColor}
+            color={theme.colors.icon}
           />
           <UIText style={styles.actionCount}>
             {MOCK_COMMENTS.length}
@@ -353,7 +353,7 @@ const UserInfoRow = memo(({ profileImageUrl, username, accidentTime, isBroadcast
           <Ionicons
             name={isSavedByCurrentUser ? "bookmark" : "bookmark-outline"}
             size={theme.utils.s(20)}
-            color={isSavedByCurrentUser ? theme.colors.darkViolet : theme.colors.iconColor}
+            color={isSavedByCurrentUser ? theme.colors.mutedAccent : theme.colors.icon}
           />
         </UIButton>
       </View>
@@ -433,7 +433,7 @@ const Comments = memo(({ profileImageUrl, commentsBottomSheetRef }: CommentsProp
         contentContainerStyle={{ paddingBottom: footerHeight, paddingHorizontal: theme.utils.s(10) }}
         onEndReached={handleLoadMoreComments}
         onEndReachedThreshold={0.5}
-        ListFooterComponent={isLoadingMoreComments ? <ActivityIndicator size="small" color={theme.colors.lightViolet} /> : null}
+        ListFooterComponent={isLoadingMoreComments ? <ActivityIndicator size="small" color={theme.colors.accent} /> : null}
         renderItem={({ item: commentData }: { item: CommentItem }) => (
           <Comment comment={commentData} />
         )}
@@ -453,13 +453,13 @@ const CommentsHeader = memo(() => {
         <Ionicons
           name="chatbubble-outline"
           size={theme.utils.s(20)}
-          color={theme.colors.lightViolet}
+          color={theme.colors.accent}
         />
         <UIText size="md" weight="normal" style={styles.commentsHeaderText}>
           Comments
         </UIText>
       </View>
-      <UIDivider color={theme.colors.commentDividerColor} />
+      <UIDivider color={theme.colors.commentDivider} />
     </View>
   );
 });
@@ -513,7 +513,7 @@ const CommentsFooter = memo(({
           <BottomSheetTextInput
             style={styles.commentInput}
             placeholder="Add a comment..."
-            placeholderTextColor={theme.colors.faintColor}
+            placeholderTextColor={theme.colors.muted}
             onChangeText={setCommentText}
             value={commentText}
           />
@@ -522,8 +522,8 @@ const CommentsFooter = memo(({
             style={[
               styles.sendButton,
               isCommentValid
-                ? { backgroundColor: theme.colors.lightViolet }
-                : { backgroundColor: theme.colors.inputCommentBackgroundColor },
+                ? { backgroundColor: theme.colors.accent }
+                : { backgroundColor: theme.colors.backgroundSubtle },
             ]}
             onPress={handleSendComment}
             disabled={!isCommentValid}
@@ -531,7 +531,7 @@ const CommentsFooter = memo(({
             <Ionicons
               name="send-outline"
               size={theme.utils.s(18)}
-              color={isCommentValid ? theme.colors.white : theme.colors.faintColor}
+              color={isCommentValid ? theme.colors.white : theme.colors.muted}
             />
           </UIButton>
 
@@ -613,8 +613,8 @@ const MenuOption = memo(({ isOwnPost }: { isOwnPost: boolean }) => {
 
   const renderPostMenuOptionItem = useCallback(
     ({ item }: { item: PostMenuOptionItem }) => {
-      const itemColor = item.color ?? theme.colors.lightViolet;
-      const textColor = item.color ?? theme.colors.textColor;
+      const itemColor = item.color ?? theme.colors.accent;
+      const textColor = item.color ?? theme.colors.primaryText;
 
       return (
         <UIButton
@@ -649,11 +649,12 @@ const MenuOption = memo(({ isOwnPost }: { isOwnPost: boolean }) => {
           </BlurView>
         </UIButton>
       </View>
-      <UIBottomSheet ref={ellipsisBottomSheetRef} snapPoints={["20%"]} >
+
+      <UIBottomSheet ref={ellipsisBottomSheetRef} snapPoints={["24%"]} >
         <BottomSheetFlatList
           data={postMenuOptions}
           renderItem={renderPostMenuOptionItem}
-          contentContainerStyle={{ paddingHorizontal: theme.utils.s(20) }}
+          contentContainerStyle={styles.ellipseOptionContainer}
         />
       </UIBottomSheet>
     </>
@@ -664,53 +665,11 @@ const MenuOption = memo(({ isOwnPost }: { isOwnPost: boolean }) => {
 
 
 const styles = StyleSheet.create((theme, rt) => ({
-  footerContainer: {
-    backgroundColor: theme.colors.bottomSheetBackgroundColor,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: theme.utils.s(14),
-  },
-  commentInputBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: theme.utils.s(10),
-    paddingHorizontal: theme.utils.s(10),
-  },
-  commentInput: {
-    flex: 1,
-    backgroundColor: theme.colors.inputCommentBackgroundColor,
-    borderRadius: 999,
-    paddingHorizontal: theme.utils.s(16),
-    paddingVertical: theme.utils.s(10),
-    color: theme.colors.textColor,
-    fontSize: theme.utils.ms(14),
-    borderWidth: 1,
-    borderColor: theme.colors.inputCommentBorderColor,
-  },
-  sendButton: {
-    paddingHorizontal: theme.utils.s(10),
-    paddingVertical: theme.utils.s(10),
-    borderRadius: 999,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  contentContainerStyle: {
-    paddingBottom: rt.insets.bottom + theme.utils.s(10),
-  },
-  ellipseOptionButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: theme.utils.s(20),
-    paddingVertical: theme.utils.vs(16),
-    gap: theme.utils.s(16),
-    backgroundColor: theme.colors.postEllipseButtonBackground,
-    marginBottom: theme.utils.vs(8),
-    borderRadius: theme.utils.ms(22),
-  },
-
   page: {
     flex: 1,
+  },
+  contentContainerStyle: {
+    paddingBottom: rt.insets.bottom + theme.utils.s(10),
   },
 
   imageContainer: {
@@ -739,14 +698,14 @@ const styles = StyleSheet.create((theme, rt) => ({
     alignItems: "center",
     gap: theme.utils.s(6),
     borderWidth: 1,
-    backgroundColor: theme.colors.postPreviewItemBackgroundColor,
-    borderColor: theme.colors.darkViolet,
+    backgroundColor: theme.colors.backgroundOverlay,
+    borderColor: theme.colors.mutedAccent,
     borderRadius: 999,
     paddingHorizontal: theme.utils.s(12),
     paddingVertical: theme.utils.vs(6),
   },
   locationText: {
-    color: theme.colors.lightViolet,
+    color: theme.colors.accent,
   },
 
   carouselFooter: {
@@ -769,11 +728,11 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   dotActive: {
     width: theme.utils.s(22),
-    backgroundColor: theme.colors.darkViolet,
+    backgroundColor: theme.colors.mutedAccent,
   },
   dotInactive: {
     width: theme.utils.s(6),
-    backgroundColor: theme.colors.faintColor,
+    backgroundColor: theme.colors.muted,
   },
 
   contentContainer: {
@@ -797,21 +756,21 @@ const styles = StyleSheet.create((theme, rt) => ({
     gap: theme.utils.s(6),
   },
   actionCount: {
-    color: theme.colors.faintColor,
+    color: theme.colors.muted,
     fontSize: theme.utils.ms(14),
   },
 
   descriptionCard: {
-    backgroundColor: theme.colors.postPreviewItemBackgroundColor,
+    backgroundColor: theme.colors.backgroundOverlay,
     padding: theme.utils.s(20),
     borderRadius: theme.utils.ms(22),
     borderWidth: 1,
-    borderColor: theme.colors.darkViolet,
+    borderColor: theme.colors.mutedAccent,
     marginBottom: theme.utils.vs(32),
     opacity: 0.9,
   },
   descriptionText: {
-    color: theme.colors.textColor,
+    color: theme.colors.primaryText,
     lineHeight: theme.utils.ms(22),
   },
 
@@ -829,8 +788,40 @@ const styles = StyleSheet.create((theme, rt) => ({
     gap: theme.utils.s(12),
   },
   commentsHeaderText: {
-    color: theme.colors.textColor,
+    color: theme.colors.primaryText,
   },
+
+  footerContainer: {
+    backgroundColor: theme.colors.bottomSheetBackground,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: theme.utils.s(14),
+  },
+  commentInputBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.utils.s(10),
+    paddingHorizontal: theme.utils.s(10),
+  },
+  commentInput: {
+    flex: 1,
+    backgroundColor: theme.colors.backgroundSubtle,
+    borderRadius: 999,
+    paddingHorizontal: theme.utils.s(16),
+    paddingVertical: theme.utils.s(10),
+    color: theme.colors.primaryText,
+    fontSize: theme.utils.ms(14),
+    borderWidth: 1,
+    borderColor: theme.colors.borderSubtle,
+  },
+  sendButton: {
+    paddingHorizontal: theme.utils.s(10),
+    paddingVertical: theme.utils.s(10),
+    borderRadius: 999,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   backButtonContainer: {
     position: "absolute",
     left: theme.utils.s(20),
@@ -847,9 +838,26 @@ const styles = StyleSheet.create((theme, rt) => ({
     borderWidth: 0.5,
     borderColor: theme.colors.white,
   },
+
   menuButtonContainer: {
     position: "absolute",
     right: theme.utils.s(16),
     zIndex: 10,
+  },
+  ellipseOptionContainer: {
+    paddingHorizontal: theme.utils.s(20),
+    paddingTop: theme.utils.s(10),
+  },
+  ellipseOptionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: theme.utils.s(20),
+    paddingVertical: theme.utils.vs(16),
+    marginBottom: theme.utils.vs(8),
+    borderRadius: theme.utils.ms(22),
+    backgroundColor: theme.colors.backgroundSubtle,
+    borderWidth: 1,
+    borderColor: theme.colors.borderSubtle,
+    gap: theme.utils.s(16),
   },
 }));

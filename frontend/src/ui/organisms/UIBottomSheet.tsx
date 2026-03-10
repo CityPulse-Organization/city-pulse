@@ -64,7 +64,7 @@ export const UIBottomSheet = memo(
 
 const styles = StyleSheet.create((theme) => ({
   header: {
-    color: theme.colors.primaryTextColor,
+    color: theme.colors.primaryText,
     textAlign: "center",
   },
   headerView: {
@@ -75,15 +75,15 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.black,
   },
   handleStyle: {
-    backgroundColor: theme.colors.bottomSheetBackgroundColor,
+    backgroundColor: theme.colors.bottomSheetBackground,
     borderTopLeftRadius: theme.utils.s(14),
     borderTopRightRadius: theme.utils.s(14),
   },
   backgroundStyle: {
-    backgroundColor: theme.colors.bottomSheetBackgroundColor,
+    backgroundColor: theme.colors.bottomSheetBackground,
   },
   handleIndicatorStyle: {
-    backgroundColor: theme.colors.darkViolet,
+    backgroundColor: theme.colors.mutedAccent,
     width: theme.utils.s(40),
   },
 }));

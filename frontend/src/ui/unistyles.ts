@@ -1,7 +1,6 @@
 import { Dimensions } from "react-native";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 
-// Scaling utilities from login-page-setup
 const BASE_WIDTH = 375;
 const BASE_HEIGHT = 812;
 
@@ -38,13 +37,12 @@ export const spacing = {
   xxxl: 32,
 } as const;
 
-// Colors - merged from both branches
 const colors = {
   white: "#ffffff",
   black: "#000000",
   gray: "#636363ff",
   black10: "#101010",
-  lightGray: "#8d8d8dff",
+  lightGray: "#918f8fff",
   red: "#F7374F",
   lightRed: "#e0534a",
   alert: "#FF204E",
@@ -55,49 +53,43 @@ const colors = {
   darkGray: "#333333",
   darkOrange: "#995400ff",
   violet: "#C7B4FD",
-  darkViolet: "#602C8B",
-  lightViolet: "#a824e0ff",
 
-  backgroundColor: "#e3e0e0ff",
-  iconColor: "#121111ff",
-  textColor: "#0a0a0aff",
-  bottomSheetColor: "#e3e0e0ff",
-  bottomSheetBackgroundColor: "#abababff",
+  background: "rgba(245, 245, 247, 1)",
+  primaryText: "rgba(0, 0, 0, 1)",
+  icon: "rgba(18, 17, 17, 1)",
+  borderSubtle: "rgba(0,0,0,0.08)",
+  backgroundSubtle: "rgba(0,0,0,0.03)",
+
+  muted: "rgba(0, 0, 0, 0.6)",
+  accent: "rgba(168, 36, 224, 1)",
+  mutedAccent: "rgba(96, 44, 139, 1)",
+
   chartBackgroundColor: "#888888ff",
   chartBorderColor: "#4e4e4eff",
-  dividerColor: "#3d3c3c85",
-  faintColor: "#ffffff99",
-  profileTextColor: "#0a0a0aff",
-  profileIconColor: "#995400ff",
-  profileBottonBackgroundColor: "#ffffffe2",
-  profileButtonBorderColor: "#acacacff",
-  iconFocused: "#131633ff",
-  iconTabBarColor: "#3d3d3dbc",
-  bottomTabsBackgoundColor: "#999696",
-  bottomTabsBorderColor: "#cacaca",
-  activeButtonTabsBackgroundColor: "#a5a5a594",
-  primaryTextColor: "#000000",
-  iconInfoStatusTextColor: "#444444ff",
-  iconInfoUsernameTextColor: "#46443eff",
-  backgroundCameraButton: "#222222ff",
-  backgroundMultiplyPhotosButton: "#75747494",
-  commentTextColor: "#46443eff",
-  commentTimeTextColor: "rgba(28, 28, 28, 0.4)",
-  postPreviewItemBackgroundColor: "rgba(86, 66, 106, 1)",
-  postBorderColor: "rgba(255, 255, 255, 0.17)",
-  defauldIconBackgroundColor: "rgba(12, 12, 12, 0.4)",
-  postEllipsisOptionsTextColor: "#121111ff",
-  postEllipseButtonBackground: "#c8c8c8ff",
-  editProfileDescription: "#969696",
-  newPostShareButtonColor: "#739676ff",
-  backgroundSelectionBadge: "#995400ff",
-  commentDividerColor: "#602c8b68",
-  inputCommentBackgroundColor: "rgba(255,255,255,0.07)",
-  inputCommentBorderColor: "rgba(255, 255, 255, 0.17)",
+  bottomSheetColor: "#e3e0e0ff",
+
+  tabBarIconActive: "rgba(0, 0, 0, 1)",
+  tabBarIconDefault: "rgba(0, 0, 0, 0.6)",
+  tabBarBorder: "rgba(202, 202, 202, 1)",
+  tabBarItemActiveBackground: "rgba(165, 165, 165, 0.58)",
+
+  bottomSheetBackground: "rgba(237, 237, 239, 1)",
+
+  divider: "rgba(0,0,0,0.1)",
+
+  buttonSelectedBackground: "rgba(0, 0, 0, 1)",   
+  iconSelected: "rgba(255, 255, 255, 1)",
+
+  backgroundOverlay: "rgba(214, 198, 252, 0.4)",
+  gradientOverlay: ["rgba(255, 255, 255, 0.2)", "rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 1)"] as const,
+
+  commentText: "rgba(20, 20, 20, 1)",
+  commentDivider: "rgba(96, 44, 139, 0.41)",
 };
 
 const lightTheme = {
   colors: colors,
+  
   utils: {
     s: scale,
     vs: verticalScale,
@@ -108,39 +100,36 @@ const lightTheme = {
 const darkTheme = {
   colors: {
     ...colors,
-    iconColor: "#d1d1d1ff",
-    textColor: "#fcfafaff",
-    backgroundColor: "rgba(12, 12, 12, 1)",
-    primaryTextColor: "#ffffffff",
-    bottomTabsBackgoundColor: "#303030",
-    bottomTabsBorderColor: "#272727",
-    activeButtonTabsBackgroundColor: "#3d3c3c85",
-    iconFocused: "#ffffff",
-    iconTabBarColor: "#7f7f7fff",
-    iconInfoUsernameTextColor: "#c9c9c9ff",
-    iconInfoStatusTextColor: "#999999ff",
-    chartBackgroundColor: "#4e4e4eff",
-    chartBorderColor: "#1a1a1aff",
-    dividerColor: "#ffffff1a",
-    profileTextColor: "#f4f4f4ff",
-    profileIconColor: "#ffffff99",
-    profileBottonBackgroundColor: "rgba(130, 130, 130, 0.02)",
-    profileButtonBorderColor: "rgba(255, 255, 255, 0.17)",
-    postPreviewItemBackgroundColor: "rgba(18, 8, 28, 1)",
-    postBorderColor: "rgba(255, 255, 255, 0.17)",
-    commentTextColor: "#e7e7e7ff",
-    commentTimeTextColor: "rgba(255,255,255,0.4)",
-    defauldIconBackgroundColor: "rgba(130, 130, 130, 0.02)",
+    background: "rgba(12, 12, 12, 1)",
+    primaryText: "rgba(255, 255, 255, 1)",
+    icon: "rgba(209, 209, 209, 1)",
+    borderSubtle: "rgba(255, 255, 255, 0.1)",
+    backgroundSubtle: "rgba(255,255,255,0.04)",
+
+    muted: "rgba(255, 255, 255, 0.5)",
+    
+    chartBackgroundColor: "rgba(78, 78, 78, 1)",
+    chartBorderColor: "rgba(26, 26, 26, 1)",
     bottomSheetColor: "rgba(18, 8, 28, 1)",
-    postEllipsisOptionsTextColor: "#e2e2e2ff",
-    bottomSheetBackgroundColor: "#1C1C1E",
-    postEllipseButtonBackground: "#29292ac1",
-    editProfileDescription: "#969696",
-    newPostShareButtonColor: "#426f40ff",
-    commentDividerColor: "#602c8b68",
-    inputCommentBackgroundColor: "rgba(255,255,255,0.07)",
-    inputCommentBorderColor: "rgba(255, 255, 255, 0.17)",
+
+    tabBarIconActive: "rgba(255, 255, 255, 1)",
+    tabBarIconDefault: "rgba(255, 255, 255, 0.6)",
+    tabBarBorder: "rgba(39, 39, 39, 0.8)",
+    tabBarItemActiveBackground: "rgba(61, 60, 60, 0.52)",
+
+    bottomSheetBackground: "rgba(28, 28, 30, 1)",
+
+    divider: "rgba(255, 255, 255, 0.1)",
+
+    buttonSelectedBackground: "rgba(255, 255, 255, 1)",
+    iconSelected: "rgba(0, 0, 0, 1)",   
+
+    backgroundOverlay: "rgba(18, 8, 28, 1)",
+    gradientOverlay: ["rgba(0, 0, 0, 0.6)", "rgba(0,0,0,0)", "rgba(0, 0, 0, 0.8)"] as const,
+
+    commentText: "rgba(231, 231, 231, 1)",
   },
+
   utils: {
     s: scale,
     vs: verticalScale,

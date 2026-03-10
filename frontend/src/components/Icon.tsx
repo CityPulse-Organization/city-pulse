@@ -49,7 +49,7 @@ export const Icon = memo(
           />
         ) : (
           <Ionicons
-            color={theme.colors.iconColor}
+            color={theme.colors.icon}
             size={fallbackSize}
             name="person"
           />
@@ -96,11 +96,11 @@ const styles = StyleSheet.create((theme) => ({
         default: {},
         violet: {
           borderWidth: 2,
-          borderColor: theme.colors.darkViolet,
+          borderColor: theme.colors.mutedAccent,
         },
         faint: {
           borderWidth: 2,
-          borderColor: theme.colors.faintColor,
+          borderColor: theme.colors.muted,
         },
       },
     },

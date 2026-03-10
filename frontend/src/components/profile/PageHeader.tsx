@@ -25,7 +25,7 @@ export const NavigationHeader = memo(
         <View style={styles.headerLeft}>
           <UIButton onPress={onLeftAction} isLoading={false}>
             <Ionicons
-              color={theme.colors.iconColor}
+              color={theme.colors.icon}
               size={20}
               name={"chevron-back-outline"}
             />
@@ -34,7 +34,7 @@ export const NavigationHeader = memo(
 
         <View style={styles.headerCenter}>
           <UIText
-            style={{ color: theme.colors.profileTextColor }}
+            style={{ color: theme.colors.primaryText }}
             size="md"
             weight="bold"
           >
@@ -45,7 +45,7 @@ export const NavigationHeader = memo(
         <View style={styles.headerRight}>
           <UIButton onPress={onRightAction} isLoading={false}>
             <UIText
-              style={{ color: theme.colors.lightViolet }}
+              style={{ color: theme.colors.accent }}
               size="lg"
               weight="bold"
             >
@@ -74,7 +74,7 @@ const styles = StyleSheet.create((theme) => ({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    color: theme.colors.profileTextColor,
+    color: theme.colors.primaryText,
   },
   headerRight: {
     flex: 1,

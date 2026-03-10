@@ -152,7 +152,7 @@ export default function SearchScreen() {
             placeholderTextColor={styles.placeHolderTextColor.color}
             style={styles.search}
           />
-          <UIButton style={styles.iconButton} onPress={() => {}} hitSlop={15}>
+          <UIButton style={styles.iconButton} onPress={() => { }} hitSlop={15}>
             <Ionicons name="search" size={24} style={styles.icon} />
           </UIButton>
         </BlurView>
@@ -177,7 +177,7 @@ export default function SearchScreen() {
 
 const styles = StyleSheet.create((theme) => ({
   title: {
-    color: theme.colors.primaryTextColor,
+    color: theme.colors.primaryText,
     fontSize: 20,
     fontWeight: "bold",
   },
@@ -202,16 +202,16 @@ const styles = StyleSheet.create((theme) => ({
     paddingHorizontal: 16,
     paddingVertical: 8,
     fontSize: 16,
-    color: theme.colors.primaryTextColor,
+    color: theme.colors.primaryText,
   },
   iconButton: {
     alignSelf: "center",
     paddingHorizontal: 10,
   },
   icon: {
-    color: theme.colors.iconFocused,
+    color: theme.colors.icon,
   },
   placeHolderTextColor: {
-    color: theme.colors.iconInfoStatusTextColor,
+    color: theme.colors.muted,
   },
 }));

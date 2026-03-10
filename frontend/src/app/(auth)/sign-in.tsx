@@ -51,7 +51,7 @@ export default function SignUpPage() {
             <UIText style={styles.forgotPassword}>Forgot password?</UIText>
           </View>
           <View style={styles.bottomContainer}>
-            <UIButton style={styles.googleButton} onPress={() => {}}>
+            <UIButton style={styles.googleButton} onPress={() => { }}>
               <Ionicons name="logo-google" size={26} color="white" />
               <UIText style={styles.googleText}>Continue with Google</UIText>
             </UIButton>
@@ -107,7 +107,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     borderColor: theme.colors.violet,
   },
   forgotPassword: {
-    color: theme.colors.darkViolet,
+    color: theme.colors.mutedAccent,
     paddingLeft: 16,
   },
   bottomContainer: { marginTop: 60, alignItems: "center", gap: 20 },
@@ -130,6 +130,6 @@ const styles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.violet,
   },
   dontHaveAccountText: {
-    color: theme.colors.darkViolet,
+    color: theme.colors.mutedAccent,
   },
 }));

@@ -97,10 +97,18 @@ export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => {
         />
 
         <View style={styles.overlayWrapper}>
+          <LinearGradient
+            start={{ x: 0.5, y: 1 }}
+            end={{ x: 0.5, y: 0.3 }}
+            colors={["rgba(0,0,0,0.6)", "rgba(0,0,0,0)"]}
+            style={styles.gradient}
+            pointerEvents="none"
+          />
+
           <View style={styles.topFlexWrapper}>
             {data.description && (
               <LinearGradient
-                colors={["rgba(0,0,0,0.85)", "rgba(0,0,0,0)"]}
+                colors={["rgba(0,0,0,0.6)", "rgba(0,0,0,0)"]}
                 style={styles.topOverlay}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0, y: 1 }}
@@ -117,7 +125,7 @@ export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => {
             )}
           </View>
 
-          <BlurView intensity={100} tint="dark" style={styles.blurContainer}>
+          <View style={styles.userInfoContainer}>
             <IconInfo
               profileImageUrl={data.profileImageUrl}
               isBroadCasting={false}
@@ -126,8 +134,9 @@ export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => {
               iconSize="small"
               iconBorderColor="faint"
               usernameSize="sm"
+              mode="post"
             />
-          </BlurView>
+          </View>
         </View>
       </UIButton>
     </View>
@@ -146,10 +155,10 @@ const styles = StyleSheet.create((theme) => ({
     overflow: "hidden",
     borderRadius: theme.utils.s(22),
     borderWidth: 1,
-    borderColor: theme.colors.postBorderColor,
+    borderColor: theme.colors.borderSubtle,
   },
   image: {
-    minHeight: theme.utils.vs(240),
+    minHeight: theme.utils.vs(230),
   },
 
   overlayWrapper: {
@@ -158,7 +167,6 @@ const styles = StyleSheet.create((theme) => ({
   },
   topFlexWrapper: {
     flex: 1,
-    overflow: "hidden",
   },
   topOverlay: {
     paddingHorizontal: theme.utils.s(14),
@@ -166,14 +174,18 @@ const styles = StyleSheet.create((theme) => ({
     paddingBottom: theme.utils.s(32),
   },
   overlayText: {
-    color: theme.colors.textColor,
+    color: theme.colors.white,
     textShadowColor: theme.colors.black,
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 2,
     lineHeight: theme.utils.s(18),
   },
 
-  blurContainer: {
+  gradient: {
+    ...StyleSheet.absoluteFillObject,
+  },
+
+  userInfoContainer: {
     paddingHorizontal: theme.utils.s(12),
     paddingTop: theme.utils.s(8),
     paddingBottom: theme.utils.s(10),

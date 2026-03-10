@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { View } from "react-native";
-import { StyleSheet } from "react-native-unistyles";
+import { StyleSheet, UnistylesVariants, useUnistyles } from "react-native-unistyles";
 import { UIText } from "../ui";
 import { Icon } from "./Icon";
 
@@ -15,7 +15,7 @@ export type IconInfoProps = {
   iconSize?: "small" | "medium" | "comment";
   iconBorderColor?: "violet" | "faint";
   onPress?: () => void;
-};
+} & UnistylesVariants<typeof styles>;;
 
 export const IconInfo = memo(
   ({
@@ -28,7 +28,11 @@ export const IconInfo = memo(
     iconBorderColor,
     usernameSize,
     usernameWeight,
+    mode,
   }: IconInfoProps) => {
+    const { theme } = useUnistyles();
+    styles.useVariants({ mode: mode });
+
     return (
       <View style={styles.container}>
         <Icon
@@ -43,11 +47,14 @@ export const IconInfo = memo(
           <UIText
             size={usernameSize}
             weight={usernameWeight}
-            style={styles.username}
+            style={styles.usernameText}
           >
             {username}
           </UIText>
-          <UIText style={styles.statusText} size="xs">
+          <UIText
+            style={styles.statusText}
+            size="xs"
+          >
             {statusText}
           </UIText>
         </View>
@@ -66,6 +73,21 @@ const styles = StyleSheet.create((theme) => ({
     flexShrink: 1,
     gap: theme.utils.s(4),
   },
-  username: { color: theme.colors.iconInfoUsernameTextColor },
-  statusText: { color: theme.colors.iconInfoStatusTextColor },
+
+  usernameText: {
+    variants: {
+      mode: {
+        default: { color: theme.colors.primaryText },
+        post: { color: theme.colors.white },
+      },
+    },
+  },
+  statusText: {
+    variants: {
+      mode: {
+        default: { color: theme.colors.muted },
+        post: { color: theme.colors.lightGray },
+      },
+    },
+  },
 }));

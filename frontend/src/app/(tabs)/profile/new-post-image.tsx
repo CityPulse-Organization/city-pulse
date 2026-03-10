@@ -327,7 +327,7 @@ const CameraItem = memo(({ onPress }: { onPress: () => void }) => {
       <Ionicons
         name="camera-outline"
         size={theme.utils.s(30)}
-        color={theme.colors.profileIconColor}
+        color={theme.colors.muted}
       />
     </UIButton>
   );
@@ -398,14 +398,15 @@ const GalleryHeader = memo(
           <UIText
             size="md"
             weight="normal"
-            style={{ color: theme.colors.profileTextColor }}
+            style={{ color: theme.colors.primaryText }}
           >
             Recents
           </UIText>
+
           <Ionicons
             name="chevron-forward-outline"
             size={theme.utils.s(14)}
-            color={theme.colors.profileIconColor}
+            color={theme.colors.icon}
           />
         </View>
 
@@ -421,8 +422,8 @@ const GalleryHeader = memo(
             size={theme.utils.s(20)}
             color={
               isMultiSelectMode
-                ? theme.colors.black
-                : theme.colors.profileIconColor
+                ? theme.colors.iconSelected
+                : theme.colors.icon
             }
           />
         </UIButton>
@@ -436,6 +437,7 @@ const styles = StyleSheet.create((theme) => ({
     flex: 1,
     paddingTop: theme.utils.vs(10),
   },
+
   headerContainer: {
     alignItems: "center",
     flexDirection: "row",
@@ -447,20 +449,23 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     gap: theme.utils.s(6),
   },
+
   multiplyPhotosButton: {
     padding: theme.utils.s(4),
     borderRadius: theme.utils.ms(100),
   },
   multiplyPhotosButtonActive: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.buttonSelectedBackground,
   },
+
   cameraItem: {
     width: ITEM_SIZE,
     height: ITEM_SIZE,
-    backgroundColor: theme.colors.backgroundCameraButton,
+    backgroundColor: theme.colors.backgroundSubtle,
     justifyContent: "center",
     alignItems: "center",
   },
+
   galleryCell: {
     marginRight: GAP,
     marginBottom: GAP,
@@ -472,7 +477,7 @@ const styles = StyleSheet.create((theme) => ({
     right: 0,
     bottom: 0,
     borderWidth: 2.4,
-    borderColor: theme.colors.lightViolet,
+    borderColor: theme.colors.accent,
   },
   dimmedImage: {
     opacity: 0.5,
@@ -487,7 +492,7 @@ const styles = StyleSheet.create((theme) => ({
     width: theme.utils.s(24),
     height: theme.utils.vs(24),
     borderRadius: theme.utils.ms(12),
-    backgroundColor: theme.colors.darkViolet,
+    backgroundColor: theme.colors.mutedAccent,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,

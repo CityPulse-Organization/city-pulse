@@ -202,7 +202,7 @@ const ProfileInput = memo(
         ]}
       >
         <Ionicons
-          color={theme.colors.faintColor}
+          color={theme.colors.muted}
           size={18}
           name={iconName}
           style={isMultiline ? { marginTop: theme.utils.vs(12) } : undefined}
@@ -212,7 +212,7 @@ const ProfileInput = memo(
           style={[styles.defaultInput, isMultiline && styles.biographyInput]}
           multiline={isMultiline}
           placeholder={placeholder}
-          placeholderTextColor={theme.colors.faintColor}
+          placeholderTextColor={theme.colors.muted}
           autoCapitalize={autoCapitalize}
           value={value}
           onChangeText={handleChangeText}
@@ -237,15 +237,15 @@ const styles = StyleSheet.create((theme) => ({
     paddingVertical: theme.utils.vs(10),
   },
   cancelText: {
-    color: theme.colors.faintColor,
+    color: theme.colors.muted,
   },
   doneText: {
-    color: theme.colors.lightViolet,
+    color: theme.colors.accent,
   },
 
   avatarContainer: {
     borderRadius: theme.utils.ms(999),
-    backgroundColor: theme.colors.defauldIconBackgroundColor,
+    backgroundColor: theme.colors.backgroundSubtle,
     alignSelf: "center",
   },
 
@@ -257,7 +257,7 @@ const styles = StyleSheet.create((theme) => ({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderColor: theme.colors.faintColor,
+    borderColor: theme.colors.muted,
     borderBottomWidth: 1,
     gap: theme.utils.s(10),
   },
@@ -268,7 +268,7 @@ const styles = StyleSheet.create((theme) => ({
     flex: 1,
     minHeight: theme.utils.vs(46),
     fontSize: theme.utils.ms(16),
-    color: theme.colors.profileTextColor,
+    color: theme.colors.primaryText,
   },
   biographyInput: {
     maxHeight: theme.utils.vs(360),

@@ -54,7 +54,7 @@ export const Comment = ({ comment }: { comment: CommentItem }) => {
           <Ionicons
             name={liked ? "heart" : "heart-outline"}
             size={styles.heartIcon.width}
-            color={liked ? theme.colors.lightRed : theme.colors.iconColor}
+            color={liked ? theme.colors.lightRed : theme.colors.icon}
           />
           <UIText size="xs" weight="normal" style={styles.actionCount}>
             {likeCount}
@@ -77,7 +77,7 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     flex: 1,
     borderBottomWidth: 0.5,
-    borderBottomColor: theme.colors.commentDividerColor,
+    borderBottomColor: theme.colors.commentDivider,
     paddingBottom: theme.utils.s(16),
     marginBottom: theme.utils.s(12),
   },
@@ -92,13 +92,13 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.utils.s(8),
   },
   username: {
-    color: theme.colors.commentTextColor,
+    color: theme.colors.commentText,
   },
   commentTime: {
-    color: theme.colors.commentTimeTextColor,
+    color: theme.colors.muted,
   },
   commentText: {
-    color: theme.colors.commentTextColor,
+    color: theme.colors.commentText,
   },
 
   action: {
@@ -107,7 +107,7 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.utils.s(2),
   },
   actionCount: {
-    color: theme.colors.faintColor,
+    color: theme.colors.muted,
     fontSize: theme.utils.s(14),
   },
 }));

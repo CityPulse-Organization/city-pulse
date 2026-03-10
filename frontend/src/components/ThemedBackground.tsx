@@ -26,7 +26,7 @@ export const ThemedBackground = ({
 const styles = StyleSheet.create((theme) => ({
   safeArea: {
     flex: 1,
-    backgroundColor: theme.colors.backgroundColor,
+    backgroundColor: theme.colors.background,
   },
   content: {
     flex: 1,

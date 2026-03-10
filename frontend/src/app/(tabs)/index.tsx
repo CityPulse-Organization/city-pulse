@@ -195,9 +195,9 @@ const MapSection = memo(() => {
 
   const cameraCoordinates = location?.coords.latitude
     ? {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      }
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    }
     : POINTS[0]?.coordinates;
 
   return (
@@ -367,8 +367,8 @@ const styles = StyleSheet.create((theme) => ({
     borderRadius: 40,
   },
   nextButton: {
-    backgroundColor: theme.colors.bottomTabsBackgoundColor,
-    borderColor: theme.colors.bottomTabsBorderColor,
+    backgroundColor: theme.colors.background,
+    borderColor: theme.colors.tabBarBorder,
     borderWidth: 1,
 
     justifyContent: "center",
@@ -384,5 +384,5 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     borderRadius: 20,
   },
-  pickerValue: { color: theme.colors.primaryTextColor },
+  pickerValue: { color: theme.colors.primaryText },
 }));

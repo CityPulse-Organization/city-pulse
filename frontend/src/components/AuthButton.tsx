@@ -19,11 +19,11 @@ export const AuthButton = ({
   const isDefault = variant === "default";
   const iconColor = isDefault ? "white" : "#C7B4FD";
   const textColor = isDefault
-    ? theme.colors.primaryTextColor
+    ? theme.colors.primaryText
     : theme.colors.violet;
   const borderColor = isDefault
     ? theme.colors.darkGray
-    : theme.colors.darkViolet;
+    : theme.colors.mutedAccent;
 
   return (
     <View style={styles.wrapper} pointerEvents="box-none">

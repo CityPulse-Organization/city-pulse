@@ -61,7 +61,7 @@ export default function ProfileScreen() {
 const ListHeader = memo(() => (
   <>
     <ProfileHeader />
-    <UIDivider />
+    <UIDivider style={styles.divider} />
     <StatsPanel />
     <NewPostButton />
   </>
@@ -90,14 +90,14 @@ const ProfileHeader = memo(() => {
           <UIText
             size="xl"
             weight="bold"
-            style={styles.profileNameText}
+            style={styles.text}
           >
             Kyrylo
           </UIText>
 
           <UIButton onPress={navigateToEditProfile} isLoading={false}>
             <Ionicons
-              color={theme.colors.profileIconColor}
+              color={theme.colors.icon}
               size={theme.utils.s(18)}
               name="color-wand"
             />
@@ -110,7 +110,7 @@ const ProfileHeader = memo(() => {
           </UIText>
 
           <Ionicons
-            color={theme.colors.lightViolet}
+            color={theme.colors.accent}
             size={theme.utils.s(16)}
             name="checkmark-circle"
           />
@@ -182,7 +182,7 @@ const StatsButton = memo(({ title, iconName, quantity }: StatsButtonProps) => {
       </UIText>
 
       <Ionicons
-        color={theme.colors.profileIconColor}
+        color={theme.colors.icon}
         size={theme.utils.s(20)}
         name={iconName}
       />
@@ -210,7 +210,7 @@ const NewPostButton = memo(() => {
         isLoading={false}
       >
         <Ionicons
-          color={theme.colors.profileTextColor}
+          color={theme.colors.primaryText}
           size={theme.utils.s(22)}
           name="add-outline"
         />
@@ -251,37 +251,21 @@ const styles = StyleSheet.create((theme) => ({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    gap: theme.utils.s(6),
+    gap: theme.utils.s(8),
   },
 
-  profileNameText: {
-    color: theme.colors.profileTextColor,
+  text: {
+    color: theme.colors.primaryText,
   },
   roleText: {
-    color: theme.colors.lightViolet,
+    color: theme.colors.accent,
   },
   bioText: {
-    color: theme.colors.faintColor,
+    color: theme.colors.muted,
   },
 
-  buttonContainer: {
-    paddingTop: theme.utils.vs(10),
-    paddingBottom: theme.utils.vs(20),
-    paddingHorizontal: theme.utils.s(26),
-  },
-  newPostButton: {
-    paddingVertical: theme.utils.vs(14),
-    backgroundColor: theme.colors.profileBottonBackgroundColor,
-    borderColor: theme.colors.profileButtonBorderColor,
-    borderWidth: 2,
-    borderRadius: theme.utils.ms(20),
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: theme.utils.s(10),
-  },
-  text: {
-    color: theme.colors.profileTextColor,
+  divider: {
+    marginHorizontal: theme.utils.s(10),
   },
 
   statsContainer: {
@@ -296,12 +280,29 @@ const styles = StyleSheet.create((theme) => ({
   statButton: {
     width: theme.utils.s(96),
     height: theme.utils.vs(116),
-    backgroundColor: theme.colors.profileBottonBackgroundColor,
-    borderColor: theme.colors.profileButtonBorderColor,
+    backgroundColor: theme.colors.backgroundSubtle,
+    borderColor: theme.colors.borderSubtle,
     borderWidth: 2,
     borderRadius: theme.utils.ms(16),
     alignItems: "center",
     justifyContent: "center",
     gap: theme.utils.s(8),
+  },
+
+  buttonContainer: {
+    paddingTop: theme.utils.vs(10),
+    paddingBottom: theme.utils.vs(20),
+    paddingHorizontal: theme.utils.s(26),
+  },
+  newPostButton: {
+    paddingVertical: theme.utils.vs(14),
+    backgroundColor: theme.colors.backgroundSubtle,
+    borderColor: theme.colors.borderSubtle,
+    borderWidth: 2,
+    borderRadius: theme.utils.ms(20),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: theme.utils.s(10),
   },
 }));
