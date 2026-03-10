@@ -28,7 +28,7 @@ export const IconInfo = memo(
     usernameWeight,
     mode,
   }: IconInfoProps) => {
-    const { theme } = useUnistyles();
+    useUnistyles();
     styles.useVariants({ mode: mode });
 
     return (

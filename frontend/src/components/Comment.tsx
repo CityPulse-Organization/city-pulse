@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { memo, useCallback, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 import { UIButton, UIText } from "../ui";
 import { Icon } from "./Icon";
 
@@ -106,7 +106,6 @@ type CommentProps = {
 };
 
 export const Comment = memo(({ comment, isReply = false }: CommentProps) => {
-  const { theme } = useUnistyles();
   const iconSize = isReply ? "small" : "comment";
   const [isLoading, setIsLoading] = useState(false);
 
@@ -145,13 +144,16 @@ export const Comment = memo(({ comment, isReply = false }: CommentProps) => {
 
   return (
     <View style={styles.container}>
-      <Icon
-        profileImageUrl={comment.profileImageUrl}
-        size={iconSize}
-      />
 
-      <View style={styles.commentRow}>
+      <View style={styles.commentHeaderRow}>
+
+        <View style={styles.iconContainer}>
+          <Icon profileImageUrl={comment.profileImageUrl} size={iconSize} />
+        </View>
+
+
         <View style={styles.commentBody}>
+
           <View style={styles.commentMeta}>
             <UIText size="sm" weight="bold" style={styles.username}>
               {comment.username}
@@ -166,56 +168,57 @@ export const Comment = memo(({ comment, isReply = false }: CommentProps) => {
             {comment.commentText}
           </UIText>
 
-          <UIButton onPress={handleReply}>
+          <UIButton onPress={handleReply} style={styles.actionButton}>
             <UIText size="sm" weight="normal" style={styles.actionText}>
               Reply
             </UIText>
           </UIButton>
 
           {!isReply && !isShowingAnyReplies && totalReplies > 0 && (
-            <UIButton onPress={handleLoadMoreReplies}>
+            <UIButton onPress={handleLoadMoreReplies} style={styles.actionButton}>
               <UIText size="sm" weight="normal" style={styles.actionText}>
                 ⸻ View {totalReplies} replies
               </UIText>
             </UIButton>
-          )}
-
-          {isShowingAnyReplies && (
-            <View style={styles.repliesContainer}>
-              {MOCK_COMMENTS.slice(0, visibleRepliesCount).map((reply) => (
-                <Comment key={reply.id} comment={reply} isReply={true} />
-              ))}
-
-              {isLoading ? (
-                <ActivityIndicator size="small" color={theme.colors.accent} />
-              ) : hasMoreReplies ? (
-                <UIButton onPress={handleLoadMoreReplies}>
-                  <UIText size="sm" weight="normal" style={styles.actionText}>
-                    ⸻ View {totalReplies - visibleRepliesCount} more replies
-                  </UIText>
-                </UIButton>
-              ) : (
-                <UIButton onPress={handleHideReplies}>
-                  <UIText size="sm" weight="normal" style={styles.actionText}>
-                    ⸻ Hide replies
-                  </UIText>
-                </UIButton>
-              )}
-            </View>
           )}
         </View>
 
         <UIButton onPress={toggleLikeStatus} style={styles.likeContainer}>
           <Ionicons
             name={isLikedByCurrentUser ? "heart" : "heart-outline"}
-            size={theme.utils.s(18)}
-            color={isLikedByCurrentUser ? theme.colors.lightRed : theme.colors.icon}
+            size={styles.likeSize.height}
+            color={isLikedByCurrentUser ? styles.likeActive.color : styles.likeInactive.color}
           />
           <UIText size="xs" weight="normal" style={styles.likeCountText}>
             {totalLikeCount}
           </UIText>
         </UIButton>
       </View>
+
+
+      {isShowingAnyReplies && (
+        <View style={styles.repliesContainer}>
+          {MOCK_COMMENTS.slice(0, visibleRepliesCount).map((reply) => (
+            <Comment key={reply.id} comment={reply} isReply={true} />
+          ))}
+
+          {isLoading ? (
+            <ActivityIndicator size="small" color={styles.loading.color} />
+          ) : hasMoreReplies ? (
+            <UIButton onPress={handleLoadMoreReplies} style={styles.actionButton}>
+              <UIText size="sm" weight="normal" style={styles.actionText}>
+                ⸻ View {totalReplies - visibleRepliesCount} more replies
+              </UIText>
+            </UIButton>
+          ) : (
+            <UIButton onPress={handleHideReplies} style={styles.actionButton}>
+              <UIText size="sm" weight="normal" style={styles.actionText}>
+                ⸻ Hide replies
+              </UIText>
+            </UIButton>
+          )}
+        </View>
+      )}
     </View>
   );
 });
@@ -223,23 +226,29 @@ export const Comment = memo(({ comment, isReply = false }: CommentProps) => {
 
 const styles = StyleSheet.create((theme) => ({
   container: {
+    width: "100%",
+    paddingBottom: theme.utils.vs(6),
+  },
+
+  commentHeaderRow: {
     flexDirection: "row",
+    alignItems: "flex-start",
     gap: theme.utils.s(10),
   },
-  commentRow: {
-    flexDirection: "row",
-    flex: 1,
-    paddingBottom: theme.utils.s(12),
+
+  iconContainer: {
+    flexShrink: 0,
   },
+
   commentBody: {
     flex: 1,
-    flexDirection: "column",
-    gap: theme.utils.s(4),
   },
+
   commentMeta: {
     flexDirection: "row",
     alignItems: "center",
-    gap: theme.utils.s(8),
+    paddingBottom: theme.utils.vs(4),
+    gap: theme.utils.s(10),
   },
   username: {
     color: theme.colors.primaryText,
@@ -254,17 +263,38 @@ const styles = StyleSheet.create((theme) => ({
   likeContainer: {
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "flex-start",
+    flexShrink: 0,
+    paddingLeft: theme.utils.s(20),
     gap: theme.utils.s(2),
   },
   likeCountText: {
     color: theme.colors.muted,
   },
+  likeSize: {
+    height: theme.utils.s(18)
+  },
+  likeActive: {
+    color: theme.colors.lightRed,
+  },
+  likeInactive: {
+    color: theme.colors.icon,
+  },
 
+  repliesContainer: {
+    marginLeft: theme.utils.s(46),
+    paddingTop: theme.utils.vs(6),
+  },
+
+  actionButton: {
+    alignSelf: 'flex-start',
+    paddingVertical: theme.utils.vs(4)
+  },
   actionText: {
     color: theme.colors.muted,
-    paddingTop: theme.utils.s(2),
   },
-  repliesContainer: {
-    marginTop: theme.utils.vs(10),
-  },
+
+  loading: {
+    color: theme.colors.accent,
+  }
 }));

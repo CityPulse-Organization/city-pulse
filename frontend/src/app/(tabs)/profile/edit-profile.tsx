@@ -2,8 +2,8 @@ import { Icon, ThemedBackground } from "@/src/components";
 import { UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { ComponentProps, memo, useCallback, useEffect, useState } from "react";
-import { Keyboard, KeyboardAvoidingView, KeyboardAvoidingViewProps, Platform, ScrollView, TextInput, View } from "react-native";
+import { ComponentProps, memo, useCallback, useState } from "react";
+import { KeyboardAvoidingView, Platform, ScrollView, TextInput, View } from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 

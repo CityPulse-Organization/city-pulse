@@ -1,4 +1,4 @@
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 
 import { memo } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
