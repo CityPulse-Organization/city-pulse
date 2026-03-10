@@ -3,6 +3,8 @@ import {
   CommentItem,
   Icon,
   IconInfo,
+  MOCK_COMMENTS,
+  MOCK_LIKE_COUNT,
   POSTS,
   ThemedBackground,
 } from "@/src/components";
@@ -33,78 +35,6 @@ import {
   StyleSheet,
   useUnistyles,
 } from "react-native-unistyles";
-
-
-
-export const MOCK_COMMENTS: CommentItem[] = [
-  {
-    id: "c1",
-    username: "kyrylo",
-    commentText: "Looks serious. Hope everyone is ok.",
-    timeAgo: "2m ago",
-    profileImageUrl: "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-  },
-  {
-    id: "c2",
-    username: "alex",
-    commentText: "Any updates? Which street is blocked? Anything else?",
-    timeAgo: "5m ago",
-    profileImageUrl: "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
-  },
-  {
-    id: "c3",
-    username: "maria",
-    commentText: "Thanks for sharing. Stay safe!",
-    timeAgo: "12m ago",
-    profileImageUrl: undefined,
-  },
-  {
-    id: "c4",
-    username: "kyrylo",
-    commentText: "Looks serious. Hope everyone is ok.",
-    timeAgo: "2m ago",
-    profileImageUrl: "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-  },
-  {
-    id: "c5",
-    username: "alex",
-    commentText: "Any updates? Which street is blocked? Anything else?",
-    timeAgo: "5m ago",
-    profileImageUrl: "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
-  },
-  {
-    id: "c6",
-    username: "maria",
-    commentText: "Thanks for sharing. Stay safe!",
-    timeAgo: "12m ago",
-    profileImageUrl: undefined,
-  },
-  {
-    id: "c7",
-    username: "kyrylo",
-    commentText: "Looks serious. Hope everyone is ok.",
-    timeAgo: "2m ago",
-    profileImageUrl: "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-  },
-  {
-    id: "c8",
-    username: "alex",
-    commentText: "Any updates? Which street is blocked? Anything else?",
-    timeAgo: "5m ago",
-    profileImageUrl: "https://th.bing.com/th/id/OIP.eh5RRJ5l1pqHQDN1ubb1VAHaEx?w=272&h=180&c=7&r=0&o=7&cb=12&pid=1.7&rm=3",
-  },
-  {
-    id: "c9",
-    username: "maria",
-    commentText: "Thanks for sharing. Stay safe!",
-    timeAgo: "12m ago",
-    profileImageUrl: undefined,
-  },
-];
-
-export const MOCK_LIKE_COUNT = 12;
-
-
 
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -322,7 +252,6 @@ const UserInfoRow = memo(({ profileImageUrl, username, accidentTime, isBroadcast
         username={username}
         statusText={accidentTime}
         isBroadCasting={isBroadcasting}
-        iconBorderColor="violet"
         usernameWeight="bold"
       />
 
@@ -417,6 +346,7 @@ const Comments = memo(({ profileImageUrl, commentsBottomSheetRef }: CommentsProp
     }, 1000);
   }, []);
 
+
   return (
     <UIBottomSheet
       header={<CommentsHeader />}
@@ -459,7 +389,7 @@ const CommentsHeader = memo(() => {
           Comments
         </UIText>
       </View>
-      <UIDivider color={theme.colors.commentDivider} />
+      <UIDivider color={theme.colors.mutedAccent} />
     </View>
   );
 });
@@ -507,7 +437,6 @@ const CommentsFooter = memo(({
           <Icon
             profileImageUrl={profileImageUrl}
             size="comment"
-            borderColor="violet"
           />
 
           <BottomSheetTextInput

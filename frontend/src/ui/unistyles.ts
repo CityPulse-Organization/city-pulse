@@ -82,9 +82,6 @@ const colors = {
 
   backgroundOverlay: "rgba(214, 198, 252, 0.4)",
   gradientOverlay: ["rgba(255, 255, 255, 0.2)", "rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 1)"] as const,
-
-  commentText: "rgba(20, 20, 20, 1)",
-  commentDivider: "rgba(96, 44, 139, 0.41)",
 };
 
 const lightTheme = {
@@ -126,8 +123,6 @@ const darkTheme = {
 
     backgroundOverlay: "rgba(18, 8, 28, 1)",
     gradientOverlay: ["rgba(0, 0, 0, 0.6)", "rgba(0,0,0,0)", "rgba(0, 0, 0, 0.8)"] as const,
-
-    commentText: "rgba(231, 231, 231, 1)",
   },
 
   utils: {

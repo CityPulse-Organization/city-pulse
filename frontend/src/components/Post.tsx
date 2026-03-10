@@ -132,7 +132,6 @@ export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => {
               username={data.username}
               statusText={data.accidentTime}
               iconSize="small"
-              iconBorderColor="faint"
               usernameSize="sm"
               mode="post"
             />

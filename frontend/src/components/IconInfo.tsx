@@ -13,7 +13,6 @@ export type IconInfoProps = {
   usernameWeight?: "bold";
   statusText?: string;
   iconSize?: "small" | "medium" | "comment";
-  iconBorderColor?: "violet" | "faint";
   onPress?: () => void;
 } & UnistylesVariants<typeof styles>;;
 
@@ -25,7 +24,6 @@ export const IconInfo = memo(
     username,
     statusText,
     iconSize,
-    iconBorderColor,
     usernameSize,
     usernameWeight,
     mode,
@@ -40,7 +38,6 @@ export const IconInfo = memo(
           isLoading={isLoading}
           isBroadCasting={isBroadCasting}
           size={iconSize}
-          borderColor={iconBorderColor}
         />
 
         <View style={styles.textWrapper}>

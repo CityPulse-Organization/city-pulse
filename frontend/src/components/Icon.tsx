@@ -22,7 +22,6 @@ export type IconProps = {
   profileImageUrl?: string;
   isBroadCasting?: boolean;
   isLoading?: boolean;
-  borderColor?: string;
 } & UnistylesVariants<typeof styles>;
 
 export const Icon = memo(
@@ -31,10 +30,9 @@ export const Icon = memo(
     size,
     isBroadCasting = false,
     isLoading = false,
-    borderColor,
   }: IconProps) => {
     const { theme } = useUnistyles();
-    styles.useVariants({ size: size, borderColor: borderColor });
+    styles.useVariants({ size: size });
 
     const fallbackSize = FALLBACK_ICON_SIZES[size as keyof typeof FALLBACK_ICON_SIZES] || FALLBACK_ICON_SIZES.default;
 
@@ -72,6 +70,8 @@ const styles = StyleSheet.create((theme) => ({
     position: "relative",
     borderRadius: 999,
     padding: theme.utils.s(2),
+    borderWidth: 2,
+    borderColor: theme.colors.mutedAccent,
 
     variants: {
       size: {
@@ -90,17 +90,6 @@ const styles = StyleSheet.create((theme) => ({
         comment: {
           height: theme.utils.s(40),
           width: theme.utils.s(40),
-        },
-      },
-      borderColor: {
-        default: {},
-        violet: {
-          borderWidth: 2,
-          borderColor: theme.colors.mutedAccent,
-        },
-        faint: {
-          borderWidth: 2,
-          borderColor: theme.colors.muted,
         },
       },
     },
