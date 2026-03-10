@@ -2,7 +2,13 @@ package city.pulse.auth.feature.service.impl;
 
 import city.pulse.auth.feature.dto.*;
 import city.pulse.auth.feature.exception.UserAlreadyExistsException;
+import city.pulse.auth.feature.exception.UserNotFoundException;
 import city.pulse.auth.feature.mapper.UserMapper;
+import city.pulse.auth.feature.oauth2.dto.OAuth2CompleteRegistrationRequest;
+import city.pulse.auth.feature.oauth2.dto.OAuth2LoginRequest;
+import city.pulse.auth.feature.oauth2.exception.OAuth2RegistrationRequiredException;
+import city.pulse.auth.feature.oauth2.factory.OAuth2StrategyFactory;
+import city.pulse.auth.feature.oauth2.provider.OAuth2Provider;
 import city.pulse.auth.feature.repository.UserRepository;
 import city.pulse.auth.feature.service.AuthService;
 import city.pulse.auth.feature.service.JwtService;
@@ -22,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
+    private final OAuth2StrategyFactory factory;
     private final UserService userService;
     private final JwtService jwtService;
 
@@ -75,5 +82,41 @@ public class AuthServiceImpl implements AuthService {
         } catch (DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException("A user with given credentials already exists");
         }
+    }
+
+    @Override
+    @Transactional
+    public AuthResponse loginWithOAuth2(OAuth2Provider provider, OAuth2LoginRequest dto) {
+        var strategy = factory.getStrategy(provider);
+        var userInfo = strategy.validateAndExtract(dto.token());
+
+        try {
+            var user = userService.findUserByEmail(userInfo.email());
+
+            var access = jwtService.createAccessToken(user.getId(), user.getRole());
+            var refresh = refreshTokenService.issue(user);
+
+            return new AuthResponse(access, refresh);
+        } catch (UserNotFoundException e) {
+            throw new OAuth2RegistrationRequiredException(
+                    "User not found. Please provide a username.",
+                    userInfo.email(),
+                    provider
+            );
+        }
+    }
+
+    @Override
+    @Transactional
+    public AuthResponse completeOAuth2Registration(OAuth2Provider provider, OAuth2CompleteRegistrationRequest dto) {
+        var strategy = factory.getStrategy(provider);
+        var userInfo = strategy.validateAndExtract(dto.token());
+
+        var user = userService.registerOAuth2User(userInfo, dto);
+
+        var access = jwtService.createAccessToken(user.getId(), user.getRole());
+        var refresh = refreshTokenService.issue(user);
+
+        return new AuthResponse(access, refresh);
     }
 }
