@@ -1,33 +1,43 @@
 import { tokenStorage, axios } from "../config";
-import { AuthRequest, AuthResponse } from "../types";
+import { AuthRequest, AuthResponse, User } from "../types";
 
-export const register = async (data: AuthRequest): Promise<AuthResponse> => {
-  const response = await axios.post<AuthResponse>("/auth/register", data);
-  const { accessToken, refreshToken } = response.data || {};
-  
-  if (accessToken && refreshToken) {
-    await tokenStorage.setTokens(accessToken, refreshToken);
+const decodeJWT = (token: string): User | null => {
+  try {
+    const base64Payload = token
+      .split(".")[1]
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+    const padded =
+      base64Payload + "=".repeat((4 - (base64Payload.length % 4)) % 4);
+    const payload = JSON.parse(atob(padded));
+    return { id: String(payload.sub), role: payload.role ?? "USER" };
+  } catch {
+    return null;
   }
-  
-  return response.data;
 };
 
-export const login = async (
-  credentials: AuthRequest,
-): Promise<AuthResponse> => {
-  const response = await axios.post<AuthResponse>("/auth/login", credentials);
+export const register = async (data: AuthRequest): Promise<AuthResponse> => {
+  await axios.post("/auth/register", data);
+  return login({ username: data.username, password: data.password });
+};
+
+export const login = async (data: AuthRequest): Promise<AuthResponse> => {
+  const response = await axios.post<AuthResponse>("/auth/login", data);
   const { accessToken, refreshToken } = response.data || {};
-  
+
   if (accessToken && refreshToken) {
     await tokenStorage.setTokens(accessToken, refreshToken);
+    const user = decodeJWT(accessToken);
+    await tokenStorage.setUser(user);
   }
-  
+
   return response.data;
 };
 
 export const logout = async (): Promise<void> => {
   try {
-    await axios.post("/auth/logout");
+    const refreshToken = await tokenStorage.getRefreshToken();
+    await axios.post("/auth/logout", { token: refreshToken });
   } finally {
     await tokenStorage.clearTokens();
   }

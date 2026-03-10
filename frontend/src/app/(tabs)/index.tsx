@@ -1,12 +1,13 @@
 import { ThemedBackground } from "@/src/components";
-import { UIText } from "@/src/ui";
+import { UIButton, UIText } from "@/src/ui";
+import { useLogout } from "@/src/hooks";
 import WheelPicker from "@quidone/react-native-wheel-picker";
 import { matchFont } from "@shopify/react-native-skia";
+import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { AppleMaps, GoogleMaps } from "expo-maps";
-import { memo, useEffect, useRef, useState } from "react";
-import { Platform, useWindowDimensions, View } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
+import { memo, useEffect, useState } from "react";
+import { Platform, View } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { CartesianChart, StackedBar } from "victory-native";
 
@@ -299,54 +300,17 @@ const IncidentsStatistic = ({ period }: { period?: "year" | "month" }) => {
   );
 };
 
-const SECTIONS = [MapSection, IncidentsStatistic, IncidentsStatistic];
-
 export default function HomeScreen() {
   const { theme } = useUnistyles();
-  const progress = useSharedValue<number>(0);
-  const { height, width } = useWindowDimensions();
-  const carouselRef = useRef<any>(null);
-
-  const handleNext = () => {
-    const nextIndex = (carouselRef.current?.getCurrentIndex?.() ?? 0) + 1;
-    const isLast = nextIndex >= SECTIONS.length;
-
-    carouselRef.current?.scrollTo({
-      index: isLast ? 0 : nextIndex,
-      animated: !isLast,
-    });
-  };
+  const { mutate: handleLogout } = useLogout();
   return (
     <ThemedBackground style={styles.screen} withSafeArea={false}>
-      {/* <Carousel
-        data={SECTIONS}
-        ref={carouselRef}
-        height={(height / 100) * 60}
-        enabled={false}
-        pagingEnabled={true}
-        loop={false}
-        width={width}
-        modeConfig={{
-          parallaxScrollingScale: 0.9,
-          parallaxScrollingOffset: 50,
-        }}
-        onProgressChange={progress}
-        renderItem={({ index }) => {
-          const Section = SECTIONS[index];
-          return <Section period={index === 1 ? "month" : "year"} />;
-        }}
-      />
-      <Pagination.Basic
-        progress={progress}
-        data={SECTIONS}
-        dotStyle={styles.paginationDot}
-        activeDotStyle={styles.paginationDotActive}
-        containerStyle={styles.paginationContainer}
-      />
-      <UIButton style={styles.nextButton} onPress={handleNext}>
-        <UIText style={{ color: theme.colors.white }}>Next</UIText>
-      </UIButton> */}
-      <MapSection />
+      {/* <MapSection /> */}
+
+      <UIButton style={styles.logoutButton} onPress={() => handleLogout()}>
+        <Ionicons name="log-out-outline" size={20} color={theme.colors.white} />
+        <UIText style={styles.logoutText}>Logout</UIText>
+      </UIButton>
     </ThemedBackground>
   );
 }
@@ -378,6 +342,24 @@ const styles = StyleSheet.create((theme) => ({
     borderRadius: 30,
   },
   screen: { gap: 30 },
+  logoutButton: {
+    position: "absolute",
+    top: 60,
+    right: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    borderRadius: 99,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.15)",
+  },
+  logoutText: {
+    color: "white",
+    fontSize: 14,
+  },
   datePickerContainer: {
     alignItems: "center",
     justifyContent: "space-around",

@@ -1,17 +1,20 @@
 import { AuthButton } from "@/src/components";
-import { UIButton, UIInput, UIText } from "@/src/ui";
+import {
+  UIButton,
+  UIInput,
+  UIText,
+  UIKeyboardAvoidingScrollView,
+} from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import {
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  View,
-} from "react-native";
+import { useSignInPage } from "@/src/hooks";
+import { Controller } from "react-hook-form";
+import { Image, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function SignUpPage() {
+  const { control, onSubmit, isPending, onSignUpPress } = useSignInPage();
+
   return (
     <View style={styles.mainContainer}>
       <Image
@@ -19,55 +22,74 @@ export default function SignUpPage() {
         style={styles.image}
         source={require("@assets/images/sign-in.jpg")}
       />
-      <KeyboardAvoidingView
+
+      <UIKeyboardAvoidingScrollView
         style={styles.formContainer}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        contentContainerStyle={styles.scrollContent}
       >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <UIButton onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={26} color="white" />
+        <UIButton onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={26} color="white" />
+        </UIButton>
+        <View style={styles.signUpContainer}>
+          <UIText weight="normal" size="extraLarge" style={styles.signUpText}>
+            Sign in
+          </UIText>
+        </View>
+        <View style={styles.inputsContainer}>
+          <Controller
+            control={control}
+            name="username"
+            render={({ field: { onChange, onBlur, value }, fieldState }) => (
+              <UIInput
+                placeholderTextColor={styles.input.borderColor}
+                textInputStyle={styles.input}
+                placeholder="Username"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                autoCapitalize="none"
+                error={fieldState.error?.message}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, onBlur, value }, fieldState }) => (
+              <UIInput
+                placeholderTextColor={styles.input.borderColor}
+                textInputStyle={styles.input}
+                placeholder="Password"
+                secureTextEntry
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                error={fieldState.error?.message}
+              />
+            )}
+          />
+
+          <UIText style={styles.forgotPassword}>Forgot password?</UIText>
+        </View>
+        <View style={styles.bottomContainer}>
+          <UIButton style={styles.googleButton} onPress={() => {}}>
+            <Ionicons name="logo-google" size={26} color="white" />
+            <UIText style={styles.googleText}>Continue with Google</UIText>
           </UIButton>
-          <View style={styles.signUpContainer}>
-            <UIText weight="normal" size="extraLarge" style={styles.signUpText}>
-              Sign in
+          <UIButton
+            onPress={onSignUpPress}
+            style={styles.signUpContainerBottom}
+          >
+            <UIText style={styles.dontHaveAccountText}>
+              Don't have an account?
             </UIText>
-          </View>
-          <View style={styles.inputsContainer}>
-            <UIInput
-              placeholderTextColor={styles.input.borderColor}
-              style={styles.input}
-              placeholder="Login"
-            />
-            <UIInput
-              placeholderTextColor={styles.input.borderColor}
-              style={styles.input}
-              placeholder="Password"
-              secureTextEntry
-            />
-            <UIText style={styles.forgotPassword}>Forgot password?</UIText>
-          </View>
-          <View style={styles.bottomContainer}>
-            <UIButton style={styles.googleButton} onPress={() => {}}>
-              <Ionicons name="logo-google" size={26} color="white" />
-              <UIText style={styles.googleText}>Continue with Google</UIText>
-            </UIButton>
-            <UIButton
-              onPress={() => router.replace("/sign-up")}
-              style={styles.signUpContainerBottom}
-            >
-              <UIText style={styles.dontHaveAccountText}>
-                Don't have an account?
-              </UIText>
-              <UIText style={styles.signUpBottomText}>Sign up</UIText>
-            </UIButton>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-      <AuthButton label="Next" onPress={() => router.push("/(tabs)")} />
+            <UIText style={styles.signUpBottomText}>Sign up</UIText>
+          </UIButton>
+        </View>
+      </UIKeyboardAvoidingScrollView>
+
+      <AuthButton label="Next" onPress={onSubmit} loading={isPending} />
     </View>
   );
 }
@@ -85,21 +107,22 @@ const styles = StyleSheet.create((theme, rt) => ({
     top: rt.insets.top + 20,
     left: 30,
     right: 30,
-    bottom: rt.insets.bottom + 60,
+    bottom: rt.insets.bottom,
     borderRadius: 10,
   },
   scrollContent: {
     flexGrow: 1,
+    paddingBottom: theme.utils.vs(120),
   },
   signUpContainer: {
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 60,
+    marginTop: theme.utils.vs(20),
   },
   signUpText: {
     color: theme.colors.violet,
   },
-  inputsContainer: { gap: 40, marginTop: 180 },
+  inputsContainer: { gap: theme.utils.vs(20), marginTop: theme.utils.vs(180) },
   input: {
     backgroundColor: "transparent",
     color: theme.colors.violet,
@@ -108,22 +131,25 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   forgotPassword: {
     color: theme.colors.darkViolet,
-    paddingLeft: 16,
+    paddingLeft: theme.utils.s(16),
   },
-  bottomContainer: { marginTop: 60, alignItems: "center", gap: 20 },
+  bottomContainer: {
+    marginTop: theme.utils.vs(40),
+    alignItems: "center",
+    gap: theme.utils.s(20),
+  },
   googleButton: {
     flexDirection: "row",
-
     alignItems: "center",
     borderWidth: 1,
     borderColor: theme.colors.violet,
     borderRadius: 99,
-    padding: 16,
-    paddingRight: 40,
+    padding: theme.utils.s(12),
+    paddingRight: theme.utils.s(20),
   },
   googleText: {
     color: theme.colors.violet,
-    marginLeft: 16,
+    marginLeft: theme.utils.s(16),
   },
   signUpContainerBottom: { alignItems: "center" },
   signUpBottomText: {

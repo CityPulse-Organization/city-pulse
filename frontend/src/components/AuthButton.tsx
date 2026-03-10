@@ -1,18 +1,20 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Pressable, View } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { UIText } from "../ui";
 
 type AuthButtonProps = {
   label: string;
-  onPress: () => void;
+  onPress: () => void | Promise<void>;
   variant?: "default" | "violet";
+  loading?: boolean;
 };
 
 export const AuthButton = ({
   label,
   onPress,
   variant = "violet",
+  loading,
 }: AuthButtonProps) => {
   const { theme } = useUnistyles();
 
@@ -27,11 +29,19 @@ export const AuthButton = ({
 
   return (
     <View style={styles.wrapper} pointerEvents="box-none">
-      <Pressable style={[styles.button, { borderColor }]} onPress={onPress}>
+      <Pressable
+        style={[styles.button, { borderColor }]}
+        onPress={onPress}
+        disabled={loading}
+      >
         <UIText size="xl" weight="bold" style={{ color: textColor }}>
           {label}
         </UIText>
-        <Ionicons name="arrow-forward" color={iconColor} size={26} />
+        {loading ? (
+          <ActivityIndicator color={iconColor} />
+        ) : (
+          <Ionicons name="arrow-forward" color={iconColor} size={26} />
+        )}
       </Pressable>
     </View>
   );
