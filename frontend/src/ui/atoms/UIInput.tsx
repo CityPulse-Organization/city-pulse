@@ -1,6 +1,5 @@
 import React, { memo } from "react";
 import {
-  StyleSheet as RNStyleSheet,
   TextInput,
   TextInputProps,
   TextStyle,
@@ -10,7 +9,6 @@ import {
 import {
   StyleSheet,
   UnistylesVariants,
-  useUnistyles,
 } from "react-native-unistyles";
 import { moderateScale, scale } from "../unistyles";
 import { UIText } from "./UIText";
@@ -33,22 +31,15 @@ export const UIInput = memo(
     textInputStyle,
     ...props
   }: UIInputProps) => {
-    const { theme } = useUnistyles();
-    styles.useVariants({ inputTheme: inputTheme });
-
-    const resolvedPlaceholderColor =
-      placeholderTextColor ??
-      (inputTheme === "dark" ? theme.colors.lightGray : theme.colors.gray);
-
-    const inputStyle = RNStyleSheet.flatten([styles.input, textInputStyle]);
+    styles.useVariants({ inputTheme });
 
     return (
       <View style={[styles.container, style]}>
         <View style={styles.inputContainer}>
           <TextInput
-            placeholderTextColor={resolvedPlaceholderColor}
+            placeholderTextColor={placeholderTextColor ?? styles.placeholder.color}
             {...props}
-            style={inputStyle}
+            style={[styles.input, textInputStyle]}
           />
 
           {rightElement ? (
@@ -93,6 +84,18 @@ const styles = StyleSheet.create((theme) => ({
         },
         default: {
           color: theme.colors.black,
+        },
+      },
+    },
+  },
+  placeholder: {
+    variants: {
+      inputTheme: {
+        dark: {
+          color: theme.colors.lightGray,
+        },
+        default: {
+          color: theme.colors.gray,
         },
       },
     },

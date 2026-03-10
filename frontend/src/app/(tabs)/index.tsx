@@ -8,7 +8,7 @@ import * as Location from "expo-location";
 import { AppleMaps, GoogleMaps } from "expo-maps";
 import { memo, useEffect, useState } from "react";
 import { Platform, View } from "react-native";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 import { CartesianChart, StackedBar } from "victory-native";
 
 const POINTS = [
@@ -226,89 +226,14 @@ const MapSection = memo(() => {
   );
 });
 
-const IncidentsStatistic = ({ period }: { period?: "year" | "month" }) => {
-  const { theme } = useUnistyles();
-  const [year, setYear] = useState(0);
-  const [month, setMonth] = useState(0);
-
-  return (
-    <View style={styles.itemContainer}>
-      <View style={styles.datePickerContainer}>
-        <UIText style={styles.pickerValue}>Selected {period}:</UIText>
-        <WheelPicker
-          data={YEARS}
-          itemTextStyle={styles.pickerValue}
-          value={year}
-          onValueChanged={({ item: { value } }) => setYear(value)}
-          enableScrollByTapOnItem={true}
-        />
-        {period === "month" ? (
-          <WheelPicker
-            data={MONTHS}
-            itemTextStyle={styles.pickerValue}
-            value={month}
-            onValueChanged={({ item: { value } }) => setMonth(value)}
-            enableScrollByTapOnItem={true}
-          />
-        ) : null}
-      </View>
-      <View
-        style={{
-          flex: 1,
-          padding: 10,
-          borderRadius: 20,
-          backgroundColor: theme.colors.chartBackgroundColor,
-          borderColor: theme.colors.chartBorderColor,
-          borderWidth: 1,
-          elevation: 5,
-        }}
-      >
-        <CartesianChart
-          data={data}
-          frame={{ lineWidth: 0 }}
-          xKey="month"
-          yKeys={[
-            "incidentsCount",
-            "criticalCount",
-            "neutralCount",
-            "solvedCount",
-          ]}
-          domainPadding={{ left: 50, right: 50, top: 30 }}
-          axisOptions={{
-            font: font,
-            lineColor: "transparent",
-            labelColor: theme.colors.white,
-            tickCount: 6,
-          }}
-        >
-          {({ points, chartBounds }) => {
-            return (
-              <StackedBar
-                chartBounds={chartBounds}
-                points={[
-                  points.criticalCount,
-                  points.neutralCount,
-                  points.solvedCount,
-                ]}
-                colors={[COLORS[0], COLORS[1], COLORS[2]]}
-              />
-            );
-          }}
-        </CartesianChart>
-      </View>
-    </View>
-  );
-};
-
 export default function HomeScreen() {
-  const { theme } = useUnistyles();
   const { mutate: handleLogout } = useLogout();
   return (
     <ThemedBackground style={styles.screen} withSafeArea={false}>
       {/* <MapSection /> */}
 
       <UIButton style={styles.logoutButton} onPress={() => handleLogout()}>
-        <Ionicons name="log-out-outline" size={20} color={theme.colors.white} />
+        <Ionicons name="log-out-outline" size={20} color={styles.icon.color} />
         <UIText style={styles.logoutText}>Logout</UIText>
       </UIButton>
     </ThemedBackground>
@@ -316,6 +241,9 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create((theme) => ({
+  icon: {
+    color: theme.colors.white,
+  },
   itemContainer: {
     width: "100%",
     height: "100%",
