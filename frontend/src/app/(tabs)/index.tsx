@@ -1,13 +1,14 @@
 import { ThemedBackground } from "@/src/components";
-import { UIText } from "@/src/ui";
+import { UIButton, UIText } from "@/src/ui";
+import { useLogout } from "@/src/hooks";
 import WheelPicker from "@quidone/react-native-wheel-picker";
 import { matchFont } from "@shopify/react-native-skia";
+import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { AppleMaps, GoogleMaps } from "expo-maps";
-import { memo, useEffect, useRef, useState } from "react";
-import { Platform, useWindowDimensions, View } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { memo, useEffect, useState } from "react";
+import { Platform, View } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 import { CartesianChart, StackedBar } from "victory-native";
 
 const POINTS = [
@@ -225,133 +226,24 @@ const MapSection = memo(() => {
   );
 });
 
-const IncidentsStatistic = ({ period }: { period?: "year" | "month" }) => {
-  const { theme } = useUnistyles();
-  const [year, setYear] = useState(0);
-  const [month, setMonth] = useState(0);
-
-  return (
-    <View style={styles.itemContainer}>
-      <View style={styles.datePickerContainer}>
-        <UIText style={styles.pickerValue}>Selected {period}:</UIText>
-        <WheelPicker
-          data={YEARS}
-          itemTextStyle={styles.pickerValue}
-          value={year}
-          onValueChanged={({ item: { value } }) => setYear(value)}
-          enableScrollByTapOnItem={true}
-        />
-        {period === "month" ? (
-          <WheelPicker
-            data={MONTHS}
-            itemTextStyle={styles.pickerValue}
-            value={month}
-            onValueChanged={({ item: { value } }) => setMonth(value)}
-            enableScrollByTapOnItem={true}
-          />
-        ) : null}
-      </View>
-      <View
-        style={{
-          flex: 1,
-          padding: 10,
-          borderRadius: 20,
-          backgroundColor: theme.colors.chartBackgroundColor,
-          borderColor: theme.colors.chartBorderColor,
-          borderWidth: 1,
-          elevation: 5,
-        }}
-      >
-        <CartesianChart
-          data={data}
-          frame={{ lineWidth: 0 }}
-          xKey="month"
-          yKeys={[
-            "incidentsCount",
-            "criticalCount",
-            "neutralCount",
-            "solvedCount",
-          ]}
-          domainPadding={{ left: 50, right: 50, top: 30 }}
-          axisOptions={{
-            font: font,
-            lineColor: "transparent",
-            labelColor: theme.colors.white,
-            tickCount: 6,
-          }}
-        >
-          {({ points, chartBounds }) => {
-            return (
-              <StackedBar
-                chartBounds={chartBounds}
-                points={[
-                  points.criticalCount,
-                  points.neutralCount,
-                  points.solvedCount,
-                ]}
-                colors={[COLORS[0], COLORS[1], COLORS[2]]}
-              />
-            );
-          }}
-        </CartesianChart>
-      </View>
-    </View>
-  );
-};
-
-const SECTIONS = [MapSection, IncidentsStatistic, IncidentsStatistic];
-
 export default function HomeScreen() {
-  const { theme } = useUnistyles();
-  const progress = useSharedValue<number>(0);
-  const { height, width } = useWindowDimensions();
-  const carouselRef = useRef<any>(null);
-
-  const handleNext = () => {
-    const nextIndex = (carouselRef.current?.getCurrentIndex?.() ?? 0) + 1;
-    const isLast = nextIndex >= SECTIONS.length;
-
-    carouselRef.current?.scrollTo({
-      index: isLast ? 0 : nextIndex,
-      animated: !isLast,
-    });
-  };
+  const { mutate: handleLogout } = useLogout();
   return (
     <ThemedBackground style={styles.screen} withSafeArea={false}>
-      {/* <Carousel
-        data={SECTIONS}
-        ref={carouselRef}
-        height={(height / 100) * 60}
-        enabled={false}
-        pagingEnabled={true}
-        loop={false}
-        width={width}
-        modeConfig={{
-          parallaxScrollingScale: 0.9,
-          parallaxScrollingOffset: 50,
-        }}
-        onProgressChange={progress}
-        renderItem={({ index }) => {
-          const Section = SECTIONS[index];
-          return <Section period={index === 1 ? "month" : "year"} />;
-        }}
-      />
-      <Pagination.Basic
-        progress={progress}
-        data={SECTIONS}
-        dotStyle={styles.paginationDot}
-        activeDotStyle={styles.paginationDotActive}
-        containerStyle={styles.paginationContainer}
-      />
-      <UIButton style={styles.nextButton} onPress={handleNext}>
-        <UIText style={{ color: theme.colors.white }}>Next</UIText>
-      </UIButton> */}
-      <MapSection />
+      {/* <MapSection /> */}
+
+      <UIButton style={styles.logoutButton} onPress={() => handleLogout()}>
+        <Ionicons name="log-out-outline" size={20} color={styles.icon.color} />
+        <UIText style={styles.logoutText}>Logout</UIText>
+      </UIButton>
     </ThemedBackground>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
+  icon: {
+    color: theme.colors.white,
+  },
   itemContainer: {
     width: "100%",
     height: "100%",
@@ -378,6 +270,24 @@ const styles = StyleSheet.create((theme) => ({
     borderRadius: 30,
   },
   screen: { gap: 30 },
+  logoutButton: {
+    position: "absolute",
+    top: 60,
+    right: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    borderRadius: 99,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.15)",
+  },
+  logoutText: {
+    color: "white",
+    fontSize: 14,
+  },
   datePickerContainer: {
     alignItems: "center",
     justifyContent: "space-around",

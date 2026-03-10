@@ -1,37 +1,37 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Pressable, View } from "react-native";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { ActivityIndicator, Pressable, View } from "react-native";
+import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
 import { UIText } from "../ui";
 
 type AuthButtonProps = {
   label: string;
-  onPress: () => void;
-  variant?: "default" | "violet";
-};
+  onPress: () => void | Promise<void>;
+  loading?: boolean;
+} & UnistylesVariants<typeof styles>;
 
 export const AuthButton = ({
   label,
   onPress,
   variant = "violet",
+  loading,
 }: AuthButtonProps) => {
-  const { theme } = useUnistyles();
-
-  const isDefault = variant === "default";
-  const iconColor = isDefault ? "white" : "#C7B4FD";
-  const textColor = isDefault
-    ? theme.colors.primaryTextColor
-    : theme.colors.violet;
-  const borderColor = isDefault
-    ? theme.colors.darkGray
-    : theme.colors.darkViolet;
+  styles.useVariants({ variant });
 
   return (
     <View style={styles.wrapper} pointerEvents="box-none">
-      <Pressable style={[styles.button, { borderColor }]} onPress={onPress}>
-        <UIText size="xl" weight="bold" style={{ color: textColor }}>
+      <Pressable
+        style={styles.button}
+        onPress={onPress}
+        disabled={loading}
+      >
+        <UIText size="xl" weight="bold" style={styles.text}>
           {label}
         </UIText>
-        <Ionicons name="arrow-forward" color={iconColor} size={26} />
+        {loading ? (
+          <ActivityIndicator color={styles.icon.color} />
+        ) : (
+          <Ionicons name="arrow-forward" color={styles.icon.color} size={26} />
+        )}
       </Pressable>
     </View>
   );
@@ -58,8 +58,39 @@ const styles = StyleSheet.create((theme, rt) => ({
     borderRadius: 50,
     backgroundColor: theme.colors.bottomSheetColor,
     borderWidth: 4,
+    variants: {
+      variant: {
+        default: {
+          borderColor: theme.colors.darkGray,
+        },
+        violet: {
+          borderColor: theme.colors.darkViolet,
+        },
+      },
+    },
   },
-  buttonText: {
-    fontWeight: "bold",
+  text: {
+    variants: {
+      variant: {
+        default: {
+          color: theme.colors.primaryTextColor,
+        },
+        violet: {
+          color: theme.colors.violet,
+        },
+      },
+    },
+  },
+  icon: {
+    variants: {
+      variant: {
+        default: {
+          color: "white",
+        },
+        violet: {
+          color: "#C7B4FD",
+        },
+      },
+    },
   },
 }));

@@ -9,6 +9,7 @@ if (!API_URL) {
 
 const ACCESS_TOKEN_KEY = "access_token";
 const REFRESH_TOKEN_KEY = "refresh_token";
+const USER_KEY = "user_data";
 
 export const tokenStorage = {
   async getAccessToken() {
@@ -17,20 +18,22 @@ export const tokenStorage = {
   async getRefreshToken() {
     return await AsyncStorage.getItem(REFRESH_TOKEN_KEY);
   },
+  async getUser() {
+    const user = await AsyncStorage.getItem(USER_KEY);
+    return user ? JSON.parse(user) : null;
+  },
+  async setUser(user: any) {
+    if (!user) return;
+    await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
+  },
   async setTokens(access: string, refresh: string) {
-    if (!access || !refresh) {
-      console.warn(
-        "[tokenStorage] Attempted to set null or undefined tokens:",
-        { access, refresh },
-      );
-      return;
-    }
     await AsyncStorage.setItem(ACCESS_TOKEN_KEY, access);
     await AsyncStorage.setItem(REFRESH_TOKEN_KEY, refresh);
   },
   async clearTokens() {
     await AsyncStorage.removeItem(ACCESS_TOKEN_KEY);
     await AsyncStorage.removeItem(REFRESH_TOKEN_KEY);
+    await AsyncStorage.removeItem(USER_KEY);
   },
 };
 
@@ -125,7 +128,7 @@ axiosInstance.interceptors.response.use(
       url: error.config?.url,
       method: error.config?.method,
       status: error.response?.status,
-      data: error.response?.data,
+      data: JSON.stringify(error.response?.data, null, 2),
       message: error.message,
     });
     return Promise.reject(error);
