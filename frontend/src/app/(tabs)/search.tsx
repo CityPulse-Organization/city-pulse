@@ -163,8 +163,7 @@ export default function SearchScreen() {
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         ItemSeparatorComponent={ItemSeparator}
-        removeClippedSubviews={true}
-        drawDistance={500}
+        getItemType={() => "SearchUser"}
         style={styles.list}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
@@ -184,8 +183,8 @@ const styles = StyleSheet.create((theme) => ({
   searchHeader: { paddingVertical: 20 },
   itemContainer: { justifyContent: "flex-start", alignItems: "flex-start" },
   separator: { height: 20 },
-  list: { width: "100%", padding: 20 },
-  containerStyle: { paddingBottom: 100 },
+  list: { flex: 1, width: "100%" },
+  containerStyle: { padding: 20, paddingBottom: 100 },
   glass: {
     flexDirection: "row",
     justifyContent: "space-around",

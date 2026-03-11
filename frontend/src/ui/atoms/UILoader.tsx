@@ -9,6 +9,7 @@ import Animated, {
   withSequence,
   Easing,
   FadeIn,
+  FadeOut,
 } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -16,12 +17,18 @@ const RING_SIZE = 60;
 
 type UILoaderProps = {
   containerStyle?: any;
+  isLoading?: boolean;
 };
 
-export const UILoader = ({ containerStyle }: UILoaderProps) => {
+export const UILoader = ({ containerStyle, isLoading }: UILoaderProps) => {
+  const show = isLoading === undefined ? true : isLoading;
+
+  if (!show) return null;
+
   return (
     <Animated.View
       entering={FadeIn.duration(400)}
+      exiting={FadeOut.duration(400)}
       style={[styles.loaderWrap, containerStyle]}
     >
       <PulseRing delay={0} />

@@ -36,6 +36,7 @@ export default function NewsScreen() {
         style={styles.list}
         keyExtractor={keyExtractor}
         renderItem={renderPost}
+        getItemType={() => "PostItem"}
         contentContainerStyle={styles.postsContainer}
       />
     </ThemedBackground>
