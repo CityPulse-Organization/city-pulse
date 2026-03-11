@@ -1,7 +1,7 @@
 import { ThemedBackground } from "@/src/components";
 import { UIButton, UIText } from "@/src/ui";
 import { useLogout } from "@/src/hooks";
-import WheelPicker from "@quidone/react-native-wheel-picker";
+import { UIAlert } from "@/src/hoc";
 import { matchFont } from "@shopify/react-native-skia";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
@@ -9,7 +9,6 @@ import { AppleMaps, GoogleMaps } from "expo-maps";
 import { memo, useEffect, useState } from "react";
 import { Platform, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-import { CartesianChart, StackedBar } from "victory-native";
 
 const POINTS = [
   {
@@ -235,6 +234,32 @@ export default function HomeScreen() {
       <UIButton style={styles.logoutButton} onPress={() => handleLogout()}>
         <Ionicons name="log-out-outline" size={20} color={styles.icon.color} />
         <UIText style={styles.logoutText}>Logout</UIText>
+      </UIButton>
+
+      <UIButton
+        style={[styles.logoutButton, { top: 120, right: 20, left: undefined }]}
+        onPress={() => {
+          UIAlert.alert(
+            "Test Alert Popup",
+            "This is a test of the new custom UIAlert component.",
+            [
+              { text: "Cancel", style: "cancel" },
+              { text: "Confirm", style: "default" },
+              {
+                text: "Delete",
+                style: "destructive",
+                onPress: () => console.log("Deleted!"),
+              },
+            ],
+          );
+        }}
+      >
+        <Ionicons
+          name="alert-circle-outline"
+          size={20}
+          color={styles.icon.color}
+        />
+        <UIText style={styles.logoutText}>Show Alert</UIText>
       </UIButton>
     </ThemedBackground>
   );

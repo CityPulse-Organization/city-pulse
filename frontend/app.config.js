@@ -7,7 +7,7 @@ export default {
     owner: "kyrylokap",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/images/icon.png",
+    icon: "./assets/images/icon.jpg",
     scheme: "citypulse",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
@@ -31,8 +31,8 @@ export default {
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: "./assets/images/icon.png",
-        backgroundColor: "#111b24",
+        foregroundImage: "./assets/images/icon.jpg",
+        backgroundColor: "#7f2fed",
       },
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
@@ -72,9 +72,9 @@ export default {
       [
         "expo-splash-screen",
         {
-          backgroundColor: "#111b24",
-          image: "./assets/images/icon.png",
-          imageWidth: 600,
+          backgroundColor: "#7f2fed",
+          image: "./assets/images/icon.jpg",
+          imageWidth: 400,
           resizeMode: "cover",
         },
       ],

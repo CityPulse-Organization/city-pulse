@@ -37,7 +37,9 @@ export const login = async (data: AuthRequest): Promise<AuthResponse> => {
 export const logout = async (): Promise<void> => {
   try {
     const refreshToken = await tokenStorage.getRefreshToken();
-    await axios.post("/auth/logout", { token: refreshToken });
+    if (refreshToken) {
+      await axios.post("/auth/logout", { token: refreshToken });
+    }
   } finally {
     await tokenStorage.clearTokens();
   }

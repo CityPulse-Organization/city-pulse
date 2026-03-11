@@ -1,10 +1,9 @@
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { router, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { SessionProvider, useSession } from "../hoc";
-import { useEffect } from "react";
+import { SessionProvider, UIAlertProvider } from "../hoc";
 
 export const queryClient = new QueryClient();
 
@@ -14,32 +13,19 @@ export default function RootLayout() {
       <SessionProvider>
         <GestureHandlerRootView>
           <BottomSheetModalProvider>
-            <InnerLayout />
+            <UIAlertProvider />
+            <Stack
+              initialRouteName="index"
+              screenOptions={{ headerShown: false, animation: "fade" }}
+            >
+              <Stack.Screen name="index" />
+              <Stack.Screen name="(auth)" />
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="post/[id]" />
+            </Stack>
           </BottomSheetModalProvider>
         </GestureHandlerRootView>
       </SessionProvider>
     </QueryClientProvider>
   );
 }
-
-const InnerLayout = () => {
-  const { session, isLoading } = useSession();
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    if (session.user) {
-      router.replace("/(tabs)");
-    } else {
-      router.replace("/(auth)");
-    }
-  }, [isLoading, session.user]);
-
-  return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(auth)" />
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="post/[id]" />
-    </Stack>
-  );
-};

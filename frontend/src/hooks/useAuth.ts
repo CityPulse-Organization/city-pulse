@@ -37,6 +37,7 @@ export const useLogout = () => {
     mutationFn: logout,
     onSuccess: () => {
       setSession(null);
+      router.replace("/(auth)");
     },
   });
 };
