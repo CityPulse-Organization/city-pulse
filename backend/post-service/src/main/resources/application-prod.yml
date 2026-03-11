@@ -15,3 +15,8 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 12MB
+
+gcp:
+  project-id: ${GCP_PROJECT_ID}
+  client-email: ${GCP_CLIENT_EMAIL}
+  private-key: ${GCP_PRIVATE_KEY}
