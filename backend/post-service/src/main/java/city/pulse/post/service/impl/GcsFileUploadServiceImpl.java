@@ -20,7 +20,6 @@ import java.util.UUID;
 @Profile("prod")
 @RequiredArgsConstructor
 public class GcsFileUploadServiceImpl implements FileUploadService {
-
     private final Storage storage;
 
     @Value("${gcp.bucket.name}")

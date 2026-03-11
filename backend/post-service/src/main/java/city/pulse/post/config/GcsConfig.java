@@ -19,20 +19,28 @@ public class GcsConfig {
     @Value("${gcp.project-id}")
     private String projectId;
 
-    @Value("${gcp.client-email}")
-    private String clientEmail;
+    @Value("${gcp.client-id}")
+    private String clientId;
+
+    @Value("${gcp.private-key-id}")
+    private String privateKeyId;
 
     @Value("${gcp.private-key}")
     private String privateKey;
+
+    @Value("${gcp.client-email}")
+    private String clientEmail;
 
     @Bean
     public Storage storage() throws IOException {
         String formattedPrivateKey = privateKey.replace("\\n", "\n");
 
         String jsonCredentials = String.format(
-                "{\"type\": \"service_account\", \"project_id\": \"%s\", \"client_email\": \"%s\", \"private_key\": \"%s\"}",
+                "{\"type\": \"service_account\", \"project_id\": \"%s\", \"client_email\": \"%s\", \"client_id\": \"%s\", \"private_key_id\": \"%s\", \"private_key\": \"%s\"}",
                 projectId,
                 clientEmail,
+                clientId,
+                privateKeyId,
                 formattedPrivateKey.replace("\n", "\\n")
         );
 
