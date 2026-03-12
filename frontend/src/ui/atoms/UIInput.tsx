@@ -8,7 +8,7 @@ import { moderateScale, scale } from "../unistyles";
 
 type UIInputProps = {
   rightElement?: React.ReactNode;
-  style?: ViewStyle;
+  style?: ViewStyle[];
 } & TextInputProps &
   UnistylesVariants<typeof styles>;
 
@@ -30,8 +30,8 @@ export const UIInput = ({
           placeholderTextColor
             ? placeholderTextColor
             : inputTheme === "dark"
-            ? theme.colors.lightGray
-            : theme.colors.gray
+              ? theme.colors.lightGray
+              : theme.colors.gray
         }
         {...props}
         style={[styles.input, style]}
@@ -71,7 +71,7 @@ const styles = StyleSheet.create((theme) => ({
         default: {
           color: theme.colors.black,
           backgroundColor: theme.colors.white,
-        },
+        }
       },
     },
   },

@@ -1,4 +1,4 @@
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 import {
   Icon,
   Post,
@@ -10,9 +10,10 @@ import { UIButton, UIDivider, UIText } from "@/src/ui";
 import { FlashList } from "@shopify/flash-list";
 import { useRouter } from "expo-router";
 import { ComponentProps, memo, useCallback } from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
+// TODO: Create new post button to look better and see 4 posts
 export default function ProfileScreen() {
   const router = useRouter();
 
@@ -43,6 +44,12 @@ export default function ProfileScreen() {
 
   return (
     <ThemedBackground style={styles.page}>
+
+      <ProfileHeader />
+      <UIDivider style={styles.divider} />
+      <StatsPanel />
+      <NewPostButton />
+
       <FlashList
         showsVerticalScrollIndicator={false}
         masonry
@@ -52,23 +59,15 @@ export default function ProfileScreen() {
         keyExtractor={keyExtractor}
         renderItem={renderPostItem}
         contentContainerStyle={styles.postsContainer}
-        ListHeaderComponent={<ListHeader />}
       />
     </ThemedBackground>
   );
 }
 
-const ListHeader = memo(() => (
-  <>
-    <ProfileHeader />
-    <UIDivider style={styles.divider} />
-    <StatsPanel />
-    <NewPostButton />
-  </>
-));
+
+
 
 const ProfileHeader = memo(() => {
-  const { theme } = useUnistyles();
   const router = useRouter();
 
   const navigateToEditProfile = useCallback(() => {
@@ -81,7 +80,6 @@ const ProfileHeader = memo(() => {
         <Icon
           size="medium"
           profileImageUrl="https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg"
-          borderColor="violet"
         />
       </View>
 
@@ -97,8 +95,8 @@ const ProfileHeader = memo(() => {
 
           <UIButton onPress={navigateToEditProfile} isLoading={false}>
             <Ionicons
-              color={theme.colors.icon}
-              size={theme.utils.s(18)}
+              color={styles.editProfileIcon.color}
+              size={styles.editProfileIcon.height}
               name="color-wand"
             />
           </UIButton>
@@ -110,8 +108,8 @@ const ProfileHeader = memo(() => {
           </UIText>
 
           <Ionicons
-            color={theme.colors.accent}
-            size={theme.utils.s(16)}
+            color={styles.jobIcon.color}
+            size={styles.jobIcon.height}
             name="checkmark-circle"
           />
         </View>
@@ -136,30 +134,29 @@ const PROFILE_STATS_CONFIG: {
   quantity: number;
 }[] = [
     { id: "1", title: "Followers", iconName: "people-outline", quantity: 398 },
-    { id: "2", title: "Likes", iconName: "thumbs-up-outline", quantity: 398 },
-    { id: "3", title: "Posts", iconName: "newspaper-outline", quantity: 398 },
-    { id: "4", title: "Subscriptions", iconName: "keypad-outline", quantity: 34 },
-    { id: "5", title: "Favourites", iconName: "heart-outline", quantity: 34 },
+    { id: "2", title: "Posts", iconName: "newspaper-outline", quantity: 398 },
+    { id: "3", title: "Followings", iconName: "keypad-outline", quantity: 34 },
+    { id: "4", title: "Favourites", iconName: "heart-outline", quantity: 34 },
   ];
 
 
 const StatsPanel = memo(() => {
   return (
     <View style={styles.statsContainer}>
-      <ScrollView
+      {/* <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollViewContent}
-      >
-        {PROFILE_STATS_CONFIG.map((statConfig) => (
-          <StatsButton
-            key={statConfig.id}
-            title={statConfig.title}
-            iconName={statConfig.iconName}
-            quantity={statConfig.quantity}
-          />
-        ))}
-      </ScrollView>
+        / contentContainerStyle={styles.scrollViewContent}
+      > */}
+      {PROFILE_STATS_CONFIG.map((statConfig) => (
+        <StatsButton
+          key={statConfig.id}
+          title={statConfig.title}
+          iconName={statConfig.iconName}
+          quantity={statConfig.quantity}
+        />
+      ))}
+      {/* </ScrollView> */}
     </View>
   );
 });
@@ -171,31 +168,30 @@ type StatsButtonProps = {
 };
 
 const StatsButton = memo(({ title, iconName, quantity }: StatsButtonProps) => {
-  const { theme } = useUnistyles();
-
   const handleStatPress = useCallback(() => { }, []);
 
   return (
     <UIButton style={styles.statButton} onPress={handleStatPress} isLoading={false}>
-      <UIText style={styles.text} size="sm">
-        {title}
-      </UIText>
-
-      <Ionicons
-        color={theme.colors.icon}
-        size={theme.utils.s(20)}
-        name={iconName}
-      />
-
-      <UIText style={styles.text} size="md" weight="bold">
-        {quantity}
-      </UIText>
+      <View style={styles.statIconContainer}>
+        <Ionicons
+          color={styles.statsIcon.color}
+          size={styles.statsIcon.height}
+          name={iconName}
+        />
+      </View>
+      <View style={styles.statTextContainer}>
+        <UIText style={styles.text} size="sm" weight="bold">
+          {quantity}
+        </UIText>
+        <UIText style={styles.statTitle} size="sm">
+          {title}
+        </UIText>
+      </View>
     </UIButton>
   );
 });
 
 const NewPostButton = memo(() => {
-  const { theme } = useUnistyles();
   const router = useRouter();
 
   const navigateToNewPost = useCallback(() => {
@@ -210,11 +206,11 @@ const NewPostButton = memo(() => {
         isLoading={false}
       >
         <Ionicons
-          color={theme.colors.primaryText}
-          size={theme.utils.s(22)}
+          color={styles.newPostIcon.color}
+          size={styles.newPostIcon.height}
           name="add-outline"
         />
-        <UIText style={styles.text} size="md">
+        <UIText style={styles.newPostText} size="md" weight="bold">
           Create new post
         </UIText>
       </UIButton>
@@ -225,8 +221,7 @@ const NewPostButton = memo(() => {
 const styles = StyleSheet.create((theme) => ({
   page: {
     flex: 1,
-    gap: theme.utils.s(10),
-    paddingTop: theme.utils.vs(20),
+    paddingTop: theme.utils.vs(24),
   },
   list: { flex: 1, width: "100%" },
   postsContainer: {
@@ -237,8 +232,8 @@ const styles = StyleSheet.create((theme) => ({
     paddingBottom: theme.utils.vs(20),
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: theme.utils.s(10),
-    gap: theme.utils.s(20),
+    paddingHorizontal: theme.utils.s(16),
+    gap: theme.utils.s(16),
   },
   avatarContainer: {
     alignItems: "center",
@@ -246,12 +241,25 @@ const styles = StyleSheet.create((theme) => ({
   },
   infoContainer: {
     flex: 1,
-    gap: theme.utils.s(10),
+    gap: theme.utils.s(8),
+  },
+  editProfileIcon: {
+    color: theme.colors.accent,
+    height: theme.utils.s(20),
+  },
+  jobIcon: {
+    color: theme.colors.accent,
+    height: theme.utils.s(16),
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
     gap: theme.utils.s(8),
+  },
+
+  statsIcon: {
+    color: theme.colors.accent,
+    height: theme.utils.s(18),
   },
 
   text: {
@@ -262,47 +270,66 @@ const styles = StyleSheet.create((theme) => ({
   },
   bioText: {
     color: theme.colors.muted,
+    lineHeight: 20,
+  },
+  statTitle: {
+    color: theme.colors.muted,
   },
 
   divider: {
-    marginHorizontal: theme.utils.s(10),
+    marginHorizontal: theme.utils.s(16),
   },
 
   statsContainer: {
-    height: theme.utils.vs(160),
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: theme.utils.s(10),
     paddingVertical: theme.utils.vs(16),
-    paddingHorizontal: theme.utils.s(10),
-  },
-  scrollViewContent: {
-    alignItems: "center",
-    gap: theme.utils.s(14),
+    paddingHorizontal: theme.utils.s(16),
   },
   statButton: {
-    width: theme.utils.s(96),
-    height: theme.utils.vs(116),
+    flexGrow: 1,
+    minWidth: "45%",
+    paddingVertical: theme.utils.vs(12),
+    paddingHorizontal: theme.utils.s(14),
     backgroundColor: theme.colors.backgroundSubtle,
-    borderColor: theme.colors.borderSubtle,
-    borderWidth: 2,
     borderRadius: theme.utils.ms(16),
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.utils.s(12),
+  },
+  statIconContainer: {
+    width: theme.utils.s(38),
+    height: theme.utils.s(38),
+    borderRadius: theme.utils.ms(19),
+    backgroundColor: theme.colors.background,
     alignItems: "center",
     justifyContent: "center",
-    gap: theme.utils.s(8),
+  },
+  statTextContainer: {
+    flex: 1,
+    alignItems: "flex-start",
+    justifyContent: "center",
   },
 
   buttonContainer: {
-    paddingTop: theme.utils.vs(10),
     paddingBottom: theme.utils.vs(20),
-    paddingHorizontal: theme.utils.s(26),
+    paddingHorizontal: theme.utils.s(16),
+  },
+  newPostIcon: {
+    color: theme.colors.white,
+    height: theme.utils.s(22),
   },
   newPostButton: {
     paddingVertical: theme.utils.vs(14),
-    backgroundColor: theme.colors.backgroundSubtle,
-    borderColor: theme.colors.borderSubtle,
-    borderWidth: 2,
-    borderRadius: theme.utils.ms(20),
+    backgroundColor: theme.colors.accent,
+    borderRadius: theme.utils.ms(100),
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: theme.utils.s(10),
+  },
+  newPostText: {
+    color: theme.colors.white,
   },
 }));

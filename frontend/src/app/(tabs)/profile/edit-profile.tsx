@@ -1,11 +1,12 @@
 import { Icon, ThemedBackground } from "@/src/components";
-import { UIButton, UIText } from "@/src/ui";
+import { UIButton, UIInput, UIText } from "@/src/ui";
+import { UIKeyboardAvoidingScrollView } from "@/src/ui/molecules/UIKeyboardAvoidingScrollView";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { ComponentProps, memo, useCallback, useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, TextInput, View } from "react-native";
+import { View } from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 
 type ProfileData = {
   nickname: string;
@@ -29,7 +30,11 @@ const FORM_FIELDS_CONFIG: FormFieldConfig[] = [
     placeholder: "Edit nickname",
     autoCapitalize: "none",
   },
-  { id: "job", iconName: "briefcase-outline", placeholder: "Edit job" },
+  {
+    id: "job",
+    iconName: "briefcase-outline",
+    placeholder: "Edit job"
+  },
   {
     id: "biography",
     iconName: "chatbox-outline",
@@ -40,8 +45,7 @@ const FORM_FIELDS_CONFIG: FormFieldConfig[] = [
 
 export default function EditProfileScreen() {
   const router = useRouter();
-  const { theme } = useUnistyles()
-
+  // TODO: edit profile zod + react hook form
   const [formData, setFormData] = useState<ProfileData>({
     nickname: "",
     job: "",
@@ -85,30 +89,21 @@ export default function EditProfileScreen() {
     <ThemedBackground style={styles.page}>
       <HeaderSection onSave={onSave} onCancel={onCancel} />
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={theme.utils.vs(60)}
+      <UIKeyboardAvoidingScrollView
+        keyboardVerticalOffset={styles.keyboardVertivalOffset.paddingBottom}
       >
-        <ScrollView
-          contentContainerStyle={{ gap: theme.utils.s(20) }}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
+        <UIButton
+          style={styles.avatarContainer}
+          onPress={onAvatarPress}
+          isLoading={false}
         >
-          <UIButton
-            style={styles.avatarContainer}
-            onPress={onAvatarPress}
-            isLoading={false}
-          >
-            <View pointerEvents="none">
-              <Icon size="medium" profileImageUrl={formData.avatarUrl} />
-            </View>
-          </UIButton>
+          <View pointerEvents="none">
+            <Icon size="medium" profileImageUrl={formData.avatarUrl} />
+          </View>
+        </UIButton>
 
-          <FormSection formData={formData} onChange={handleInputChange} />
-        </ScrollView>
-      </KeyboardAvoidingView>
-
+        <FormSection formData={formData} onChange={handleInputChange} />
+      </UIKeyboardAvoidingScrollView>
 
     </ThemedBackground>
   );
@@ -188,8 +183,6 @@ const ProfileInput = memo(
     value,
     onChangeText,
   }: ProfileInputProps) => {
-    const { theme } = useUnistyles();
-
     const handleChangeText = useCallback((text: string) => {
       onChangeText(id, text);
     }, [id, onChangeText]);
@@ -202,17 +195,17 @@ const ProfileInput = memo(
         ]}
       >
         <Ionicons
-          color={theme.colors.muted}
-          size={18}
+          color={styles.iconInput.color}
+          size={styles.iconInput.height}
           name={iconName}
-          style={isMultiline ? { marginTop: theme.utils.vs(12) } : undefined}
+          style={isMultiline ? { marginTop: styles.iconInput.marginTop } : undefined}
         />
-
-        <TextInput
+        {/* TODO: UIInput */}
+        <UIInput
           style={[styles.defaultInput, isMultiline && styles.biographyInput]}
           multiline={isMultiline}
           placeholder={placeholder}
-          placeholderTextColor={theme.colors.muted}
+          placeholderTextColor={styles.placeholderInput.color}
           autoCapitalize={autoCapitalize}
           value={value}
           onChangeText={handleChangeText}
@@ -226,6 +219,7 @@ const styles = StyleSheet.create((theme) => ({
   page: {
     gap: theme.utils.s(20),
   },
+
 
   headerContainer: {
     flexDirection: "row",
@@ -241,6 +235,10 @@ const styles = StyleSheet.create((theme) => ({
   },
   doneText: {
     color: theme.colors.accent,
+  },
+
+  keyboardVertivalOffset: {
+    paddingBottom: theme.utils.vs(60),
   },
 
   avatarContainer: {
@@ -264,6 +262,11 @@ const styles = StyleSheet.create((theme) => ({
   inputContainerMultiline: {
     alignItems: "flex-start",
   },
+  iconInput: {
+    color: theme.colors.muted,
+    height: theme.utils.s(18),
+    marginTop: theme.utils.vs(12),
+  },
   defaultInput: {
     flex: 1,
     minHeight: theme.utils.vs(46),
@@ -274,4 +277,7 @@ const styles = StyleSheet.create((theme) => ({
     maxHeight: theme.utils.vs(360),
     textAlignVertical: "top",
   },
+  placeholderInput: {
+    color: theme.colors.muted,
+  }
 }));

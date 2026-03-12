@@ -5,7 +5,6 @@ import { memo } from "react";
 import {
   StyleSheet,
   UnistylesVariants,
-  useUnistyles,
 } from "react-native-unistyles";
 
 
@@ -22,6 +21,7 @@ export type IconProps = {
   profileImageUrl?: string;
   isBroadCasting?: boolean;
   isLoading?: boolean;
+  colorEmptyIcon?: string;
 } & UnistylesVariants<typeof styles>;
 
 export const Icon = memo(
@@ -30,8 +30,8 @@ export const Icon = memo(
     size,
     isBroadCasting = false,
     isLoading = false,
+    colorEmptyIcon = styles.emptyIcon.color,
   }: IconProps) => {
-    const { theme } = useUnistyles();
     styles.useVariants({ size: size });
 
     const fallbackSize = FALLBACK_ICON_SIZES[size as keyof typeof FALLBACK_ICON_SIZES] || FALLBACK_ICON_SIZES.default;
@@ -47,7 +47,7 @@ export const Icon = memo(
           />
         ) : (
           <Ionicons
-            color={theme.colors.icon}
+            color={colorEmptyIcon}
             size={fallbackSize}
             name="person"
           />
@@ -98,6 +98,9 @@ const styles = StyleSheet.create((theme) => ({
     width: "100%",
     height: "100%",
     borderRadius: 999,
+  },
+  emptyIcon: {
+    color: theme.colors.icon,
   },
   iconText: {
     position: "absolute",

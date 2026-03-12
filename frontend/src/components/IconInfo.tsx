@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { View } from "react-native";
-import { StyleSheet, UnistylesVariants, useUnistyles } from "react-native-unistyles";
+import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
 import { UIText } from "../ui";
 import { Icon } from "./Icon";
 
@@ -28,7 +28,6 @@ export const IconInfo = memo(
     usernameWeight,
     mode,
   }: IconInfoProps) => {
-    useUnistyles();
     styles.useVariants({ mode: mode });
 
     return (
@@ -38,6 +37,7 @@ export const IconInfo = memo(
           isLoading={isLoading}
           isBroadCasting={isBroadCasting}
           size={iconSize}
+          colorEmptyIcon={mode === "post" ? styles.emptyIcon.color : undefined}
         />
 
         <View style={styles.textWrapper}>
@@ -65,6 +65,9 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     alignItems: "center",
     gap: theme.utils.ms(10),
+  },
+  emptyIcon: {
+    color: theme.colors.white,
   },
   textWrapper: {
     flexShrink: 1,
