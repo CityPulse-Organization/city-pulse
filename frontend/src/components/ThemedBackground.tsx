@@ -11,12 +11,12 @@ type ThemedBackgroundProps = {
 export const ThemedBackground = ({
   children,
   style,
-  withSafeArea = true,
+  withSafeArea = false,
 }: ThemedBackgroundProps) => {
   return (
     <SafeAreaView
       style={styles.safeArea}
-      edges={withSafeArea ? ["top", "bottom"] : []}
+      edges={withSafeArea ? ["top", "bottom"] : ["top"]}
     >
       <View style={[styles.content, style]}>{children}</View>
     </SafeAreaView>

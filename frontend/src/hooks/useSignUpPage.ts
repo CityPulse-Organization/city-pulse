@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useRouter } from "expo-router";
 
 const schema = z
   .object({
@@ -19,6 +20,7 @@ const schema = z
 export type SignUpFormData = z.infer<typeof schema>;
 
 export const useSignUpPage = () => {
+  const router = useRouter();
   const { mutateAsync: register, isPending } = useRegister();
 
   const form = useForm<SignUpFormData>({
@@ -44,9 +46,19 @@ export const useSignUpPage = () => {
     [register],
   );
 
+  const onBackPress = useCallback(() => {
+    router.back();
+  }, [router]);
+
+  const onSignInPress = useCallback(() => {
+    router.replace("/sign-in");
+  }, [router]);
+
   return {
     control: form.control,
     onSubmit: form.handleSubmit(onSubmit),
     isPending,
+    onBackPress,
+    onSignInPress,
   };
 };

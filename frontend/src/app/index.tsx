@@ -7,10 +7,10 @@ import {
   withTiming,
   withDelay,
   useAnimatedReaction,
-  runOnJS,
 } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
 import { UILoader } from "@/src/ui";
+import { scheduleOnRN } from "react-native-worklets";
 
 export default function IndexRoute() {
   const { session, isLoading } = useSession();
@@ -25,7 +25,7 @@ export default function IndexRoute() {
     () => animDone.value,
     (value) => {
       if (value >= 1) {
-        runOnJS(setAnimReady)(true);
+        scheduleOnRN(setAnimReady, true);
       }
     },
   );

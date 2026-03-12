@@ -7,13 +7,13 @@ import {
   UIKeyboardAvoidingScrollView,
 } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { Controller } from "react-hook-form";
 import { Image, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function SignUpPage() {
-  const { control, onSubmit, isPending } = useSignUpPage();
+  const { control, onSubmit, isPending, onBackPress, onSignInPress } =
+    useSignUpPage();
 
   return (
     <View style={styles.mainContainer}>
@@ -27,7 +27,7 @@ export default function SignUpPage() {
         style={styles.formContainer}
         contentContainerStyle={styles.scrollContent}
       >
-        <UIButton onPress={() => router.back()}>
+        <UIButton onPress={onBackPress}>
           <Ionicons name="arrow-back" size={26} color="white" />
         </UIButton>
         <View style={styles.signUpContainer}>
@@ -110,7 +110,7 @@ export default function SignUpPage() {
             <UIText style={styles.googleText}>Continue with Google</UIText>
           </UIButton>
           <UIButton
-            onPress={() => router.replace("/sign-in")}
+            onPress={onSignInPress}
             style={styles.signUpContainerBottom}
           >
             <UIText style={styles.dontHaveAccountText}>
@@ -124,7 +124,6 @@ export default function SignUpPage() {
     </View>
   );
 }
-
 
 const styles = StyleSheet.create((theme, rt) => ({
   image: { width: "100%", height: "100%", position: "absolute" },
