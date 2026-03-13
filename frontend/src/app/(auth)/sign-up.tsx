@@ -39,18 +39,21 @@ export default function SignUpPage() {
           <View style={styles.inputsContainer}>
             <UIInput
               placeholderTextColor={styles.input.borderColor}
-              style={styles.input}
+              inputStyle={styles.input}
+              dividerColor="accent"
               placeholder="Login"
             />
             <UIInput
               placeholderTextColor={styles.input.borderColor}
-              style={styles.input}
+              inputStyle={styles.input}
+              dividerColor="accent"
               placeholder="Password"
               secureTextEntry
             />
             <UIInput
               placeholderTextColor={styles.input.borderColor}
-              style={styles.input}
+              inputStyle={styles.input}
+              dividerColor="accent"
               placeholder="Repeat your password"
               secureTextEntry
             />
@@ -106,9 +109,8 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   inputsContainer: { gap: 40, marginTop: 180 },
   input: {
-    backgroundColor: "transparent",
+    fontSize: theme.utils.ms(14),
     color: theme.colors.violet,
-    borderBottomWidth: 1,
     borderColor: theme.colors.violet,
   },
   bottomContainer: { marginTop: 60, alignItems: "center", gap: 20 },

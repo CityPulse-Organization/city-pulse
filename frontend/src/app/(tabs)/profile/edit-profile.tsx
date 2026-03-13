@@ -1,19 +1,14 @@
 import { Icon, ThemedBackground } from "@/src/components";
+import { ProfileData, useEditProfile } from "@/src/hooks/profile/useEditProfileForm";
 import { UIButton, UIInput, UIText } from "@/src/ui";
 import { UIKeyboardAvoidingScrollView } from "@/src/ui/molecules/UIKeyboardAvoidingScrollView";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { ComponentProps, memo, useCallback, useState } from "react";
+import { ComponentProps, memo, useCallback } from "react";
+import { Control, Controller, FieldErrors, useWatch } from "react-hook-form";
 import { View } from "react-native";
-import ImagePicker from "react-native-image-crop-picker";
 import { StyleSheet } from "react-native-unistyles";
 
-type ProfileData = {
-  nickname: string;
-  job: string;
-  biography: string;
-  avatarUrl: string;
-};
+
 
 type FormFieldConfig = {
   id: keyof ProfileData;
@@ -22,6 +17,8 @@ type FormFieldConfig = {
   isMultiline?: boolean;
   autoCapitalize?: "none";
 };
+
+type IconName = ComponentProps<typeof Ionicons>["name"];
 
 const FORM_FIELDS_CONFIG: FormFieldConfig[] = [
   {
@@ -44,46 +41,12 @@ const FORM_FIELDS_CONFIG: FormFieldConfig[] = [
 ];
 
 export default function EditProfileScreen() {
-  const router = useRouter();
-  // TODO: edit profile zod + react hook form
-  const [formData, setFormData] = useState<ProfileData>({
-    nickname: "",
-    job: "",
-    biography: "",
-    avatarUrl: "",
+  const { control, errors, handleAvatarPress, onCancel, onSave } = useEditProfile()
+
+  const avatarUrl = useWatch({
+    control,
+    name: "avatarUrl",
   });
-
-  const onCancel = useCallback(() => {
-    router.back();
-  }, [router]);
-
-  const onSave = useCallback(() => {
-    router.back();
-  }, [router]);
-
-  const onAvatarPress = useCallback(async () => {
-    ImagePicker.openPicker({
-      cropping: true,
-      cropperCircleOverlay: true,
-      mediaType: "photo",
-      forceJpg: true,
-      freeStyleCropEnabled: true,
-    })
-      .then((image) => {
-        setFormData((prev) => ({ ...prev, avatarUrl: image.path }));
-      })
-      .catch((error) => {
-        console.log("Image picker cancelled or failed", error);
-      });
-  }, []);
-
-  const handleInputChange = useCallback(
-    (fieldId: keyof ProfileData, text: string) => {
-      setFormData((prev) => ({ ...prev, [fieldId]: text }));
-    },
-    [],
-  );
-
 
   return (
     <ThemedBackground style={styles.page}>
@@ -94,15 +57,15 @@ export default function EditProfileScreen() {
       >
         <UIButton
           style={styles.avatarContainer}
-          onPress={onAvatarPress}
+          onPress={handleAvatarPress}
           isLoading={false}
         >
           <View pointerEvents="none">
-            <Icon size="medium" profileImageUrl={formData.avatarUrl} />
+            <Icon size="medium" profileImageUrl={avatarUrl} />
           </View>
         </UIButton>
 
-        <FormSection formData={formData} onChange={handleInputChange} />
+        <FormSection control={control} errors={errors} />
       </UIKeyboardAvoidingScrollView>
 
     </ThemedBackground>
@@ -137,89 +100,76 @@ const HeaderSection = memo(({ onCancel, onSave }: HeaderSectionProps) => {
   );
 });
 
+
+
 type FormSectionProps = {
-  formData: ProfileData;
-  onChange: (id: keyof ProfileData, text: string) => void;
+  control: Control<ProfileData>;
+  errors: FieldErrors<ProfileData>;
 };
 
-const FormSection = memo(({ formData, onChange }: FormSectionProps) => {
+const FormSection = memo(({ control, errors }: FormSectionProps) => (
+  <View style={styles.formContainer}>
+    {FORM_FIELDS_CONFIG.map((field) => (
+      <FormFieldItem
+        key={field.id}
+        field={field}
+        control={control}
+        errorMessage={errors[field.id]?.message}
+      />
+    ))}
+  </View>
+));
+
+
+const FormFieldItem = memo(({ field, control, errorMessage }: {
+  field: FormFieldConfig;
+  control: Control<ProfileData>;
+  errorMessage?: string;
+}) => {
   return (
-    <View style={styles.formContainer}>
-      {FORM_FIELDS_CONFIG.map((field) => (
-        <ProfileInput
-          key={field.id}
-          id={field.id}
-          iconName={field.iconName}
-          placeholder={field.placeholder}
-          isMultiline={field.isMultiline}
-          autoCapitalize={field.autoCapitalize}
-          value={formData[field.id]}
-          onChangeText={onChange}
-        />
-      ))}
+    <View style={styles.fieldWrapper}>
+      <Controller
+        control={control}
+        name={field.id}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <UIInput
+            leftElement={
+              <Ionicons
+                name={field.iconName}
+                size={styles.iconInput.height}
+                color={errorMessage ? styles.errorText.color : styles.iconInput.color}
+              />
+            }
+            containerStyle={[
+              field.isMultiline && styles.inputContainerMultiline,
+              errorMessage && styles.inputErrorBorder
+            ]}
+            inputStyle={field.isMultiline ? styles.biographyInput : undefined}
+            multiline={field.isMultiline}
+            placeholder={field.placeholder}
+            placeholderTextColor={styles.placeholderInput.color}
+            autoCapitalize={field.autoCapitalize}
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+          />
+        )}
+      />
+      {errorMessage && (
+        <UIText style={styles.errorText} size="sm">
+          {errorMessage}
+        </UIText>
+      )}
     </View>
   );
 });
 
-type IconName = ComponentProps<typeof Ionicons>["name"];
 
-type ProfileInputProps = {
-  id: keyof ProfileData;
-  iconName: IconName;
-  placeholder: string;
-  isMultiline?: boolean;
-  autoCapitalize?: "none";
-  value: string;
-  onChangeText: (id: keyof ProfileData, text: string) => void;
-};
-
-const ProfileInput = memo(
-  ({
-    id,
-    iconName,
-    placeholder,
-    isMultiline = false,
-    autoCapitalize,
-    value,
-    onChangeText,
-  }: ProfileInputProps) => {
-    const handleChangeText = useCallback((text: string) => {
-      onChangeText(id, text);
-    }, [id, onChangeText]);
-
-    return (
-      <View
-        style={[
-          styles.inputContainer,
-          isMultiline && styles.inputContainerMultiline,
-        ]}
-      >
-        <Ionicons
-          color={styles.iconInput.color}
-          size={styles.iconInput.height}
-          name={iconName}
-          style={isMultiline ? { marginTop: styles.iconInput.marginTop } : undefined}
-        />
-        {/* TODO: UIInput */}
-        <UIInput
-          style={[styles.defaultInput, isMultiline && styles.biographyInput]}
-          multiline={isMultiline}
-          placeholder={placeholder}
-          placeholderTextColor={styles.placeholderInput.color}
-          autoCapitalize={autoCapitalize}
-          value={value}
-          onChangeText={handleChangeText}
-        />
-      </View>
-    );
-  },
-);
 
 const styles = StyleSheet.create((theme) => ({
   page: {
-    gap: theme.utils.s(20),
+    gap: theme.utils.s(10),
   },
-
 
   headerContainer: {
     flexDirection: "row",
@@ -250,34 +200,33 @@ const styles = StyleSheet.create((theme) => ({
   formContainer: {
     alignSelf: "stretch",
     paddingHorizontal: theme.utils.s(30),
+    paddingTop: theme.utils.vs(10),
     gap: theme.utils.s(14),
   },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderColor: theme.colors.muted,
-    borderBottomWidth: 1,
-    gap: theme.utils.s(10),
+  fieldWrapper: {
+    gap: theme.utils.vs(4),
   },
   inputContainerMultiline: {
-    alignItems: "flex-start",
+    alignItems: "baseline",
   },
   iconInput: {
     color: theme.colors.muted,
     height: theme.utils.s(18),
     marginTop: theme.utils.vs(12),
   },
-  defaultInput: {
-    flex: 1,
-    minHeight: theme.utils.vs(46),
-    fontSize: theme.utils.ms(16),
-    color: theme.colors.primaryText,
-  },
   biographyInput: {
-    maxHeight: theme.utils.vs(360),
+    maxHeight: theme.utils.vs(340),
     textAlignVertical: "top",
   },
   placeholderInput: {
     color: theme.colors.muted,
+  },
+
+  errorText: {
+    color: theme.colors.alert,
+    marginLeft: theme.utils.s(28),
+  },
+  inputErrorBorder: {
+    borderColor: theme.colors.alert,
   }
 }));

@@ -1,81 +1,76 @@
-import { TextInput, TextInputProps, View, ViewStyle } from "react-native";
+import { StyleProp, TextInput, TextInputProps, TextStyle, View, ViewStyle } from "react-native";
 import {
   StyleSheet,
   UnistylesVariants,
-  useUnistyles,
 } from "react-native-unistyles";
-import { moderateScale, scale } from "../unistyles";
 
 type UIInputProps = {
-  rightElement?: React.ReactNode;
-  style?: ViewStyle[];
+  leftElement?: React.ReactNode;
+  containerStyle?: StyleProp<ViewStyle>;
+  inputStyle?: StyleProp<TextStyle>;
+  dividerColor?: "accent";
 } & TextInputProps &
   UnistylesVariants<typeof styles>;
 
 export const UIInput = ({
-  rightElement,
-  inputTheme,
-  style,
+  leftElement,
+  dividerColor,
+  containerStyle,
+  inputStyle,
   placeholderTextColor,
   ...props
 }: UIInputProps) => {
-  const { theme } = useUnistyles();
   styles.useVariants({
-    inputTheme: inputTheme,
+    dividerColor: dividerColor,
   });
+
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, containerStyle]}>
+
+      {leftElement && (
+        <View style={styles.leftElement}>{leftElement}</View>
+      )}
+
       <TextInput
-        placeholderTextColor={
-          placeholderTextColor
-            ? placeholderTextColor
-            : inputTheme === "dark"
-              ? theme.colors.lightGray
-              : theme.colors.gray
-        }
+        placeholderTextColor={placeholderTextColor ?? styles.placeholderColor.color}
+        style={[styles.input, inputStyle]}
         {...props}
-        style={[styles.input, style]}
       />
-      {rightElement ? (
-        <>
-          <View style={styles.divider} />
-          <View style={styles.rightElement}>{rightElement}</View>
-        </>
-      ) : null}
+
     </View>
   );
 };
 
 const styles = StyleSheet.create((theme) => ({
-  divider: {
-    height: "100%",
-    width: scale(1),
-    backgroundColor: theme.colors.lightGray,
-  },
   container: {
     flexDirection: "row",
     alignItems: "center",
-    borderColor: theme.colors.black10,
-    marginHorizontal: scale(8),
-    backgroundColor: theme.colors.black,
-  },
-  input: {
-    flex: 8,
-    paddingLeft: moderateScale(10),
+    borderBottomWidth: 1,
+    gap: theme.utils.s(10),
     variants: {
-      inputTheme: {
-        dark: {
-          color: theme.colors.white,
-          backgroundColor: theme.colors.black,
-        },
+      dividerColor: {
         default: {
-          color: theme.colors.black,
-          backgroundColor: theme.colors.white,
+          borderColor: theme.colors.muted,
+        },
+        accent: {
+          borderColor: theme.colors.violet,
         }
       },
     },
   },
-  rightElement: {
+
+  input: {
     flex: 1,
+    fontSize: theme.utils.ms(16),
+    color: theme.colors.primaryText,
+  },
+
+  placeholderColor: {
+    color: theme.colors.muted,
+  },
+
+  leftElement: {
+    justifyContent: "center",
+    alignItems: "center",
   },
 }));
