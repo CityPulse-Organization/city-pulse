@@ -61,7 +61,7 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(UserService service) {
         return username -> {
-            var user = service.findUserByUsername(username);
+            var user = service.findByUsername(username);
             return new User(user.getUsername(), user.getPassword(), Collections.emptyList());
         };
     }

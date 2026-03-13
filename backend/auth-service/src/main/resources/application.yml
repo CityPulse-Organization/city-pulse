@@ -1,6 +1,7 @@
 app:
   api:
     version: v1
+  base-path: /api/${app.api.version}
   jwt:
     key-id: ${APP_JWT_KEY_ID:key-1}
     keys:
@@ -18,7 +19,6 @@ spring:
         registration:
           google:
             client-id: ${OAUTH_GOOGLE_CLIENT_ID:notexists}
-
   jpa:
     open-in-view: false
     hibernate:

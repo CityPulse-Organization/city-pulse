@@ -8,8 +8,8 @@ public class OAuth2RegistrationRequiredException extends RuntimeException {
     private final String email;
     private final OAuth2Provider provider;
 
-    public OAuth2RegistrationRequiredException(String message, String email, OAuth2Provider provider) {
-        super(message);
+    public OAuth2RegistrationRequiredException(String email, OAuth2Provider provider) {
+        super("User not found. Please provide a username.");
         this.email = email;
         this.provider = provider;
     }

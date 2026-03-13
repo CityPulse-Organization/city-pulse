@@ -18,12 +18,8 @@ public class CustomJwtAuthenticationConverter implements Converter<Jwt, Abstract
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {
         var id = Long.valueOf(jwt.getSubject());
-        var user = service.findUserById(id);
+        var user = service.findById(id);
 
-        return new UsernamePasswordAuthenticationToken(
-                user,
-                jwt,
-                converter.convert(jwt)
-        );
+        return new UsernamePasswordAuthenticationToken(user, jwt, converter.convert(jwt));
     }
 }

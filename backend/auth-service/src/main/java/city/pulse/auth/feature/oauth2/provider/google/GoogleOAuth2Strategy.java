@@ -3,7 +3,6 @@ package city.pulse.auth.feature.oauth2.provider.google;
 import city.pulse.auth.feature.oauth2.dto.OAuth2UserInfo;
 import city.pulse.auth.feature.oauth2.provider.OAuth2Provider;
 import city.pulse.auth.feature.oauth2.strategy.OAuth2ProviderStrategy;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
@@ -30,25 +29,21 @@ public class GoogleOAuth2Strategy implements OAuth2ProviderStrategy {
     @Override
     public OAuth2UserInfo validateAndExtract(String token) {
         try {
-            GoogleIdToken idToken = verifier.verify(token);
-            if (idToken != null) {
-                GoogleIdToken.Payload payload = idToken.getPayload();
+            var idToken = verifier.verify(token);
 
-                Boolean emailVerified = payload.getEmailVerified();
-                if (emailVerified == null || !emailVerified) {
-                    throw new IllegalArgumentException("Google account email is not verified");
-                }
-
-                return new OAuth2UserInfo(
-                        payload.getEmail(),
-                        (String) payload.get("name"),
-                        payload.getSubject()
-                );
-            } else {
+            if (idToken == null) {
                 throw new IllegalArgumentException("Invalid Google ID token (check Client ID or expiration)");
             }
+
+            var payload = idToken.getPayload();
+
+            if (!Boolean.TRUE.equals(payload.getEmailVerified())) {
+                throw new IllegalArgumentException("Google account email is not verified");
+            }
+
+            return new OAuth2UserInfo(payload.getEmail(), (String) payload.get("name"), payload.getSubject());
         } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to verify Google token: " + e.getMessage());
+            throw new IllegalArgumentException("Failed to verify Google token: " + e.getMessage(), e);
         }
     }
 }
