@@ -1,19 +1,11 @@
 package city.pulse.auth.feature.service.impl;
 
 import city.pulse.auth.feature.dto.*;
-import city.pulse.auth.feature.exception.UserAlreadyExistsException;
 import city.pulse.auth.feature.mapper.UserMapper;
-import city.pulse.auth.feature.repository.UserRepository;
-import city.pulse.auth.feature.service.AuthService;
-import city.pulse.auth.feature.service.JwtService;
-import city.pulse.auth.feature.service.RefreshTokenService;
-import city.pulse.auth.feature.service.UserService;
-import city.pulse.auth.feature.validator.UserValidator;
+import city.pulse.auth.feature.service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,59 +13,37 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
-    private final RefreshTokenService refreshTokenService;
+    private final AuthTokenService authTokenService;
     private final UserService userService;
-    private final JwtService jwtService;
-
-    private final UserRepository repository;
-    private final UserValidator validator;
     private final UserMapper mapper;
-    private final PasswordEncoder encoder;
 
     @Override
+    @Transactional
     public AuthResponse login(AuthRequest dto) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.username(), dto.password())
         );
 
-        var user = userService.findUserByUsername(dto.username());
-
-        var access = jwtService.createAccessToken(user.getId(), user.getRole());
-        var refresh = refreshTokenService.issue(user);
-
-        return new AuthResponse(access, refresh);
-    }
-
-    @Override
-    public AuthResponse refresh(RefreshTokenRequest dto) {
-        var token = refreshTokenService.validateActive(dto.token());
-        var user = token.getUser();
-
-        var newAccess = jwtService.createAccessToken(user.getId(), user.getRole());
-        var newRefresh = refreshTokenService.rotate(token);
-
-        return new AuthResponse(newAccess, newRefresh);
-    }
-
-    @Override
-    public void logout(RefreshTokenRequest dto) {
-        var token = refreshTokenService.validateActive(dto.token());
-        refreshTokenService.revokeById(token.getId());
+        var user = userService.findByUsername(dto.username());
+        return authTokenService.generateTokenPair(user);
     }
 
     @Override
     @Transactional
-    public RegistrationResponse createUser(RegistrationRequest dto) {
-        validator.validateCreate(dto.username(), dto.email());
+    public AuthResponse refresh(RefreshTokenRequest dto) {
+        return authTokenService.rotateToken(dto.token());
+    }
 
-        var encodedPassword = encoder.encode(dto.password());
-        var user = mapper.toEntity(dto,encodedPassword);
+    @Override
+    @Transactional
+    public void logout(RefreshTokenRequest dto) {
+        authTokenService.revokeToken(dto.token());
+    }
 
-        try {
-            var saved = repository.save(user);
-            return mapper.toDTO(saved);
-        } catch (DataIntegrityViolationException e) {
-            throw new UserAlreadyExistsException("A user with given credentials already exists");
-        }
+    @Override
+    @Transactional
+    public RegistrationResponse register(RegistrationRequest dto) {
+        var user = userService.register(dto);
+        return mapper.toDTO(user);
     }
 }

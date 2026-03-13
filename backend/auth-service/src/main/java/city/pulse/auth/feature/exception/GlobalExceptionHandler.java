@@ -1,5 +1,7 @@
 package city.pulse.auth.feature.exception;
 
+import city.pulse.auth.feature.oauth2.exception.OAuth2RegistrationRequiredException;
+import city.pulse.auth.feature.oauth2.exception.UnsupportedOAuth2ProviderException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
@@ -70,6 +73,31 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+    }
+
+    @ExceptionHandler(OAuth2RegistrationRequiredException.class)
+    public ResponseEntity<Map<String, Object>> handleOAuth2RegistrationRequired(OAuth2RegistrationRequiredException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                Map.of(
+                "status", "REGISTRATION_REQUIRED",
+                "email", ex.getEmail(),
+                "provider", ex.getProvider(),
+                "message", ex.getMessage()
+                )
+        );
+    }
+
+    @ExceptionHandler(UnsupportedOAuth2ProviderException.class)
+    public ResponseEntity<ErrorResponse> handleUnsupportedOAuth2ProviderException(UnsupportedOAuth2ProviderException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getMessage(),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)

@@ -17,7 +17,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import city.pulse.auth.feature.security.exception.RestAccessDeniedHandler;
@@ -44,6 +43,7 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(basePath + "/auth/**").permitAll()
+                        .requestMatchers(basePath + "/oauth2/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -61,14 +61,9 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(UserService service) {
         return username -> {
-            var user = service.findUserByUsername(username);
+            var user = service.findByUsername(username);
             return new User(user.getUsername(), user.getPassword(), Collections.emptyList());
         };
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     @Bean
