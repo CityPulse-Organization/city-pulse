@@ -3,7 +3,6 @@ spring:
     url: jdbc:postgresql://localhost:5433/post_db
     username: dev_user
     password: dev_password
-    driver-class-name: org.postgresql.Driver
 
   security:
     oauth2:
