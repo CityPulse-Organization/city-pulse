@@ -67,7 +67,6 @@ const styles = StyleSheet.create((theme) => ({
   page: {
     flex: 1,
     gap: 10,
-    paddingTop: 20,
     paddingHorizontal: 10,
   },
   list: { flex: 1, width: "100%" },

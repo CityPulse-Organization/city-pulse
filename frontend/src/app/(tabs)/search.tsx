@@ -1,11 +1,18 @@
-import { IconInfo, ThemedBackground } from "@/src/components";
-import { UIButton } from "@/src/ui";
+import { IconInfo, Post, POSTS, ThemedBackground } from "@/src/components";
+import { UIButton, UIInput, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
 import { memo, useCallback, useMemo, useState } from "react";
-import { TextInput, View } from "react-native";
+import { Pressable, TextInput, View } from "react-native";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
+import {
+  TabBarProps,
+  Tabs,
+  useFocusedTab,
+} from "react-native-collapsible-tab-view";
+import { PostItem } from "@/src/components/Post";
 
 const SEARCH_USERS = [
   {
@@ -106,7 +113,42 @@ const SEARCH_USERS = [
   },
 ];
 
+const PLACES = [
+  {
+    id: "1",
+    name: "Union Square",
+    location: "San Francisco, CA",
+    type: "Park",
+  },
+  {
+    id: "2",
+    name: "Golden Gate Bridge",
+    location: "San Francisco, CA",
+    type: "Landmark",
+  },
+  {
+    id: "3",
+    name: "Fisherman's Wharf",
+    location: "San Francisco, CA",
+    type: "Tourist Attraction",
+  },
+  { id: "4", name: "Pier 39", location: "San Francisco, CA", type: "Shopping" },
+  {
+    id: "5",
+    name: "Alcatraz Island",
+    location: "San Francisco, CA",
+    type: "Historical Site",
+  },
+  {
+    id: "6",
+    name: "Chinatown",
+    location: "San Francisco, CA",
+    type: "Neighborhood",
+  },
+];
+
 type SearchUser = (typeof SEARCH_USERS)[0];
+type Place = (typeof PLACES)[0];
 
 const SearchItem = memo(({ item }: { item: SearchUser }) => (
   <View style={styles.itemContainer}>
@@ -119,7 +161,101 @@ const SearchItem = memo(({ item }: { item: SearchUser }) => (
   </View>
 ));
 
+const PlaceItem = memo(({ item }: { item: Place }) => (
+  <View style={styles.placeItemContainer}>
+    <View style={styles.placeIconContainer}>
+      <Ionicons
+        name="location"
+        size={20}
+        color={UnistylesRuntime.getTheme().colors.primaryTextColor}
+      />
+    </View>
+    <View style={styles.placeTextContainer}>
+      <UIText weight="bold">{item.name}</UIText>
+      <UIText size="sm" style={styles.placeLocationText}>
+        {item.type} • {item.location}
+      </UIText>
+    </View>
+  </View>
+));
+
 const ItemSeparator = memo(() => <View style={styles.separator} />);
+
+const SearchTab = ({
+  name,
+  label,
+  onPress,
+  focusedTab,
+}: {
+  name: string;
+  label: string;
+  onPress: () => void;
+  focusedTab: any;
+}) => {
+  const theme = UnistylesRuntime.getTheme();
+  const activeColor = theme.colors.primaryTextColor;
+  const inactiveColor = theme.colors.backgroundColor;
+  const activeTextColor = theme.colors.white;
+  const inactiveTextColor = theme.colors.gray;
+
+  const animatedStyle = useAnimatedStyle(() => {
+    const isSelected = focusedTab.value === name;
+    return {
+      borderColor: isSelected ? activeColor : inactiveColor,
+    };
+  });
+
+  const animatedTextStyle = useAnimatedStyle(() => {
+    const isSelected = focusedTab.value === name;
+    return {
+      color: isSelected ? activeTextColor : inactiveTextColor,
+    };
+  });
+
+  return (
+    <Pressable onPress={onPress} style={{ flex: 1 }}>
+      <Animated.View style={[styles.tabContent, animatedStyle]}>
+        <Animated.Text style={[styles.tabTextBase, animatedTextStyle]}>
+          {label}
+        </Animated.Text>
+      </Animated.View>
+    </Pressable>
+  );
+};
+
+const SearchTabBar = (props: TabBarProps<string>) => {
+  const onPeoplePress = useCallback(() => {
+    props.onTabPress("people");
+  }, [props]);
+  const onPostsPress = useCallback(() => {
+    props.onTabPress("posts");
+  }, [props]);
+  const onPlacesPress = useCallback(() => {
+    props.onTabPress("places");
+  }, [props]);
+  return (
+    <View style={styles.tabBar}>
+      <SearchTab
+        name="people"
+        label="People"
+        onPress={onPeoplePress}
+        focusedTab={props.focusedTab}
+      />
+      <SearchTab
+        name="posts"
+        label="Posts"
+        onPress={onPostsPress}
+        focusedTab={props.focusedTab}
+      />
+      <SearchTab
+        name="places"
+        label="Places"
+        onPress={onPlacesPress}
+        focusedTab={props.focusedTab}
+      />
+    </View>
+  );
+};
 
 export default function SearchScreen() {
   const [input, setInput] = useState("");
@@ -139,52 +275,172 @@ export default function SearchScreen() {
     [],
   );
 
-  const keyExtractor = useCallback((item: SearchUser) => item.id, []);
+  const keyExtractor = useCallback((item: { id: string }) => item.id, []);
+
+  const filteredPosts = useMemo(() => {
+    if (!input.trim()) return POSTS;
+    const query = input.toLowerCase().trim();
+    return POSTS.filter(
+      (post) =>
+        post.username.toLowerCase().includes(query) ||
+        post.description?.toLowerCase().includes(query) ||
+        post.location.toLowerCase().includes(query),
+    );
+  }, [input]);
+
+  const filteredPlaces = useMemo(() => {
+    if (!input.trim()) return PLACES;
+    const query = input.toLowerCase().trim();
+    return PLACES.filter(
+      (place) =>
+        place.name.toLowerCase().includes(query) ||
+        place.location.toLowerCase().includes(query) ||
+        place.type.toLowerCase().includes(query),
+    );
+  }, [input]);
+
+  const renderPost = useCallback(
+    ({ item }: { item: PostItem }) => <Post data={item} onPress={() => {}} />,
+    [],
+  );
+
+  const renderPlace = useCallback(
+    ({ item }: { item: Place }) => <PlaceItem item={item} />,
+    [],
+  );
 
   return (
-    <ThemedBackground>
+    <ThemedBackground withSafeArea={false}>
       <View style={styles.searchHeader}>
-        <BlurView tint={UnistylesRuntime.themeName} style={styles.glass}>
+        <BlurView
+          tint={UnistylesRuntime.themeName}
+          intensity={60}
+          style={styles.searchContainer}
+        >
+          <Ionicons name="search" size={20} style={styles.searchIcon} />
           <TextInput
             value={input}
             onChangeText={setInput}
             placeholder="Search..."
             placeholderTextColor={styles.placeHolderTextColor.color}
             style={styles.search}
+            selectionColor={styles.icon.color}
           />
-          <UIButton style={styles.iconButton} onPress={() => {}} hitSlop={15}>
-            <Ionicons name="search" size={24} style={styles.icon} />
-          </UIButton>
+          {input.length > 0 && (
+            <Pressable onPress={() => setInput("")}>
+              <Ionicons
+                name="close-circle"
+                size={20}
+                style={styles.clearIcon}
+              />
+            </Pressable>
+          )}
         </BlurView>
       </View>
+      <Tabs.Container renderTabBar={SearchTabBar}>
+        <Tabs.Tab name="people" label="People">
+          <Tabs.FlashList
+            data={filteredUsers}
+            renderItem={renderItem}
+            keyExtractor={keyExtractor}
+            ItemSeparatorComponent={ItemSeparator}
+            getItemType={() => "SearchUser"}
+            style={styles.list}
+            bounces={false}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+            contentContainerStyle={styles.containerStyle}
+            showsVerticalScrollIndicator={false}
+          />
+        </Tabs.Tab>
+        <Tabs.Tab name="posts" label="Posts">
+          <Tabs.FlashList
+            data={filteredPosts}
+            renderItem={renderPost}
+            keyExtractor={keyExtractor}
+            getItemType={() => "PostItem"}
+            numColumns={2}
+            style={styles.list}
+            bounces={false}
+            contentContainerStyle={styles.containerStyle}
+            showsVerticalScrollIndicator={false}
+          />
+        </Tabs.Tab>
 
-      <FlashList
-        data={filteredUsers}
-        renderItem={renderItem}
-        keyExtractor={keyExtractor}
-        ItemSeparatorComponent={ItemSeparator}
-        getItemType={() => "SearchUser"}
-        style={styles.list}
-        keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="on-drag"
-        contentContainerStyle={styles.containerStyle}
-        showsVerticalScrollIndicator={false}
-      />
+        <Tabs.Tab name="places" label="Places">
+          <Tabs.FlashList
+            data={filteredPlaces}
+            renderItem={renderPlace}
+            keyExtractor={keyExtractor}
+            bounces={false}
+            ItemSeparatorComponent={ItemSeparator}
+            contentContainerStyle={styles.containerStyle}
+            showsVerticalScrollIndicator={false}
+          />
+        </Tabs.Tab>
+      </Tabs.Container>
     </ThemedBackground>
   );
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
+  tabTextBase: {
+    fontSize: theme.utils.s(16),
+  },
   title: {
     color: theme.colors.primaryTextColor,
     fontSize: 20,
     fontWeight: "bold",
   },
-  searchHeader: { paddingVertical: 20 },
-  itemContainer: { justifyContent: "flex-start", alignItems: "flex-start" },
+  searchHeader: {
+    paddingHorizontal: theme.utils.s(16),
+    paddingTop: rt.insets.top + theme.utils.vs(10),
+    paddingBottom: theme.utils.vs(15),
+    backgroundColor: theme.colors.backgroundColor,
+  },
+
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: theme.utils.s(22),
+    paddingHorizontal: theme.utils.s(15),
+    height: theme.utils.vs(44),
+    borderWidth: 1,
+    borderColor: theme.colors.dividerColor,
+    overflow: "hidden",
+  },
+  itemContainer: {
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+  },
   separator: { height: 20 },
-  list: { flex: 1, width: "100%" },
-  containerStyle: { padding: 20, paddingBottom: 100 },
+  list: { flex: 1, width: "100%", paddingVertical: theme.utils.vs(10) },
+  containerStyle: {
+    padding: theme.utils.s(20),
+    paddingTop: theme.utils.vs(30),
+    paddingBottom: theme.utils.vs(100),
+  },
+  placeItemContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: theme.utils.vs(12),
+  },
+  placeIconContainer: {
+    width: theme.utils.s(40),
+    height: theme.utils.s(40),
+    borderRadius: theme.utils.s(20),
+    backgroundColor: "rgba(255,255,255,0.05)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: theme.utils.s(12),
+  },
+  placeTextContainer: {
+    flex: 1,
+  },
+  placeLocationText: {
+    color: theme.colors.gray,
+    marginTop: theme.utils.vs(2),
+  },
   glass: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -198,10 +454,18 @@ const styles = StyleSheet.create((theme) => ({
   },
   search: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    fontSize: 16,
+    fontSize: theme.utils.s(16),
     color: theme.colors.primaryTextColor,
+    paddingVertical: theme.utils.vs(8),
+    height: "100%",
+  },
+  searchIcon: {
+    color: theme.colors.iconInfoStatusTextColor,
+    marginRight: theme.utils.s(10),
+  },
+  clearIcon: {
+    color: theme.colors.iconInfoStatusTextColor,
+    opacity: 0.7,
   },
   iconButton: {
     alignSelf: "center",
@@ -212,5 +476,16 @@ const styles = StyleSheet.create((theme) => ({
   },
   placeHolderTextColor: {
     color: theme.colors.iconInfoStatusTextColor,
+  },
+  tabBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: theme.colors.backgroundColor,
+  },
+  tabContent: {
+    borderBottomWidth: theme.utils.vs(2),
+    alignItems: "center",
+    paddingVertical: theme.utils.vs(12),
+    flex: 1,
   },
 }));

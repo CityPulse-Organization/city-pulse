@@ -18,7 +18,7 @@ export default {
     },
     ios: {
       supportsTablet: true,
-      bundleIdentifier: "com.citypulse.app",
+      bundleIdentifier: "com.citypulse.mobile",
       infoPlist: {
         NSCameraUsageDescription:
           "Allow City Pulse to access your camera to take profile and post pictures.",
@@ -36,7 +36,7 @@ export default {
       },
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
-      package: "com.citypulse.app",
+      package: "com.citypulse.mobile",
       permissions: [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",

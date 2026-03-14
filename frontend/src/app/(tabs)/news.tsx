@@ -44,7 +44,7 @@ export default function NewsScreen() {
 }
 
 const styles = StyleSheet.create((theme) => ({
-  page: { flex: 1, gap: 10, paddingHorizontal: 20, paddingTop: 20 },
+  page: { flex: 1, gap: 10, paddingHorizontal: 20 },
   list: { flex: 1, width: "100%" },
   postsContainer: { paddingBottom: 100 },
 }));

@@ -1,5 +1,4 @@
 import { StyleProp, View, ViewStyle } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 
 type ThemedBackgroundProps = {
@@ -11,22 +10,33 @@ type ThemedBackgroundProps = {
 export const ThemedBackground = ({
   children,
   style,
-  withSafeArea = false,
+  withSafeArea = true,
 }: ThemedBackgroundProps) => {
   return (
-    <SafeAreaView
-      style={styles.safeArea}
-      edges={withSafeArea ? ["top", "bottom"] : ["top"]}
+    <View
+      style={[
+        withSafeArea ? styles.safeArea : styles.background,
+        styles.content,
+        style,
+      ]}
     >
-      <View style={[styles.content, style]}>{children}</View>
-    </SafeAreaView>
+      {children}
+    </View>
   );
 };
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
+  background: {
+    flex: 1,
+    backgroundColor: theme.colors.backgroundColor,
+  },
   safeArea: {
     flex: 1,
     backgroundColor: theme.colors.backgroundColor,
+    paddingTop: rt.insets.top,
+    paddingBottom: rt.insets.bottom,
+    paddingLeft: rt.insets.left,
+    paddingRight: rt.insets.right,
   },
   content: {
     flex: 1,
