@@ -1,2 +1,3 @@
 CREATE DATABASE auth_db;
 CREATE DATABASE post_db;
+CREATE DATABASE user_db;

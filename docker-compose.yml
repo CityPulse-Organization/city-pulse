@@ -88,6 +88,19 @@ services:
     env_file:
       - .env-post
 
+  user-service:
+    image: denys1204/city-pulse-user-service:${USER_SERVICE_VERSION:-latest}
+    container_name: city-pulse-user-service
+    expose:
+      - "8083"
+    networks:
+      - city-pulse-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env-user
+
   api-gateway:
     image: denys1204/city-pulse-api-gateway:${API_GATEWAY_VERSION:-latest}
     container_name: city-pulse-api-gateway
@@ -98,6 +111,7 @@ services:
     depends_on:
       - auth-service
       - post-service
+      - user-service
 
 volumes:
   postgres_data:

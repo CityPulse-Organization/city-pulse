@@ -38,6 +38,7 @@ yarn-error.*
 .env-auth
 .env-post
 .env-gateway
+.env-user
 
 # typescript
 *.tsbuildinfo
