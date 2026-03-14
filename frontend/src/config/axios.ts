@@ -124,13 +124,21 @@ axiosInstance.interceptors.response.use(
       }
     }
 
-    console.error("[Axios Error Details]", {
-      url: error.config?.url,
-      method: error.config?.method,
-      status: error.response?.status,
-      data: JSON.stringify(error.response?.data, null, 2),
-      message: error.message,
-    });
+    const isRegistrationRequired =
+      error.response?.status === 404 &&
+      (error.response?.data?.status === "REGISTRATION_REQUIRED" ||
+        (typeof error.response?.data === "string" &&
+          error.response.data.includes("REGISTRATION_REQUIRED")));
+
+    if (!isRegistrationRequired) {
+      console.error("[Axios Error Details]", {
+        url: error.config?.url,
+        method: error.config?.method,
+        status: error.response?.status,
+        data: JSON.stringify(error.response?.data, null, 2),
+        message: error.message,
+      });
+    }
     return Promise.reject(error);
   },
 );

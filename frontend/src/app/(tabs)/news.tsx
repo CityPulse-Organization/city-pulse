@@ -1,4 +1,6 @@
 import { Post, PostItem, POSTS, ThemedBackground } from "@/src/components";
+import { useLogout } from "@/src/hooks";
+import { UIButton, UIText } from "@/src/ui";
 import { FlashList } from "@shopify/flash-list";
 import { useRouter } from "expo-router";
 import { useCallback } from "react";
@@ -6,6 +8,7 @@ import { StyleSheet } from "react-native-unistyles";
 
 export default function NewsScreen() {
   const router = useRouter();
+  // const { mutate: logout } = useLogout();
   const openPost = useCallback(
     ({ id }: { id: string }) => {
       router.push({
@@ -33,6 +36,9 @@ export default function NewsScreen() {
 
   return (
     <ThemedBackground style={styles.page}>
+      {/* <UIButton onPress={() => logout()} isLoading={false}>
+        <UIText style={styles.logoutText}>Logout</UIText>
+      </UIButton> */}
       <FlashList
         showsVerticalScrollIndicator={false}
         masonry
@@ -52,4 +58,7 @@ const styles = StyleSheet.create((theme) => ({
   page: { flex: 1, gap: 10, paddingHorizontal: 20 },
   list: { flex: 1, width: "100%" },
   postsContainer: { paddingBottom: 100 },
+  // logoutText: {
+  //   color: theme.colors.violet,
+  // },
 }));

@@ -12,8 +12,14 @@ import { Image, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function SignUpPage() {
-  const { control, onSubmit, isPending, onBackPress, onSignInPress } =
-    useSignUpPage();
+  const {
+    control,
+    onSubmit,
+    isPending,
+    onBackPress,
+    onSignInPress,
+    onGoogleSignIn,
+  } = useSignUpPage();
 
   return (
     <View style={styles.mainContainer}>
@@ -105,7 +111,7 @@ export default function SignUpPage() {
           />
         </View>
         <View style={styles.bottomContainer}>
-          <UIButton style={styles.googleButton} onPress={() => {}}>
+          <UIButton style={styles.googleButton} onPress={onGoogleSignIn}>
             <Ionicons name="logo-google" size={26} color="white" />
             <UIText style={styles.googleText}>Continue with Google</UIText>
           </UIButton>

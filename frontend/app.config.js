@@ -79,6 +79,13 @@ export default {
         },
       ],
       ["@rnmapbox/maps"],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          iosUrlScheme:
+            "com.googleusercontent.apps.502689896183-adk1466cgc1uma36ijlh7a6ia1ergqpp",
+        },
+      ],
     ],
     experiments: {
       typedRoutes: true,

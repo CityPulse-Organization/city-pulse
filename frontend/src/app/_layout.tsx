@@ -8,6 +8,14 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../config/toast";
 
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+
+GoogleSignin.configure({
+  webClientId: "502689896183-3vi8o5c45301g1c00chjko4m729e764a.apps.googleusercontent.com",
+  iosClientId: "502689896183-adk1466cgc1uma36ijlh7a6ia1ergqpp.apps.googleusercontent.com",
+  offlineAccess: true,
+});
+
 export const queryClient = new QueryClient();
 
 export default function RootLayout() {
