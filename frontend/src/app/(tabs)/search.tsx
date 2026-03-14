@@ -1,5 +1,5 @@
 import { IconInfo, Post, POSTS, ThemedBackground } from "@/src/components";
-import { UIButton, UIInput, UIText } from "@/src/ui";
+import { UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
@@ -310,7 +310,7 @@ export default function SearchScreen() {
   );
 
   return (
-    <ThemedBackground withSafeArea={false}>
+    <ThemedBackground withoutSafeArea={true}>
       <View style={styles.searchHeader}>
         <BlurView
           tint={UnistylesRuntime.themeName}
@@ -445,6 +445,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     flexDirection: "row",
     justifyContent: "space-around",
     width: "90%",
+
     borderRadius: 50,
     paddingVertical: 5,
     paddingHorizontal: 20,

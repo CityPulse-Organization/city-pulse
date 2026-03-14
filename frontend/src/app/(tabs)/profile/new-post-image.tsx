@@ -8,6 +8,7 @@ import { memo, useCallback, useEffect, useState } from "react";
 import { Dimensions, View } from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import Toast from "react-native-toast-message";
 
 import {
   InteractiveImagePreview,
@@ -34,7 +35,11 @@ export const handleImagePickerError = (error: any) => {
   } else if (code === "E_PICKER_CANCELLED") {
     console.log("User cancelled image selection");
   } else {
-    console.log("Camera/Gallery error:", error);
+    Toast.show({
+      type: "error",
+      text1: "Gallery Error",
+      text2: message || "There was a problem accessing your media ❌",
+    });
   }
 };
 
@@ -83,15 +88,23 @@ export default function AddNewPostImageScreen() {
   const onCancel = () => router.back();
 
   const onDone = async () => {
-    const processedUris = await processSelectedImages(selectedImages);
+    try {
+      const processedUris = await processSelectedImages(selectedImages);
 
-    if (processedUris) {
-      router.navigate({
-        pathname: "/(tabs)/profile/new-post",
-        params:
-          processedUris.length === 1
-            ? { imageUri: processedUris[0] }
-            : { uris: processedUris },
+      if (processedUris) {
+        router.navigate({
+          pathname: "/(tabs)/profile/new-post",
+          params:
+            processedUris.length === 1
+              ? { imageUri: processedUris[0] }
+              : { uris: processedUris },
+        });
+      }
+    } catch (error) {
+       Toast.show({
+        type: "error",
+        text1: "Processing Error",
+        text2: "We could not process your images. Please try again ❌",
       });
     }
   };
@@ -259,6 +272,11 @@ const useMediaLibrary = (onInitialLoad: (firstAsset: Asset) => void) => {
       }
     } catch (e) {
       console.error("Error loading images from gallery", e);
+      Toast.show({
+        type: "error",
+        text1: "Gallery Error",
+        text2: "Unable to load your photos. Please check permissions ❌",
+      });
     } finally {
       setIsLoading(false);
     }

@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "expo-router";
+import Toast from "react-native-toast-message";
+import { isAxiosError } from "axios";
 
 const schema = z
   .object({
@@ -41,6 +43,19 @@ export const useSignUpPage = () => {
         await register(data);
       } catch (error) {
         console.error("Sign up failed:", error);
+        let message = "Could not complete registration. Please try again.";
+
+        if (isAxiosError(error) && error.response?.data?.message) {
+          message = error.response.data.message;
+        } else if (error instanceof Error) {
+          message = error.message;
+        }
+
+        Toast.show({
+          type: "error",
+          text1: "Sign Up Error",
+          text2: message,
+        });
       }
     },
     [register],

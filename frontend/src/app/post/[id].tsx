@@ -213,7 +213,7 @@ export default function PostDetailScreen() {
   const [commentText, setCommentText] = useState("");
 
   return (
-    <ThemedBackground style={styles.page} withSafeArea={false}>
+    <ThemedBackground style={styles.page} withoutSafeArea={false}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainerStyle}

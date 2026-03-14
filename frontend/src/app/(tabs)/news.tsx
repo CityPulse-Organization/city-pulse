@@ -6,22 +6,27 @@ import { StyleSheet } from "react-native-unistyles";
 
 export default function NewsScreen() {
   const router = useRouter();
-
+  const openPost = useCallback(
+    ({ id }: { id: string }) => {
+      router.push({
+        pathname: `/post/[id]`,
+        params: {
+          id,
+        },
+      });
+    },
+    [router],
+  );
   const renderPost = useCallback(
     ({ item }: { item: PostItem }) => (
       <Post
         data={item}
         onPress={() => {
-          router.push({
-            pathname: `/post/[id]`,
-            params: {
-              id: item.id,
-            },
-          });
+          openPost({ id: item.id });
         }}
       />
     ),
-    [router],
+    [openPost],
   );
 
   const keyExtractor = useCallback((item: PostItem) => item.id, []);

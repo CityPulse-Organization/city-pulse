@@ -1,4 +1,5 @@
 export * from "./AuthButton";
+export * from "./MapboxMap";
 export * from "./BottomTabBar";
 export * from "./Comment";
 export * from "./Icon";

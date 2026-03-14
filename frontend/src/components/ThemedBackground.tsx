@@ -4,18 +4,18 @@ import { StyleSheet } from "react-native-unistyles";
 type ThemedBackgroundProps = {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
-  withSafeArea?: boolean;
+  withoutSafeArea?: boolean;
 };
 
 export const ThemedBackground = ({
   children,
   style,
-  withSafeArea = true,
+  withoutSafeArea = false,
 }: ThemedBackgroundProps) => {
   return (
     <View
       style={[
-        withSafeArea ? styles.safeArea : styles.background,
+        withoutSafeArea ? styles.background : styles.safeArea,
         styles.content,
         style,
       ]}

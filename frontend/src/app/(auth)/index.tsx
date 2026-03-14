@@ -11,11 +11,7 @@ export default function IntroPage() {
         style={styles.image}
         source={require("@assets/images/intro.jpg")}
       />
-      <AuthButton
-        label="Start"
-        variant="default"
-        onPress={() => router.push("/sign-up")}
-      />
+      <AuthButton label="Start" onPress={() => router.push("/sign-up")} />
     </View>
   );
 }

@@ -3,7 +3,9 @@ import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
+import Toast from "react-native-toast-message";
+import { isAxiosError } from "axios";
 
 const schema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -13,6 +15,7 @@ const schema = z.object({
 export type SignInFormData = z.infer<typeof schema>;
 
 export const useSignInPage = () => {
+  const router = useRouter();
   const { mutateAsync: signIn, isPending } = useSignIn();
 
   const form = useForm<SignInFormData>({
@@ -31,6 +34,19 @@ export const useSignInPage = () => {
         await signIn({ username: data.username, password: data.password });
       } catch (error) {
         console.error("Sign in failed:", error);
+        let message = "Invalid username or password.";
+        
+        if (isAxiosError(error) && error.response?.data?.message) {
+          message = error.response.data.message;
+        } else if (error instanceof Error) {
+          message = error.message;
+        }
+
+        Toast.show({
+          type: "error",
+          text1: "Sign In Error",
+          text2: message,
+        });
       }
     },
     [signIn],

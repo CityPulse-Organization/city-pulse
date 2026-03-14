@@ -6,6 +6,7 @@ import { ComponentProps, memo, useCallback, useState } from "react";
 import { TextInput, View } from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import Toast from "react-native-toast-message";
 
 type ProfileData = {
   nickname: string;
@@ -53,6 +54,11 @@ export default function EditProfileScreen() {
   };
 
   const onSave = () => {
+    Toast.show({
+      type: "success",
+      text1: "Profile Updated",
+      text2: "Your changes have been saved successfully ✨",
+    });
     router.back();
   };
 
@@ -69,6 +75,13 @@ export default function EditProfileScreen() {
       })
       .catch((error) => {
         console.log("Image picker cancelled or failed", error);
+        if (error.code !== "E_PICKER_CANCELLED") {
+          Toast.show({
+            type: "error",
+            text1: "Upload Failed",
+            text2: "There was a problem selecting your image ❌",
+          });
+        }
       });
   };
 

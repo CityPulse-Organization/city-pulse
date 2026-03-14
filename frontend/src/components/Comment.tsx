@@ -2,8 +2,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { View } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
-import { MOCK_LIKE_COUNT } from "../app/post/[id]";
 import { UIButton, UIText } from "../ui";
+const MOCK_LIKE_COUNT = 12;
 import { Icon } from "./Icon";
 
 export type CommentItem = {

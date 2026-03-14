@@ -1,184 +1,91 @@
-import { ThemedBackground } from "@/src/components";
+import { ThemedBackground, MapboxMap } from "@/src/components";
+import { MapboxMarker } from "@/src/components/MapboxMap";
 import { UIButton, UIText } from "@/src/ui";
 import { useLogout } from "@/src/hooks";
 import { UIAlert } from "@/src/hoc";
-import { matchFont } from "@shopify/react-native-skia";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
-import { AppleMaps, GoogleMaps } from "expo-maps";
 import { memo, useEffect, useState } from "react";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
+import { LUBLIN_DISTRICTS } from "@/src/data/lublinDistricts";
 
-const POINTS = [
+const POINTS: (MapboxMarker & {
+  systemImage?: string;
+  name: string;
+  coordinates: { latitude: number; longitude: number };
+  tintColor: string;
+})[] = [
   {
-    name: "Union Square",
-    coordinates: { latitude: 37.787994, longitude: -122.407437 },
-    tintColor: "#C37D7D",
+    name: "Zamek Lubelski",
+    coordinates: { latitude: 51.2504, longitude: 22.5721 },
+    tintColor: "#c37d7d",
     systemImage: "plus.circle.fill",
+    icon: "bonfire",
+    latitude: 51.2504,
+    longitude: 22.5721,
+    label: "Zamek",
   },
   {
-    name: "Golden Gate Bridge",
-    coordinates: { latitude: 37.819929, longitude: -122.478255 },
-    tintColor: "#C8BC7C",
+    name: "Brama Krakowska",
+    coordinates: { latitude: 51.2478, longitude: 22.5678 },
+    tintColor: "#c8bc7c",
     systemImage: "plus.circle.fill",
+    icon: "lock-closed",
+    latitude: 51.2478,
+    longitude: 22.5678,
+    label: "Brama",
   },
   {
-    name: "Fisherman's Wharf",
-    coordinates: { latitude: 37.808, longitude: -122.417743 },
-    tintColor: "#90C992",
+    name: "Archikatedra Lubelska",
+    coordinates: { latitude: 51.2464, longitude: 22.5694 },
+    tintColor: "#90c992",
     systemImage: "plus.circle.fill",
+    icon: "book",
+    latitude: 51.2464,
+    longitude: 22.5694,
+    label: "Katedra",
   },
   {
-    name: "Pier 39",
-    coordinates: { latitude: 37.808673, longitude: -122.409821 },
-    tintColor: "#C37D7D",
+    name: "Plac Litewski",
+    coordinates: { latitude: 51.2485, longitude: 22.5598 },
+    tintColor: "#0040ff",
     systemImage: "plus.circle.fill",
+    icon: "color-filter",
+    latitude: 51.2485,
+    longitude: 22.5598,
+    label: "Fontanny",
   },
   {
-    name: "Alcatraz Island",
-    coordinates: { latitude: 37.826977, longitude: -122.422956 },
-    tintColor: "#C8BC7C",
+    name: "Centrum Spotkania Kultur",
+    coordinates: { latitude: 51.2472, longitude: 22.55 },
+    tintColor: "#a93d3d",
     systemImage: "plus.circle.fill",
+    icon: "cube",
+    latitude: 51.2472,
+    longitude: 22.55,
+    label: "CSK",
   },
   {
-    name: "Chinatown",
-    coordinates: { latitude: 37.794138, longitude: -122.407791 },
-    tintColor: "rgba(169, 61, 61, 0.5)",
+    name: "Ogród Saski",
+    coordinates: { latitude: 51.25, longitude: 22.548 },
+    tintColor: "#1fb030",
     systemImage: "plus.circle.fill",
-  },
-  {
-    name: "Mission District",
-    coordinates: { latitude: 37.759864, longitude: -122.414798 },
-    tintColor: "rgb(0, 0, 0)",
-    systemImage: "plus.circle.fill",
-  },
-  {
-    name: "Dolores Park",
-    coordinates: { latitude: 37.759617, longitude: -122.426906 },
-    tintColor: "rgb(255, 255, 255)",
-    systemImage: "plus.circle.fill",
-  },
-  {
-    name: "Castro District",
-    coordinates: { latitude: 37.760889, longitude: -122.435049 },
-    systemImage: "plus.circle.fill",
-  },
-  {
-    name: "Twin Peaks",
-    coordinates: { latitude: 37.754407, longitude: -122.447684 },
-    systemImage: "plus.circle.fill",
-    tintColor: "rgb(0, 64, 255)",
-  },
-  {
-    name: "Haight-Ashbury",
-    coordinates: { latitude: 37.769036, longitude: -122.448066 },
-    tintColor: "rgb(31, 176, 48)",
-    systemImage: "plus.circle.fill",
-  },
-  {
-    name: "Golden Gate Park",
-    coordinates: { latitude: 37.769421, longitude: -122.486214 },
-    systemImage: "plus.circle.fill",
-    tintColor: "rgb(0, 64, 255)",
-  },
-  {
-    name: "Presidio",
-    coordinates: { latitude: 37.798874, longitude: -122.466193 },
-    systemImage: "plus.circle.fill",
-    tintColor: "rgb(0, 64, 255)",
-  },
-  {
-    name: "Palace of Fine Arts",
-    coordinates: { latitude: 37.802097, longitude: -122.448802 },
-    systemImage: "plus.circle.fill",
-  },
-  {
-    name: "Financial District",
-    coordinates: { latitude: 37.794574, longitude: -122.399944 },
-    systemImage: "plus.circle.fill",
-  },
-  {
-    name: "Salesforce Tower",
-    coordinates: { latitude: 37.789706, longitude: -122.396673 },
-    systemImage: "plus.circle.fill",
-  },
-  {
-    name: "AT&T Park",
-    coordinates: { latitude: 37.778595, longitude: -122.38927 },
-    systemImage: "plus.circle.fill",
-  },
-  {
-    name: "Embarcadero",
-    coordinates: { latitude: 37.7952, longitude: -122.393974 },
-    systemImage: "plus.circle.fill",
-  },
-  {
-    name: "Ocean Beach",
-    coordinates: { latitude: 37.759703, longitude: -122.510759 },
-    systemImage: "plus.circle.fill",
-  },
-  {
-    name: "Baker Beach",
-    coordinates: { latitude: 37.793572, longitude: -122.483638 },
-    systemImage: "plus.circle.fill",
+    icon: "leaf",
+    latitude: 51.25,
+    longitude: 22.548,
+    label: "Saski",
   },
 ];
 
-const APPLE_MARKERS: AppleMaps.Marker[] = POINTS.map((p) => ({
-  id: p.name,
-  title: p.name,
-  coordinates: p.coordinates,
-  systemImage: p.systemImage,
-  tintColor: p.tintColor,
+const MARKERS3D = POINTS.map((p) => ({
+  latitude: p.coordinates.latitude,
+  longitude: p.coordinates.longitude,
+  label: p.name,
+  color: p.tintColor || "#ff0000",
 }));
 
-const GOOGLE_MARKERS: GoogleMaps.Marker[] = POINTS.map((p) => ({
-  id: p.name,
-  title: p.name,
-  coordinates: p.coordinates,
-}));
-
-const COLORS = ["#C37D7D", "#C8BC7C", "#90C992"];
-
-const data = Array.from({ length: 30 }, (_, index) => ({
-  month: index + 1,
-  incidentsCount: Math.floor(Math.random() * 30),
-  criticalCount: Math.floor(Math.random() * 10),
-  neutralCount: Math.floor(Math.random() * 10),
-  solvedCount: Math.floor(Math.random() * 10),
-}));
-
-const YEARS = [...Array(10).keys()].map((index) => ({
-  value: 2016 + index,
-  label: (2016 + index).toString(),
-}));
-
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-].map((month, index) => ({
-  value: index + 1,
-  label: month,
-}));
-
-const font = matchFont({
-  fontFamily: Platform.select({ ios: "Helvetica", default: "sans-serif" }),
-  fontSize: 16,
-  fontStyle: "normal" as const,
-});
-
-const MapSection = memo(() => {
+const MapSection = memo(function MapSectionComponent() {
   const [location, setLocation] = useState<Location.LocationObject | null>(
     null,
   );
@@ -200,27 +107,24 @@ const MapSection = memo(() => {
       }
     : POINTS[0]?.coordinates;
 
+  const mapboxApiKey = process.env.EXPO_PUBLIC_MAPBOX_PUBLIC_KEY || "";
+  if (!mapboxApiKey) {
+    console.error("EXPO_PUBLIC_MAPBOX_PUBLIC_KEY is not defined in .env file");
+  }
   return (
-    <View style={{ flex: 1 }}>
-      {Platform.OS === "ios" ? (
-        <AppleMaps.View
-          cameraPosition={{
-            zoom: 11.2,
-            coordinates: cameraCoordinates,
-          }}
-          markers={APPLE_MARKERS}
-          style={styles.itemContainer}
-        />
-      ) : (
-        <GoogleMaps.View
-          cameraPosition={{
-            zoom: 11.2,
-            coordinates: cameraCoordinates,
-          }}
-          markers={GOOGLE_MARKERS}
-          style={styles.itemContainer}
-        />
-      )}
+    <View style={styles.itemContainer}>
+      <MapboxMap
+        apiKey={mapboxApiKey}
+        markers={MARKERS3D}
+        districts={LUBLIN_DISTRICTS}
+        camera={{
+          latitude: cameraCoordinates?.latitude || 51.2465,
+          longitude: cameraCoordinates?.longitude || 22.5684,
+          zoom: 15.5,
+          bearing: 10,
+          pitch: 60,
+        }}
+      />
     </View>
   );
 });
@@ -228,8 +132,8 @@ const MapSection = memo(() => {
 export default function HomeScreen() {
   const { mutate: handleLogout } = useLogout();
   return (
-    <ThemedBackground style={styles.screen} withSafeArea={false}>
-      {/* <MapSection /> */}
+    <ThemedBackground style={styles.screen} withoutSafeArea>
+      <MapSection />
 
       <UIButton style={styles.logoutButton} onPress={() => handleLogout()}>
         <Ionicons name="log-out-outline" size={20} color={styles.icon.color} />
@@ -273,8 +177,6 @@ const styles = StyleSheet.create((theme) => ({
     width: "100%",
     height: "100%",
     justifyContent: "center",
-    padding: 10,
-    borderRadius: 30,
   },
   paginationContainer: { gap: 5, marginBottom: 10 },
   paginationDotActive: { backgroundColor: theme.colors.white },

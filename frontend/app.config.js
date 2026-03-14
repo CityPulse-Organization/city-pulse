@@ -78,6 +78,7 @@ export default {
           resizeMode: "cover",
         },
       ],
+      ["@rnmapbox/maps"],
     ],
     experiments: {
       typedRoutes: true,
