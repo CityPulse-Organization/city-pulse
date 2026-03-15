@@ -1,5 +1,4 @@
 import { Image, ImageProps } from "expo-image";
-import { Skeleton } from "moti/skeleton";
 import { memo, useCallback, useState } from "react";
 import { View } from "react-native";
 import {
@@ -7,6 +6,7 @@ import {
   UnistylesRuntime,
   UnistylesVariants,
 } from "react-native-unistyles";
+import { UISkeleton } from "./UISkeleton";
 
 type UIImageProps = {
   imageUrl: string | undefined;
@@ -20,44 +20,46 @@ export const UIImage = memo(
     imageUrl,
     size,
     borderRound,
-    isLoading,
+    isLoading = false,
     isAspectRatio,
     style,
     ...props
   }: UIImageProps) => {
     const [imagePreparing, setImagePreparing] = useState(true);
-    const [aspectRatio, setAspectRatio] = useState<number | undefined>(undefined);
+    const [aspectRatio, setAspectRatio] = useState<number | undefined>(
+      undefined,
+    );
 
     styles.useVariants({ size: size, borderRound: borderRound });
-    const themeName = UnistylesRuntime.themeName;
-
 
     const dynamicStyle = aspectRatio ? { aspectRatio: aspectRatio } : {};
 
     const handleLoadStart = useCallback(() => setImagePreparing(true), []);
     const handleLoadEnd = useCallback(() => setImagePreparing(false), []);
 
-    const handleLoad = useCallback((event: { source: { width: number; height: number } }) => {
-      if (isAspectRatio && event.source.width && event.source.height) {
-        setAspectRatio(event.source.width / event.source.height);
-      }
-    },
+    const handleLoad = useCallback(
+      (event: { source: { width: number; height: number } }) => {
+        if (isAspectRatio && event.source.width && event.source.height) {
+          setAspectRatio(event.source.width / event.source.height);
+        }
+      },
       [isAspectRatio],
     );
 
+    if (isLoading || imagePreparing) {
+      return <UISkeleton size={size} borderRound={borderRound} style={style} />;
+    }
     return (
       <View style={[styles.image, dynamicStyle, style]}>
-        <Skeleton show={imagePreparing || isLoading} colorMode={themeName}>
-          <Image
-            {...props}
-            source={{ uri: imageUrl }}
-            style={[styles.image, dynamicStyle, style]}
-            contentFit="cover"
-            onLoadStart={handleLoadStart}
-            onLoad={handleLoad}
-            onLoadEnd={handleLoadEnd}
-          />
-        </Skeleton>
+        <Image
+          {...props}
+          source={{ uri: imageUrl }}
+          style={[styles.image, dynamicStyle, style]}
+          contentFit="cover"
+          onLoadStart={handleLoadStart}
+          onLoad={handleLoad}
+          onLoadEnd={handleLoadEnd}
+        />
       </View>
     );
   },
@@ -69,7 +71,7 @@ const styles = StyleSheet.create((theme, rt) => ({
       size: {
         default: {
           width: theme.utils.s(40),
-          height: theme.utils.vs(40)
+          height: theme.utils.vs(40),
         },
         liveIcon: {
           width: theme.utils.s(50),

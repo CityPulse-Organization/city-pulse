@@ -1,11 +1,7 @@
-import { Skeleton } from "moti/skeleton";
 import { StyleProp, Text, TextStyle } from "react-native";
-import {
-  StyleSheet,
-  UnistylesRuntime,
-  UnistylesVariants,
-} from "react-native-unistyles";
+import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
 import { scale } from "../unistyles";
+import { UISkeleton } from "./UISkeleton";
 
 type UITextProps = {
   children: React.ReactNode;
@@ -23,13 +19,14 @@ export const UIText = ({
   ...rest
 }: UITextProps) => {
   styles.useVariants({ size: size, weight: weight });
-  const themeName = UnistylesRuntime.themeName;
+  if (isLoading) {
+    return <UISkeleton size="medium" />;
+  }
+
   return (
-    <Skeleton show={isLoading} colorMode={themeName}>
-      <Text {...rest} style={[style, styles.text]}>
-        {children}
-      </Text>
-    </Skeleton>
+    <Text {...rest} style={[style, styles.text]}>
+      {children}
+    </Text>
   );
 };
 

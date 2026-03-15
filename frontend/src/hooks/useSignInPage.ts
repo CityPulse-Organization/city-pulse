@@ -2,7 +2,7 @@ import {
   useSignIn,
   useGoogleSignIn,
   useCompleteGoogleRegistration,
-} from "@/src/hooks";
+} from "./useAuth";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

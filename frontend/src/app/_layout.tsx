@@ -25,17 +25,18 @@ export default function RootLayout() {
         <SessionProvider>
           <GestureHandlerRootView>
             <BottomSheetModalProvider>
-              <UIAlertProvider />
-              <Stack
-                initialRouteName="index"
-                screenOptions={{ headerShown: false, animation: "fade" }}
-              >
-                <Stack.Screen name="index" />
-                <Stack.Screen name="(auth)" />
-                <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="post/[id]" />
+              <UIAlertProvider>
+                <Stack
+                  initialRouteName="index"
+                  screenOptions={{ headerShown: false, animation: "fade" }}
+                >
+                  <Stack.Screen name="index" />
+                  <Stack.Screen name="(auth)" />
+                  <Stack.Screen name="(tabs)" />
+                  <Stack.Screen name="post/[id]" />
+                </Stack>
                 <Toast config={toastConfig} />
-              </Stack>
+              </UIAlertProvider>
             </BottomSheetModalProvider>
           </GestureHandlerRootView>
         </SessionProvider>

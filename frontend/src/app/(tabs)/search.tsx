@@ -13,6 +13,7 @@ import {
   useFocusedTab,
 } from "react-native-collapsible-tab-view";
 import { PostItem } from "@/src/components/Post";
+import { router } from "expo-router";
 
 const SEARCH_USERS = [
   {
@@ -186,11 +187,13 @@ const SearchTab = ({
   label,
   onPress,
   focusedTab,
+  icon,
 }: {
   name: string;
   label: string;
   onPress: () => void;
   focusedTab: any;
+  icon?: React.ReactNode;
 }) => {
   const theme = UnistylesRuntime.getTheme();
   const activeColor = theme.colors.primaryText;
@@ -213,8 +216,9 @@ const SearchTab = ({
   });
 
   return (
-    <Pressable onPress={onPress} style={{ flex: 1 }}>
+    <Pressable onPress={onPress} style={styles.tab}>
       <Animated.View style={[styles.tabContent, animatedStyle]}>
+        {icon}
         <Animated.Text style={[styles.tabTextBase, animatedTextStyle]}>
           {label}
         </Animated.Text>
@@ -240,18 +244,21 @@ const SearchTabBar = (props: TabBarProps<string>) => {
         label="People"
         onPress={onPeoplePress}
         focusedTab={props.focusedTab}
+        icon={<Ionicons name="people" size={20} style={styles.tabIcon} />}
       />
       <SearchTab
         name="posts"
         label="Posts"
         onPress={onPostsPress}
         focusedTab={props.focusedTab}
+        icon={<Ionicons name="list" size={20} style={styles.tabIcon} />}
       />
       <SearchTab
         name="places"
         label="Places"
         onPress={onPlacesPress}
         focusedTab={props.focusedTab}
+        icon={<Ionicons name="location" size={20} style={styles.tabIcon} />}
       />
     </View>
   );
@@ -277,6 +284,17 @@ export default function SearchScreen() {
 
   const keyExtractor = useCallback((item: { id: string }) => item.id, []);
 
+  const openPost = useCallback(
+    ({ id }: { id: string }) => {
+      router.push({
+        pathname: `/post/[id]`,
+        params: {
+          id,
+        },
+      });
+    },
+    [router],
+  );
   const filteredPosts = useMemo(() => {
     if (!input.trim()) return POSTS;
     const query = input.toLowerCase().trim();
@@ -300,8 +318,10 @@ export default function SearchScreen() {
   }, [input]);
 
   const renderPost = useCallback(
-    ({ item }: { item: PostItem }) => <Post data={item} onPress={() => { }} />,
-    [],
+    ({ item }: { item: PostItem }) => (
+      <Post data={item} onPress={() => openPost({ id: item.id })} />
+    ),
+    [openPost],
   );
 
   const renderPlace = useCallback(
@@ -346,6 +366,7 @@ export default function SearchScreen() {
             ItemSeparatorComponent={ItemSeparator}
             getItemType={() => "SearchUser"}
             style={styles.list}
+            numColumns={2}
             bounces={false}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
@@ -384,6 +405,9 @@ export default function SearchScreen() {
 }
 
 const styles = StyleSheet.create((theme, rt) => ({
+  tab: {
+    flex: 1,
+  },
   tabTextBase: {
     fontSize: theme.utils.s(16),
   },
@@ -398,7 +422,9 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingBottom: theme.utils.vs(15),
     backgroundColor: theme.colors.background,
   },
-
+  tabIcon: {
+    color: theme.colors.accent,
+  },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -406,7 +432,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingHorizontal: theme.utils.s(15),
     height: theme.utils.vs(44),
     borderWidth: 1,
-    borderColor: theme.colors.divider,
+    borderColor: theme.colors.accent,
     overflow: "hidden",
   },
   itemContainer: {
@@ -476,7 +502,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.icon,
   },
   placeHolderTextColor: {
-    color: theme.colors.muted,
+    color: theme.colors.accent,
   },
   tabBar: {
     flexDirection: "row",
@@ -484,9 +510,12 @@ const styles = StyleSheet.create((theme, rt) => ({
     backgroundColor: theme.colors.background,
   },
   tabContent: {
+    flexDirection: "row",
+    justifyContent: "center",
     borderBottomWidth: theme.utils.vs(2),
     alignItems: "center",
     paddingVertical: theme.utils.vs(12),
     flex: 1,
+    gap: theme.utils.s(6),
   },
 }));

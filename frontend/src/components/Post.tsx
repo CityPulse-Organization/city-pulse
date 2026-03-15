@@ -3,7 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import React, { memo, useCallback } from "react";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-import { UIButton, UIImage, UIText } from "../ui";
+import { UIButton, UIImage, UISkeleton, UIText } from "../ui";
 import { IconInfo } from "./IconInfo";
 
 export type PostItem = {
@@ -80,6 +80,14 @@ type PostProps = {
 };
 
 export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => {
+  if (isLoading) {
+    return (
+      <View style={styles.itemWrapper}>
+        <UISkeleton style={styles.card} />
+      </View>
+    );
+  }
+
   const handlePress = useCallback(() => {
     onPress(data.id);
   }, [data.id, onPress]);
@@ -139,14 +147,14 @@ export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => {
         </View>
       </UIButton>
     </View>
-  )
+  );
 });
 
 const styles = StyleSheet.create((theme) => ({
   itemWrapper: {
     flex: 1,
-    padding: theme.utils.s(10) / 2,
-    minWidth: 0
+    padding: theme.utils.s(5),
+    minWidth: 0,
   },
   card: {
     width: "100%",
@@ -155,6 +163,7 @@ const styles = StyleSheet.create((theme) => ({
     borderRadius: theme.utils.s(22),
     borderWidth: 1,
     borderColor: theme.colors.borderSubtle,
+    minHeight: theme.utils.s(180),
   },
   image: {
     minHeight: theme.utils.vs(220),

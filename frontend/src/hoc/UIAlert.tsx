@@ -1,155 +1,217 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from "react";
 import { Modal, Pressable, View } from "react-native";
-import Animated, { FadeIn, FadeOut, FadeInUp, FadeOutDown, runOnJS } from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  FadeInUp,
+  FadeOut,
+  FadeOutDown,
+} from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
 import { UIText } from "@/src/ui";
+import { BlurView } from "expo-blur";
 
-type UIAlertButton = {
+export type UIAlertButton = {
   text?: string;
   onPress?: () => void | Promise<void>;
   style?: "default" | "cancel" | "destructive";
 };
 
-type UIAlertOptions = {
+export type UIAlertOptions = {
   title: string;
   message?: string;
   buttons?: UIAlertButton[];
 };
 
-let globalShowAlert: (options: UIAlertOptions) => void;
-let globalHideAlert: () => void;
+type UIAlertContextType = {
+  showAlert: (options: UIAlertOptions) => void;
+  hideAlert: () => void;
+};
+
+const UIAlertContext = createContext<UIAlertContextType | null>(null);
 
 export const UIAlert = {
   alert: (title: string, message?: string, buttons?: UIAlertButton[]) => {
-    if (globalShowAlert) {
-      globalShowAlert({ title, message, buttons });
+    if (alertContextRef) {
+      alertContextRef.showAlert({ title, message, buttons });
     } else {
-      console.warn("UIAlertProvider is not mounted in the tree.");
+      console.warn(
+        "UIAlertProvider is not mounted. Wrap your app with UIAlertProvider.",
+      );
     }
   },
 };
 
-export const UIAlertProvider = () => {
-  const [alertConfig, setAlertConfig] = useState<UIAlertOptions | null>(null);
+export const UIAlertProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const config = useRef<UIAlertOptions | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    globalShowAlert = (opts) => {
-      setAlertConfig(opts);
-      setIsVisible(true);
-    };
-    globalHideAlert = () => setIsVisible(false);
+  const showAlert = useCallback((opts: UIAlertOptions) => {
+    config.current = opts;
+    setIsVisible(true);
   }, []);
 
-  const handlePress = (btn: UIAlertButton) => {
-    globalHideAlert();
-    if (btn.onPress) btn.onPress();
-  };
+  const hideAlert = useCallback((callback?: () => void) => {
+    setIsVisible(false);
+    callback?.();
+  }, []);
 
-  const buttons = alertConfig?.buttons?.length
-    ? alertConfig.buttons
+  const contextRef = useRef<UIAlertContextType>({ showAlert, hideAlert });
+
+  useLayoutEffect(() => {
+    contextRef.current = { showAlert, hideAlert };
+    setAlertContextRef(contextRef.current);
+  }, [showAlert, hideAlert]);
+
+  useEffect(() => {
+    return () => setAlertContextRef(null);
+  }, []);
+
+  const handlePress = useCallback(
+    (btn: UIAlertButton) => {
+      hideAlert();
+      if (btn.onPress) btn.onPress();
+    },
+    [hideAlert],
+  );
+
+  const activeConfig = config.current;
+  const buttons = activeConfig?.buttons?.length
+    ? activeConfig.buttons
     : [{ text: "OK", style: "default" as const }];
 
   return (
-    <Modal transparent visible={isVisible || !!alertConfig} animationType="none">
-      {isVisible && alertConfig && (
-        <Animated.View
-          entering={FadeIn.duration(200)}
-          exiting={FadeOut.duration(200).withCallback((finished) => {
-            if (finished) runOnJS(setAlertConfig)(null);
-          })}
-          style={styles.backdrop}
-        >
-          <Pressable
-            style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
-            onPress={() => globalHideAlert()}
-          />
+    <UIAlertContext.Provider value={{ showAlert, hideAlert }}>
+      {children}
+      <Modal transparent visible={isVisible} animationType="none">
+        {isVisible && activeConfig && (
           <Animated.View
-            entering={FadeInUp.duration(250)}
-            exiting={FadeOutDown.duration(200)}
-            style={styles.alertBox}
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(200).withCallback((finished) => {
+              if (finished) {
+                config.current = null;
+              }
+            })}
+            style={styles.backdrop}
           >
-            <View style={styles.header}>
-              <UIText size="lg" weight="bold" style={styles.title}>
-                {alertConfig.title}
-              </UIText>
-              {!!alertConfig.message && (
-                <UIText size="md" style={styles.message}>
-                  {alertConfig.message}
-                </UIText>
-              )}
-            </View>
-
-            <View
-              style={[
-                buttons.length === 2 ? styles.buttonRow : styles.buttonCol,
-              ]}
+            <BlurView intensity={20} tint="dark" style={styles.absoluteFill} />
+            <Pressable
+              style={styles.absoluteFill}
+              onPress={() => hideAlert()}
+            />
+            <Animated.View
+              entering={FadeInUp.duration(250)}
+              exiting={FadeOutDown.duration(200)}
+              style={styles.alertBox}
             >
-              {buttons.map((btn, index) => {
-                const isLast = index === buttons.length - 1;
-                const isDefault = !btn.style || btn.style === "default";
-                const isDestructive = btn.style === "destructive";
+              <BlurView intensity={20} tint="dark" style={styles.blurBox}>
+                <View style={styles.header}>
+                  <UIText size="lg" weight="bold" style={styles.title}>
+                    {activeConfig.title}
+                  </UIText>
+                  {!!activeConfig.message && (
+                    <UIText size="md" style={styles.message}>
+                      {activeConfig.message}
+                    </UIText>
+                  )}
+                </View>
 
-                return (
-                  <View
-                    key={index}
-                    style={[
-                      styles.buttonWrapper,
-                      buttons.length === 2 && !isLast && styles.buttonBorderRight,
-                      buttons.length !== 2 && !isLast && styles.buttonBorderBottom,
-                    ]}
-                  >
-                    <Pressable
-                      onPress={() => handlePress(btn)}
-                      style={styles.button}
-                    >
-                      <UIText
-                        size="lg"
-                        weight={isDefault ? "bold" : "normal"}
-                        style={[
-                          styles.buttonText,
-                          isDestructive && styles.destructiveText,
-                          !isDefault && !isDestructive && styles.cancelText,
-                        ]}
-                      >
-                        {btn.text || "OK"}
-                      </UIText>
-                    </Pressable>
-                  </View>
-                );
-              })}
-            </View>
+                <View
+                  style={[
+                    buttons.length === 2 ? styles.buttonRow : styles.buttonCol,
+                  ]}
+                >
+                  {buttons.map((btn, index) => {
+                    const isLast = index === buttons.length - 1;
+                    const isDefault = !btn.style || btn.style === "default";
+                    const isDestructive = btn.style === "destructive";
+
+                    return (
+                      <View key={index} style={[styles.buttonWrapper]}>
+                        <Pressable
+                          onPress={() => handlePress(btn)}
+                          style={({ pressed }) => [
+                            styles.button,
+                            pressed && styles.buttonPressed,
+                          ]}
+                        >
+                          <UIText
+                            size="lg"
+                            weight={isDefault ? "bold" : "normal"}
+                            style={[
+                              styles.buttonText,
+                              isDestructive && styles.destructiveText,
+                              !isDefault && !isDestructive && styles.cancelText,
+                            ]}
+                          >
+                            {btn.text || "OK"}
+                          </UIText>
+                        </Pressable>
+                      </View>
+                    );
+                  })}
+                </View>
+              </BlurView>
+            </Animated.View>
           </Animated.View>
-        </Animated.View>
-      )}
-    </Modal>
+        )}
+      </Modal>
+    </UIAlertContext.Provider>
   );
 };
 
+export const useAlert = () => {
+  const context = useContext(UIAlertContext);
+  if (!context) {
+    throw new Error("useAlert must be used within UIAlertProvider");
+  }
+  return context;
+};
+
+let alertContextRef: UIAlertContextType | null = null;
+
+export const setAlertContextRef = (ref: UIAlertContextType | null) => {
+  alertContextRef = ref;
+};
+
 const styles = StyleSheet.create((theme) => ({
+  absoluteFill: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
   backdrop: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     justifyContent: "center",
     alignItems: "center",
-    padding: 24,
+    padding: theme.utils.s(24),
   },
   alertBox: {
     width: "100%",
-    maxWidth: 340,
-    backgroundColor: theme.colors.background,
+    maxWidth: theme.utils.s(340),
     borderRadius: 24,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.1)",
     overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.5,
-    shadowRadius: 20,
-    elevation: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: theme.colors.divider,
+  },
+  blurBox: {
+    flex: 0,
+    backgroundColor: theme.colors.darkGray,
   },
   header: {
-    padding: 24,
+    padding: theme.utils.s(24),
     alignItems: "center",
   },
   title: {
@@ -164,32 +226,28 @@ const styles = StyleSheet.create((theme) => ({
   },
   buttonRow: {
     flexDirection: "row",
-    borderTopWidth: 1,
-    borderTopColor: "rgba(255, 255, 255, 0.1)",
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: theme.colors.divider,
   },
   buttonCol: {
     flexDirection: "column",
-    borderTopWidth: 1,
-    borderTopColor: "rgba(255, 255, 255, 0.1)",
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: theme.colors.divider,
   },
   buttonWrapper: {
     flex: 1,
   },
-  buttonBorderRight: {
-    borderRightWidth: 1,
-    borderRightColor: "rgba(255, 255, 255, 0.1)",
-  },
-  buttonBorderBottom: {
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255, 255, 255, 0.1)",
-  },
+
   button: {
-    paddingVertical: 16,
+    paddingVertical: theme.utils.s(16),
     alignItems: "center",
     justifyContent: "center",
   },
+  buttonPressed: {
+    backgroundColor: theme.colors.divider,
+  },
   buttonText: {
-    color: "#A78BFA", // Primary action color
+    color: theme.colors.violet,
   },
   cancelText: {
     color: theme.colors.primaryText,
