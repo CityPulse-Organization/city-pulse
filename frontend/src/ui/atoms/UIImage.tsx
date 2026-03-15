@@ -75,7 +75,6 @@ export const UIImage = memo(
     }, [resolvedUri, isAspectRatio]);
 
     const dynamicStyle = aspectRatio ? { aspectRatio: aspectRatio } : {};
-    console.log(imagePreparing);
     if (isLoading) {
       return <UISkeleton style={[styles.image, dynamicStyle, style]} />;
     }
