@@ -5,24 +5,20 @@ import {
   ThemedBackground,
 } from "@/src/components";
 import { BlurButton } from "@/src/components/BlurButton";
-import { CommentsBottomSheet } from "@/src/components/post";
 import { ImagesCarousel } from "@/src/components/post/imagesCarousel";
 import { MenuOptionBottomSheet } from "@/src/components/post/MenuOptionBottomSheet";
 import { usePostDetails } from "@/src/hooks/post/usePostDetails";
 import { UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import React, {
-  memo,
-  useCallback,
-  useState,
-} from "react";
+import React, { memo, useCallback, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-
+import { CommentsBottomSheet } from "@/src/components/post/CommentsBottomSheet";
 
 export default function PostDetailScreen() {
-  const { imagesUrl,
+  const {
+    imagesUrl,
     description,
     username,
     profileImageUrl,
@@ -32,7 +28,8 @@ export default function PostDetailScreen() {
     commentsBottomSheetRef,
     openPresentCommentsSheet,
     handleBack,
-    isOwnPost } = usePostDetails();
+    isOwnPost,
+  } = usePostDetails();
 
   return (
     <ThemedBackground style={styles.page} withoutSafeArea={false}>
@@ -64,94 +61,107 @@ export default function PostDetailScreen() {
             </BlurView>
           )}
         </View>
-
       </ScrollView>
 
       <BlurButton onPress={handleBack} iconName="chevron-back" />
 
-      <CommentsBottomSheet profileImageUrl={profileImageUrl} commentsBottomSheetRef={commentsBottomSheetRef} />
+      <CommentsBottomSheet
+        profileImageUrl={profileImageUrl}
+        commentsBottomSheetRef={commentsBottomSheetRef}
+      />
       <MenuOptionBottomSheet isOwnPost={isOwnPost} />
     </ThemedBackground>
   );
 }
 
-
-
 type UserInfoRowProps = {
-  profileImageUrl: string,
-  username: string,
-  accidentTime: string,
-  isBroadcasting: boolean,
-  openPresentCommentsSheet: () => void,
-}
+  profileImageUrl: string;
+  username: string;
+  accidentTime: string;
+  isBroadcasting: boolean;
+  openPresentCommentsSheet: () => void;
+};
 
+const UserInfoRow = memo(
+  ({
+    profileImageUrl,
+    username,
+    accidentTime,
+    isBroadcasting,
+    openPresentCommentsSheet,
+  }: UserInfoRowProps) => {
+    const [isLikedByCurrentUser, setIsLikedByCurrentUser] = useState(false);
+    const [totalLikeCount, setTotalLikeCount] = useState(MOCK_LIKE_COUNT);
 
-const UserInfoRow = memo(({ profileImageUrl, username, accidentTime, isBroadcasting, openPresentCommentsSheet }: UserInfoRowProps) => {
-  const [isLikedByCurrentUser, setIsLikedByCurrentUser] = useState(false);
-  const [totalLikeCount, setTotalLikeCount] = useState(MOCK_LIKE_COUNT);
+    const toggleLikeStatus = useCallback(() => {
+      setIsLikedByCurrentUser((prev) => {
+        const nextStatus = !prev;
+        setTotalLikeCount((currentCount) =>
+          nextStatus ? currentCount + 1 : currentCount - 1,
+        );
+        return nextStatus;
+      });
+    }, []);
 
-  const toggleLikeStatus = useCallback(() => {
-    setIsLikedByCurrentUser((prev) => {
-      const nextStatus = !prev;
-      setTotalLikeCount((currentCount) => (nextStatus ? currentCount + 1 : currentCount - 1));
-      return nextStatus;
-    });
-  }, []);
+    const [isSavedByCurrentUser, setIsSavedByCurrentUser] = useState(false);
+    const toggleSaveStatus = useCallback(() => {
+      setIsSavedByCurrentUser((prev) => !prev);
+    }, []);
 
+    return (
+      <View style={styles.userInfoRow}>
+        <IconInfo
+          profileImageUrl={profileImageUrl}
+          username={username}
+          statusText={accidentTime}
+          isBroadCasting={isBroadcasting}
+          usernameWeight="bold"
+        />
 
-  const [isSavedByCurrentUser, setIsSavedByCurrentUser] = useState(false);
-  const toggleSaveStatus = useCallback(() => {
-    setIsSavedByCurrentUser((prev) => !prev);
-  }, []);
+        <View style={styles.actionsRow}>
+          <UIButton onPress={toggleLikeStatus} style={styles.actionPost}>
+            <Ionicons
+              name={isLikedByCurrentUser ? "heart" : "heart-outline"}
+              size={styles.likeIcon.height}
+              color={
+                isLikedByCurrentUser
+                  ? styles.likeIconActive.color
+                  : styles.likeIcon.color
+              }
+            />
+            <UIText weight="normal" style={styles.actionCount}>
+              {totalLikeCount}
+            </UIText>
+          </UIButton>
 
+          <UIButton
+            onPress={openPresentCommentsSheet}
+            style={styles.actionPost}
+          >
+            <Ionicons
+              name="chatbubble-outline"
+              size={styles.commentIcon.height}
+              color={styles.commentIcon.color}
+            />
+            <UIText style={styles.actionCount}>{MOCK_COMMENTS.length}</UIText>
+          </UIButton>
 
-  return (
-    <View style={styles.userInfoRow}>
-      <IconInfo
-        profileImageUrl={profileImageUrl}
-        username={username}
-        statusText={accidentTime}
-        isBroadCasting={isBroadcasting}
-        usernameWeight="bold"
-      />
-
-      <View style={styles.actionsRow}>
-        <UIButton onPress={toggleLikeStatus} style={styles.actionPost}>
-          <Ionicons
-            name={isLikedByCurrentUser ? "heart" : "heart-outline"}
-            size={styles.likeIcon.height}
-            color={isLikedByCurrentUser ? styles.likeIconActive.color : styles.likeIcon.color}
-          />
-          <UIText weight="normal" style={styles.actionCount}>
-            {totalLikeCount}
-          </UIText>
-        </UIButton>
-
-        <UIButton onPress={openPresentCommentsSheet} style={styles.actionPost}>
-          <Ionicons
-            name="chatbubble-outline"
-            size={styles.commentIcon.height}
-            color={styles.commentIcon.color}
-          />
-          <UIText style={styles.actionCount}>
-            {MOCK_COMMENTS.length}
-          </UIText>
-        </UIButton>
-
-        <UIButton onPress={toggleSaveStatus} style={styles.actionPost}>
-          <Ionicons
-            name={isSavedByCurrentUser ? "bookmark" : "bookmark-outline"}
-            size={styles.saveIcon.height}
-            color={isSavedByCurrentUser ? styles.saveIconActive.color : styles.saveIcon.color}
-          />
-        </UIButton>
+          <UIButton onPress={toggleSaveStatus} style={styles.actionPost}>
+            <Ionicons
+              name={isSavedByCurrentUser ? "bookmark" : "bookmark-outline"}
+              size={styles.saveIcon.height}
+              color={
+                isSavedByCurrentUser
+                  ? styles.saveIconActive.color
+                  : styles.saveIcon.color
+              }
+            />
+          </UIButton>
+        </View>
       </View>
-    </View>
-  )
-})
-
-
-
+    );
+  },
+);
 
 const styles = StyleSheet.create((theme, rt) => ({
   page: {

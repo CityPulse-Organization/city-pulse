@@ -12,7 +12,7 @@ export const UISkeleton = memo(({ style }: UISkeletonProps) => {
 
 const styles = StyleSheet.create((theme, rt) => ({
   skeleton: {
-    backgroundColor: theme.colors.dividerColor || "rgba(0,0,0,0.1)",
+    backgroundColor: theme.colors.divider,
     variants: {
       size: {
         default: { width: theme.utils.s(40), height: theme.utils.s(40) },
