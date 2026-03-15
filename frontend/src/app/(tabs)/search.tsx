@@ -13,6 +13,7 @@ import {
   useFocusedTab,
 } from "react-native-collapsible-tab-view";
 import { PostItem } from "@/src/components/Post";
+import { router } from "expo-router";
 
 const SEARCH_USERS = [
   {
@@ -283,6 +284,17 @@ export default function SearchScreen() {
 
   const keyExtractor = useCallback((item: { id: string }) => item.id, []);
 
+  const openPost = useCallback(
+    ({ id }: { id: string }) => {
+      router.push({
+        pathname: `/post/[id]`,
+        params: {
+          id,
+        },
+      });
+    },
+    [router],
+  );
   const filteredPosts = useMemo(() => {
     if (!input.trim()) return POSTS;
     const query = input.toLowerCase().trim();
@@ -306,8 +318,10 @@ export default function SearchScreen() {
   }, [input]);
 
   const renderPost = useCallback(
-    ({ item }: { item: PostItem }) => <Post data={item} onPress={() => {}} />,
-    [],
+    ({ item }: { item: PostItem }) => (
+      <Post data={item} onPress={() => openPost({ id: item.id })} />
+    ),
+    [openPost],
   );
 
   const renderPlace = useCallback(
