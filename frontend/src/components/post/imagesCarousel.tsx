@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import React, {
     memo,
     useCallback,
+    useMemo,
     useRef,
 } from "react";
 import { View, Dimensions } from "react-native";
@@ -58,16 +59,20 @@ export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string
                 zIndex,
             };
         },
-        [],
+        [PAGE_WIDTH],
     );
 
 
-    const onPressPagination = (index: number) => {
+    const onPressPagination = useCallback((index: number) => {
         ref.current?.scrollTo({
             count: index - progress.value,
             animated: true,
         });
-    };
+    }, []);
+
+    const paginationData = useMemo(() => {
+        return imagesUrl.map((url) => ({ color: url }));
+    }, [imagesUrl]);
 
     return (
         <View style={styles.imageContainer}>
@@ -80,11 +85,12 @@ export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string
                 scrollAnimationDuration={1200}
                 customAnimation={animationStyle}
                 renderItem={renderCarouselSlide}
+                windowSize={3}
             />
 
             <Pagination.Basic<{ color: string }>
                 progress={progress}
-                data={imagesUrl.map((url) => ({ color: url }))}
+                data={paginationData}
                 dotStyle={styles.dot}
                 activeDotStyle={styles.dotActive}
                 containerStyle={styles.carouselFooter}
@@ -139,20 +145,11 @@ const CustomItem: React.FC<CustomItemProps> = ({ animationValue, children }) => 
     }, [animationValue]);
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={styles.customItemWrapper}>
             {children}
             <Animated.View
                 pointerEvents="none"
-                style={[
-                    {
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                    },
-                    maskStyle,
-                ]}
+                style={[styles.animatedMask, maskStyle]}
             />
         </View>
     );
@@ -180,6 +177,9 @@ const styles = StyleSheet.create((theme, rt) => ({
     gradientStop0: { backgroundColor: theme.colors.gradientOverlay[0] },
     gradientStop1: { backgroundColor: theme.colors.gradientOverlay[1] },
     gradientStop2: { backgroundColor: theme.colors.gradientOverlay[2] },
+
+    customItemWrapper: { flex: 1 },
+    animatedMask: { ...StyleSheet.absoluteFillObject },
 
     locationContainer: {
         position: "absolute",
