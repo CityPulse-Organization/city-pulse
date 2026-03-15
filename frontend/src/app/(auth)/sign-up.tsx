@@ -164,9 +164,11 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   inputsContainer: { gap: theme.utils.vs(20), marginTop: theme.utils.vs(120) },
   input: {
-    fontSize: theme.utils.ms(14),
     color: theme.colors.violet,
+    fontSize: theme.utils.ms(14),
     borderColor: theme.colors.violet,
+    borderBottomWidth: 1,
+    padding: theme.utils.s(8),
   },
   bottomContainer: {
     marginTop: theme.utils.vs(50),

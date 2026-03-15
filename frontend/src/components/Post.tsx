@@ -161,8 +161,6 @@ const styles = StyleSheet.create((theme) => ({
     position: "relative",
     overflow: "hidden",
     borderRadius: theme.utils.s(22),
-    borderWidth: 1,
-    borderColor: theme.colors.borderSubtle,
     minHeight: theme.utils.s(180),
   },
   image: {

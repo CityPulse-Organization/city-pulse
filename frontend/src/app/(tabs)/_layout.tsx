@@ -74,6 +74,6 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create((theme, rt) => ({
   icon: {
-    color: theme.colors.violet,
+    color: theme.colors.accent,
   },
 }));

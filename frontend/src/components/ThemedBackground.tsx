@@ -32,7 +32,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   safeArea: {
     flex: 1,
-    paddingTop: rt.insets.top,
+    paddingTop: rt.insets.top + theme.utils.vs(10),
     paddingBottom: rt.insets.bottom,
     paddingLeft: rt.insets.left,
     paddingRight: rt.insets.right,

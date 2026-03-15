@@ -33,10 +33,7 @@ export default function ProfileScreen() {
 
   const renderPostItem = useCallback(
     ({ item: postData }: { item: PostItem }) => (
-      <Post
-        data={postData}
-        onPress={navigateToPostDetails}
-      />
+      <Post data={postData} onPress={navigateToPostDetails} />
     ),
     [navigateToPostDetails],
   );
@@ -44,13 +41,14 @@ export default function ProfileScreen() {
   const keyExtractor = useCallback((postData: PostItem) => postData.id, []);
 
   return (
-    <ThemedBackground style={styles.page}>
-
+    <ThemedBackground>
       <ProfileHeader />
       <StatsPanel />
 
       <View style={styles.postsHeader}>
-        <UIText size="lg" weight="bold" style={styles.text}>Posts</UIText>
+        <UIText size="lg" weight="bold" style={styles.text}>
+          Posts
+        </UIText>
         <NewPostButton />
       </View>
 
@@ -68,9 +66,6 @@ export default function ProfileScreen() {
   );
 }
 
-
-
-
 const ProfileHeader = memo(() => {
   const router = useRouter();
 
@@ -85,7 +80,11 @@ const ProfileHeader = memo(() => {
           size="medium"
           profileImageUrl="https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg"
         />
-        <UIButton style={styles.editProfileButton} onPress={navigateToEditProfile} isLoading={false}>
+        <UIButton
+          style={styles.editProfileButton}
+          onPress={navigateToEditProfile}
+          isLoading={false}
+        >
           <Ionicons
             color={styles.editProfileIcon.color}
             size={styles.editProfileIcon.height}
@@ -96,11 +95,7 @@ const ProfileHeader = memo(() => {
 
       <View style={styles.infoContainer}>
         <View style={[styles.row, styles.usernameRow]}>
-          <UIText
-            size="lg"
-            weight="bold"
-            style={styles.text}
-          >
+          <UIText size="lg" weight="bold" style={styles.text}>
             Kyrylo
           </UIText>
 
@@ -134,8 +129,6 @@ const ProfileHeader = memo(() => {
   );
 });
 
-
-
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
 const PROFILE_STATS_CONFIG: {
@@ -144,12 +137,11 @@ const PROFILE_STATS_CONFIG: {
   iconName: IconName;
   quantity: number;
 }[] = [
-    { id: "1", title: "Followers", iconName: "people-outline", quantity: 398 },
-    { id: "2", title: "Posts", iconName: "document-text-outline", quantity: 398 },
-    { id: "3", title: "Followings", iconName: "grid-outline", quantity: 34 },
-    { id: "4", title: "Saves", iconName: "bookmark-outline", quantity: 34 },
-  ];
-
+  { id: "1", title: "Followers", iconName: "people-outline", quantity: 398 },
+  { id: "2", title: "Posts", iconName: "document-text-outline", quantity: 398 },
+  { id: "3", title: "Followings", iconName: "grid-outline", quantity: 34 },
+  { id: "4", title: "Saves", iconName: "bookmark-outline", quantity: 34 },
+];
 
 const StatsPanel = memo(() => {
   return (
@@ -165,7 +157,11 @@ const StatsPanel = memo(() => {
           </View>
           {index < PROFILE_STATS_CONFIG.length - 1 && (
             <LinearGradient
-              colors={['rgba(176, 38, 255, 0)', 'rgba(176, 38, 255, 0.4)', 'rgba(176, 38, 255, 0)']}
+              colors={[
+                "rgba(176, 38, 255, 0)",
+                "rgba(176, 38, 255, 0.4)",
+                "rgba(176, 38, 255, 0)",
+              ]}
               style={styles.statGradientDivider}
             />
           )}
@@ -182,10 +178,14 @@ type StatsButtonProps = {
 };
 
 const StatsButton = memo(({ title, iconName, quantity }: StatsButtonProps) => {
-  const handleStatPress = useCallback(() => { }, []);
+  const handleStatPress = useCallback(() => {}, []);
 
   return (
-    <UIButton style={styles.statButton} onPress={handleStatPress} isLoading={false}>
+    <UIButton
+      style={styles.statButton}
+      onPress={handleStatPress}
+      isLoading={false}
+    >
       <View style={styles.statIconContainer}>
         <Ionicons
           color={styles.statIcon.color}
@@ -227,13 +227,9 @@ const NewPostButton = memo(() => {
 });
 
 const styles = StyleSheet.create((theme) => ({
-  page: {
-    flex: 1,
-    paddingTop: theme.utils.vs(10),
-  },
   list: {
     flex: 1,
-    width: "100%"
+    width: "100%",
   },
   postsContainer: {
     paddingBottom: theme.utils.vs(80),
@@ -273,7 +269,7 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: "center",
   },
   usernameRow: {
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   jobRow: {
     gap: theme.utils.s(6),

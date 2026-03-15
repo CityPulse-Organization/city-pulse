@@ -196,10 +196,10 @@ const SearchTab = ({
   icon?: React.ReactNode;
 }) => {
   const theme = UnistylesRuntime.getTheme();
-  const activeColor = theme.colors.primaryText;
+  const activeColor = theme.colors.accent;
   const inactiveColor = theme.colors.background;
-  const activeTextColor = theme.colors.white;
-  const inactiveTextColor = theme.colors.gray;
+  const activeTextColor = theme.colors.accent;
+  const inactiveTextColor = theme.colors.white;
 
   const animatedStyle = useAnimatedStyle(() => {
     const isSelected = focusedTab.value === name;
@@ -487,7 +487,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     height: "100%",
   },
   searchIcon: {
-    color: theme.colors.icon,
+    color: theme.colors.accent,
     marginRight: theme.utils.s(10),
   },
   clearIcon: {

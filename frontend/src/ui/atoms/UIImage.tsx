@@ -46,7 +46,7 @@ export const UIImage = memo(
       [isAspectRatio],
     );
 
-    if (isLoading || imagePreparing) {
+    if (isLoading) {
       return <UISkeleton size={size} borderRound={borderRound} style={style} />;
     }
     return (

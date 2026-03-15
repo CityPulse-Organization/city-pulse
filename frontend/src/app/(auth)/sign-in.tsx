@@ -129,6 +129,8 @@ const styles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.violet,
     fontSize: theme.utils.ms(14),
     borderColor: theme.colors.violet,
+    borderBottomWidth: 1,
+    padding: theme.utils.s(8),
   },
   forgotPassword: {
     color: theme.colors.mutedAccent,
