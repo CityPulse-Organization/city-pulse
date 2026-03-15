@@ -1,19 +1,14 @@
 import { Icon, ThemedBackground } from "@/src/components";
-import { UIButton, UIText } from "@/src/ui";
+import { ProfileData, useEditProfile } from "@/src/hooks/profile/useEditProfileForm";
+import { UIButton, UIInput, UIText } from "@/src/ui";
+import { UIKeyboardAvoidingScrollView } from "@/src/ui/molecules/UIKeyboardAvoidingScrollView";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { ComponentProps, memo, useCallback, useState } from "react";
-import { TextInput, View } from "react-native";
-import ImagePicker from "react-native-image-crop-picker";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
-import Toast from "react-native-toast-message";
+import { ComponentProps, memo } from "react";
+import { Control, Controller, FieldErrors, useWatch } from "react-hook-form";
+import { View } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 
-type ProfileData = {
-  nickname: string;
-  job: string;
-  biography: string;
-  avatarUrl: string;
-};
+
 
 type FormFieldConfig = {
   id: keyof ProfileData;
@@ -23,6 +18,8 @@ type FormFieldConfig = {
   autoCapitalize?: "none";
 };
 
+type IconName = ComponentProps<typeof Ionicons>["name"];
+
 const FORM_FIELDS_CONFIG: FormFieldConfig[] = [
   {
     id: "nickname",
@@ -30,7 +27,11 @@ const FORM_FIELDS_CONFIG: FormFieldConfig[] = [
     placeholder: "Edit nickname",
     autoCapitalize: "none",
   },
-  { id: "job", iconName: "briefcase-outline", placeholder: "Edit job" },
+  {
+    id: "job",
+    iconName: "briefcase-outline",
+    placeholder: "Edit job"
+  },
   {
     id: "biography",
     iconName: "chatbox-outline",
@@ -40,91 +41,23 @@ const FORM_FIELDS_CONFIG: FormFieldConfig[] = [
 ];
 
 export default function EditProfileScreen() {
-  const router = useRouter();
+  const { control, errors, handleAvatarPress, onCancel, onSave } = useEditProfile()
 
-  const [formData, setFormData] = useState<ProfileData>({
-    nickname: "",
-    job: "",
-    biography: "",
-    avatarUrl: "",
+  const avatarUrl = useWatch({
+    control,
+    name: "avatarUrl",
   });
-
-  const onCancel = () => {
-    router.back();
-  };
-
-  const onSave = () => {
-    Toast.show({
-      type: "success",
-      text1: "Profile Updated",
-      text2: "Your changes have been saved successfully ✨",
-    });
-    router.back();
-  };
-
-  const onAvatarPress = async () => {
-    ImagePicker.openPicker({
-      cropping: true,
-      cropperCircleOverlay: true,
-      mediaType: "photo",
-      forceJpg: true,
-      freeStyleCropEnabled: true,
-    })
-      .then((image) => {
-        setFormData((prev) => ({ ...prev, avatarUrl: image.path }));
-      })
-      .catch((error) => {
-        console.log("Image picker cancelled or failed", error);
-        if (error.code !== "E_PICKER_CANCELLED") {
-          Toast.show({
-            type: "error",
-            text1: "Upload Failed",
-            text2: "There was a problem selecting your image ❌",
-          });
-        }
-      });
-  };
-
-  const handleInputChange = useCallback(
-    (fieldId: keyof ProfileData, text: string) => {
-      setFormData((prev) => ({ ...prev, [fieldId]: text }));
-    },
-    [],
-  );
 
   return (
     <ThemedBackground style={styles.page}>
-      <HeaderSection
-        avatarUrl={formData.avatarUrl}
-        onSave={onSave}
-        onCancel={onCancel}
-        onAvatarPress={onAvatarPress}
-      />
-      <FormSection formData={formData} onChange={handleInputChange} />
-    </ThemedBackground>
-  );
-}
+      <HeaderSection onSave={onSave} onCancel={onCancel} />
 
-type HeaderSectionProps = {
-  avatarUrl?: string;
-  onCancel: () => void;
-  onSave: () => void;
-  onAvatarPress: () => void;
-};
-
-const HeaderSection = memo(
-  ({ avatarUrl, onCancel, onSave, onAvatarPress }: HeaderSectionProps) => {
-    return (
-      <View style={styles.headerContainer}>
-        <UIButton onPress={onCancel} isLoading={false}>
-          <UIText style={styles.headerActionText} size="md">
-            Cancel
-          </UIText>
-        </UIButton>
-
+      <UIKeyboardAvoidingScrollView
+        keyboardVerticalOffset={styles.keyboardVertivalOffset.paddingBottom}
+      >
         <UIButton
           style={styles.avatarContainer}
-          onPress={onAvatarPress}
+          onPress={handleAvatarPress}
           isLoading={false}
         >
           <View pointerEvents="none">
@@ -132,130 +65,168 @@ const HeaderSection = memo(
           </View>
         </UIButton>
 
-        <UIButton onPress={onSave} isLoading={false}>
-          <UIText style={styles.headerActionText} size="md" weight="normal">
-            Done
-          </UIText>
-        </UIButton>
-      </View>
-    );
-  },
-);
+        <FormSection control={control} errors={errors} />
+      </UIKeyboardAvoidingScrollView>
 
-type FormSectionProps = {
-  formData: ProfileData;
-  onChange: (id: keyof ProfileData, text: string) => void;
+    </ThemedBackground>
+  );
+}
+
+
+type HeaderSectionProps = {
+  onCancel: () => void;
+  onSave: () => void;
 };
 
-const FormSection = memo(({ formData, onChange }: FormSectionProps) => {
+const HeaderSection = memo(({ onCancel, onSave }: HeaderSectionProps) => {
   return (
-    <View style={styles.formContainer}>
-      {FORM_FIELDS_CONFIG.map((field) => (
-        <ProfileInput
-          key={field.id}
-          iconName={field.iconName}
-          placeholder={field.placeholder}
-          isMultiline={field.isMultiline}
-          autoCapitalize={field.autoCapitalize}
-          value={formData[field.id]}
-          onChangeText={(text) => onChange(field.id, text)}
-        />
-      ))}
+    <View style={styles.headerContainer}>
+      <UIButton onPress={onCancel} isLoading={false}>
+        <UIText style={[styles.headerActionText, styles.cancelText]} size="md">
+          Cancel
+        </UIText>
+      </UIButton>
+
+      <UIButton onPress={onSave} isLoading={false}>
+        <UIText
+          style={[styles.headerActionText, styles.doneText]}
+          size="md"
+          weight="bold"
+        >
+          Done
+        </UIText>
+      </UIButton>
     </View>
   );
 });
 
-type IconName = ComponentProps<typeof Ionicons>["name"];
 
-type ProfileInputProps = {
-  iconName: IconName;
-  placeholder: string;
-  isMultiline?: boolean;
-  autoCapitalize?: "none";
-  value: string;
-  onChangeText: (text: string) => void;
+
+type FormSectionProps = {
+  control: Control<ProfileData>;
+  errors: FieldErrors<ProfileData>;
 };
 
-const ProfileInput = memo(
-  ({
-    iconName,
-    placeholder,
-    isMultiline = false,
-    autoCapitalize,
-    value,
-    onChangeText,
-  }: ProfileInputProps) => {
-    const { theme } = useUnistyles();
-    return (
-      <View
-        style={[
-          styles.inputContainer,
-          isMultiline && styles.inputContainerMultiline,
-        ]}
-      >
-        <Ionicons
-          color={theme.colors.editProfileDescription}
-          size={18}
-          name={iconName}
-          style={isMultiline ? { marginTop: 14 } : undefined}
-        />
+const FormSection = memo(({ control, errors }: FormSectionProps) => (
+  <View style={styles.formContainer}>
+    {FORM_FIELDS_CONFIG.map((field) => (
+      <FormFieldItem
+        key={field.id}
+        field={field}
+        control={control}
+        errorMessage={errors[field.id]?.message}
+      />
+    ))}
+  </View>
+));
 
-        <TextInput
-          style={[styles.defaultInput, isMultiline && styles.biographyInput]}
-          multiline={isMultiline}
-          placeholder={placeholder}
-          placeholderTextColor={theme.colors.editProfileDescription}
-          autoCapitalize={autoCapitalize}
-          value={value}
-          onChangeText={onChangeText}
-        />
-      </View>
-    );
-  },
-);
+
+const FormFieldItem = memo(({ field, control, errorMessage }: {
+  field: FormFieldConfig;
+  control: Control<ProfileData>;
+  errorMessage?: string;
+}) => {
+  return (
+    <View style={styles.fieldWrapper}>
+      <Controller
+        control={control}
+        name={field.id}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <UIInput
+            leftElement={
+              <Ionicons
+                name={field.iconName}
+                size={styles.iconInput.height}
+                color={errorMessage ? styles.errorText.color : styles.iconInput.color}
+              />
+            }
+            containerStyle={[
+              field.isMultiline && styles.inputContainerMultiline,
+              errorMessage && styles.inputErrorBorder
+            ]}
+            inputStyle={field.isMultiline ? styles.biographyInput : undefined}
+            multiline={field.isMultiline}
+            placeholder={field.placeholder}
+            placeholderTextColor={styles.placeholderInput.color}
+            autoCapitalize={field.autoCapitalize}
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+          />
+        )}
+      />
+      {errorMessage && (
+        <UIText style={styles.errorText} size="sm">
+          {errorMessage}
+        </UIText>
+      )}
+    </View>
+  );
+});
+
+
 
 const styles = StyleSheet.create((theme) => ({
   page: {
-    gap: 20,
-    paddingHorizontal: 20,
+    gap: theme.utils.s(10),
   },
+
   headerContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignSelf: "stretch",
   },
   headerActionText: {
-    color: theme.colors.profileTextColor,
-    paddingHorizontal: 5,
-    paddingVertical: 10,
+    paddingHorizontal: theme.utils.s(5),
+    paddingVertical: theme.utils.vs(10),
   },
+  cancelText: {
+    color: theme.colors.muted,
+  },
+  doneText: {
+    color: theme.colors.accent,
+  },
+
+  keyboardVertivalOffset: {
+    paddingBottom: theme.utils.vs(60),
+  },
+
   avatarContainer: {
-    marginTop: 16,
-    borderRadius: 100,
+    borderRadius: theme.utils.ms(999),
+    backgroundColor: theme.colors.backgroundSubtle,
+    alignSelf: "center",
   },
+
   formContainer: {
     alignSelf: "stretch",
-    paddingHorizontal: 30,
-    gap: 14,
+    paddingHorizontal: theme.utils.s(30),
+    paddingTop: theme.utils.vs(10),
+    gap: theme.utils.s(14),
   },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderColor: theme.colors.editProfileDescription,
-    borderBottomWidth: 1,
-    gap: 10,
+  fieldWrapper: {
+    gap: theme.utils.vs(4),
   },
   inputContainerMultiline: {
-    alignItems: "flex-start",
+    alignItems: "baseline",
   },
-  defaultInput: {
-    flex: 1,
-    minHeight: 46,
-    fontSize: 17,
-    color: theme.colors.profileTextColor,
+  iconInput: {
+    color: theme.colors.muted,
+    height: theme.utils.s(18),
+    marginTop: theme.utils.vs(12),
   },
   biographyInput: {
-    maxHeight: 360,
+    maxHeight: theme.utils.vs(340),
     textAlignVertical: "top",
   },
+  placeholderInput: {
+    color: theme.colors.muted,
+  },
+
+  errorText: {
+    color: theme.colors.alert,
+    marginLeft: theme.utils.s(28),
+  },
+  inputErrorBorder: {
+    borderColor: theme.colors.alert,
+  }
 }));

@@ -3,94 +3,87 @@ import {
   BottomSheetBackdropProps,
   BottomSheetModal,
   BottomSheetModalProps,
-  BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import React, { forwardRef, useCallback } from "react";
-import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
+import React, { forwardRef, memo, useCallback } from "react";
+import { StyleSheet } from "react-native-unistyles";
 import { UIText } from "../atoms";
-import { scale } from "../unistyles";
+import { View } from "react-native";
 
 type UIBottomSheetProps = {
   children: React.ReactNode;
   header?: string | React.ReactNode;
-} & UnistylesVariants<typeof styles> &
-  BottomSheetModalProps;
+} & BottomSheetModalProps;
 
-export const UIBottomSheet = forwardRef<BottomSheetModal, UIBottomSheetProps>(
-  ({ children, header, ...props }, ref) => {
-    const renderBackdrop = useCallback(
-      (props: BottomSheetBackdropProps) => (
-        <BottomSheetBackdrop
+export const UIBottomSheet = memo(
+  forwardRef<BottomSheetModal, UIBottomSheetProps>(
+    ({ children, header, ...props }, ref) => {
+      const renderBackdrop = useCallback(
+        (backdropProps: BottomSheetBackdropProps) => (
+          <BottomSheetBackdrop
+            {...backdropProps}
+            disappearsOnIndex={-1}
+            appearsOnIndex={0}
+            opacity={0.5}
+            pressBehavior="close"
+            style={[backdropProps.style, styles.backdrop]}
+          />
+        ),
+        [],
+      );
+
+      return (
+        <BottomSheetModal
+          backdropComponent={renderBackdrop}
+          handleStyle={styles.handleStyle}
+          backgroundStyle={styles.backgroundStyle}
+          ref={ref}
+          enableDynamicSizing={false}
+          handleIndicatorStyle={styles.handleIndicatorStyle}
           {...props}
-          disappearsOnIndex={-1}
-          appearsOnIndex={0}
-          opacity={0.5}
-          pressBehavior="close"
-          style={styles.backdrop}
-        />
-      ),
-      [],
-    );
+        >
 
-    return (
-      <BottomSheetModal
-        backdropComponent={renderBackdrop}
-        handleStyle={styles.handleStyle}
-        backgroundStyle={styles.backgroundStyle}
-        ref={ref}
-        handleIndicatorStyle={styles.handleIndicatorStyle}
-        maxDynamicContentSize={700}
-        {...props}
-      >
-        <BottomSheetScrollView contentContainerStyle={styles.bottomSheetView}>
-          {typeof header === "string" ? (
-            <UIText size="xxl" style={styles.header}>
-              {header}
-            </UIText>
-          ) : header ? (
-            header
-          ) : null}
+          {header != null && (
+            <View style={styles.headerView}>
+              {typeof header === "string" ? (
+                <UIText size="xxl" style={styles.header}>
+                  {header}
+                </UIText>
+              ) : (
+                header
+              )}
+            </View>
+          )}
+
           {children}
-        </BottomSheetScrollView>
-      </BottomSheetModal>
-    );
-  },
+
+        </BottomSheetModal>
+      );
+    },
+  )
 );
 
 const styles = StyleSheet.create((theme) => ({
   header: {
-    color: theme.colors.primaryTextColor,
+    color: theme.colors.primaryText,
     textAlign: "center",
   },
-  bottomSheetView: {
-    paddingHorizontal: 16,
-    paddingBottom: 40,
-    paddingTop: 10,
+  headerView: {
+    paddingTop: theme.utils.s(10),
     width: "100%",
-    variants: {
-      bottomSheetTheme: {
-        default: {
-          backgroundColor: theme.colors.black,
-        },
-        light: {
-          backgroundColor: theme.colors.white,
-        },
-      },
-    },
   },
   backdrop: {
     backgroundColor: theme.colors.black,
   },
   handleStyle: {
-    backgroundColor: theme.colors.bottomSheetBackgroundColor,
-    borderTopLeftRadius: scale(14),
-    borderTopRightRadius: scale(14),
+    backgroundColor: theme.colors.bottomSheetBackground,
+    borderTopLeftRadius: theme.utils.s(14),
+    borderTopRightRadius: theme.utils.s(14),
   },
   backgroundStyle: {
-    backgroundColor: theme.colors.bottomSheetBackgroundColor,
+    backgroundColor: theme.colors.bottomSheetBackground,
   },
   handleIndicatorStyle: {
-    backgroundColor: theme.colors.darkViolet,
-    width: 40,
+    backgroundColor: theme.colors.mutedAccent,
+    width: theme.utils.s(40),
   },
 }));

@@ -49,7 +49,7 @@ export default function IndexRoute() {
 const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.backgroundColor,
+    backgroundColor: theme.colors.background,
     justifyContent: "center",
     alignItems: "center",
   },

@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Dimensions,
-    Image as RNImage,
-    View,
+  ActivityIndicator,
+  Dimensions,
+  Image as RNImage,
+  View,
 } from "react-native";
 import {
-    Gesture,
-    GestureDetector,
-    GestureHandlerRootView,
+  Gesture,
+  GestureDetector,
 } from "react-native-gesture-handler";
 import Animated, {
-    useAnimatedStyle,
-    useSharedValue,
+  useAnimatedStyle,
+  useSharedValue,
 } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -31,13 +30,17 @@ type InteractiveImagePreviewProps = {
 export const InteractiveImagePreview = ({
   imageUri,
 }: InteractiveImagePreviewProps) => {
-  const { isLoading, dimensions, panGesture, animatedStyle } = useImageGeometry(
+  const { isLoading, panGesture, animatedStyle } = useImageGeometry(
     imageUri,
     SCREEN_WIDTH,
     PREVIEW_HEIGHT,
   );
 
-  if (isLoading || !dimensions) {
+  if (!imageUri) {
+    return null;
+  }
+
+  if (isLoading) {
     return (
       <View style={[styles.viewport, styles.centered]}>
         <ActivityIndicator size="large" color="white" />
@@ -46,25 +49,17 @@ export const InteractiveImagePreview = ({
   }
 
   return (
-    <GestureHandlerRootView style={styles.root}>
-      <View style={styles.viewport}>
-        <GestureDetector gesture={panGesture}>
-          <Animated.View style={styles.imageContainer}>
-            <Animated.Image
-              source={{ uri: imageUri }}
-              style={[
-                {
-                  width: dimensions.width,
-                  height: dimensions.height,
-                },
-                animatedStyle,
-              ]}
-              resizeMode="cover"
-            />
-          </Animated.View>
-        </GestureDetector>
-      </View>
-    </GestureHandlerRootView>
+    <View style={styles.viewport}>
+      <GestureDetector gesture={panGesture}>
+        <Animated.View style={styles.imageContainer}>
+          <Animated.Image
+            source={{ uri: imageUri }}
+            style={animatedStyle}
+            resizeMode="cover"
+          />
+        </Animated.View>
+      </GestureDetector>
+    </View>
   );
 };
 
@@ -73,8 +68,10 @@ const useImageGeometry = (
   viewportWidth: number,
   viewportHeight: number,
 ) => {
-  const [dimensions, setDimensions] = useState<ImageDimensions | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const imageWidth = useSharedValue(0);
+  const imageHeight = useSharedValue(0);
 
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -94,7 +91,8 @@ const useImageGeometry = (
           viewportHeight,
         );
 
-        setDimensions(newDims);
+        imageWidth.value = newDims.width;
+        imageHeight.value = newDims.height;
 
         translateX.value = calculateCenterPosition(
           newDims.width,
@@ -119,13 +117,11 @@ const useImageGeometry = (
       context.value = { x: translateX.value, y: translateY.value };
     })
     .onUpdate((event) => {
-      if (!dimensions) return;
-
       const rawX = context.value.x + event.translationX;
       const rawY = context.value.y + event.translationY;
 
-      const minX = viewportWidth - dimensions.width;
-      const minY = viewportHeight - dimensions.height;
+      const minX = viewportWidth - imageWidth.value;
+      const minY = viewportHeight - imageHeight.value;
       const maxX = 0;
       const maxY = 0;
 
@@ -134,6 +130,8 @@ const useImageGeometry = (
     });
 
   const animatedStyle = useAnimatedStyle(() => ({
+    width: imageWidth.value,
+    height: imageHeight.value,
     transform: [
       { translateX: translateX.value },
       { translateY: translateY.value },
@@ -142,7 +140,6 @@ const useImageGeometry = (
 
   return {
     isLoading,
-    dimensions,
     panGesture,
     animatedStyle,
   };
@@ -169,9 +166,6 @@ const calculateCenterPosition = (
 };
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 0,
-  },
   viewport: {
     width: SCREEN_WIDTH,
     height: PREVIEW_HEIGHT,

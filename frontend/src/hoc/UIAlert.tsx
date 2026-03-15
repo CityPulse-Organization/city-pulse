@@ -69,58 +69,58 @@ export const UIAlertProvider = () => {
             exiting={FadeOutDown.duration(200)}
             style={styles.alertBox}
           >
-          <View style={styles.header}>
-            <UIText size="lg" weight="bold" style={styles.title}>
-              {alertConfig.title}
-            </UIText>
-            {!!alertConfig.message && (
-              <UIText size="md" style={styles.message}>
-                {alertConfig.message}
+            <View style={styles.header}>
+              <UIText size="lg" weight="bold" style={styles.title}>
+                {alertConfig.title}
               </UIText>
-            )}
-          </View>
+              {!!alertConfig.message && (
+                <UIText size="md" style={styles.message}>
+                  {alertConfig.message}
+                </UIText>
+              )}
+            </View>
 
-          <View
-            style={[
-              buttons.length === 2 ? styles.buttonRow : styles.buttonCol,
-            ]}
-          >
-            {buttons.map((btn, index) => {
-              const isLast = index === buttons.length - 1;
-              const isDefault = !btn.style || btn.style === "default";
-              const isDestructive = btn.style === "destructive";
+            <View
+              style={[
+                buttons.length === 2 ? styles.buttonRow : styles.buttonCol,
+              ]}
+            >
+              {buttons.map((btn, index) => {
+                const isLast = index === buttons.length - 1;
+                const isDefault = !btn.style || btn.style === "default";
+                const isDestructive = btn.style === "destructive";
 
-              return (
-                <View
-                  key={index}
-                  style={[
-                    styles.buttonWrapper,
-                    buttons.length === 2 && !isLast && styles.buttonBorderRight,
-                    buttons.length !== 2 && !isLast && styles.buttonBorderBottom,
-                  ]}
-                >
-                  <Pressable
-                    onPress={() => handlePress(btn)}
-                    style={styles.button}
+                return (
+                  <View
+                    key={index}
+                    style={[
+                      styles.buttonWrapper,
+                      buttons.length === 2 && !isLast && styles.buttonBorderRight,
+                      buttons.length !== 2 && !isLast && styles.buttonBorderBottom,
+                    ]}
                   >
-                    <UIText
-                      size="lg"
-                      weight={isDefault ? "bold" : "normal"}
-                      style={[
-                        styles.buttonText,
-                        isDestructive && styles.destructiveText,
-                        !isDefault && !isDestructive && styles.cancelText,
-                      ]}
+                    <Pressable
+                      onPress={() => handlePress(btn)}
+                      style={styles.button}
                     >
-                      {btn.text || "OK"}
-                    </UIText>
-                  </Pressable>
-                </View>
-              );
-            })}
-          </View>
+                      <UIText
+                        size="lg"
+                        weight={isDefault ? "bold" : "normal"}
+                        style={[
+                          styles.buttonText,
+                          isDestructive && styles.destructiveText,
+                          !isDefault && !isDestructive && styles.cancelText,
+                        ]}
+                      >
+                        {btn.text || "OK"}
+                      </UIText>
+                    </Pressable>
+                  </View>
+                );
+              })}
+            </View>
+          </Animated.View>
         </Animated.View>
-      </Animated.View>
       )}
     </Modal>
   );
@@ -137,7 +137,7 @@ const styles = StyleSheet.create((theme) => ({
   alertBox: {
     width: "100%",
     maxWidth: 340,
-    backgroundColor: theme.colors.backgroundColor,
+    backgroundColor: theme.colors.background,
     borderRadius: 24,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
@@ -154,12 +154,12 @@ const styles = StyleSheet.create((theme) => ({
   },
   title: {
     textAlign: "center",
-    color: theme.colors.textColor,
+    color: theme.colors.primaryText,
     marginBottom: 8,
   },
   message: {
     textAlign: "center",
-    color: theme.colors.iconInfoStatusTextColor,
+    color: theme.colors.muted,
     lineHeight: 20,
   },
   buttonRow: {
@@ -192,7 +192,7 @@ const styles = StyleSheet.create((theme) => ({
     color: "#A78BFA", // Primary action color
   },
   cancelText: {
-    color: theme.colors.textColor,
+    color: theme.colors.primaryText,
   },
   destructiveText: {
     color: theme.colors.lightRed,

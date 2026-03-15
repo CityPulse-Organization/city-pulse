@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { View } from "react-native";
-import { StyleSheet } from "react-native-unistyles";
-import { UIButton, UIText } from "../ui";
+import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
+import { UIText } from "../ui";
 import { Icon } from "./Icon";
 
 export type IconInfoProps = {
@@ -12,9 +12,9 @@ export type IconInfoProps = {
   usernameSize?: "sm";
   usernameWeight?: "bold";
   statusText?: string;
-  iconSize?: "small";
-  iconBorderColor?: "violet" | "faint";
-};
+  iconSize?: "small" | "medium" | "comment";
+  onPress?: () => void;
+} & UnistylesVariants<typeof styles>;;
 
 export const IconInfo = memo(
   ({
@@ -24,30 +24,34 @@ export const IconInfo = memo(
     username,
     statusText,
     iconSize,
-    iconBorderColor,
     usernameSize,
     usernameWeight,
+    mode,
   }: IconInfoProps) => {
+    styles.useVariants({ mode: mode });
+
     return (
       <View style={styles.container}>
-        <UIButton isLoading={isLoading} onPress={() => {}}>
-          <Icon
-            profileImageUrl={profileImageUrl}
-            isBroadCasting={isBroadCasting}
-            size={iconSize}
-            borderColor={iconBorderColor}
-          />
-        </UIButton>
+        <Icon
+          profileImageUrl={profileImageUrl}
+          isLoading={isLoading}
+          isBroadCasting={isBroadCasting}
+          size={iconSize}
+          colorEmptyIcon={mode === "post" ? styles.emptyIcon.color : undefined}
+        />
 
         <View style={styles.textWrapper}>
           <UIText
             size={usernameSize}
             weight={usernameWeight}
-            style={styles.username}
+            style={styles.usernameText}
           >
             {username}
           </UIText>
-          <UIText style={styles.statusText} size="xs">
+          <UIText
+            style={styles.statusText}
+            size="xs"
+          >
             {statusText}
           </UIText>
         </View>
@@ -62,10 +66,28 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: "center",
     gap: theme.utils.ms(10),
   },
+  emptyIcon: {
+    color: theme.colors.white,
+  },
   textWrapper: {
     flexShrink: 1,
-    gap: 4,
+    gap: theme.utils.s(4),
   },
-  username: { color: theme.colors.iconInfoUsernameTextColor },
-  statusText: { color: theme.colors.iconInfoStatusTextColor },
+
+  usernameText: {
+    variants: {
+      mode: {
+        default: { color: theme.colors.primaryText },
+        post: { color: theme.colors.white },
+      },
+    },
+  },
+  statusText: {
+    variants: {
+      mode: {
+        default: { color: theme.colors.muted },
+        post: { color: theme.colors.lightGray },
+      },
+    },
+  },
 }));

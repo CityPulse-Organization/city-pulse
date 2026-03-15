@@ -55,9 +55,13 @@ export default function NewsScreen() {
 }
 
 const styles = StyleSheet.create((theme) => ({
-  page: { flex: 1, gap: 10, paddingHorizontal: 20 },
+  page: {
+    flex: 1,
+    gap: theme.utils.s(10),
+    paddingHorizontal: theme.utils.vs(20)
+  },
   list: { flex: 1, width: "100%" },
-  postsContainer: { paddingBottom: 100 },
+  postsContainer: { paddingBottom: theme.utils.vs(100) },
   // logoutText: {
   //   color: theme.colors.violet,
   // },

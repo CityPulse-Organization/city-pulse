@@ -13,18 +13,21 @@ type UIKeyboardAvoidingScrollViewProps = {
   children: React.ReactNode;
   contentContainerStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
+  keyboardVerticalOffset?: number;
 } & ScrollViewProps;
 
 export const UIKeyboardAvoidingScrollView = ({
   children,
   contentContainerStyle,
   style,
+  keyboardVerticalOffset,
   ...props
 }: UIKeyboardAvoidingScrollViewProps) => {
   return (
     <KeyboardAvoidingView
       style={[styles.container, style]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={keyboardVerticalOffset}
     >
       <ScrollView
         contentContainerStyle={[styles.scrollContent, contentContainerStyle]}

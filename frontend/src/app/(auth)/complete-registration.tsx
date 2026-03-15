@@ -45,7 +45,8 @@ export default function CompleteRegistrationPage() {
             render={({ field: { onChange, onBlur, value }, fieldState }) => (
               <UIInput
                 placeholderTextColor={styles.input.borderColor}
-                textInputStyle={styles.input}
+                inputStyle={styles.input}
+                dividerColor="accent"
                 placeholder="Username"
                 onBlur={onBlur}
                 onChangeText={onChange}

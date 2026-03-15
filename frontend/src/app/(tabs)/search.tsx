@@ -167,7 +167,7 @@ const PlaceItem = memo(({ item }: { item: Place }) => (
       <Ionicons
         name="location"
         size={20}
-        color={UnistylesRuntime.getTheme().colors.primaryTextColor}
+        color={UnistylesRuntime.getTheme().colors.primaryText}
       />
     </View>
     <View style={styles.placeTextContainer}>
@@ -193,8 +193,8 @@ const SearchTab = ({
   focusedTab: any;
 }) => {
   const theme = UnistylesRuntime.getTheme();
-  const activeColor = theme.colors.primaryTextColor;
-  const inactiveColor = theme.colors.backgroundColor;
+  const activeColor = theme.colors.primaryText;
+  const inactiveColor = theme.colors.background;
   const activeTextColor = theme.colors.white;
   const inactiveTextColor = theme.colors.gray;
 
@@ -300,7 +300,7 @@ export default function SearchScreen() {
   }, [input]);
 
   const renderPost = useCallback(
-    ({ item }: { item: PostItem }) => <Post data={item} onPress={() => {}} />,
+    ({ item }: { item: PostItem }) => <Post data={item} onPress={() => { }} />,
     [],
   );
 
@@ -388,7 +388,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     fontSize: theme.utils.s(16),
   },
   title: {
-    color: theme.colors.primaryTextColor,
+    color: theme.colors.primaryText,
     fontSize: 20,
     fontWeight: "bold",
   },
@@ -396,7 +396,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingHorizontal: theme.utils.s(16),
     paddingTop: rt.insets.top + theme.utils.vs(10),
     paddingBottom: theme.utils.vs(15),
-    backgroundColor: theme.colors.backgroundColor,
+    backgroundColor: theme.colors.background,
   },
 
   searchContainer: {
@@ -406,7 +406,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingHorizontal: theme.utils.s(15),
     height: theme.utils.vs(44),
     borderWidth: 1,
-    borderColor: theme.colors.dividerColor,
+    borderColor: theme.colors.divider,
     overflow: "hidden",
   },
   itemContainer: {
@@ -456,16 +456,16 @@ const styles = StyleSheet.create((theme, rt) => ({
   search: {
     flex: 1,
     fontSize: theme.utils.s(16),
-    color: theme.colors.primaryTextColor,
+    color: theme.colors.primaryText,
     paddingVertical: theme.utils.vs(8),
     height: "100%",
   },
   searchIcon: {
-    color: theme.colors.iconInfoStatusTextColor,
+    color: theme.colors.icon,
     marginRight: theme.utils.s(10),
   },
   clearIcon: {
-    color: theme.colors.iconInfoStatusTextColor,
+    color: theme.colors.icon,
     opacity: 0.7,
   },
   iconButton: {
@@ -473,15 +473,15 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingHorizontal: 10,
   },
   icon: {
-    color: theme.colors.iconFocused,
+    color: theme.colors.icon,
   },
   placeHolderTextColor: {
-    color: theme.colors.iconInfoStatusTextColor,
+    color: theme.colors.muted,
   },
   tabBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: theme.colors.backgroundColor,
+    backgroundColor: theme.colors.background,
   },
   tabContent: {
     borderBottomWidth: theme.utils.vs(2),

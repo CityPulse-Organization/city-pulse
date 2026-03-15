@@ -52,7 +52,8 @@ export default function SignUpPage() {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                textInputStyle={styles.input}
+                dividerColor="accent"
+                inputStyle={styles.input}
                 error={fieldState.error?.message}
               />
             )}
@@ -70,7 +71,8 @@ export default function SignUpPage() {
                 value={value}
                 autoCapitalize="none"
                 keyboardType="email-address"
-                textInputStyle={styles.input}
+                dividerColor="accent"
+                inputStyle={styles.input}
                 error={fieldState.error?.message}
               />
             )}
@@ -87,7 +89,8 @@ export default function SignUpPage() {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                textInputStyle={styles.input}
+                dividerColor="accent"
+                inputStyle={styles.input}
                 error={fieldState.error?.message}
               />
             )}
@@ -104,7 +107,8 @@ export default function SignUpPage() {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                textInputStyle={styles.input}
+                dividerColor="accent"
+                inputStyle={styles.input}
                 error={fieldState.error?.message}
               />
             )}
@@ -160,9 +164,8 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   inputsContainer: { gap: theme.utils.vs(20), marginTop: theme.utils.vs(120) },
   input: {
-    backgroundColor: "transparent",
+    fontSize: theme.utils.ms(14),
     color: theme.colors.violet,
-    borderBottomWidth: 1,
     borderColor: theme.colors.violet,
   },
   bottomContainer: {
@@ -188,6 +191,6 @@ const styles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.violet,
   },
   dontHaveAccountText: {
-    color: theme.colors.darkViolet,
+    color: theme.colors.mutedAccent,
   },
 }));

@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { memo } from "react";
 import { View } from "react-native";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 import { UIButton, UIText } from "../../ui/atoms";
 
 type NavigationHeaderProps = {
@@ -17,46 +17,41 @@ export const NavigationHeader = memo(
     rightActionLabel = "Done",
     onLeftAction,
     onRightAction,
-  }: NavigationHeaderProps) => {
-    const { theme } = useUnistyles();
+  }: NavigationHeaderProps) => (
+    <View style={styles.headerContainer}>
+      <View style={styles.headerLeft}>
+        <UIButton onPress={onLeftAction} isLoading={false}>
+          <Ionicons
+            color={styles.actionLeftIcon.color}
+            size={styles.actionLeftIcon.size}
+            name={"chevron-back-outline"}
+          />
+        </UIButton>
+      </View>
 
-    return (
-      <View style={styles.headerContainer}>
-        <View style={styles.headerLeft}>
-          <UIButton onPress={onLeftAction} isLoading={false}>
-            <Ionicons
-              color={theme.colors.iconColor}
-              size={28}
-              name={"chevron-back-outline"}
-            />
-          </UIButton>
-        </View>
+      <View style={styles.headerCenter}>
+        <UIText
+          style={styles.headerCenterText}
+          size="md"
+          weight="bold"
+        >
+          {title}
+        </UIText>
+      </View>
 
-        <View style={styles.headerCenter}>
+      <View style={styles.headerRight}>
+        <UIButton onPress={onRightAction} isLoading={false}>
           <UIText
-            style={{ color: theme.colors.profileTextColor }}
-            size="md"
+            style={styles.headerRightText}
+            size="lg"
             weight="bold"
           >
-            {title}
+            {rightActionLabel}
           </UIText>
-        </View>
-
-        <View style={styles.headerRight}>
-          <UIButton onPress={onRightAction} isLoading={false}>
-            <UIText
-              style={{ color: theme.colors.newPostShareButtonColor }}
-              size="lg"
-              weight="bold"
-            >
-              {rightActionLabel}
-            </UIText>
-          </UIButton>
-        </View>
+        </UIButton>
       </View>
-    );
-  },
-);
+    </View>
+  ));
 
 const styles = StyleSheet.create((theme) => ({
   headerContainer: {
@@ -66,18 +61,31 @@ const styles = StyleSheet.create((theme) => ({
     padding: 8,
     paddingTop: 10,
   },
+
   headerLeft: {
     flex: 1,
     alignItems: "flex-start",
   },
+  actionLeftIcon: {
+    color: theme.colors.icon,
+    size: theme.utils.s(20),
+  },
+
   headerCenter: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    color: theme.colors.profileTextColor,
+    color: theme.colors.primaryText,
   },
+  headerCenterText: {
+    color: theme.colors.primaryText,
+  },
+
   headerRight: {
     flex: 1,
     alignItems: "flex-end",
+  },
+  headerRightText: {
+    color: theme.colors.accent,
   },
 }));

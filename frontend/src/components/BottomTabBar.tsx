@@ -62,11 +62,11 @@ const styles = StyleSheet.create((theme, rt) => ({
     borderRadius: 50,
     paddingVertical: 2,
     borderWidth: 1.5,
-    borderColor: theme.colors.bottomTabsBorderColor,
+    borderColor: theme.colors.tabBarBorder,
     overflow: "hidden",
   },
   tabBarIcon: ({ isFocused }: { isFocused: boolean }) => ({
-    color: isFocused ? theme.colors.iconFocused : theme.colors.iconTabBarColor,
+    color: isFocused ? theme.colors.tabBarIconActive : theme.colors.tabBarIconDefault,
   }),
   tabButton: {
     paddingHorizontal: 25,
@@ -76,6 +76,6 @@ const styles = StyleSheet.create((theme, rt) => ({
     justifyContent: "center",
   },
   tabButtonActive: {
-    backgroundColor: theme.colors.activeButtonTabsBackgroundColor,
+    backgroundColor: theme.colors.tabBarItemActiveBackground,
   },
 }));

@@ -35,11 +35,13 @@ export default {
         backgroundColor: "#7f2fed",
       },
       edgeToEdgeEnabled: true,
+      softwareKeyboardLayoutMode: "resize",
       predictiveBackGestureEnabled: false,
       package: "com.citypulse.mobile",
       permissions: [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA",
       ],
       config: {
         googleMaps: {

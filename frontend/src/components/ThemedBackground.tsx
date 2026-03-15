@@ -28,15 +28,15 @@ export const ThemedBackground = ({
 const styles = StyleSheet.create((theme, rt) => ({
   background: {
     flex: 1,
-    backgroundColor: theme.colors.backgroundColor,
+    backgroundColor: theme.colors.background,
   },
   safeArea: {
     flex: 1,
-    backgroundColor: theme.colors.backgroundColor,
     paddingTop: rt.insets.top,
     paddingBottom: rt.insets.bottom,
     paddingLeft: rt.insets.left,
     paddingRight: rt.insets.right,
+    backgroundColor: theme.colors.background,
   },
   content: {
     flex: 1,

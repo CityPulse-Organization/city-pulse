@@ -42,7 +42,8 @@ export default function SignUpPage() {
             render={({ field: { onChange, onBlur, value }, fieldState }) => (
               <UIInput
                 placeholderTextColor={styles.input.borderColor}
-                textInputStyle={styles.input}
+                dividerColor="accent"
+                inputStyle={styles.input}
                 placeholder="Username"
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -59,7 +60,8 @@ export default function SignUpPage() {
             render={({ field: { onChange, onBlur, value }, fieldState }) => (
               <UIInput
                 placeholderTextColor={styles.input.borderColor}
-                textInputStyle={styles.input}
+                dividerColor="accent"
+                inputStyle={styles.input}
                 placeholder="Password"
                 secureTextEntry
                 onBlur={onBlur}
@@ -124,13 +126,12 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   inputsContainer: { gap: theme.utils.vs(20), marginTop: theme.utils.vs(180) },
   input: {
-    backgroundColor: "transparent",
     color: theme.colors.violet,
-    borderBottomWidth: 1,
+    fontSize: theme.utils.ms(14),
     borderColor: theme.colors.violet,
   },
   forgotPassword: {
-    color: theme.colors.darkViolet,
+    color: theme.colors.mutedAccent,
     paddingLeft: theme.utils.s(16),
   },
   bottomContainer: {
@@ -156,6 +157,6 @@ const styles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.violet,
   },
   dontHaveAccountText: {
-    color: theme.colors.darkViolet,
+    color: theme.colors.mutedAccent,
   },
 }));
