@@ -9,7 +9,7 @@ import {
 
 
 const FALLBACK_ICON_SIZES = {
-  medium: scale(60),
+  medium: scale(54),
   comment: scale(24),
   small: scale(18),
   default: scale(28),
@@ -71,7 +71,7 @@ const styles = StyleSheet.create((theme) => ({
     borderRadius: 999,
     padding: theme.utils.s(2),
     borderWidth: 2,
-    borderColor: theme.colors.mutedAccent,
+    borderColor: theme.colors.accent,
 
     variants: {
       size: {
@@ -80,8 +80,8 @@ const styles = StyleSheet.create((theme) => ({
           height: theme.utils.s(50),
         },
         medium: {
-          height: theme.utils.s(100),
-          width: theme.utils.s(100),
+          height: theme.utils.s(86),
+          width: theme.utils.s(86),
         },
         small: {
           height: theme.utils.s(34),

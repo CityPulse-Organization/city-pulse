@@ -145,7 +145,7 @@ export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => {
 const styles = StyleSheet.create((theme) => ({
   itemWrapper: {
     flex: 1,
-    padding: theme.utils.s(12) / 2,
+    padding: theme.utils.s(10) / 2,
     minWidth: 0
   },
   card: {
@@ -157,7 +157,7 @@ const styles = StyleSheet.create((theme) => ({
     borderColor: theme.colors.borderSubtle,
   },
   image: {
-    minHeight: theme.utils.vs(230),
+    minHeight: theme.utils.vs(220),
   },
 
   overlayWrapper: {

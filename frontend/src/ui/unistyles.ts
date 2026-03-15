@@ -54,13 +54,15 @@ const colors = {
   darkOrange: "#995400ff",
   violet: "#C7B4FD",
 
-  background: "rgba(245, 245, 247, 1)",
+  background: "rgba(245, 245, 247, 0.9)",
+  primary: "rgba(0, 0, 0, 1)",
   primaryText: "rgba(0, 0, 0, 1)",
   icon: "rgba(18, 17, 17, 1)",
   borderSubtle: "rgba(0,0,0,0.08)",
   backgroundSubtle: "rgba(0,0,0,0.03)",
 
   muted: "rgba(0, 0, 0, 0.6)",
+  lightMuted: "rgba(0, 0, 0, 0.2)",
   accent: "rgba(168, 36, 224, 1)",
   mutedAccent: "rgba(96, 44, 139, 1)",
 
@@ -77,16 +79,16 @@ const colors = {
 
   divider: "rgba(0,0,0,0.1)",
 
-  buttonSelectedBackground: "rgba(0, 0, 0, 1)",   
+  buttonSelectedBackground: "rgba(0, 0, 0, 1)",
   iconSelected: "rgba(255, 255, 255, 1)",
 
   backgroundOverlay: "rgba(214, 198, 252, 0.4)",
-  gradientOverlay: ["rgba(255, 255, 255, 0.2)", "rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 1)"] as const,
+  gradientOverlay: ["rgba(255, 255, 255, 0.2)", "rgba(255, 255, 255, 0)", "rgba(245, 245, 247, 1)"] as const,
 };
 
 const lightTheme = {
   colors: colors,
-  
+
   utils: {
     s: scale,
     vs: verticalScale,
@@ -98,13 +100,15 @@ const darkTheme = {
   colors: {
     ...colors,
     background: "rgba(12, 12, 12, 1)",
+    primary: "rgba(255, 255, 255, 1)",
     primaryText: "rgba(255, 255, 255, 1)",
     icon: "rgba(209, 209, 209, 1)",
     borderSubtle: "rgba(255, 255, 255, 0.1)",
     backgroundSubtle: "rgba(255,255,255,0.04)",
 
     muted: "rgba(255, 255, 255, 0.5)",
-    
+    lightMuted: "rgba(255, 255, 255, 0.2)",
+
     chartBackgroundColor: "rgba(78, 78, 78, 1)",
     chartBorderColor: "rgba(26, 26, 26, 1)",
     bottomSheetColor: "rgba(18, 8, 28, 1)",
@@ -119,7 +123,7 @@ const darkTheme = {
     divider: "rgba(255, 255, 255, 0.1)",
 
     buttonSelectedBackground: "rgba(255, 255, 255, 1)",
-    iconSelected: "rgba(0, 0, 0, 1)",   
+    iconSelected: "rgba(0, 0, 0, 1)",
 
     backgroundOverlay: "rgba(18, 8, 28, 1)",
     gradientOverlay: ["rgba(0, 0, 0, 0.6)", "rgba(0,0,0,0)", "rgba(0, 0, 0, 0.8)"] as const,
@@ -140,7 +144,7 @@ const appThemes = {
 type AppThemes = typeof appThemes;
 
 declare module "react-native-unistyles" {
-  export interface UnistylesThemes extends AppThemes {}
+  export interface UnistylesThemes extends AppThemes { }
 }
 
 StyleSheet.configure({
