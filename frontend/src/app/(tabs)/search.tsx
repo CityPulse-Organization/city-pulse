@@ -195,7 +195,7 @@ const SearchTab = ({
   icon?: React.ReactNode;
 }) => {
   const theme = UnistylesRuntime.getTheme();
-  const activeColor = theme.colors.primaryTextColor;
+  const activeColor = theme.colors.lightViolet;
   const inactiveColor = theme.colors.darkGray;
   const activeTextColor = theme.colors.white;
   const inactiveTextColor = theme.colors.gray;
@@ -243,21 +243,21 @@ const SearchTabBar = (props: TabBarProps<string>) => {
         label="People"
         onPress={onPeoplePress}
         focusedTab={props.focusedTab}
-        icon={<Ionicons name="people" size={20} color={"violet"} />}
+        icon={<Ionicons name="people" size={20} style={styles.tabIcon} />}
       />
       <SearchTab
         name="posts"
         label="Posts"
         onPress={onPostsPress}
         focusedTab={props.focusedTab}
-        icon={<Ionicons name="list" size={20} color={"violet"} />}
+        icon={<Ionicons name="list" size={20} style={styles.tabIcon} />}
       />
       <SearchTab
         name="places"
         label="Places"
         onPress={onPlacesPress}
         focusedTab={props.focusedTab}
-        icon={<Ionicons name="location" size={20} color={"violet"} />}
+        icon={<Ionicons name="location" size={20} style={styles.tabIcon} />}
       />
     </View>
   );
@@ -352,6 +352,7 @@ export default function SearchScreen() {
             ItemSeparatorComponent={ItemSeparator}
             getItemType={() => "SearchUser"}
             style={styles.list}
+            numColumns={2}
             bounces={false}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
@@ -407,7 +408,9 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingBottom: theme.utils.vs(15),
     backgroundColor: theme.colors.backgroundColor,
   },
-
+  tabIcon: {
+    color: theme.colors.lightViolet,
+  },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -415,7 +418,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingHorizontal: theme.utils.s(15),
     height: theme.utils.vs(44),
     borderWidth: 1,
-    borderColor: theme.colors.dividerColor,
+    borderColor: theme.colors.lightViolet,
     overflow: "hidden",
   },
   itemContainer: {
@@ -470,11 +473,11 @@ const styles = StyleSheet.create((theme, rt) => ({
     height: "100%",
   },
   searchIcon: {
-    color: theme.colors.iconInfoStatusTextColor,
+    color: theme.colors.lightViolet,
     marginRight: theme.utils.s(10),
   },
   clearIcon: {
-    color: theme.colors.iconInfoStatusTextColor,
+    color: theme.colors.lightViolet,
     opacity: 0.7,
   },
   iconButton: {
@@ -485,7 +488,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.iconFocused,
   },
   placeHolderTextColor: {
-    color: theme.colors.iconInfoStatusTextColor,
+    color: theme.colors.lightViolet,
   },
   tabBar: {
     flexDirection: "row",
