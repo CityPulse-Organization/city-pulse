@@ -5,53 +5,91 @@ import React, {
     memo,
     useCallback,
     useRef,
-    useState,
 } from "react";
-import { FlatList, View, ViewToken } from "react-native";
+import { View, Dimensions } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
+import Carousel, { TAnimationStyle, ICarouselInstance, Pagination } from "react-native-reanimated-carousel";
+import Animated, { interpolate, interpolateColor, SharedValue, useAnimatedStyle, useSharedValue, Extrapolation } from "react-native-reanimated";
 
 
 
+const PAGE_WIDTH = Dimensions.get("window").width;
 
-// TODO: https://rn-carousel.dev/
 export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string[], location: string }) => {
-    const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
-    const [activeCarouselIndex, setActiveCarouselIndex] = useState(0);
-
-    const handleViewableItemsChanged = useRef(
-        ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-            if (viewableItems.length > 0) {
-                setActiveCarouselIndex(viewableItems[0].index ?? 0);
-            }
-        },
-    ).current;
+    const ref = useRef<ICarouselInstance>(null);
+    const progress = useSharedValue<number>(0);
 
     const renderCarouselSlide = useCallback(
-        ({ item: imageUrl }: { item: string }) => (
-            <View style={styles.carouselSlide}>
-                <UIImage
-                    imageUrl={imageUrl}
-                    isAspectRatio={false}
-                    style={styles.headerImage}
-                />
-            </View>
+        ({ item: imageUrl, index, animationValue }: { item: string, index: number, animationValue: any }) => (
+            <CustomItem
+                key={index}
+                animationValue={animationValue}
+            >
+                <View style={styles.carouselSlide}>
+                    <UIImage
+                        imageUrl={imageUrl}
+                        isAspectRatio={false}
+                        style={styles.headerImage}
+                    />
+                </View>
+            </CustomItem>
         ),
         [],
     );
 
-    const keyExtractor = useCallback((imageUrl: string) => imageUrl, []);
+    const animationStyle: TAnimationStyle = React.useCallback(
+        (value: number, index: number) => {
+            "worklet";
+
+            const zIndex = interpolate(
+                value,
+                value > 0 ? [0, 1] : [-1, 0],
+                value > 0 ? [10, 20] : [-10, 0],
+                Extrapolation.CLAMP,
+            );
+            const translateX = interpolate(
+                value,
+                [-2, 0, 1],
+                [-PAGE_WIDTH * 0.5, 0, PAGE_WIDTH],
+            );
+
+            return {
+                transform: [{ translateX }],
+                zIndex,
+            };
+        },
+        [],
+    );
+
+
+    const onPressPagination = (index: number) => {
+        ref.current?.scrollTo({
+            count: index - progress.value,
+            animated: true,
+        });
+    };
 
     return (
         <View style={styles.imageContainer}>
-            <FlatList
+            <Carousel
+                ref={ref}
                 data={imagesUrl}
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={keyExtractor}
-                viewabilityConfig={viewConfigRef.current}
-                onViewableItemsChanged={handleViewableItemsChanged}
+                onProgressChange={progress}
+                loop={false}
+                width={PAGE_WIDTH}
+                scrollAnimationDuration={1200}
+                customAnimation={animationStyle}
                 renderItem={renderCarouselSlide}
+            />
+
+            <Pagination.Basic<{ color: string }>
+                progress={progress}
+                data={imagesUrl.map((url) => ({ color: url }))}
+                dotStyle={styles.dot}
+                activeDotStyle={styles.dotActive}
+                containerStyle={styles.carouselFooter}
+                horizontal
+                onPress={onPressPagination}
             />
 
             <LinearGradient
@@ -77,26 +115,48 @@ export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string
                     </UIText>
                 </View>
             ) : null}
-
-            {imagesUrl.length > 1 && (
-                <View style={styles.carouselFooter} pointerEvents="none">
-                    <View style={styles.dotsRow}>
-                        {imagesUrl.map((imageUrl, index) => (
-                            <View
-                                key={imageUrl}
-                                style={[
-                                    styles.dot,
-                                    index === activeCarouselIndex ? styles.dotActive : styles.dotInactive,
-                                ]}
-                            />
-                        ))}
-                    </View>
-                </View>
-            )}
         </View>
     )
 })
 
+
+type CustomItemProps = {
+    animationValue: SharedValue<number>;
+    children?: React.ReactNode;
+}
+
+const CustomItem: React.FC<CustomItemProps> = ({ animationValue, children }) => {
+    const maskStyle = useAnimatedStyle(() => {
+        const backgroundColor = interpolateColor(
+            animationValue.value,
+            [-1, 0, 1],
+            ["#000000dd", "transparent", "#000000dd"]
+        );
+
+        return {
+            backgroundColor,
+        };
+    }, [animationValue]);
+
+    return (
+        <View style={{ flex: 1 }}>
+            {children}
+            <Animated.View
+                pointerEvents="none"
+                style={[
+                    {
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                    },
+                    maskStyle,
+                ]}
+            />
+        </View>
+    );
+};
 
 
 const styles = StyleSheet.create((theme, rt) => ({
@@ -123,7 +183,7 @@ const styles = StyleSheet.create((theme, rt) => ({
 
     locationContainer: {
         position: "absolute",
-        bottom: theme.utils.vs(40),
+        bottom: theme.utils.vs(20),
         left: theme.utils.s(16),
         flexDirection: "row",
         alignItems: "center",
@@ -144,29 +204,17 @@ const styles = StyleSheet.create((theme, rt) => ({
     },
 
     carouselFooter: {
-        position: "absolute",
-        bottom: theme.utils.vs(20),
-        left: 0,
-        right: 0,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
         gap: theme.utils.s(8),
     },
-    dotsRow: {
-        flexDirection: "row",
-        gap: theme.utils.s(6),
-    },
     dot: {
-        height: theme.utils.vs(6),
-        borderRadius: 999,
+        borderRadius: 100,
+        backgroundColor: theme.colors.muted,
+        width: theme.utils.s(10),
+        height: theme.utils.s(10),
     },
     dotActive: {
-        width: theme.utils.s(22),
+        borderRadius: 100,
+        overflow: "hidden",
         backgroundColor: theme.colors.mutedAccent,
     },
-    dotInactive: {
-        width: theme.utils.s(6),
-        backgroundColor: theme.colors.muted,
-    }
 }));

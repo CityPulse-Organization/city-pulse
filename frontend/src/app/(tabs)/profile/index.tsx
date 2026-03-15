@@ -229,7 +229,7 @@ const NewPostButton = memo(() => {
 const styles = StyleSheet.create((theme) => ({
   page: {
     flex: 1,
-    paddingTop: theme.utils.vs(4),
+    paddingTop: theme.utils.vs(10),
   },
   list: {
     flex: 1,
@@ -303,8 +303,8 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: theme.utils.s(14),
-    paddingTop: theme.utils.vs(4),
-    paddingBottom: theme.utils.vs(12),
+    paddingTop: theme.utils.vs(6),
+    paddingBottom: theme.utils.vs(14),
   },
   statItemContainer: {
     flex: 1,
