@@ -1,7 +1,7 @@
-import { Skeleton } from "moti/skeleton";
 import { Pressable, StyleProp, ViewStyle } from "react-native";
-import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 import { moderateScale } from "../unistyles";
+import { UISkeleton } from "./UISkeleton";
 
 type UIButtonProps = {
   children?: React.ReactNode;
@@ -14,16 +14,17 @@ export const UIButton = ({
   children,
   style,
   onPress,
-  isLoading,
+  isLoading = false,
   ...rest
 }: UIButtonProps) => {
-  const themeName = UnistylesRuntime.themeName;
+  if (isLoading) {
+    return <UISkeleton style={[styles.button, style]} />;
+  }
+
   return (
-    <Skeleton show={isLoading} colorMode={themeName}>
-      <Pressable onPress={onPress} {...rest} style={[styles.button, style]}>
-        {children}
-      </Pressable>
-    </Skeleton>
+    <Pressable onPress={onPress} {...rest} style={[styles.button, style]}>
+      {children}
+    </Pressable>
   );
 };
 

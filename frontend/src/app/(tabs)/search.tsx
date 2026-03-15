@@ -186,15 +186,17 @@ const SearchTab = ({
   label,
   onPress,
   focusedTab,
+  icon,
 }: {
   name: string;
   label: string;
   onPress: () => void;
   focusedTab: any;
+  icon?: React.ReactNode;
 }) => {
   const theme = UnistylesRuntime.getTheme();
   const activeColor = theme.colors.primaryTextColor;
-  const inactiveColor = theme.colors.backgroundColor;
+  const inactiveColor = theme.colors.darkGray;
   const activeTextColor = theme.colors.white;
   const inactiveTextColor = theme.colors.gray;
 
@@ -213,8 +215,9 @@ const SearchTab = ({
   });
 
   return (
-    <Pressable onPress={onPress} style={{ flex: 1 }}>
+    <Pressable onPress={onPress} style={styles.tab}>
       <Animated.View style={[styles.tabContent, animatedStyle]}>
+        {icon}
         <Animated.Text style={[styles.tabTextBase, animatedTextStyle]}>
           {label}
         </Animated.Text>
@@ -240,18 +243,21 @@ const SearchTabBar = (props: TabBarProps<string>) => {
         label="People"
         onPress={onPeoplePress}
         focusedTab={props.focusedTab}
+        icon={<Ionicons name="people" size={20} color={"violet"} />}
       />
       <SearchTab
         name="posts"
         label="Posts"
         onPress={onPostsPress}
         focusedTab={props.focusedTab}
+        icon={<Ionicons name="list" size={20} color={"violet"} />}
       />
       <SearchTab
         name="places"
         label="Places"
         onPress={onPlacesPress}
         focusedTab={props.focusedTab}
+        icon={<Ionicons name="location" size={20} color={"violet"} />}
       />
     </View>
   );
@@ -384,6 +390,9 @@ export default function SearchScreen() {
 }
 
 const styles = StyleSheet.create((theme, rt) => ({
+  tab: {
+    flex: 1,
+  },
   tabTextBase: {
     fontSize: theme.utils.s(16),
   },
@@ -484,9 +493,12 @@ const styles = StyleSheet.create((theme, rt) => ({
     backgroundColor: theme.colors.backgroundColor,
   },
   tabContent: {
+    flexDirection: "row",
+    justifyContent: "center",
     borderBottomWidth: theme.utils.vs(2),
     alignItems: "center",
     paddingVertical: theme.utils.vs(12),
     flex: 1,
+    gap: theme.utils.s(6),
   },
 }));

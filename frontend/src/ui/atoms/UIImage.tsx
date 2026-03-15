@@ -1,14 +1,10 @@
 import { Image, ImageProps } from "expo-image";
 import * as MediaLibrary from "expo-media-library";
-import { Skeleton } from "moti/skeleton";
 import { memo, useEffect, useState } from "react";
 import { Image as RNImage, View } from "react-native";
-import {
-  StyleSheet,
-  UnistylesRuntime,
-  UnistylesVariants,
-} from "react-native-unistyles";
+import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
 import { moderateScale, scale, verticalScale } from "../unistyles";
+import { UISkeleton } from "./UISkeleton";
 
 type UIImageProps = {
   imageUrl: string | undefined;
@@ -22,7 +18,7 @@ export const UIImage = memo(
     imageUrl,
     size,
     borderRound,
-    isLoading,
+    isLoading = false,
     isAspectRatio,
     style,
     ...props
@@ -32,7 +28,6 @@ export const UIImage = memo(
       imageUrl,
     );
     styles.useVariants({ size: size, borderRound: borderRound });
-    const themeName = UnistylesRuntime.themeName;
 
     const [aspectRatio, setAspectRatio] = useState<number | undefined>(
       undefined,
@@ -80,21 +75,26 @@ export const UIImage = memo(
     }, [resolvedUri, isAspectRatio]);
 
     const dynamicStyle = aspectRatio ? { aspectRatio: aspectRatio } : {};
+    console.log(imagePreparing);
+    if (isLoading) {
+      return <UISkeleton style={[styles.image, dynamicStyle, style]} />;
+    }
 
     return (
       <View style={[styles.image, dynamicStyle, style]}>
-        <Skeleton show={imagePreparing || isLoading} colorMode={themeName}>
-          <Image
-            {...props}
-            style={[styles.image, dynamicStyle, style]}
-            contentFit="cover"
-            onLoadStart={() => setImagePreparing(true)}
-            onLoadEnd={() => setImagePreparing(false)}
-            source={{
-              uri: resolvedUri,
-            }}
-          />
-        </Skeleton>
+        <Image
+          {...props}
+          style={[styles.image, dynamicStyle, style]}
+          contentFit="cover"
+          onLoadStart={() => setImagePreparing(true)}
+          onLoadEnd={() => {
+            setImagePreparing(false);
+            props.onLoadEnd?.();
+          }}
+          source={{
+            uri: resolvedUri,
+          }}
+        />
       </View>
     );
   },
