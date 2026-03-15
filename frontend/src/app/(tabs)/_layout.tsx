@@ -18,9 +18,9 @@ export default function TabLayout() {
           <Icon sf="newspaper" selectedColor={styles.icon.color} />
           <Label>News</Label>
         </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="search">
-          <Icon sf="magnifyingglass" selectedColor={styles.icon.color} />
-          <Label>Search</Label>
+        <NativeTabs.Trigger name="discover">
+          <Icon sf="waveform.path.ecg" selectedColor={styles.icon.color} />
+          <Label>Discover</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="profile">
           <Icon sf="person" selectedColor={styles.icon.color} />
@@ -53,10 +53,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="search"
+        name="discover"
         options={{
           tabBarIcon: ({ color }) => (
-            <Ionicons color={color} size={28} name="search" />
+            <Ionicons color={color} size={28} name="flame-outline" />
           ),
         }}
       />

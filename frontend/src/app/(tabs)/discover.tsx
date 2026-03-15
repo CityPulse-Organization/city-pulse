@@ -1,17 +1,12 @@
 import { IconInfo, Post, POSTS, ThemedBackground } from "@/src/components";
 import { UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
-import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
 import { memo, useCallback, useMemo, useState } from "react";
 import { Pressable, TextInput, View } from "react-native";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
-import {
-  TabBarProps,
-  Tabs,
-  useFocusedTab,
-} from "react-native-collapsible-tab-view";
+import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";
 import { PostItem } from "@/src/components/Post";
 import { router } from "expo-router";
 
@@ -148,10 +143,10 @@ const PLACES = [
   },
 ];
 
-type SearchUser = (typeof SEARCH_USERS)[0];
+type DiscoverUser = (typeof SEARCH_USERS)[0];
 type Place = (typeof PLACES)[0];
 
-const SearchItem = memo(({ item }: { item: SearchUser }) => (
+const DiscoverItem = memo(({ item }: { item: DiscoverUser }) => (
   <View style={styles.itemContainer}>
     <IconInfo
       isBroadCasting={item.isBroadcasting}
@@ -182,7 +177,7 @@ const PlaceItem = memo(({ item }: { item: Place }) => (
 
 const ItemSeparator = memo(() => <View style={styles.separator} />);
 
-const SearchTab = ({
+const DiscoverTab = ({
   name,
   label,
   onPress,
@@ -198,8 +193,6 @@ const SearchTab = ({
   const theme = UnistylesRuntime.getTheme();
   const activeColor = theme.colors.accent;
   const inactiveColor = theme.colors.background;
-  const activeTextColor = theme.colors.accent;
-  const inactiveTextColor = theme.colors.white;
 
   const animatedStyle = useAnimatedStyle(() => {
     const isSelected = focusedTab.value === name;
@@ -208,26 +201,20 @@ const SearchTab = ({
     };
   });
 
-  const animatedTextStyle = useAnimatedStyle(() => {
-    const isSelected = focusedTab.value === name;
-    return {
-      color: isSelected ? activeTextColor : inactiveTextColor,
-    };
-  });
-
   return (
     <Pressable onPress={onPress} style={styles.tab}>
       <Animated.View style={[styles.tabContent, animatedStyle]}>
         {icon}
-        <Animated.Text style={[styles.tabTextBase, animatedTextStyle]}>
-          {label}
-        </Animated.Text>
+        <Animated.Text style={styles.tabTextBase}>{label}</Animated.Text>
       </Animated.View>
     </Pressable>
   );
 };
 
-const SearchTabBar = (props: TabBarProps<string>) => {
+const DiscoverTabBar = (props: TabBarProps<string>) => {
+  const onPulsePress = useCallback(() => {
+    props.onTabPress("pulse");
+  }, [props]);
   const onPeoplePress = useCallback(() => {
     props.onTabPress("people");
   }, [props]);
@@ -239,21 +226,28 @@ const SearchTabBar = (props: TabBarProps<string>) => {
   }, [props]);
   return (
     <View style={styles.tabBar}>
-      <SearchTab
+      <DiscoverTab
+        name="pulse"
+        label="Pulse"
+        onPress={onPulsePress}
+        focusedTab={props.focusedTab}
+        icon={<Ionicons name="pulse" size={20} style={styles.pulseIcon} />}
+      />
+      <DiscoverTab
         name="people"
         label="People"
         onPress={onPeoplePress}
         focusedTab={props.focusedTab}
         icon={<Ionicons name="people" size={20} style={styles.tabIcon} />}
       />
-      <SearchTab
+      <DiscoverTab
         name="posts"
         label="Posts"
         onPress={onPostsPress}
         focusedTab={props.focusedTab}
         icon={<Ionicons name="list" size={20} style={styles.tabIcon} />}
       />
-      <SearchTab
+      <DiscoverTab
         name="places"
         label="Places"
         onPress={onPlacesPress}
@@ -264,7 +258,7 @@ const SearchTabBar = (props: TabBarProps<string>) => {
   );
 };
 
-export default function SearchScreen() {
+export default function DiscoverScreen() {
   const [input, setInput] = useState("");
 
   const filteredUsers = useMemo(() => {
@@ -278,7 +272,7 @@ export default function SearchScreen() {
   }, [input]);
 
   const renderItem = useCallback(
-    ({ item }: { item: SearchUser }) => <SearchItem item={item} />,
+    ({ item }: { item: DiscoverUser }) => <DiscoverItem item={item} />,
     [],
   );
 
@@ -357,7 +351,20 @@ export default function SearchScreen() {
           )}
         </BlurView>
       </View>
-      <Tabs.Container renderTabBar={SearchTabBar}>
+      <Tabs.Container renderTabBar={DiscoverTabBar}>
+        <Tabs.Tab name="pulse" label="Pulse">
+          <Tabs.FlashList
+            data={filteredPosts}
+            renderItem={renderPost}
+            keyExtractor={keyExtractor}
+            getItemType={() => "PostItem"}
+            numColumns={2}
+            style={styles.list}
+            bounces={false}
+            contentContainerStyle={styles.containerStyle}
+            showsVerticalScrollIndicator={false}
+          />
+        </Tabs.Tab>
         <Tabs.Tab name="people" label="People">
           <Tabs.FlashList
             data={filteredUsers}
@@ -410,6 +417,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   tabTextBase: {
     fontSize: theme.utils.s(16),
+    color: theme.colors.white,
   },
   title: {
     color: theme.colors.primaryText,
@@ -425,6 +433,9 @@ const styles = StyleSheet.create((theme, rt) => ({
   tabIcon: {
     color: theme.colors.accent,
   },
+  pulseIcon: {
+    color: theme.colors.lightRed,
+  },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -438,11 +449,11 @@ const styles = StyleSheet.create((theme, rt) => ({
   itemContainer: {
     justifyContent: "flex-start",
     alignItems: "flex-start",
+    paddingLeft: theme.utils.s(6),
   },
   separator: { height: 20 },
   list: { flex: 1, width: "100%", paddingVertical: theme.utils.vs(10) },
   containerStyle: {
-    padding: theme.utils.s(20),
     paddingTop: theme.utils.vs(30),
     paddingBottom: theme.utils.vs(100),
   },
