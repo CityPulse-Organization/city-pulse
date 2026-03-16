@@ -48,6 +48,7 @@ export default {
           apiKey: GOOGLE_MAPS_API_KEY,
         },
       },
+      usesCleartextTraffic: true,
     },
     web: {
       bundler: "metro",
