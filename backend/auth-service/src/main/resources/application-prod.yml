@@ -5,10 +5,18 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD}
 
 app:
-  jwt:
-    access-token-ttl-ms: ${APP_JWT_ACCESS_TOKEN_TTL_MS}
-    refresh-token-ttl-ms: ${APP_JWT_REFRESH_TOKEN_TTL_MS}
-    iss: ${APP_JWT_ISSUER}
+  security:
+    jwt:
+      ttl:
+        access-token-ttl: ${JWT_ACCESS_TOKEN_TTL}
+        refresh-token-ttl: ${JWT_REFRESH_TOKEN_TTL}
+        temporary-token-ttl: ${JWT_TEMPORARY_TOKEN_TTL}
+      active-key-id: key-1
+      iss: ${JWT_ISSUER}
+      rotation:
+        key-1:
+          private-key-path: ${JWT_PRIVATE_KEY_PATH}
+          public-key-path: ${JWT_PUBLIC_KEY_PATH}
 
 springdoc:
   api-docs:

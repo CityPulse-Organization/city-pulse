@@ -72,6 +72,8 @@ services:
         condition: service_healthy
     env_file:
       - .env-auth
+    volumes:
+      - ./secrets/jwt:/app/secrets/jwt:ro
 
   post-service:
     image: denys1204/city-pulse-post-service:${POST_SERVICE_VERSION:-latest}
