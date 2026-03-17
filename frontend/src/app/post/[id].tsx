@@ -166,6 +166,7 @@ const UserInfoRow = memo(
 const styles = StyleSheet.create((theme, rt) => ({
   page: {
     flex: 1,
+    paddingTop: 0,
   },
   contentContainerStyle: {
     paddingBottom: rt.insets.bottom + theme.utils.s(10),

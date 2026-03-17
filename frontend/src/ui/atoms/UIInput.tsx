@@ -28,7 +28,7 @@ export const UIInput = ({
   });
 
   return (
-    <View style={[styles.container, containerStyle]}>
+    <View style={[styles.inputContainer, containerStyle]}>
 
       {leftElement && (
         <View style={styles.leftElement}>{leftElement}</View>
@@ -51,10 +51,6 @@ export const UIInput = ({
 };
 
 const styles = StyleSheet.create((theme) => ({
-  container: {
-    paddingBottom: theme.utils.ms(4),
-    marginHorizontal: theme.utils.s(8),
-  },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",

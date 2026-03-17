@@ -39,6 +39,7 @@ export default {
       predictiveBackGestureEnabled: false,
       package: "com.citypulse.mobile",
       permissions: [
+        "android.permission.INTERNET",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.CAMERA",
