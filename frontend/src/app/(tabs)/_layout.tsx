@@ -14,13 +14,14 @@ export default function TabLayout() {
 
           <Label>Map</Label>
         </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="news">
-          <Icon sf="newspaper" selectedColor={styles.icon.color} />
-          <Label>News</Label>
-        </NativeTabs.Trigger>
+
         <NativeTabs.Trigger name="discover">
           <Icon sf="waveform.path.ecg" selectedColor={styles.icon.color} />
           <Label>Discover</Label>
+        </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="referrals">
+          <Icon sf="gift" selectedColor={styles.icon.color} />
+          <Label>Referrals</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="profile">
           <Icon sf="person" selectedColor={styles.icon.color} />
@@ -44,19 +45,20 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="news"
-        options={{
-          tabBarIcon: ({ color }) => (
-            <Ionicons color={color} size={28} name="layers-outline" />
-          ),
-        }}
-      />
+
       <Tabs.Screen
         name="discover"
         options={{
           tabBarIcon: ({ color }) => (
             <Ionicons color={color} size={28} name="flame-outline" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="referrals"
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons color={color} size={28} name="gift-outline" />
           ),
         }}
       />
