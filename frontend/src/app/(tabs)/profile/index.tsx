@@ -137,11 +137,11 @@ const PROFILE_STATS_CONFIG: {
   iconName: IconName;
   quantity: number;
 }[] = [
-  { id: "1", title: "Followers", iconName: "people-outline", quantity: 398 },
-  { id: "2", title: "Posts", iconName: "document-text-outline", quantity: 398 },
-  { id: "3", title: "Followings", iconName: "grid-outline", quantity: 34 },
-  { id: "4", title: "Saves", iconName: "bookmark-outline", quantity: 34 },
-];
+    { id: "1", title: "Followers", iconName: "people-outline", quantity: 398 },
+    { id: "2", title: "Posts", iconName: "document-text-outline", quantity: 398 },
+    { id: "3", title: "Followings", iconName: "grid-outline", quantity: 34 },
+    { id: "4", title: "Saves", iconName: "bookmark-outline", quantity: 34 },
+  ];
 
 const StatsPanel = memo(() => {
   return (
@@ -178,7 +178,7 @@ type StatsButtonProps = {
 };
 
 const StatsButton = memo(({ title, iconName, quantity }: StatsButtonProps) => {
-  const handleStatPress = useCallback(() => {}, []);
+  const handleStatPress = useCallback(() => { }, []);
 
   return (
     <UIButton
