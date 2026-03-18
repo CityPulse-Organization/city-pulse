@@ -1,9 +1,6 @@
 package city.pulse.auth.service.impl;
 
-import city.pulse.auth.dto.AuthRequest;
-import city.pulse.auth.dto.AuthResponse;
-import city.pulse.auth.dto.InternalRegistrationRequest;
-import city.pulse.auth.dto.RefreshRequest;
+import city.pulse.auth.dto.*;
 import city.pulse.auth.exception.UserAlreadyExistsException;
 import city.pulse.auth.model.AuthProvider;
 import city.pulse.auth.model.Credential;
@@ -32,9 +29,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse login(AuthRequest dto) {
         return credentialRepository.findByEmail(dto.email())
-            .filter(user -> passwordEncoder.matches(dto.password(), user.getPasswordHash()))
-            .map(authTokenService::generateTokenPair)
-            .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
+                .filter(user -> user.getPasswordHash() != null)
+                .filter(user -> passwordEncoder.matches(dto.password(), user.getPasswordHash()))
+                .map(authTokenService::generateTokenPair)
+                .orElseThrow(() -> new BadCredentialsException("Invalid email or password. If you registered via social network, please use that option."));
     }
 
     @Override
@@ -54,7 +52,8 @@ public class AuthServiceImpl implements AuthService {
             throw new UserAlreadyExistsException("User with email " + dto.email() + " already exists");
         }
 
-        var credential = credentialRepository.save(Credential.build(dto.email(), passwordEncoder.encode(dto.password())));
+        var hash = dto.password() != null ? passwordEncoder.encode(dto.password()) : null;
+        var credential = credentialRepository.save(Credential.build(dto.email(), hash));
 
         if (dto.provider() != AuthProvider.LOCAL) {
             var linkedAccount = LinkedAccount.build(credential, dto.provider(), dto.providerId());
