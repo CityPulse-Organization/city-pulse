@@ -1,12 +1,18 @@
 package city.pulse.auth.service;
 
-import city.pulse.auth.dto.*;
+import city.pulse.auth.dto.AuthRequest;
+import city.pulse.auth.dto.AuthResponse;
+import city.pulse.auth.dto.InternalRegistrationRequest;
+import city.pulse.auth.dto.RefreshRequest;
 
 import java.util.UUID;
 
 public interface AuthService {
     AuthResponse login(AuthRequest dto);
+
     AuthResponse refresh(RefreshRequest dto);
+
     void logout(RefreshRequest dto);
+
     UUID registerUser(InternalRegistrationRequest dto);
 }

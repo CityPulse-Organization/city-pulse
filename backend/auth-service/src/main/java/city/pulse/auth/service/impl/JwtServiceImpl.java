@@ -1,14 +1,14 @@
 package city.pulse.auth.service.impl;
 
 import city.pulse.auth.model.AuthProvider;
+import city.pulse.auth.model.Role;
+import city.pulse.auth.security.jwt.JwtProperties;
+import city.pulse.auth.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
-import city.pulse.auth.security.jwt.JwtProperties;
-import city.pulse.auth.service.JwtService;
-import city.pulse.auth.model.Role;
 
 import java.time.Instant;
 import java.util.UUID;

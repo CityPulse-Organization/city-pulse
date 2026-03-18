@@ -1,9 +1,9 @@
 package city.pulse.auth.oauth2.strategy.provider;
 
+import city.pulse.auth.model.AuthProvider;
 import city.pulse.auth.oauth2.dto.OAuth2UserInfo;
 import city.pulse.auth.oauth2.exception.InvalidIdTokenException;
 import city.pulse.auth.oauth2.exception.UnverifiedEmailException;
-import city.pulse.auth.model.AuthProvider;
 import city.pulse.auth.oauth2.strategy.OAuth2ProviderStrategy;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;

@@ -7,5 +7,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 public interface RegistrationService {
     RegistrationResponse registerLocalUser(LocalRegistrationRequest dto);
+
     RegistrationResponse registerOAuth2User(OAuth2RegistrationRequest dto, Jwt jwt);
 }

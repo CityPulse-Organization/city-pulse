@@ -1,7 +1,7 @@
 package city.pulse.auth.oauth2.factory;
 
-import city.pulse.auth.oauth2.exception.UnsupportedOAuth2ProviderException;
 import city.pulse.auth.model.AuthProvider;
+import city.pulse.auth.oauth2.exception.UnsupportedOAuth2ProviderException;
 import city.pulse.auth.oauth2.strategy.OAuth2ProviderStrategy;
 import org.springframework.stereotype.Component;
 

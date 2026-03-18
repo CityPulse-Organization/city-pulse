@@ -17,4 +17,5 @@ public record LocalRegistrationRequest(
         @Email(message = "Email must be correct")
         @Size(max = 32, message = "Email must be less then 32 characters long")
         String email
-) {}
+) {
+}

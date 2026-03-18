@@ -7,5 +7,6 @@ import java.util.UUID;
 
 public interface JwtService {
     String createAccessToken(UUID userId, Role role);
+
     String createTemporaryToken(String email, AuthProvider provider, String providerId);
 }

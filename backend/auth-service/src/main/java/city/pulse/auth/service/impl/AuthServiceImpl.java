@@ -1,6 +1,9 @@
 package city.pulse.auth.service.impl;
 
-import city.pulse.auth.dto.*;
+import city.pulse.auth.dto.AuthRequest;
+import city.pulse.auth.dto.AuthResponse;
+import city.pulse.auth.dto.InternalRegistrationRequest;
+import city.pulse.auth.dto.RefreshRequest;
 import city.pulse.auth.exception.UserAlreadyExistsException;
 import city.pulse.auth.model.AuthProvider;
 import city.pulse.auth.model.Credential;

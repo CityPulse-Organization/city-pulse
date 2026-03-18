@@ -13,4 +13,4 @@ app:
         temporary-token-ttl: 10m
       active-key-id: key-1
       iss: http://auth-service:8081
-      rotation: {}
+      rotation: { }

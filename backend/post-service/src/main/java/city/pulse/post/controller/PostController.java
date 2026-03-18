@@ -1,8 +1,8 @@
 package city.pulse.post.controller;
 
 import city.pulse.post.dto.PostResponseDTO;
-import city.pulse.post.helper.UserHelper;
 import city.pulse.post.dto.UpdatePostRequestDTO;
+import city.pulse.post.helper.UserHelper;
 import city.pulse.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
