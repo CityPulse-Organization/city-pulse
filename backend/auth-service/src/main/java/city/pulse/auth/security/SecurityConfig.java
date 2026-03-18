@@ -1,5 +1,7 @@
 package city.pulse.auth.security;
 
+import city.pulse.auth.security.exception.RestAccessDeniedHandler;
+import city.pulse.auth.security.exception.RestAuthenticationEntryPoint;
 import city.pulse.auth.security.jwt.CustomJwtAuthenticationConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,8 +14,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import city.pulse.auth.security.exception.RestAccessDeniedHandler;
-import city.pulse.auth.security.exception.RestAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity

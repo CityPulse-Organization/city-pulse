@@ -13,5 +13,6 @@ public record ErrorResponse(
         String message,
         List<ErrorDetails> validationErrors
 ) {
-    public record ErrorDetails(String field, String message) {}
+    public record ErrorDetails(String field, String message) {
+    }
 }

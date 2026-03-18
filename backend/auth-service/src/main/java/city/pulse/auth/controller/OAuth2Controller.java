@@ -1,9 +1,9 @@
 package city.pulse.auth.controller;
 
+import city.pulse.auth.model.AuthProvider;
 import city.pulse.auth.oauth2.dto.OAuth2LoginRequest;
 import city.pulse.auth.oauth2.dto.TemporaryAuthResponse;
 import city.pulse.auth.oauth2.exception.UnsupportedOAuth2ProviderException;
-import city.pulse.auth.model.AuthProvider;
 import city.pulse.auth.oauth2.service.OAuth2AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

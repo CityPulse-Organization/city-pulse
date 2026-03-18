@@ -1,15 +1,15 @@
 package city.pulse.auth.service.impl;
 
+import city.pulse.auth.exception.InvalidRefreshTokenException;
+import city.pulse.auth.model.Credential;
+import city.pulse.auth.model.RefreshToken;
+import city.pulse.auth.repository.RefreshTokenRepository;
+import city.pulse.auth.security.jwt.JwtProperties;
+import city.pulse.auth.service.RefreshTokenService;
+import city.pulse.auth.util.Tokens;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import city.pulse.auth.security.jwt.JwtProperties;
-import city.pulse.auth.exception.InvalidRefreshTokenException;
-import city.pulse.auth.model.RefreshToken;
-import city.pulse.auth.repository.RefreshTokenRepository;
-import city.pulse.auth.util.Tokens;
-import city.pulse.auth.service.RefreshTokenService;
-import city.pulse.auth.model.Credential;
 
 import java.time.Instant;
 

@@ -1,10 +1,10 @@
 package city.pulse.auth.oauth2.service.impl;
 
+import city.pulse.auth.model.AuthProvider;
 import city.pulse.auth.model.LinkedAccount;
 import city.pulse.auth.oauth2.dto.OAuth2LoginRequest;
 import city.pulse.auth.oauth2.dto.OAuth2LoginResult;
 import city.pulse.auth.oauth2.factory.OAuth2StrategyFactory;
-import city.pulse.auth.model.AuthProvider;
 import city.pulse.auth.oauth2.service.OAuth2AuthService;
 import city.pulse.auth.repository.CredentialRepository;
 import city.pulse.auth.repository.LinkedAccountRepository;

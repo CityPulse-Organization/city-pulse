@@ -20,4 +20,5 @@ public record InternalRegistrationRequest(
 
         @NotNull
         Role role
-) {}
+) {
+}

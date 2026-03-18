@@ -20,7 +20,9 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -48,8 +50,8 @@ public class JwtKeyConfig {
             var kp = getOrCreateKeyPair();
             return List.of(
                     new RSAKey.Builder((RSAPublicKey) kp.getPublic())
-                    .keyID(properties.getActiveKeyId())
-                    .build()
+                            .keyID(properties.getActiveKeyId())
+                            .build()
             );
         }
 
@@ -81,7 +83,7 @@ public class JwtKeyConfig {
     public RSAPublicKey publicKey() {
         var paths = properties.getRotation().get(properties.getActiveKeyId());
         if (paths == null) {
-            return handleKeyFailure("Active key ID not found in rotation", false,RSAPublicKey.class);
+            return handleKeyFailure("Active key ID not found in rotation", false, RSAPublicKey.class);
         }
         return loadPublicKey(properties.getActiveKeyId(), paths.getPublicKeyPath());
     }

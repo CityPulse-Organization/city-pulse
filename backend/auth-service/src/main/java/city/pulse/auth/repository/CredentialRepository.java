@@ -1,7 +1,7 @@
 package city.pulse.auth.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import city.pulse.auth.model.Credential;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 import java.util.UUID;
