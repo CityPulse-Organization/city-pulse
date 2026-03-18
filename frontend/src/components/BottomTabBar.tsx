@@ -1,9 +1,8 @@
 import { BlurView } from "expo-blur";
 import React from "react";
 import { View } from "react-native";
-import { UIButton } from "../ui";
-
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
+import { UIButton } from "../ui";
 
 export const BottomTabBar = ({ state, descriptors, navigation }: any) => {
   return (

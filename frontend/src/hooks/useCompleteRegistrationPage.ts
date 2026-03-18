@@ -44,10 +44,14 @@ export const useCompleteRegistrationPage = () => {
         let message = "Failed to complete registration";
 
         if (isAxiosError(error)) {
-          const data =
-            typeof error.response?.data === "string"
-              ? JSON.parse(error.response.data)
-              : error.response?.data;
+          let data = error.response?.data;
+          if (typeof data === "string") {
+            try {
+              data = JSON.parse(data);
+            } catch {
+              /* ignore parse errors */
+            }
+          }
 
           message = data?.message || error.message;
         } else if (error instanceof Error) {

@@ -7,7 +7,6 @@ export default function ChatLayout() {
       screenOptions={{ headerShown: false, animation: "simple_push" }}
     >
       <Stack.Screen name="index" />
-      <Stack.Screen name="[id]/index" />
     </Stack>
   );
 }
