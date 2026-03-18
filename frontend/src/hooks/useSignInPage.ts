@@ -77,24 +77,7 @@ export const useSignInPage = () => {
         throw new Error("Google ID Token not found. Please try again.");
       }
 
-      try {
-        await googleSignIn(idToken);
-      } catch (error: any) {
-        if (
-          isAxiosError(error) &&
-          error.response?.status === 404 &&
-          (error.response?.data?.status === "REGISTRATION_REQUIRED" ||
-            (typeof error.response?.data === "string" &&
-              error.response.data.includes("REGISTRATION_REQUIRED")))
-        ) {
-          router.push({
-            pathname: "/(auth)/complete-registration",
-            params: { token: idToken },
-          });
-        } else {
-          throw error;
-        }
-      }
+      await googleSignIn(idToken);
     } catch (error: any) {
       console.error("Google login failed:", error);
       if (error.code !== "SIGN_IN_CANCELLED") {

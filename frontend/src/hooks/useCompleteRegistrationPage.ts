@@ -15,7 +15,8 @@ export type CompleteRegistrationFormData = z.infer<typeof schema>;
 
 export const useCompleteRegistrationPage = () => {
   const { token } = useLocalSearchParams<{ token: string }>();
-  const { mutateAsync: completeRegistration, isPending } = useCompleteGoogleRegistration();
+  const { mutateAsync: completeRegistration, isPending } =
+    useCompleteGoogleRegistration();
 
   const form = useForm<CompleteRegistrationFormData>({
     resolver: zodResolver(schema),
@@ -30,7 +31,8 @@ export const useCompleteRegistrationPage = () => {
         Toast.show({
           type: "error",
           text1: "Error",
-          text2: "Authentication token is missing. Please try signing in again.",
+          text2:
+            "Authentication token is missing. Please try signing in again.",
         });
         return;
       }
@@ -42,10 +44,11 @@ export const useCompleteRegistrationPage = () => {
         let message = "Failed to complete registration";
 
         if (isAxiosError(error)) {
-          const data = typeof error.response?.data === 'string' 
-            ? JSON.parse(error.response.data) 
-            : error.response?.data;
-            
+          const data =
+            typeof error.response?.data === "string"
+              ? JSON.parse(error.response.data)
+              : error.response?.data;
+
           message = data?.message || error.message;
         } else if (error instanceof Error) {
           message = error.message;

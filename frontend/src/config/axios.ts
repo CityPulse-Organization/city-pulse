@@ -125,7 +125,7 @@ axiosInstance.interceptors.response.use(
     }
 
     const isRegistrationRequired =
-      error.response?.status === 404 &&
+      error.response?.status === 202 &&
       (error.response?.data?.status === "REGISTRATION_REQUIRED" ||
         (typeof error.response?.data === "string" &&
           error.response.data.includes("REGISTRATION_REQUIRED")));

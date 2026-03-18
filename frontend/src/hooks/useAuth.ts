@@ -35,10 +35,18 @@ export const useGoogleSignIn = () => {
 
   return useMutation({
     mutationFn: loginWithGoogle,
-    onSuccess: async () => {
-      const user = await tokenStorage.getUser();
-      setSession(user);
-      router.push("/(tabs)");
+    onSuccess: async (result, idToken) => {
+      if (result.status === 200) {
+        const user = await tokenStorage.getUser();
+        setSession(user);
+        router.push("/(tabs)");
+      } else if (result.status === 202) {
+        const temporaryToken = (result.data as any)?.temporaryToken;
+        router.push({
+          pathname: "/(auth)/complete-registration",
+          params: { token: temporaryToken || idToken },
+        });
+      }
     },
   });
 };

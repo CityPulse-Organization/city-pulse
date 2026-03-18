@@ -34,27 +34,34 @@ export const login = async (data: AuthRequest): Promise<AuthResponse> => {
   return response.data;
 };
 
-export const loginWithGoogle = async (token: string): Promise<AuthResponse> => {
-  const response = await axios.post<AuthResponse>("/oauth2/google", { token });
-  const { accessToken, refreshToken } = response.data || {};
+export const loginWithGoogle = async (
+  token: string,
+): Promise<{ status: number; data: AuthResponse }> => {
+  const response = await axios.post<AuthResponse>("/oauth2/google", {
+    idToken: token,
+  });
 
-  if (accessToken && refreshToken) {
-    await tokenStorage.setTokens(accessToken, refreshToken);
-    const user = decodeJWT(accessToken);
-    await tokenStorage.setUser(user);
+  if (response.status === 200) {
+    const { accessToken, refreshToken } = response.data || {};
+    if (accessToken && refreshToken) {
+      await tokenStorage.setTokens(accessToken, refreshToken);
+      const user = decodeJWT(accessToken);
+      await tokenStorage.setUser(user);
+    }
   }
 
-  return response.data;
+  return { status: response.status, data: response.data };
 };
 
 export const completeGoogleRegistration = async (
   token: string,
-  username: string
+  username: string,
 ): Promise<AuthResponse> => {
-  const response = await axios.post<AuthResponse>("/oauth2/google/complete", {
-    token,
-    username,
-  });
+  const response = await axios.post<AuthResponse>(
+    "/registration/oauth2",
+    { username },
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
   const { accessToken, refreshToken } = response.data || {};
 
   if (accessToken && refreshToken) {
