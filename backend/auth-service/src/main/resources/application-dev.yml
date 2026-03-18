@@ -5,7 +5,12 @@ spring:
     password: dev_password
 
 app:
-  jwt:
-    access-token-ttl-ms: 1000000
-    refresh-token-ttl-ms: 604_800_000
-    iss: http://auth-service:8081
+  security:
+    jwt:
+      ttl:
+        access-token-ttl: 15m
+        refresh-token-ttl: 30d
+        temporary-token-ttl: 10m
+      active-key-id: key-1
+      iss: http://auth-service:8081
+      rotation: {}

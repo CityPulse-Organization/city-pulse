@@ -72,6 +72,20 @@ services:
         condition: service_healthy
     env_file:
       - .env-auth
+    volumes:
+      - ./secrets/jwt:/app/secrets/jwt:ro
+
+  registration-service:
+    image: denys1204/city-pulse-registration-service:${REGISTRATION_SERVICE_VERSION:-latest}
+    container_name: city-pulse-registration-service
+    expose:
+      - "8083"
+    networks:
+      - city-pulse-network
+    depends_on:
+      - auth-service
+    env_file:
+      - .env-registration
 
   post-service:
     image: denys1204/city-pulse-post-service:${POST_SERVICE_VERSION:-latest}
@@ -98,6 +112,7 @@ services:
     depends_on:
       - auth-service
       - post-service
+      - registration-service
 
 volumes:
   postgres_data:

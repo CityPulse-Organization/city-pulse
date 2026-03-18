@@ -2,11 +2,6 @@ app:
   api:
     version: v1
   base-path: /api/${app.api.version}
-  jwt:
-    key-id: ${APP_JWT_KEY_ID:key-1}
-    keys:
-      private-key-path: classpath:keys/private.pem
-      public-key-path: classpath:keys/public.pem
 
 spring:
   application:

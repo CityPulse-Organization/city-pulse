@@ -1,0 +1,17 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${AUTH_SERVICE_URL}/api/v1/.well-known/jwks.json
+
+app:
+  services:
+    auth:
+      url: ${AUTH_SERVICE_URL}/api/v1
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
