@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${app.base-path}/auth")
+@RequestMapping("${app.base-path}")
 public class JwkSetController {
     private final JwtKeyConfig config;
 
