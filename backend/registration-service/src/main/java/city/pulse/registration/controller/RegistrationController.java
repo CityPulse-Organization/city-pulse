@@ -20,16 +20,16 @@ public class RegistrationController {
 
     @PostMapping("/local")
     public ResponseEntity<RegistrationResponse> registerLocal(@Valid @RequestBody LocalRegistrationRequest dto) {
-        RegistrationResponse response = service.registerLocalUser(dto);
+        var response = service.registerLocalUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/oauth2")
     public ResponseEntity<RegistrationResponse> registerOAuth2(
-            @Valid @RequestBody OAuth2RegistrationRequest dto,
-            @AuthenticationPrincipal Jwt jwt
+        @Valid @RequestBody OAuth2RegistrationRequest dto,
+        @AuthenticationPrincipal Jwt jwt
     ) {
-        RegistrationResponse response = service.registerOAuth2User(dto, jwt);
+        var response = service.registerOAuth2User(dto, jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
