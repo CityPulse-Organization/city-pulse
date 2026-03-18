@@ -11,6 +11,7 @@ spring:
       server:
         webflux:
           routes:
+            # --- AUTH SERVICE ---
             - id: auth-service-route
               uri: http://auth-service:8081
               predicates:
@@ -23,6 +24,20 @@ spring:
               filters:
                 - RewritePath=/v3/api-docs/auth, /v3/api-docs
 
+            # --- REGISTRATION SERVICE ---
+            - id: registration-service-route
+              uri: http://registration-service:8083
+              predicates:
+                - Path=/api/v1/registration/**
+
+            - id: registration-service-openapi
+              uri: http://registration-service:8083
+              predicates:
+                - Path=/v3/api-docs/registration
+              filters:
+                - RewritePath=/v3/api-docs/registration, /v3/api-docs
+
+            # --- POST SERVICE ---
             - id: post-service-route
               uri: http://post-service:8082
               predicates:
@@ -41,6 +56,9 @@ springdoc:
     urls:
       - name: Auth Service
         url: /v3/api-docs/auth
+
+      - name: Registration Service
+        url: /v3/api-docs/registration
 
       - name: Post Service
         url: /v3/api-docs/post

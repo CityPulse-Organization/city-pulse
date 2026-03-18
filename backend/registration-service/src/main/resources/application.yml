@@ -1,0 +1,14 @@
+app:
+  api:
+    version: v1
+    base-path: /api/${app.api.version}
+
+spring:
+  application:
+    name: registration-service
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+server:
+  port: ${APP_PORT:8083}
+
