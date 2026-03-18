@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers(basePath + "/auth/**").permitAll()
                         .requestMatchers(basePath + "/oauth2/**").permitAll()
                         .requestMatchers(basePath + "/internal/**").permitAll()
+                        .requestMatchers(basePath + "/.well-known/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
