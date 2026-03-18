@@ -19,6 +19,13 @@ export default function TabLayout() {
           <Icon sf="waveform.path.ecg" selectedColor={styles.icon.color} />
           <Label>Discover</Label>
         </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="chats">
+          <Icon
+            sf="bubble.left.and.bubble.right"
+            selectedColor={styles.icon.color}
+          />
+          <Label>Chats</Label>
+        </NativeTabs.Trigger>
         <NativeTabs.Trigger name="referrals">
           <Icon sf="gift" selectedColor={styles.icon.color} />
           <Label>Referrals</Label>
@@ -51,6 +58,18 @@ export default function TabLayout() {
         options={{
           tabBarIcon: ({ color }) => (
             <Ionicons color={color} size={28} name="flame-outline" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="chats"
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons
+              color={color}
+              size={28}
+              name="chatbubble-ellipses-outline"
+            />
           ),
         }}
       />

@@ -66,12 +66,14 @@ const styles = StyleSheet.create((theme, rt) => ({
     overflow: "hidden",
   },
   tabBarIcon: ({ isFocused }: { isFocused: boolean }) => ({
-    color: isFocused ? theme.colors.tabBarIconActive : theme.colors.tabBarIconDefault,
+    color: isFocused
+      ? theme.colors.tabBarIconActive
+      : theme.colors.tabBarIconDefault,
   }),
   tabButton: {
-    paddingHorizontal: 25,
-    paddingVertical: 15,
-    borderRadius: 50,
+    paddingHorizontal: theme.utils.s(15),
+    paddingVertical: theme.utils.vs(15),
+    borderRadius: theme.utils.vs(100),
     alignItems: "center",
     justifyContent: "center",
   },
