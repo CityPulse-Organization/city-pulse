@@ -45,7 +45,7 @@ public class OAuth2AuthServiceImpl implements OAuth2AuthService {
                     return OAuth2LoginResult.success(tokens);
                 })
                 .orElseGet(() -> {
-                    var temporaryToken = service.generateTemporaryToken(userInfo.email(), userInfo.providerId());
+                    var temporaryToken = service.generateTemporaryToken(userInfo.email(), provider, userInfo.providerId());
                     return OAuth2LoginResult.registrationRequired(temporaryToken);
                 });
     }

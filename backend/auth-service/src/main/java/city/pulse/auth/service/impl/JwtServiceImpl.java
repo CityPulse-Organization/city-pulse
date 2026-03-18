@@ -1,5 +1,6 @@
 package city.pulse.auth.service.impl;
 
+import city.pulse.auth.model.AuthProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -34,13 +35,14 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String createTemporaryToken(String email, String providerId) {
+    public String createTemporaryToken(String email, AuthProvider provider, String providerId) {
         var now = Instant.now();
         var claims = JwtClaimsSet.builder()
                 .issuer(properties.getIss())
                 .subject(email)
                 .issuedAt(now)
                 .expiresAt(now.plus(properties.getTtl().getTemporaryTokenTtl()))
+                .claim("provider", provider)
                 .claim("provider_id", providerId)
                 .claim("scope", "registration")
                 .build();

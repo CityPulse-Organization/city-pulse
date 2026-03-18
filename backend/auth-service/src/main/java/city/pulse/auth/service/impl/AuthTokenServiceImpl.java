@@ -1,6 +1,7 @@
 package city.pulse.auth.service.impl;
 
 import city.pulse.auth.dto.AuthResponse;
+import city.pulse.auth.model.AuthProvider;
 import city.pulse.auth.model.Credential;
 import city.pulse.auth.service.AuthTokenService;
 import city.pulse.auth.service.JwtService;
@@ -25,8 +26,8 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     }
 
     @Override
-    public String generateTemporaryToken(String email, String providerId) {
-        return jwtService.createTemporaryToken(email, providerId);
+    public String generateTemporaryToken(String email, AuthProvider provider, String providerId) {
+        return jwtService.createTemporaryToken(email, provider, providerId);
     }
 
     @Override
