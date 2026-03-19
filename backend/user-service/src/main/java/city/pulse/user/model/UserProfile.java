@@ -24,4 +24,11 @@ public class UserProfile {
 
     @Column(nullable = false, unique = true, length = 32)
     private String username;
+
+    public static UserProfile build(UUID userId, String username) {
+        return UserProfile.builder()
+                .id(userId)
+                .username(username)
+                .build();
+    }
 }
