@@ -1,6 +1,7 @@
 import { Pressable, StyleProp, ViewStyle } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { moderateScale } from "../unistyles";
+
 import { UISkeleton } from "./UISkeleton";
 
 type UIButtonProps = {
@@ -17,16 +18,15 @@ export const UIButton = ({
   isLoading = false,
   ...rest
 }: UIButtonProps) => {
-  if (isLoading) {
-    return <UISkeleton style={[styles.button, style]} />;
-  }
-
   return (
-    <Pressable onPress={onPress} {...rest} style={[styles.button, style]}>
-      {children}
-    </Pressable>
+    <UISkeleton show={isLoading}>
+      <Pressable onPress={onPress} {...rest} style={[styles.button, style]}>
+        {children}
+      </Pressable>
+    </UISkeleton>
   );
 };
+
 
 const styles = StyleSheet.create({
   button: {

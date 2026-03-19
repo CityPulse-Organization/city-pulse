@@ -80,75 +80,70 @@ type PostProps = {
 };
 
 export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => {
-  if (isLoading) {
-    return (
-      <View style={styles.itemWrapper}>
-        <UISkeleton style={styles.card} />
-      </View>
-    );
-  }
-
   const handlePress = useCallback(() => {
     onPress(data.id);
   }, [data.id, onPress]);
 
   return (
     <View style={styles.itemWrapper}>
-      <UIButton onPress={handlePress} style={styles.card}>
-        <UIImage
-          isLoading={isLoading}
-          isAspectRatio={true}
-          size="masonry"
-          borderRound="medium"
-          imageUrl={data.imagesUrl[0]}
-          style={styles.image}
-        />
-
-        <View style={styles.overlayWrapper}>
-          <LinearGradient
-            start={{ x: 0.5, y: 1 }}
-            end={{ x: 0.5, y: 0.3 }}
-            colors={["rgba(0,0,0,0.6)", "rgba(0,0,0,0)"]}
-            style={styles.gradient}
-            pointerEvents="none"
+      <UISkeleton show={isLoading}>
+        <UIButton onPress={handlePress} style={styles.card}>
+          <UIImage
+            isLoading={isLoading}
+            isAspectRatio={true}
+            size="masonry"
+            borderRound="medium"
+            imageUrl={data.imagesUrl[0]}
+            style={styles.image}
           />
 
-          <View style={styles.topFlexWrapper}>
-            {data.description && (
-              <LinearGradient
-                colors={["rgba(0,0,0,0.6)", "rgba(0,0,0,0)"]}
-                style={styles.topOverlay}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
-              >
-                <UIText
-                  size="sm"
-                  numberOfLines={3}
-                  ellipsizeMode="tail"
-                  style={styles.overlayText}
-                >
-                  {data.description}
-                </UIText>
-              </LinearGradient>
-            )}
-          </View>
-
-          <View style={styles.userInfoContainer}>
-            <IconInfo
-              profileImageUrl={data.profileImageUrl}
-              isBroadCasting={false}
-              username={data.username}
-              statusText={data.accidentTime}
-              iconSize="small"
-              usernameSize="sm"
-              mode="post"
+          <View style={styles.overlayWrapper}>
+            <LinearGradient
+              start={{ x: 0.5, y: 1 }}
+              end={{ x: 0.5, y: 0.3 }}
+              colors={["rgba(0,0,0,0.6)", "rgba(0,0,0,0)"]}
+              style={styles.gradient}
+              pointerEvents="none"
             />
+
+            <View style={styles.topFlexWrapper}>
+              {data.description && (
+                <LinearGradient
+                  colors={["rgba(0,0,0,0.6)", "rgba(0,0,0,0)"]}
+                  style={styles.topOverlay}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                >
+                  <UIText
+                    size="sm"
+                    numberOfLines={3}
+                    ellipsizeMode="tail"
+                    style={styles.overlayText}
+                  >
+                    {data.description}
+                  </UIText>
+                </LinearGradient>
+              )}
+            </View>
+
+            <View style={styles.userInfoContainer}>
+              <IconInfo
+                profileImageUrl={data.profileImageUrl}
+                isBroadCasting={false}
+                username={data.username}
+                statusText={data.accidentTime}
+                iconSize="small"
+                usernameSize="sm"
+                mode="post"
+              />
+            </View>
           </View>
-        </View>
-      </UIButton>
+        </UIButton>
+      </UISkeleton>
     </View>
   );
 });
+
 
 const styles = StyleSheet.create((theme) => ({
   itemWrapper: {

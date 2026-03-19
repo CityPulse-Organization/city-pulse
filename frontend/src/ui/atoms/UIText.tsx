@@ -1,6 +1,7 @@
 import { StyleProp, Text, TextStyle } from "react-native";
 import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
 import { scale } from "../unistyles";
+
 import { UISkeleton } from "./UISkeleton";
 
 type UITextProps = {
@@ -15,20 +16,19 @@ export const UIText = ({
   style,
   size,
   weight,
-  isLoading,
+  isLoading = false,
   ...rest
 }: UITextProps) => {
   styles.useVariants({ size: size, weight: weight });
-  if (isLoading) {
-    return <UISkeleton size="medium" />;
-  }
-
   return (
-    <Text {...rest} style={[style, styles.text]}>
-      {children}
-    </Text>
+    <UISkeleton show={isLoading}>
+      <Text {...rest} style={[style, styles.text]}>
+        {children}
+      </Text>
+    </UISkeleton>
   );
 };
+
 
 const styles = StyleSheet.create((theme) => ({
   text: {

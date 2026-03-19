@@ -6,6 +6,7 @@ import {
   UnistylesRuntime,
   UnistylesVariants,
 } from "react-native-unistyles";
+
 import { UISkeleton } from "./UISkeleton";
 
 type UIImageProps = {
@@ -46,11 +47,8 @@ export const UIImage = memo(
       [isAspectRatio],
     );
 
-    if (isLoading) {
-      return <UISkeleton size={size} borderRound={borderRound} style={style} />;
-    }
     return (
-      <View style={[styles.image, dynamicStyle, style]}>
+      <UISkeleton show={isLoading}>
         <Image
           {...props}
           source={{ uri: imageUrl }}
@@ -60,10 +58,11 @@ export const UIImage = memo(
           onLoad={handleLoad}
           onLoadEnd={handleLoadEnd}
         />
-      </View>
+      </UISkeleton>
     );
   },
 );
+
 
 const styles = StyleSheet.create((theme, rt) => ({
   image: {

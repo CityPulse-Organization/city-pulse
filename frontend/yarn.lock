@@ -5095,6 +5095,18 @@ react-native-collapsible-tab-view@^8.0.1:
   dependencies:
     use-deep-compare "^1.1.0"
 
+react-native-ease-skeleton@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-ease-skeleton/-/react-native-ease-skeleton-0.6.0.tgz#4eae9865359217c08541a46ad65aff7f99584f01"
+  integrity sha512-IkogDr/on8PwRzHO0j3uxNN3O9uMr5NTOiuMX0CCaypiAvmX1RNjovSnVIF4rKceZS9AA0yqN9HiFbjDz6ktrQ==
+  dependencies:
+    react-native-ease latest
+
+react-native-ease@^0.3.0, react-native-ease@latest:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-ease/-/react-native-ease-0.3.0.tgz#16041a5a3cd213d19222989b510e961771fcc4b2"
+  integrity sha512-z58hxZ4cqbArGjHlYeP1ogVUFn5Gku5WM57X2AA3oDto7X7bU9DliGxVrPcyhSLxJLIZVuPmC0HuOysX1LcNkA==
+
 react-native-edge-to-edge@^1.7.0:
   version "1.7.0"
   resolved "https://registry.npmjs.org/react-native-edge-to-edge/-/react-native-edge-to-edge-1.7.0.tgz"
