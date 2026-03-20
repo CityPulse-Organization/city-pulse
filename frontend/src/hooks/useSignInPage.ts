@@ -11,10 +11,9 @@ import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import { isAxiosError } from "axios";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { Alert } from "react-native";
 
 const schema = z.object({
-  username: z.string().min(1, "Username is required"),
+  email: z.email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
@@ -37,7 +36,7 @@ export const useSignInPage = () => {
     mode: "onSubmit",
     reValidateMode: "onSubmit",
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -45,7 +44,7 @@ export const useSignInPage = () => {
   const onSubmit = useCallback(
     async (data: SignInFormData) => {
       try {
-        await signIn({ username: data.username, password: data.password });
+        await signIn({ email: data.email, password: data.password });
       } catch (error) {
         console.error("Sign in failed:", error);
         let message = "Invalid username or password.";

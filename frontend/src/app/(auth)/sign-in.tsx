@@ -38,13 +38,13 @@ export default function SignUpPage() {
         <View style={styles.inputsContainer}>
           <Controller
             control={control}
-            name="username"
+            name="email"
             render={({ field: { onChange, onBlur, value }, fieldState }) => (
               <UIInput
                 placeholderTextColor={styles.input.borderColor}
                 dividerColor="accent"
                 inputStyle={styles.input}
-                placeholder="Username"
+                placeholder="Email"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}

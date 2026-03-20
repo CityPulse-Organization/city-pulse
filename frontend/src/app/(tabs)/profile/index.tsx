@@ -14,6 +14,7 @@ import React from "react";
 import { View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { useLogout } from "@/src/hooks";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -73,6 +74,12 @@ const ProfileHeader = memo(() => {
     router.navigate("/(tabs)/profile/edit-profile");
   }, [router]);
 
+  const { mutate: logout } = useLogout();
+
+  const onLogoutPress = useCallback(() => {
+    logout()
+  }, [logout]);
+
   return (
     <View style={styles.headerContainer}>
       <View style={styles.avatarWrapper}>
@@ -99,7 +106,7 @@ const ProfileHeader = memo(() => {
             Kyrylo
           </UIText>
 
-          <UIButton onPress={navigateToEditProfile} isLoading={false}>
+          <UIButton onPress={onLogoutPress} isLoading={false}>
             <Ionicons
               color={styles.settingsIconButton.color}
               size={styles.settingsIconButton.height}
