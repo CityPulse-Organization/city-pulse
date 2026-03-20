@@ -70,7 +70,7 @@ public class GlobalExceptionHandler {
 
         String message = "External service error";
         if (status == 409) {
-            message = "User with this email already exists.";
+            message = "User with this email or username already exists.";
         } else if (status == 400) {
             message = "Invalid data provided to external service.";
         }

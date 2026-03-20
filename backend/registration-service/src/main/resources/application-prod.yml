@@ -9,6 +9,8 @@ app:
   services:
     auth:
       url: ${AUTH_SERVICE_URL}/api/v1
+    user:
+      url: ${USER_SERVICE_URL}/api/v1
 
 springdoc:
   api-docs:

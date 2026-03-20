@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtRegistrationMapper {
-    public InternalRegistrationRequest toInternalRequest(Jwt jwt) {
+    public InternalRegistrationRequest toOAuth2InternalRequest(Jwt jwt) {
         var email = jwt.getSubject();
         var providerId = jwt.getClaimAsString("provider_id");
         var provider = AuthProvider.valueOf(jwt.getClaimAsString("provider").toUpperCase());
