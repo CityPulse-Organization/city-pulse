@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Value( "${app.base-path}")
+    @Value("${app.base-path}")
     private String basePath;
 
     @Bean
