@@ -9,3 +9,5 @@ app:
   services:
     auth:
       url: http://localhost:8081/api/v1
+    user:
+      url: http://localhost:8084/api/v1
