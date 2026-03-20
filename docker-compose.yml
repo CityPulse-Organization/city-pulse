@@ -75,6 +75,21 @@ services:
     volumes:
       - ./secrets/jwt:/app/secrets/jwt:ro
 
+  user-service:
+    image: denys1204/city-pulse-user-service:${USER_SERVICE_VERSION:-latest}
+    container_name: city-pulse-user-service
+    expose:
+      - "8084"
+    networks:
+      - city-pulse-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+    env_file:
+      - .env-user
+
   registration-service:
     image: denys1204/city-pulse-registration-service:${REGISTRATION_SERVICE_VERSION:-latest}
     container_name: city-pulse-registration-service
@@ -84,6 +99,7 @@ services:
       - city-pulse-network
     depends_on:
       - auth-service
+      - user-service
     env_file:
       - .env-registration
 
@@ -113,6 +129,7 @@ services:
       - auth-service
       - post-service
       - registration-service
+      - user-service
 
 volumes:
   postgres_data:
