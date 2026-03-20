@@ -17,8 +17,8 @@ const decodeJWT = (token: string): User | null => {
 };
 
 export const register = async (data: AuthRequest): Promise<AuthResponse> => {
-  await axios.post("/auth/register", data);
-  return login({ username: data.username, password: data.password });
+  await axios.post("/registration/local", data);
+  return login({ email: data.email, password: data.password });
 };
 
 export const login = async (data: AuthRequest): Promise<AuthResponse> => {
