@@ -24,6 +24,7 @@ export default {
           "Allow City Pulse to access your camera to take profile and post pictures.",
         NSPhotoLibraryUsageDescription:
           "Allow City Pulse to access your photos to select post images.",
+        NSPhotoLibraryAddUsageDescription: "Allow City Pulse to save photos.",
       },
       config: {
         googleMapsApiKey: GOOGLE_MAPS_API_KEY,
@@ -39,16 +40,23 @@ export default {
       predictiveBackGestureEnabled: false,
       package: "com.citypulse.mobile",
       permissions: [
-        "android.permission.INTERNET",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
+
         "android.permission.CAMERA",
+
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO"
       ],
       config: {
         googleMaps: {
           apiKey: GOOGLE_MAPS_API_KEY,
         },
       },
+      requestLegacyExternalStorage: true,
       usesCleartextTraffic: true,
     },
     web: {
@@ -63,14 +71,6 @@ export default {
         {
           locationAlwaysAndWhenInUsePermission:
             "Allow City Pulse to use your location.",
-        },
-      ],
-      [
-        "expo-media-library",
-        {
-          photosPermission: "Allow City Pulse to access your photos.",
-          savePhotosPermission: "Allow City Pulse to save photos.",
-          isAccessMediaLocationEnabled: true,
         },
       ],
       [

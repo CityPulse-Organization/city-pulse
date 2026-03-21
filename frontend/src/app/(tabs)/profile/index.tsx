@@ -237,6 +237,7 @@ const styles = StyleSheet.create((theme) => ({
   list: {
     flex: 1,
     width: "100%",
+    paddingHorizontal: theme.utils.s(10),
   },
   postsContainer: {
     paddingBottom: theme.utils.vs(80),
