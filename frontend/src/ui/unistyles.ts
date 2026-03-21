@@ -83,6 +83,8 @@ const colors = {
 
   backgroundOverlay: "rgba(214, 198, 252, 0.4)",
   gradientOverlay: ["rgba(255, 255, 255, 0.2)", "rgba(255, 255, 255, 0)", "rgba(240, 240, 242, 1)"] as const,
+  activeGradientIcon: ["rgba(168, 36, 224, 1)", "rgba(124, 77, 255, 1)"] as const,
+  inactiveGradientIcon: ["rgba(168, 36, 224, 0.14)", "rgba(124, 77, 255, 0.14)"] as const,
 };
 
 const lightTheme = {
@@ -123,7 +125,7 @@ const darkTheme = {
     iconSelected: "rgba(0, 0, 0, 1)",
 
     backgroundOverlay: "rgba(18, 8, 28, 1)",
-    gradientOverlay: ["rgba(0, 0, 0, 0.8)", "rgba(0,0,0,0)", "rgba(0, 0, 0, 1)"] as const,
+    gradientOverlay: ["rgba(0, 0, 0, 0.8)", "rgba(0,0,0,0)", "rgba(12, 12, 12, 1)"] as const,
   },
 
   utils: {
@@ -146,7 +148,7 @@ declare module "react-native-unistyles" {
 
 StyleSheet.configure({
   settings: {
-    initialTheme: "light",
+    initialTheme: "dark",
   },
   themes: appThemes,
 });

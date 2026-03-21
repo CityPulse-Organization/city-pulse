@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native-unistyles";
 import { useRouter } from "expo-router";
 import { BlurButton } from "../BlurButton";
-import { GradientCard } from "../referrals/GradientCard";
+import { GradientCard } from "../GradientCard";
 
 type PostMenuOptionItem = {
     id: string;

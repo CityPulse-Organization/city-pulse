@@ -25,6 +25,7 @@ export const POSTS: PostItem[] = [
     imagesUrl: [
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYnQuzFNBCJZNp9-J1KoMQFDjsSVhxp5JxJQ&s",
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1vyTJ-5AwLNQQKGBmcZn0kIDiXuduEKG5fg&s",
+      "https://i0.wp.com/picjumbo.com/wp-content/uploads/silhouettes-of-hawaiian-palms-at-a-gorgeous-sunset-free-image.jpeg?h=800&quality=80",
     ],
     profileImageUrl:
       "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
