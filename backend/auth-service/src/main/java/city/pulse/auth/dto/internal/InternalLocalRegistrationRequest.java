@@ -24,12 +24,4 @@ public record InternalLocalRegistrationRequest(
         @NotNull(message = "Role is required")
         Role role
 ) {
-    public static InternalLocalRegistrationRequest build(String email, String password, Role role) {
-        return InternalLocalRegistrationRequest.builder()
-                .email(email)
-                .password(password)
-                .provider(AuthProvider.LOCAL)
-                .role(role)
-                .build();
-    }
 }
