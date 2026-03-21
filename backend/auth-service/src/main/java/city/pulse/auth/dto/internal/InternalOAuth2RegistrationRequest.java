@@ -22,12 +22,4 @@ public record InternalOAuth2RegistrationRequest(
         @NotNull(message = "Role is required")
         Role role
 ) {
-    public static InternalOAuth2RegistrationRequest build(String email, AuthProvider provider, String providerId, Role role) {
-        return InternalOAuth2RegistrationRequest.builder()
-                .email(email)
-                .provider(provider)
-                .providerId(providerId)
-                .role(role)
-                .build();
-    }
 }
