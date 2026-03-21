@@ -1,8 +1,8 @@
 import { BottomSheetFlatList, BottomSheetFooter, BottomSheetFooterProps, BottomSheetModal, BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import { memo, useCallback, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Comment, CommentItem, MOCK_COMMENTS } from "../Comment";
 import { UIBottomSheet, UIButton, UIDivider, UIText } from "@/src/ui";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Keyboard, Platform, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Icon } from "../Icon";
 import { StyleSheet } from "react-native-unistyles";
@@ -123,6 +123,8 @@ const CommentsFooter = memo(({
 }: CommentsFooterProps) => {
     const [commentText, setCommentText] = useState("");
 
+    const [isInputActive, setIsInputActive] = useState(false);
+
     const isCommentValid = commentText.trim().length > 0;
 
     const handleSendComment = useCallback(() => {
@@ -138,7 +140,14 @@ const CommentsFooter = memo(({
 
                 <UIDivider height={styles.footerDivider.height} />
 
-                <View style={styles.footerInputBar}>
+                <View
+                    style={[
+                        styles.footerInputBar,
+                        isInputActive
+                            ? { paddingBottom: styles.activeKeyboard.paddingBottom }
+                            : { paddingBottom: styles.footerInputBar.paddingBottom }
+                    ]}
+                >
                     <Icon
                         profileImageUrl={profileImageUrl}
                         size="comment"
@@ -150,6 +159,8 @@ const CommentsFooter = memo(({
                         placeholderTextColor={styles.inputPlaceholder.color}
                         onChangeText={setCommentText}
                         value={commentText}
+                        onFocus={() => setIsInputActive(true)}
+                        onBlur={() => setIsInputActive(false)}
                     />
 
                     <UIButton
@@ -173,6 +184,8 @@ const CommentsFooter = memo(({
     );
 },
 );
+
+
 
 
 
@@ -214,7 +227,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     },
 
     footerContainer: {
-        backgroundColor: theme.colors.bottomSheetBackground,
+        backgroundColor: theme.colors.background,
         alignItems: "center",
         justifyContent: "center",
         gap: theme.utils.s(14),
@@ -228,6 +241,9 @@ const styles = StyleSheet.create((theme, rt) => ({
         gap: theme.utils.s(10),
         paddingHorizontal: theme.utils.s(10),
         paddingBottom: Math.max(rt.insets.bottom, theme.utils.vs(30)),
+    },
+    activeKeyboard: {
+        paddingBottom: theme.utils.vs(14),
     },
     footerInput: {
         flex: 1,

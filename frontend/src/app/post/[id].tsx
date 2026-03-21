@@ -7,10 +7,11 @@ import {
 import { BlurButton } from "@/src/components/BlurButton";
 import { ImagesCarousel } from "@/src/components/post/imagesCarousel";
 import { MenuOptionBottomSheet } from "@/src/components/post/MenuOptionBottomSheet";
+import { GradientCard } from "@/src/components/referrals";
 import { usePostDetails } from "@/src/hooks/post/usePostDetails";
 import { UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { memo, useCallback, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
@@ -32,7 +33,7 @@ export default function PostDetailScreen() {
   } = usePostDetails();
 
   return (
-    <ThemedBackground style={styles.page} withoutSafeArea={false}>
+    <ThemedBackground style={styles.page}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainerStyle}
@@ -50,15 +51,20 @@ export default function PostDetailScreen() {
           />
 
           {!!description && (
-            <BlurView
-              intensity={10}
-              tint={"dark"}
-              style={styles.descriptionCard}
+            <GradientCard
+              colors={[
+                "rgba(168,36,224,0.45)",
+                "rgba(124,77,255,0.20)",
+                "rgba(206,147,216,0.10)",
+              ]}
+              style={styles.descriptionCardOuter}
             >
-              <UIText size="sm" style={styles.descriptionText}>
-                {description}
-              </UIText>
-            </BlurView>
+              <View style={styles.descriptionCardInner}>
+                <UIText size="sm" style={styles.descriptionText}>
+                  {description}
+                </UIText>
+              </View>
+            </GradientCard>
           )}
         </View>
       </ScrollView>
@@ -120,42 +126,75 @@ const UserInfoRow = memo(
 
         <View style={styles.actionsRow}>
           <UIButton onPress={toggleLikeStatus} style={styles.actionPost}>
-            <Ionicons
-              name={isLikedByCurrentUser ? "heart" : "heart-outline"}
-              size={styles.likeIcon.height}
-              color={
+            <LinearGradient
+              colors={
                 isLikedByCurrentUser
-                  ? styles.likeIconActive.color
-                  : styles.likeIcon.color
+                  ? ["#a824e0ff", "#7C4DFF"]
+                  : ["rgba(168, 36, 224, 0.14)", "rgba(124, 77, 255, 0.14)"]
               }
-            />
-            <UIText weight="normal" style={styles.actionCount}>
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.actionIconGrad}
+            >
+              <Ionicons
+                name={isLikedByCurrentUser ? "heart" : "heart-outline"}
+                size={styles.likeIcon.height}
+                color={
+                  isLikedByCurrentUser
+                    ? styles.likeIconActive.color
+                    : styles.likeIcon.color
+                }
+              />
+            </LinearGradient>
+
+            <UIText weight="normal" size="sm" style={
+              isLikedByCurrentUser ? styles.actionCountActive : styles.actionCount
+            }>
               {totalLikeCount}
             </UIText>
+
           </UIButton>
 
           <UIButton
             onPress={openPresentCommentsSheet}
             style={styles.actionPost}
           >
-            <Ionicons
-              name="chatbubble-outline"
-              size={styles.commentIcon.height}
-              color={styles.commentIcon.color}
-            />
-            <UIText style={styles.actionCount}>{MOCK_COMMENTS.length}</UIText>
+            <LinearGradient
+              colors={["rgba(168, 36, 224, 0.14)", "rgba(124, 77, 255, 0.14)"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.actionIconGrad}
+            >
+              <Ionicons
+                name="chatbubble-outline"
+                size={styles.commentIcon.height}
+                color={styles.commentIcon.color}
+              />
+            </LinearGradient>
+            <UIText weight="normal" size="sm" style={styles.actionCount}>{MOCK_COMMENTS.length}</UIText>
           </UIButton>
 
           <UIButton onPress={toggleSaveStatus} style={styles.actionPost}>
-            <Ionicons
-              name={isSavedByCurrentUser ? "bookmark" : "bookmark-outline"}
-              size={styles.saveIcon.height}
-              color={
+            <LinearGradient
+              colors={
                 isSavedByCurrentUser
-                  ? styles.saveIconActive.color
-                  : styles.saveIcon.color
+                  ? ["#a824e0ff", "#7C4DFF"]
+                  : ["rgba(168, 36, 224, 0.14)", "rgba(124, 77, 255, 0.14)"]
               }
-            />
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.actionIconGrad}
+            >
+              <Ionicons
+                name={isSavedByCurrentUser ? "bookmark" : "bookmark-outline"}
+                size={styles.saveIcon.height}
+                color={
+                  isSavedByCurrentUser
+                    ? styles.saveIconActive.color
+                    : styles.saveIcon.color
+                }
+              />
+            </LinearGradient>
           </UIButton>
         </View>
       </View>
@@ -167,14 +206,15 @@ const styles = StyleSheet.create((theme, rt) => ({
   page: {
     flex: 1,
     paddingTop: 0,
+    // backgroundColor: theme.colors.background,
   },
   contentContainerStyle: {
     paddingBottom: rt.insets.bottom + theme.utils.s(10),
   },
 
   contentContainer: {
-    paddingHorizontal: theme.utils.s(20),
-    marginTop: theme.utils.vs(10),
+    paddingHorizontal: theme.utils.s(16),
+    marginTop: theme.utils.vs(20),
   },
   userInfoRow: {
     flexDirection: "row",
@@ -185,48 +225,60 @@ const styles = StyleSheet.create((theme, rt) => ({
   actionsRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: theme.utils.s(16),
+    gap: theme.utils.s(6),
   },
   actionPost: {
     flexDirection: "row",
     alignItems: "center",
     gap: theme.utils.s(6),
   },
+
+  actionIconGrad: {
+    width: theme.utils.s(32),
+    height: theme.utils.s(32),
+    borderRadius: theme.utils.s(16),
+    alignItems: "center",
+    justifyContent: "center",
+  },
   actionCount: {
     color: theme.colors.muted,
-    fontSize: theme.utils.ms(14),
+  },
+  actionCountActive: {
+    color: theme.colors.accent,
   },
 
   likeIcon: {
-    height: theme.utils.s(20),
+    height: theme.utils.s(18),
     color: theme.colors.icon,
   },
   likeIconActive: {
-    color: theme.colors.lightRed,
+    color: theme.colors.burgundy,
   },
   commentIcon: {
-    height: theme.utils.s(20),
+    height: theme.utils.s(18),
     color: theme.colors.icon,
   },
   saveIcon: {
-    height: theme.utils.s(20),
+    height: theme.utils.s(18),
     color: theme.colors.icon,
   },
   saveIconActive: {
-    color: theme.colors.mutedAccent,
+    color: theme.colors.white,
   },
 
-  descriptionCard: {
-    backgroundColor: theme.colors.backgroundOverlay,
-    padding: theme.utils.s(20),
-    borderRadius: theme.utils.ms(22),
-    borderWidth: 1,
-    borderColor: theme.colors.mutedAccent,
+  descriptionCardOuter: {
     marginBottom: theme.utils.vs(32),
-    opacity: 0.9,
+  },
+  descriptionCardInner: {
+    backgroundColor: theme.colors.backgroundOverlay,
+
+    paddingHorizontal: theme.utils.s(16),
+    paddingTop: theme.utils.vs(16),
+    paddingBottom: theme.utils.vs(20),
   },
   descriptionText: {
     color: theme.colors.primaryText,
     lineHeight: theme.utils.ms(22),
+    letterSpacing: 0.5,
   },
 }));

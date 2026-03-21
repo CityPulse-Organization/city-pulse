@@ -46,6 +46,7 @@ const colors = {
   red: "#F7374F",
   lightRed: "#e0534a",
   alert: "#FF204E",
+  burgundy: "#800020",
   lightYellow: "#F2F7A1",
   yellow: "#FEC260",
   green: "#2e7c2aff",
@@ -54,7 +55,7 @@ const colors = {
   darkOrange: "#995400ff",
   violet: "#C7B4FD",
 
-  background: "rgba(245, 245, 247, 0.9)",
+  background: "rgba(240, 240, 242, 1)",
   primary: "rgba(0, 0, 0, 1)",
   primaryText: "rgba(0, 0, 0, 1)",
   icon: "rgba(18, 17, 17, 1)",
@@ -75,15 +76,13 @@ const colors = {
   tabBarBorder: "rgba(202, 202, 202, 1)",
   tabBarItemActiveBackground: "rgba(165, 165, 165, 0.58)",
 
-  bottomSheetBackground: "rgba(237, 237, 239, 1)",
-
   divider: "rgba(0,0,0,0.1)",
 
   buttonSelectedBackground: "rgba(0, 0, 0, 1)",
   iconSelected: "rgba(255, 255, 255, 1)",
 
   backgroundOverlay: "rgba(214, 198, 252, 0.4)",
-  gradientOverlay: ["rgba(255, 255, 255, 0.2)", "rgba(255, 255, 255, 0)", "rgba(245, 245, 247, 1)"] as const,
+  gradientOverlay: ["rgba(255, 255, 255, 0.2)", "rgba(255, 255, 255, 0)", "rgba(240, 240, 242, 1)"] as const,
 };
 
 const lightTheme = {
@@ -118,15 +117,13 @@ const darkTheme = {
     tabBarBorder: "rgba(39, 39, 39, 0.8)",
     tabBarItemActiveBackground: "rgba(61, 60, 60, 0.52)",
 
-    bottomSheetBackground: "rgba(28, 28, 30, 1)",
-
     divider: "rgba(255, 255, 255, 0.1)",
 
     buttonSelectedBackground: "rgba(255, 255, 255, 1)",
     iconSelected: "rgba(0, 0, 0, 1)",
 
     backgroundOverlay: "rgba(18, 8, 28, 1)",
-    gradientOverlay: ["rgba(0, 0, 0, 0.6)", "rgba(0,0,0,0)", "rgba(0, 0, 0, 0.8)"] as const,
+    gradientOverlay: ["rgba(0, 0, 0, 0.8)", "rgba(0,0,0,0)", "rgba(0, 0, 0, 1)"] as const,
   },
 
   utils: {
@@ -149,7 +146,7 @@ declare module "react-native-unistyles" {
 
 StyleSheet.configure({
   settings: {
-    initialTheme: "dark",
+    initialTheme: "light",
   },
   themes: appThemes,
 });

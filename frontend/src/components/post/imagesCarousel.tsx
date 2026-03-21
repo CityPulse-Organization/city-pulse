@@ -104,7 +104,7 @@ export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string
                     styles.gradientStop1.backgroundColor,
                     styles.gradientStop2.backgroundColor,
                 ]}
-                locations={[0, 0.6, 1]}
+                locations={[0, 0.5, 1]}
                 style={styles.gradient}
                 pointerEvents="none"
             />
