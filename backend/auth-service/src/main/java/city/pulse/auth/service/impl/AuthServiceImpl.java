@@ -30,7 +30,6 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    @Transactional(readOnly = true)
     public AuthResponse login(AuthRequest dto) {
         return credentialRepository.findByEmail(dto.email())
                 .filter(user -> user.getPasswordHash() != null)
