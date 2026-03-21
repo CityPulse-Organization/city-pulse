@@ -46,3 +46,5 @@ android/
 
 .expo/
 frontend/.expo
+
+.vscode/
