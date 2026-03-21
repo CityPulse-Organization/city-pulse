@@ -98,32 +98,36 @@ export const GlowRing = memo(
             </View>
           </LinearGradient>
         </Animated.View>
-
         <View style={styles.progressTrack}>
           <LinearGradient
             colors={["#a824e0", "#7C4DFF", "#E040FB"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={[styles.progressFill, { width: `${progress * 100}%` }]}
+            style={[styles.progressFill, { width: `${Math.max(0, Math.min(progress, 1)) * 100}%` }]}
           />
-          {milestones.map((m) => (
-            <View
-              key={m.id}
-              style={[
-                styles.progressDot,
-                { left: `${(m.count / total) * 100}%` },
-              ]}
-            >
-              <LinearGradient
-                colors={
-                  m.unlocked
-                    ? m.gradient
-                    : ["rgba(255,255,255,0.1)", "rgba(255,255,255,0.05)"]
-                }
-                style={styles.progressDotInner}
-              />
-            </View>
-          ))}
+          {milestones.map((m) => {
+            const safeTotal = total && total > 0 ? total : 1;
+            const leftPercent = Math.min(Math.max(((m.count || 0) / safeTotal) * 100, 0), 100);
+
+            const dotColors = m.unlocked && Array.isArray(m.gradient) && m.gradient.length >= 2
+              ? m.gradient
+              : ["rgba(255,255,255,0.1)", "rgba(255,255,255,0.05)"];
+
+            return (
+              <View
+                key={m.id || String(leftPercent)}
+                style={[
+                  styles.progressDot,
+                  { left: `${leftPercent}%` },
+                ]}
+              >
+                <LinearGradient
+                  colors={dotColors as unknown as readonly [string, string, ...string[]]}
+                  style={styles.progressDotInner}
+                />
+              </View>
+            );
+          })}
         </View>
 
         <UIText size="sm" style={styles.subtitle}>
@@ -138,6 +142,7 @@ export const GlowRing = memo(
 
 const styles = StyleSheet.create((theme) => ({
   container: {
+    width: "100%",
     alignItems: "center",
     marginVertical: theme.utils.vs(14),
     overflow: "visible",
@@ -177,7 +182,7 @@ const styles = StyleSheet.create((theme) => ({
   progressTrack: {
     width: "85%",
     height: theme.utils.vs(6),
-    backgroundColor: theme.colors.backgroundSubtle,
+    backgroundColor: "rgba(255,255,255,0.15)", // Made it significantly brighter so it isn't invisible
     borderRadius: 999,
     marginTop: theme.utils.vs(18),
     marginBottom: theme.utils.vs(6),
