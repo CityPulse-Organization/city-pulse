@@ -1,11 +1,13 @@
 package city.pulse.user.service.impl;
 
 import city.pulse.user.dto.ProfileCreationRequest;
+import city.pulse.user.exception.UsernameAlreadyExistsException;
 import city.pulse.user.model.UserProfile;
 import city.pulse.user.repository.UserProfileRepository;
 import city.pulse.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,11 +20,21 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void createProfile(ProfileCreationRequest dto) {
-        log.info("Creating profile for user ID: {}", dto.userId());
+        var username = dto.username();
+        var userId = dto.userId();
 
-        var profile = UserProfile.build(dto.userId(), dto.username());
+        log.info("Creating profile for user ID: {}", userId);
 
-        repository.save(profile);
-        log.info("Profile created successfully for username: {}", dto.username());
+        if (repository.existsByUsername(username)) {
+            throw new UsernameAlreadyExistsException("Username already exists");
+        }
+
+        try {
+            repository.saveAndFlush(UserProfile.build(userId, username));
+            log.info("Profile created successfully for username: {}", username);
+        } catch (DataIntegrityViolationException e) {
+            log.error("Race condition detected. Profile creation failed for user ID: {}", userId, e);
+            throw new UsernameAlreadyExistsException("Username already exists (race condition detected).");
+        }
     }
 }

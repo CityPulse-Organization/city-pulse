@@ -18,7 +18,7 @@ public class InternalUserController {
     private final UserService service;
 
     @PostMapping("/profile")
-    public ResponseEntity<Void> createProfile(@RequestBody @Valid ProfileCreationRequest dto) {
+    public ResponseEntity<Void> createProfile(@Valid @RequestBody ProfileCreationRequest dto) {
         service.createProfile(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
