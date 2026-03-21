@@ -2,8 +2,9 @@ package city.pulse.auth.service;
 
 import city.pulse.auth.dto.AuthRequest;
 import city.pulse.auth.dto.AuthResponse;
-import city.pulse.auth.dto.InternalRegistrationRequest;
 import city.pulse.auth.dto.RefreshRequest;
+import city.pulse.auth.dto.internal.InternalLocalRegistrationRequest;
+import city.pulse.auth.dto.internal.InternalOAuth2RegistrationRequest;
 
 import java.util.UUID;
 
@@ -14,7 +15,9 @@ public interface AuthService {
 
     void logout(RefreshRequest dto);
 
-    UUID registerUser(InternalRegistrationRequest dto);
+    UUID createLocalCredential(InternalLocalRegistrationRequest dto);
 
-    void deleteUser(UUID id);
+    UUID createOAuth2Credential(InternalOAuth2RegistrationRequest dto);
+
+    void deleteCredentials(UUID id);
 }

@@ -2,10 +2,10 @@ package city.pulse.auth.service.impl;
 
 import city.pulse.auth.dto.AuthRequest;
 import city.pulse.auth.dto.AuthResponse;
-import city.pulse.auth.dto.InternalRegistrationRequest;
 import city.pulse.auth.dto.RefreshRequest;
+import city.pulse.auth.dto.internal.InternalLocalRegistrationRequest;
+import city.pulse.auth.dto.internal.InternalOAuth2RegistrationRequest;
 import city.pulse.auth.exception.UserAlreadyExistsException;
-import city.pulse.auth.model.AuthProvider;
 import city.pulse.auth.model.Credential;
 import city.pulse.auth.model.LinkedAccount;
 import city.pulse.auth.repository.CredentialRepository;
@@ -50,24 +50,35 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UUID registerUser(InternalRegistrationRequest dto) {
-        if (credentialRepository.findByEmail(dto.email()).isPresent()) {
-            throw new UserAlreadyExistsException("User with email " + dto.email() + " already exists");
-        }
+    public UUID createLocalCredential(InternalLocalRegistrationRequest dto) {
+        validateEmailNotTaken(dto.email());
 
-        var hash = dto.password() != null ? passwordEncoder.encode(dto.password()) : null;
+        var hash = passwordEncoder.encode(dto.password());
         var credential = credentialRepository.save(Credential.build(dto.email(), hash));
-
-        if (dto.provider() != AuthProvider.LOCAL) {
-            var linkedAccount = LinkedAccount.build(credential, dto.provider(), dto.providerId());
-            linkedAccountRepository.save(linkedAccount);
-        }
 
         return credential.getId();
     }
 
     @Override
-    public void deleteUser(UUID id) {
+    public UUID createOAuth2Credential(InternalOAuth2RegistrationRequest dto) {
+        validateEmailNotTaken(dto.email());
+
+        var credential = credentialRepository.save(Credential.build(dto.email(), null));
+
+        var linkedAccount = LinkedAccount.build(credential, dto.provider(), dto.providerId());
+        linkedAccountRepository.save(linkedAccount);
+
+        return credential.getId();
+    }
+
+    @Override
+    public void deleteCredentials(UUID id) {
         credentialRepository.deleteById(id);
+    }
+
+    private void validateEmailNotTaken(String email) {
+        credentialRepository.findByEmail(email).ifPresent(user -> {
+            throw new UserAlreadyExistsException("User with email " + email + " already exists");
+        });
     }
 }

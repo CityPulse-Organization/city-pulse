@@ -1,4 +1,4 @@
-package city.pulse.registration.dto.auth;
+package city.pulse.registration.model;
 
 public enum AuthProvider {
     LOCAL,
