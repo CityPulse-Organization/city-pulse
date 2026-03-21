@@ -30,12 +30,13 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional(readOnly = true)
     public AuthResponse login(AuthRequest dto) {
         return credentialRepository.findByEmail(dto.email())
                 .filter(user -> user.getPasswordHash() != null)
                 .filter(user -> passwordEncoder.matches(dto.password(), user.getPasswordHash()))
                 .map(authTokenService::generateTokenPair)
-                .orElseThrow(() -> new BadCredentialsException("Invalid email or password. If you registered via social network, please use that option."));
+                .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
     }
 
     @Override
@@ -49,7 +50,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    @Transactional
     public UUID registerUser(InternalRegistrationRequest dto) {
         if (credentialRepository.findByEmail(dto.email()).isPresent()) {
             throw new UserAlreadyExistsException("User with email " + dto.email() + " already exists");
@@ -64,5 +64,10 @@ public class AuthServiceImpl implements AuthService {
         }
 
         return credential.getId();
+    }
+
+    @Override
+    public void deleteUser(UUID id) {
+        credentialRepository.deleteById(id);
     }
 }

@@ -15,4 +15,6 @@ public interface AuthService {
     void logout(RefreshRequest dto);
 
     UUID registerUser(InternalRegistrationRequest dto);
+
+    void deleteUser(UUID id);
 }
