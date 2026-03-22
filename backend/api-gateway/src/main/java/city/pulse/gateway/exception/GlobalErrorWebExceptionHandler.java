@@ -53,14 +53,21 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     }
 
     private HttpStatus determineHttpStatus(Throwable error) {
-        if (error instanceof java.net.ConnectException ||
-                error instanceof java.net.UnknownHostException ||
-                error.getClass().getName().contains("ConnectException") ||
-                error instanceof org.springframework.cloud.gateway.support.NotFoundException) {
-            return HttpStatus.SERVICE_UNAVAILABLE;
-        } else if (error instanceof java.util.concurrent.TimeoutException ||
-                error.getClass().getName().contains("TimeoutException")) {
-            return HttpStatus.GATEWAY_TIMEOUT;
+        var cause = error;
+        while (cause != null) {
+            if (cause instanceof java.net.ConnectException ||
+                    cause instanceof java.net.UnknownHostException ||
+                    cause.getClass().getName().contains("ConnectException") ||
+                    cause instanceof org.springframework.cloud.gateway.support.NotFoundException) {
+                return HttpStatus.SERVICE_UNAVAILABLE;
+            } else if (cause instanceof java.util.concurrent.TimeoutException ||
+                    cause.getClass().getName().contains("TimeoutException")) {
+                return HttpStatus.GATEWAY_TIMEOUT;
+            }
+            if (cause == cause.getCause()) {
+                break;
+            }
+            cause = cause.getCause();
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }
