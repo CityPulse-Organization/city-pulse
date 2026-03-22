@@ -50,6 +50,19 @@ spring:
               filters:
                 - RewritePath=/v3/api-docs/post, /v3/api-docs
 
+            # --- USER SERVICE ---
+            - id: user-service-route
+              uri: http://user-service:8084
+              predicates:
+                - Path=/api/v1/users/**
+
+            - id: user-service-openapi
+              uri: http://user-service:8084
+              predicates:
+                - Path=/v3/api-docs/user
+              filters:
+                - RewritePath=/v3/api-docs/user, /v3/api-docs
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
@@ -62,3 +75,6 @@ springdoc:
 
       - name: Post Service
         url: /v3/api-docs/post
+
+      - name: User Service
+        url: /v3/api-docs/user

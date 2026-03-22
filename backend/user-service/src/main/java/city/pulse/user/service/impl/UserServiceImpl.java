@@ -1,13 +1,18 @@
 package city.pulse.user.service.impl;
 
 import city.pulse.user.dto.ProfileCreationRequest;
+import city.pulse.user.dto.UserSearchResponse;
 import city.pulse.user.exception.UsernameAlreadyExistsException;
+import city.pulse.user.mapper.UserProfileMapper;
 import city.pulse.user.model.UserProfile;
 import city.pulse.user.repository.UserProfileRepository;
 import city.pulse.user.service.UserService;
+import city.pulse.user.specification.UserProfileSpecifications;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private final UserProfileSpecifications specifications;
     private final UserProfileRepository repository;
+    private final UserProfileMapper mapper;
 
     @Override
     @Transactional
@@ -36,5 +43,12 @@ public class UserServiceImpl implements UserService {
             log.error("Race condition detected. Profile creation failed for user ID: {}", userId, e);
             throw new UsernameAlreadyExistsException("Username already exists (race condition detected).");
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<UserSearchResponse> searchByUsername(String username, Pageable pageable) {
+        var specification = specifications.getSpecification(username);
+        return repository.findAll(specification, pageable).map(mapper::toResponse);
     }
 }
