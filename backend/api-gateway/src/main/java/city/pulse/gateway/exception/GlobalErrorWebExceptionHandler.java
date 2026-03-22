@@ -13,8 +13,10 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.*;
 import reactor.core.publisher.Mono;
 
+import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;
 
+@Slf4j
 @Order(-1)
 @Component
 public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHandler {
@@ -37,7 +39,10 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
         var message = error.getMessage() != null ? error.getMessage() : "Unknown error occurred";
 
         if (status == HttpStatus.SERVICE_UNAVAILABLE || status == HttpStatus.GATEWAY_TIMEOUT) {
+            log.warn("Gateway error (path: {}): [{}] {}", request.path(), status.value(), message);
             message = "Service is temporarily unavailable or unreachable. Please try again later.";
+        } else {
+            log.error("Internal Gateway error (path: {}): [{}]", request.path(), status.value(), error);
         }
 
         var responseBody = new ErrorResponse(
