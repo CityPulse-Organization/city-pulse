@@ -10,7 +10,7 @@ import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";
 import { PostItem } from "@/src/components/Post";
 import { router } from "expo-router";
 
-const SEARCH_USERS = [
+export const SEARCH_USERS = [
   {
     id: "1",
     username: "kyrylo1",

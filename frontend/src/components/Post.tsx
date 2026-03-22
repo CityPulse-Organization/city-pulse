@@ -72,6 +72,30 @@ export const POSTS: PostItem[] = [
     isBroadcasting: true,
     location: "Lublin, Poland",
   },
+  {
+    id: "5",
+    username: "kyrylo",
+    accidentTime: "13 dec. 2024 15:00",
+    description:
+      "Aura Airways Flight 762, route from Singapore to Zurich, was forced to make an emergency landing in Dubai (DXB) after the crew reported a fire in the number two engine (Rolls-Royce Trent XWB). Captain Eva Rostova immediately declared a 'Mayday' and initiated emergency procedures. The Airbus A350-900, carrying 287 passengers, landed safely on runway 30L. No injuries were reported. UAE authorities have launched a full investigation into the incident, and the airline praised the crew's exceptional professionalism.",
+    imagesUrl: [
+      "https://i0.wp.com/picjumbo.com/wp-content/uploads/dark-portrait-of-woman-with-hair-over-her-face-free-image.jpeg?h=800&quality=80",
+    ],
+    isBroadcasting: false,
+    location: "Lublin, Poland",
+  },
+  {
+    id: "6",
+    username: "kyrylo",
+    accidentTime: "13 dec. 2024 15:00",
+    imagesUrl: [
+      "https://images.panda.org/assets/images/pages/welcome/orangutan_1600x1000_279157.jpg",
+    ],
+    profileImageUrl:
+      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
+    isBroadcasting: true,
+    location: "Lublin, Poland",
+  },
 ];
 
 type PostProps = {
