@@ -84,15 +84,18 @@ export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string
     );
 
     const renderFooter = useCallback(
-        ({ imageIndex }: { imageIndex: number }) => (
-            <View style={styles.fullScreenFooter}>
-                <BlurView intensity={80} tint="dark" style={styles.fullScreenPill}>
-                    <UIText size="md" weight="bold" style={styles.fullScreenText}>
-                        {imageIndex + 1} / {imagesUrl.length}
-                    </UIText>
-                </BlurView>
-            </View>
-        ),
+        ({ imageIndex }: { imageIndex: number }) => {
+            if (imagesUrl.length <= 1) return null;
+            return (
+                <View style={styles.fullScreenFooter}>
+                    <BlurView intensity={80} tint="dark" style={styles.fullScreenPill}>
+                        <UIText size="md" weight="bold" style={styles.fullScreenText}>
+                            {imageIndex + 1} / {imagesUrl.length}
+                        </UIText>
+                    </BlurView>
+                </View>
+            );
+        },
         [imagesUrl.length]
     );
 
@@ -112,15 +115,17 @@ export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string
                 windowSize={3}
             />
 
-            <Pagination.Basic<{ color: string }>
-                progress={progress}
-                data={paginationData}
-                dotStyle={styles.dot}
-                activeDotStyle={styles.dotActive}
-                containerStyle={styles.carouselFooter}
-                horizontal
-                onPress={onPressPagination}
-            />
+            {imagesUrl.length > 1 && (
+                <Pagination.Basic<{ color: string }>
+                    progress={progress}
+                    data={paginationData}
+                    dotStyle={styles.dot}
+                    activeDotStyle={styles.dotActive}
+                    containerStyle={styles.carouselFooter}
+                    horizontal
+                    onPress={onPressPagination}
+                />
+            )}
 
             <LinearGradient
                 colors={[

@@ -17,7 +17,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useLogout } from "@/src/hooks";
 import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";
 import { SEARCH_USERS } from "../discover";
-import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle } from "react-native-reanimated";
+import { runOnJS, useAnimatedReaction } from "react-native-reanimated";
 
 
 

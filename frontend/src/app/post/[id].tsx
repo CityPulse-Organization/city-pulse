@@ -14,7 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { memo, useCallback, useState } from "react";
 import { ScrollView, View } from "react-native";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 import { CommentsBottomSheet } from "@/src/components/post/CommentsBottomSheet";
 
 export default function PostDetailScreen() {
