@@ -5,9 +5,10 @@ export const searchUsers = async (
   username: string,
   page: number = 0,
   size: number = 24,
+  sort?: string | string[],
 ): Promise<PageResponse<UserSearchResponse>> => {
   const { data } = await axios.get<PageResponse<UserSearchResponse>>("/users/search", {
-    params: { username: username || undefined, page, size },
+    params: { username: username || undefined, page, size, sort },
   });
   return data;
 };

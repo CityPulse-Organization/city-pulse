@@ -163,7 +163,7 @@ export default function DiscoverScreen() {
   const [input, setInput] = useState("");
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useSearchUsers(input);
+    useSearchUsers(input, ["username,asc"]);
 
   const paginatedUsers = useMemo(() => {
     if (data?.pages && data.pages.length > 0) {
@@ -230,6 +230,9 @@ export default function DiscoverScreen() {
     ({ item }: { item: Place }) => <PlaceItem item={item} />,
     [],
   );
+  const clearSearch = useCallback(() => {
+    setInput("");
+  }, []);
 
   return (
     <ThemedBackground withoutSafeArea={true}>
@@ -249,7 +252,7 @@ export default function DiscoverScreen() {
             selectionColor={styles.icon.color}
           />
           {input.length > 0 && (
-            <Pressable onPress={() => setInput("")}>
+            <Pressable onPress={clearSearch}>
               <Ionicons
                 name="close-circle"
                 size={20}
@@ -373,6 +376,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   containerStyle: {
     paddingTop: Platform.OS === "ios" ? theme.utils.vs(20) : theme.utils.vs(70),
     paddingBottom: theme.utils.vs(100),
+    minHeight: rt.screen.height,
   },
   placeItemContainer: {
     flexDirection: "row",
