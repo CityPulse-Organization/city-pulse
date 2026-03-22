@@ -6,7 +6,6 @@ import { Icon } from "./Icon";
 
 export type IconInfoProps = {
   profileImageUrl?: string | undefined;
-  isBroadCasting?: boolean;
   isLoading?: boolean;
   username: string;
   usernameSize?: "sm";
@@ -14,12 +13,11 @@ export type IconInfoProps = {
   statusText?: string;
   iconSize?: "small" | "medium" | "comment";
   onPress?: () => void;
-} & UnistylesVariants<typeof styles>;;
+} & UnistylesVariants<typeof styles>;
 
 export const IconInfo = memo(
   ({
     profileImageUrl,
-    isBroadCasting,
     isLoading,
     username,
     statusText,
@@ -35,7 +33,6 @@ export const IconInfo = memo(
         <Icon
           profileImageUrl={profileImageUrl}
           isLoading={isLoading}
-          isBroadCasting={isBroadCasting}
           size={iconSize}
           colorEmptyIcon={mode === "post" ? styles.emptyIcon.color : undefined}
         />
@@ -48,10 +45,7 @@ export const IconInfo = memo(
           >
             {username}
           </UIText>
-          <UIText
-            style={styles.statusText}
-            size="xs"
-          >
+          <UIText style={styles.statusText} size="xs">
             {statusText}
           </UIText>
         </View>

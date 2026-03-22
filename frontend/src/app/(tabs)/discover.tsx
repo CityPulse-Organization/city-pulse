@@ -3,111 +3,14 @@ import { UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { memo, useCallback, useMemo, useState } from "react";
-import { Platform, Pressable, TextInput, View } from "react-native";
+import { Dimensions, Platform, Pressable, TextInput, View } from "react-native";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";
 import { PostItem } from "@/src/components/Post";
 import { router } from "expo-router";
-
-const SEARCH_USERS = [
-  {
-    id: "1",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "no",
-    isBroadcasting: true,
-  },
-  {
-    id: "2",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Journalist",
-    isBroadcasting: true,
-  },
-  {
-    id: "3",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Habd worker",
-    isBroadcasting: true,
-  },
-  {
-    id: "4",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "no",
-    isBroadcasting: false,
-  },
-  {
-    id: "5",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "no",
-    isBroadcasting: false,
-  },
-  {
-    id: "6",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Software Engineer",
-    isBroadcasting: false,
-  },
-  {
-    id: "7",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Software Engineer",
-    isBroadcasting: false,
-  },
-  {
-    id: "8",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Software Engineer",
-    isBroadcasting: false,
-  },
-  {
-    id: "9",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "no",
-    isBroadcasting: false,
-  },
-  {
-    id: "10",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Software Engineer",
-    isBroadcasting: false,
-  },
-  {
-    id: "11",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Software Engineer",
-    isBroadcasting: false,
-  },
-  {
-    id: "12",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Software Engineer",
-    isBroadcasting: false,
-  },
-];
+import { useSearchUsers } from "@/src/hooks/useSearchUsers";
+import { DiscoverUser } from "@/src/types";
 
 const PLACES = [
   {
@@ -143,13 +46,11 @@ const PLACES = [
   },
 ];
 
-type DiscoverUser = (typeof SEARCH_USERS)[0];
 type Place = (typeof PLACES)[0];
 
 const DiscoverItem = memo(({ item }: { item: DiscoverUser }) => (
   <View style={styles.itemContainer}>
     <IconInfo
-      isBroadCasting={item.isBroadcasting}
       username={item.username}
       profileImageUrl={item.profileImageUrl}
       statusText={item.job}
@@ -261,15 +162,22 @@ const DiscoverTabBar = (props: TabBarProps<string>) => {
 export default function DiscoverScreen() {
   const [input, setInput] = useState("");
 
-  const filteredUsers = useMemo(() => {
-    if (!input.trim()) return SEARCH_USERS;
-    const query = input.toLowerCase().trim();
-    return SEARCH_USERS.filter(
-      (user) =>
-        user.username.toLowerCase().includes(query) ||
-        user.job.toLowerCase().includes(query),
-    );
-  }, [input]);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useSearchUsers(input);
+
+  const paginatedUsers = useMemo(() => {
+    if (data?.pages && data.pages.length > 0) {
+      return data.pages.flatMap((page) =>
+        page.content.map((u) => ({
+          id: u.id,
+          username: u.username,
+          profileImageUrl: "",
+          job: "",
+        })),
+      );
+    }
+    return [];
+  }, [data]);
 
   const renderItem = useCallback(
     ({ item }: { item: DiscoverUser }) => <DiscoverItem item={item} />,
@@ -367,7 +275,7 @@ export default function DiscoverScreen() {
         </Tabs.Tab>
         <Tabs.Tab name="people" label="People">
           <Tabs.FlashList
-            data={filteredUsers}
+            data={paginatedUsers}
             renderItem={renderItem}
             keyExtractor={keyExtractor}
             ItemSeparatorComponent={ItemSeparator}
@@ -379,6 +287,15 @@ export default function DiscoverScreen() {
             keyboardDismissMode="on-drag"
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
+            onEndReached={() => {
+              if (
+                paginatedUsers.length >= 24 &&
+                hasNextPage &&
+                !isFetchingNextPage
+              )
+                fetchNextPage();
+            }}
+            onEndReachedThreshold={0.1}
           />
         </Tabs.Tab>
         <Tabs.Tab name="posts" label="Posts">

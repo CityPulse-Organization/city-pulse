@@ -5,7 +5,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { memo, useCallback } from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Dimensions, Platform, Pressable, View } from "react-native";
 import { ListRenderItem } from "@shopify/flash-list";
 import { Tabs, TabBarProps } from "react-native-collapsible-tab-view";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
@@ -319,6 +319,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingTop: Platform.OS === "ios" ? theme.utils.vs(12) : theme.utils.vs(60),
     paddingBottom: theme.utils.vs(120),
     paddingHorizontal: theme.utils.s(16),
+    minHeight: Dimensions.get("window").height,
   },
   chatRow: {
     flexDirection: "row",
