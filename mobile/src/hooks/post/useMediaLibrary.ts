@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import * as MediaLibrary from "expo-media-library";
-import { CONFIG } from "@/src/app/(tabs)/profile/new-post-image";
+import { POST_CONFIG } from "@/src/types/post";
 
 
 export const useMediaLibrary = (
@@ -18,7 +18,7 @@ export const useMediaLibrary = (
     try {
       const { assets: newPhotos, endCursor: newCursor } =
         await MediaLibrary.getAssetsAsync({
-          first: CONFIG.FETCH_LIMIT,
+          first: POST_CONFIG.FETCH_LIMIT,
           mediaType: ["photo"],
           sortBy: ["modificationTime"],
           after: endCursor,

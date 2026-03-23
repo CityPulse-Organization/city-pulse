@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import * as MediaLibrary from "expo-media-library";
-import { CONFIG } from "@/src/app/(tabs)/profile/new-post-image";
+import { POST_CONFIG } from "@/src/types/post";
 
 
 export const useGallerySelection = () => {
@@ -36,7 +36,7 @@ export const useGallerySelection = () => {
           const newSelection = prevSelected.filter((img) => img.id !== item.id);
           return newSelection.length > 0 ? newSelection : prevSelected;
         } else {
-          if (prevSelected.length < CONFIG.MAX_SELECTION) {
+          if (prevSelected.length < POST_CONFIG.MAX_SELECTION) {
             return [...prevSelected, item];
           }
           return prevSelected;

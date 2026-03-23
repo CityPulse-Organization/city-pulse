@@ -3,7 +3,7 @@ import { useGallerySelection } from "./useGallerySelection";
 import { useMediaLibrary } from "./useMediaLibrary";
 import * as MediaLibrary from "expo-media-library";
 import { useRouter } from "expo-router";
-import { CONFIG, GridItem } from "@/src/app/(tabs)/profile/new-post-image";
+import { GridItem, POST_CONFIG } from "@/src/types/post";
 import ImagePicker from "react-native-image-crop-picker";
 import { handleImagePickerError } from "@/src/utils/handleImagePickerError";
 
@@ -48,10 +48,10 @@ export const useNewPostImage = () => {
 
   const openCamera = useCallback(() => {
     ImagePicker.openCamera({
-      width: CONFIG.CROPPER.width,
-      height: CONFIG.CROPPER.height,
+      width: POST_CONFIG.CROPPER.width,
+      height: POST_CONFIG.CROPPER.height,
       cropping: true,
-      mediaType: CONFIG.CROPPER.mediaType,
+      mediaType: POST_CONFIG.CROPPER.mediaType,
       includeExif: false,
     })
       .then((image) => {
@@ -89,14 +89,14 @@ const processSelectedImages = async (
     if (selectedImages.length === 1) {
       const image = await ImagePicker.openCropper({
         path: selectedImages[0].uri,
-        width: CONFIG.CROPPER.width,
-        height: CONFIG.CROPPER.height,
-        compressImageMaxWidth: CONFIG.CROPPER.width,
-        compressImageMaxHeight: CONFIG.CROPPER.height,
+        width: POST_CONFIG.CROPPER.width,
+        height: POST_CONFIG.CROPPER.height,
+        compressImageMaxWidth: POST_CONFIG.CROPPER.width,
+        compressImageMaxHeight: POST_CONFIG.CROPPER.height,
         cropping: true,
         cropperCircleOverlay: false,
         freeStyleCropEnabled: true,
-        mediaType: CONFIG.CROPPER.mediaType,
+        mediaType: POST_CONFIG.CROPPER.mediaType,
       });
       return [image.path];
     } else {

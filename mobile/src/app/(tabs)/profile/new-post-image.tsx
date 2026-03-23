@@ -9,24 +9,8 @@ import { memo, useCallback } from "react";
 import { Dimensions, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
-export const CONFIG = {
-  SCREEN_WIDTH: Dimensions.get("window").width,
-  COLUMN_COUNT: 4,
-  FETCH_LIMIT: 40,
-  MAX_SELECTION: 10,
-  CROPPER: {
-    width: 1080,
-    height: 1350,
-    mediaType: "photo" as const,
-  },
-};
+import { GridItem, ITEM_SIZE, POST_CONFIG } from "@/src/types/post";
 
-const GAP = 4;
-export const ITEM_SIZE =
-  (CONFIG.SCREEN_WIDTH - GAP * (CONFIG.COLUMN_COUNT - 1)) / CONFIG.COLUMN_COUNT;
-
-
-export type GridItem = MediaLibrary.Asset | { id: "camera-id" };
 
 export default function AddNewPostImageScreen() {
   const { gridItems,
@@ -47,7 +31,7 @@ export default function AddNewPostImageScreen() {
       }
 
       const selectionIndex = selectedImages.findIndex(
-        (img) => img.id === item.id,
+        (img: MediaLibrary.Asset) => img.id === item.id,
       );
       const isSelected = selectionIndex >= 0;
       const isPreviewing = previewImage?.id === item.id;
@@ -90,7 +74,7 @@ export default function AddNewPostImageScreen() {
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           getItemType={getItemType}
-          numColumns={CONFIG.COLUMN_COUNT}
+          numColumns={POST_CONFIG.COLUMN_COUNT}
           onEndReached={loadAssets}
           onEndReachedThreshold={0.5}
           contentContainerStyle={styles.listContent}
@@ -263,8 +247,8 @@ const styles = StyleSheet.create((theme) => ({
   },
 
   galleryCell: {
-    marginRight: GAP,
-    marginBottom: GAP,
+    marginRight: 4,
+    marginBottom: 4,
   },
   previewBorder: {
     position: "absolute",
