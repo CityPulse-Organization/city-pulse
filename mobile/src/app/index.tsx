@@ -1,4 +1,3 @@
-import { useSession } from "@/src/hoc";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
@@ -9,8 +8,9 @@ import {
   useAnimatedReaction,
 } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
-import { UILoader } from "@/src/ui";
 import { scheduleOnRN } from "react-native-worklets";
+import { UILoader } from "../ui";
+import { useSession } from "../hoc";
 
 export default function IndexRoute() {
   const { session, isLoading } = useSession();

@@ -3,18 +3,18 @@ import {
   MOCK_COMMENTS,
   MOCK_LIKE_COUNT,
   ThemedBackground,
-} from "@/src/components";
-import { BlurButton } from "@/src/components/BlurButton";
-import { ImagesCarousel } from "@/src/components/post/imagesCarousel";
-import { MenuOptionBottomSheet } from "@/src/components/post/MenuOptionBottomSheet";
-import { usePostDetails } from "@/src/hooks/post/usePostDetails";
-import { UIButton, UIText } from "@/src/ui";
+} from "../../components";
+import { BlurButton } from "../../components/BlurButton";
+import { ImagesCarousel } from "../../components/post/imagesCarousel";
+import { MenuOptionBottomSheet } from "../../components/post/MenuOptionBottomSheet";
+import { usePostDetails } from "../../hooks/post/usePostDetails";
+import { UIButton, UIText } from "../../ui";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import React, { memo, useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-import { CommentsBottomSheet } from "@/src/components/post/CommentsBottomSheet";
+import { CommentsBottomSheet } from "../../components/post/CommentsBottomSheet";
 
 export default function PostDetailScreen() {
   const {
@@ -91,7 +91,8 @@ const UserInfoRow = memo(
     openPresentCommentsSheet,
   }: UserInfoRowProps) => {
     const [isLikedByCurrentUser, setIsLikedByCurrentUser] = useState(false);
-    const [totalLikeCount, setTotalLikeCount] = useState(MOCK_LIKE_COUNT);
+    const [totalLikeCount, setTotalLikeCount] =
+      useState<number>(MOCK_LIKE_COUNT);
 
     const toggleLikeStatus = useCallback(() => {
       setIsLikedByCurrentUser((prev) => {
@@ -114,7 +115,6 @@ const UserInfoRow = memo(
           profileImageUrl={profileImageUrl}
           username={username}
           statusText={accidentTime}
-          isBroadCasting={isBroadcasting}
           usernameWeight="bold"
         />
 

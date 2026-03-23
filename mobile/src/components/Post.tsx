@@ -129,7 +129,6 @@ export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => {
             <View style={styles.userInfoContainer}>
               <IconInfo
                 profileImageUrl={data.profileImageUrl}
-                isBroadCasting={false}
                 username={data.username}
                 statusText={data.accidentTime}
                 iconSize="small"
@@ -143,7 +142,6 @@ export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => {
     </View>
   );
 });
-
 
 const styles = StyleSheet.create((theme) => ({
   itemWrapper: {
