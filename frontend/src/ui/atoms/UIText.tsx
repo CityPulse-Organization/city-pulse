@@ -1,6 +1,5 @@
 import { StyleProp, Text, TextStyle } from "react-native";
 import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
-import { scale } from "../unistyles";
 
 import { UISkeleton } from "./UISkeleton";
 
@@ -36,31 +35,31 @@ const styles = StyleSheet.create((theme) => ({
     variants: {
       size: {
         default: {
-          fontSize: scale(16),
+          fontSize: theme.utils.ms(16),
         },
         xxs: {
-          fontSize: scale(10),
+          fontSize: theme.utils.ms(10),
           fontWeight: 400,
         },
         xs: {
-          fontSize: scale(12),
+          fontSize: theme.utils.ms(12),
         },
         sm: {
-          fontSize: scale(14),
+          fontSize: theme.utils.ms(14),
         },
         md: {
-          fontSize: scale(18),
+          fontSize: theme.utils.ms(18),
         },
         lg: {
-          fontSize: scale(20),
+          fontSize: theme.utils.ms(20),
         },
         xl: {
-          fontSize: scale(22),
+          fontSize: theme.utils.ms(22),
         },
         xxl: {
-          fontSize: scale(24),
+          fontSize: theme.utils.ms(24),
         },
-        extraLarge: { fontSize: scale(36) },
+        extraLarge: { fontSize: theme.utils.ms(36) },
       },
       weight: {
         default: {

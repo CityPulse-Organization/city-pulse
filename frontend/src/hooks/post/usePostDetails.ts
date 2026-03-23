@@ -31,7 +31,6 @@ export const usePostDetails = () => {
       profileImageUrl: "",
       accidentTime: "",
       location: "",
-      isBroadcasting: false,
       commentsBottomSheetRef,
       openPresentCommentsSheet,
       handleBack,
@@ -46,7 +45,6 @@ export const usePostDetails = () => {
     profileImageUrl = "",
     accidentTime,
     location = "",
-    isBroadcasting = false,
   } = currentPostData;
 
   return {
@@ -56,7 +54,6 @@ export const usePostDetails = () => {
     profileImageUrl,
     accidentTime,
     location,
-    isBroadcasting,
     commentsBottomSheetRef,
     openPresentCommentsSheet,
     handleBack,

@@ -1,24 +1,36 @@
-import { UIImage, UIText } from "@/src/ui";
+import { UIButton, UIImage, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, {
     memo,
     useCallback,
-    useMemo,
-    useRef,
 } from "react";
 import { View, Dimensions } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-import Carousel, { TAnimationStyle, ICarouselInstance, Pagination } from "react-native-reanimated-carousel";
-import Animated, { interpolate, interpolateColor, SharedValue, useAnimatedStyle, useSharedValue, Extrapolation } from "react-native-reanimated";
-
+import Carousel, { TAnimationStyle, Pagination } from "react-native-reanimated-carousel";
+import Animated, { interpolate, interpolateColor, SharedValue, useAnimatedStyle, Extrapolation } from "react-native-reanimated";
+import ImageView from "react-native-image-viewing";
+import { BlurView } from "expo-blur";
+import { BlurButton } from "../BlurButton";
+import { useImageCarousel } from "@/src/hooks/post/useImageCarousel";
 
 
 const PAGE_WIDTH = Dimensions.get("window").width;
 
 export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string[], location: string }) => {
-    const ref = useRef<ICarouselInstance>(null);
-    const progress = useSharedValue<number>(0);
+    const {
+        visible,
+        setIsVisible,
+        currentIndex,
+        carouselRef,
+        progress,
+        formattedImages,
+        paginationData,
+        onPressPagination,
+        onPressImage,
+        onPressClose,
+    } = useImageCarousel(imagesUrl);
+
 
     const renderCarouselSlide = useCallback(
         ({ item: imageUrl, index, animationValue }: { item: string, index: number, animationValue: any }) => (
@@ -26,20 +38,20 @@ export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string
                 key={index}
                 animationValue={animationValue}
             >
-                <View style={styles.carouselSlide}>
+                <UIButton onPress={() => onPressImage(index)} style={styles.carouselSlide}>
                     <UIImage
                         imageUrl={imageUrl}
                         isAspectRatio={false}
                         style={styles.headerImage}
                     />
-                </View>
+                </UIButton>
             </CustomItem>
         ),
-        [],
+        [onPressImage],
     );
 
     const animationStyle: TAnimationStyle = React.useCallback(
-        (value: number, index: number) => {
+        (value: number) => {
             "worklet";
 
             const zIndex = interpolate(
@@ -63,21 +75,36 @@ export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string
     );
 
 
-    const onPressPagination = useCallback((index: number) => {
-        ref.current?.scrollTo({
-            count: index - progress.value,
-            animated: true,
-        });
-    }, []);
 
-    const paginationData = useMemo(() => {
-        return imagesUrl.map((url) => ({ color: url }));
-    }, [imagesUrl]);
+    const renderHeader = useCallback(
+        ({ imageIndex }: { imageIndex: number }) => (
+            <BlurButton iconName="close" onPress={() => onPressClose(imageIndex)} style={styles.fullScreenHeader} />
+        ),
+        [onPressClose]
+    );
+
+    const renderFooter = useCallback(
+        ({ imageIndex }: { imageIndex: number }) => {
+            if (imagesUrl.length <= 1) return null;
+            return (
+                <View style={styles.fullScreenFooter}>
+                    <BlurView intensity={80} tint="dark" style={styles.fullScreenPill}>
+                        <UIText size="md" weight="bold" style={styles.fullScreenText}>
+                            {imageIndex + 1} / {imagesUrl.length}
+                        </UIText>
+                    </BlurView>
+                </View>
+            );
+        },
+        [imagesUrl.length]
+    );
+
+
 
     return (
         <View style={styles.imageContainer}>
             <Carousel
-                ref={ref}
+                ref={carouselRef}
                 data={imagesUrl}
                 onProgressChange={progress}
                 loop={false}
@@ -88,15 +115,17 @@ export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string
                 windowSize={3}
             />
 
-            <Pagination.Basic<{ color: string }>
-                progress={progress}
-                data={paginationData}
-                dotStyle={styles.dot}
-                activeDotStyle={styles.dotActive}
-                containerStyle={styles.carouselFooter}
-                horizontal
-                onPress={onPressPagination}
-            />
+            {imagesUrl.length > 1 && (
+                <Pagination.Basic<{ color: string }>
+                    progress={progress}
+                    data={paginationData}
+                    dotStyle={styles.dot}
+                    activeDotStyle={styles.dotActive}
+                    containerStyle={styles.carouselFooter}
+                    horizontal
+                    onPress={onPressPagination}
+                />
+            )}
 
             <LinearGradient
                 colors={[
@@ -104,7 +133,7 @@ export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string
                     styles.gradientStop1.backgroundColor,
                     styles.gradientStop2.backgroundColor,
                 ]}
-                locations={[0, 0.6, 1]}
+                locations={[0, 0.5, 1]}
                 style={styles.gradient}
                 pointerEvents="none"
             />
@@ -121,6 +150,15 @@ export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string
                     </UIText>
                 </View>
             ) : null}
+
+            <ImageView
+                images={formattedImages}
+                imageIndex={currentIndex}
+                visible={visible}
+                HeaderComponent={renderHeader}
+                FooterComponent={renderFooter}
+                onRequestClose={() => setIsVisible(false)}
+            />
         </View>
     )
 })
@@ -216,5 +254,37 @@ const styles = StyleSheet.create((theme, rt) => ({
         borderRadius: 100,
         overflow: "hidden",
         backgroundColor: theme.colors.mutedAccent,
+    },
+
+    fullScreenHeader: {
+        paddingHorizontal: theme.utils.s(16),
+        paddingTop: Math.max(rt.insets.top + theme.utils.vs(6), theme.utils.vs(30)),
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        position: "static"
+    },
+    fullScreenFooter: {
+        paddingHorizontal: theme.utils.s(16),
+        paddingTop: theme.utils.vs(10),
+        paddingBottom: Math.max(rt.insets.bottom + theme.utils.vs(10), theme.utils.vs(30)),
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 10,
+    },
+    fullScreenPill: {
+        paddingHorizontal: theme.utils.s(16),
+        paddingVertical: theme.utils.vs(8),
+        borderRadius: 999,
+        justifyContent: "center",
+        alignItems: "center",
+        overflow: "hidden",
+        backgroundColor: theme.colors.backgroundSubtle,
+        borderWidth: 0.5,
+        borderColor: theme.colors.muted,
+    },
+    fullScreenText: {
+        color: theme.colors.primaryText,
+        letterSpacing: 1,
     },
 }));

@@ -1,4 +1,4 @@
-export { GradientCard } from "./GradientCard";
+export { GradientCard } from "../GradientCard";
 export { GlowRing } from "./GlowRing";
 export { TierCard } from "./TierCard";
 export { StepCard } from "./StepCard";

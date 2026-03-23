@@ -1,9 +1,8 @@
 import { useCallback, useMemo } from "react";
 import { useGallerySelection } from "./useGallerySelection";
 import { useMediaLibrary } from "./useMediaLibrary";
-import * as MediaLibrary from "expo-media-library";
 import { useRouter } from "expo-router";
-import { CONFIG, GridItem } from "@/src/app/(tabs)/profile/new-post-image";
+import { CONFIG, GridItem, type Photo } from "@/src/constants/newPostConfig";
 import ImagePicker from "react-native-image-crop-picker";
 import { handleImagePickerError } from "@/src/utils/handleImagePickerError";
 
@@ -21,7 +20,7 @@ export const useNewPostImage = () => {
     handleSelectImage,
   } = useGallerySelection();
 
-  const onInitialLoad = useCallback((firstImage: MediaLibrary.Asset) => {
+  const onInitialLoad = useCallback((firstImage: Photo) => {
     setPreviewImage(firstImage);
     setSelectedImages([firstImage]);
   }, [setPreviewImage, setSelectedImages]);
@@ -81,7 +80,7 @@ export const useNewPostImage = () => {
 
 
 const processSelectedImages = async (
-  selectedImages: MediaLibrary.Asset[],
+  selectedImages: Photo[],
 ): Promise<string[] | null> => {
   if (selectedImages.length === 0) return null;
 
@@ -107,5 +106,3 @@ const processSelectedImages = async (
     return null;
   }
 };
-
-
