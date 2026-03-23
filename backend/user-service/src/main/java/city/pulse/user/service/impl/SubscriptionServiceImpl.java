@@ -38,7 +38,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         var target = findUserOrThrow(targetId);
 
         if (subscriptionRepository.existsBySubscriberAndTarget(subscriber, target)) {
-            throw new AlreadyFollowingException("Already following user with ID: " + targetId);
+            throw new AlreadyFollowingException("You are already following this user");
         }
 
         var subscription = Subscription.build(subscriber, target);
