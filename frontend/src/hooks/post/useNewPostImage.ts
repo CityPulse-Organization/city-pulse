@@ -2,9 +2,10 @@ import { useCallback, useMemo } from "react";
 import { useGallerySelection } from "./useGallerySelection";
 import { useMediaLibrary } from "./useMediaLibrary";
 import { useRouter } from "expo-router";
-import { CONFIG, GridItem, type Photo } from "@/src/constants/newPostConfig";
+import { GridItem, type Photo } from "@/src/types/newPostImage";
 import ImagePicker from "react-native-image-crop-picker";
 import { handleImagePickerError } from "@/src/utils/handleImagePickerError";
+import { CONFIG } from "@/src/utils/newPostImageUtils";
 
 
 export const useNewPostImage = () => {

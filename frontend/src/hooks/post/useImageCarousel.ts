@@ -36,9 +36,12 @@ export const useImageCarousel = (imagesUrl: string[]) => {
         onPressPagination(imageIndex);
     }, [onPressPagination]);
 
+    const handleCloseGallery = useCallback(() => {
+        setIsVisible(false);
+    }, []);
+
     return {
         visible,
-        setIsVisible,
         currentIndex,
         carouselRef,
         progress,
@@ -47,5 +50,6 @@ export const useImageCarousel = (imagesUrl: string[]) => {
         onPressPagination,
         onPressImage,
         onPressClose,
+        handleCloseGallery
     };
 }

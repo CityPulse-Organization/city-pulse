@@ -69,35 +69,16 @@ export const MenuOptionBottomSheet = memo(({ isOwnPost }: { isOwnPost: boolean }
         callback();
     }, []);
 
-
     const renderPostMenuOptionItem = useCallback(
         ({ item }: { item: PostMenuOptionItem }) => {
-            const itemColor = item.color ?? styles.ellipseOptionButtonIcon.color;
-            const textColor = item.color ?? styles.ellipseOptionButtonText.color;
-
             return (
-                <GradientCard
-                    colors={[
-                        "rgba(168,36,224,0.45)",
-                        "rgba(124,77,255,0.20)",
-                        "rgba(206,147,216,0.10)",
-                    ]}
-                    style={styles.ellipseOptionCard}
-                >
-                    <UIButton
-                        onPress={() => executeMenuOption(item.onExecuteAction)}
-                        style={styles.ellipseOptionButton}
-                    >
-                        <Ionicons color={itemColor} size={styles.ellipseOptionButtonIcon.height} name={item.iconName} />
-                        <UIText size="md" style={{ color: textColor }}>
-                            {item.title}
-                        </UIText>
-                    </UIButton>
-                </GradientCard>
-
+                <MenuOptionCard
+                    item={item}
+                    onExecute={executeMenuOption}
+                />
             );
         },
-        [executeMenuOption],
+        [executeMenuOption]
     );
 
     return (
@@ -114,6 +95,41 @@ export const MenuOptionBottomSheet = memo(({ isOwnPost }: { isOwnPost: boolean }
         </>
     )
 })
+
+type MenuOptionCardProps = {
+    item: PostMenuOptionItem;
+    onExecute: (action: () => void) => void;
+}
+
+const MenuOptionCard = memo(({ item, onExecute }: MenuOptionCardProps) => {
+    const handlePress = useCallback(() => {
+        onExecute(item.onExecuteAction);
+    }, [item, onExecute]);
+
+    const itemColor = item.color ?? styles.ellipseOptionButtonIcon.color;
+    const textColor = item.color ?? styles.ellipseOptionButtonText.color;
+
+    return (
+        <GradientCard
+            colors={[
+                "rgba(168,36,224,0.45)",
+                "rgba(124,77,255,0.20)",
+                "rgba(206,147,216,0.10)",
+            ]}
+            style={styles.ellipseOptionCard}
+        >
+            <UIButton
+                onPress={handlePress}
+                style={styles.ellipseOptionButton}
+            >
+                <Ionicons color={itemColor} size={styles.ellipseOptionButtonIcon.height} name={item.iconName} />
+                <UIText size="md" style={{ color: textColor }}>
+                    {item.title}
+                </UIText>
+            </UIButton>
+        </GradientCard>
+    );
+});
 
 
 

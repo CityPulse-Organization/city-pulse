@@ -1,5 +1,5 @@
 import { InteractiveImagePreview, NavigationHeader, ThemedBackground } from "@/src/components";
-import { CONFIG, GridItem, ITEM_SIZE, type Photo } from "@/src/constants/newPostConfig";
+import { GridItem, type Photo } from "@/src/types/newPostImage";
 import { useNewPostImage } from "@/src/hooks/post/useNewPostImage";
 import { UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,6 +8,7 @@ import { Image } from "expo-image";
 import { memo, useCallback } from "react";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
+import { CONFIG, ITEM_SIZE } from "@/src/utils/newPostImageUtils";
 
 
 
@@ -116,9 +117,14 @@ const GalleryItem = memo(
     isMultiSelectMode,
     onPress,
   }: GalleryItemProps) => {
+
+    const handlePress = useCallback(() => {
+      onPress(item);
+    }, [item, onPress]);
+
     return (
       <UIButton
-        onPress={() => onPress(item)}
+        onPress={handlePress}
         style={styles.galleryCell}
         disabled={isPreviewing}
       >

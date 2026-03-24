@@ -20,7 +20,6 @@ const PAGE_WIDTH = Dimensions.get("window").width;
 export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string[], location: string }) => {
     const {
         visible,
-        setIsVisible,
         currentIndex,
         carouselRef,
         progress,
@@ -29,26 +28,26 @@ export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string
         onPressPagination,
         onPressImage,
         onPressClose,
+        handleCloseGallery
     } = useImageCarousel(imagesUrl);
 
 
-    const renderCarouselSlide = useCallback(
-        ({ item: imageUrl, index, animationValue }: { item: string, index: number, animationValue: any }) => (
-            <CustomItem
+    const renderCarouselSlide = useCallback((
+        { item: imageUrl, index, animationValue }:
+            { item: string, index: number, animationValue: any }
+    ) => {
+        return (
+            <CarouselSlideItem
                 key={index}
+                imageUrl={imageUrl}
+                index={index}
                 animationValue={animationValue}
-            >
-                <UIButton onPress={() => onPressImage(index)} style={styles.carouselSlide}>
-                    <UIImage
-                        imageUrl={imageUrl}
-                        isAspectRatio={false}
-                        style={styles.headerImage}
-                    />
-                </UIButton>
-            </CustomItem>
-        ),
-        [onPressImage],
-    );
+                onPressImage={onPressImage}
+            />
+        );
+    }, [onPressImage]);
+
+
 
     const animationStyle: TAnimationStyle = React.useCallback(
         (value: number) => {
@@ -157,11 +156,29 @@ export const ImagesCarousel = memo(({ imagesUrl, location }: { imagesUrl: string
                 visible={visible}
                 HeaderComponent={renderHeader}
                 FooterComponent={renderFooter}
-                onRequestClose={() => setIsVisible(false)}
+                onRequestClose={handleCloseGallery}
             />
         </View>
     )
 })
+
+const CarouselSlideItem = memo(({ imageUrl, index, animationValue, onPressImage }: any) => {
+    const handlePress = useCallback(() => {
+        onPressImage(index);
+    }, [index, onPressImage]);
+
+    return (
+        <CustomItem animationValue={animationValue}>
+            <UIButton onPress={handlePress} style={styles.carouselSlide}>
+                <UIImage
+                    imageUrl={imageUrl}
+                    isAspectRatio={false}
+                    style={styles.headerImage}
+                />
+            </UIButton>
+        </CustomItem>
+    );
+});
 
 
 type CustomItemProps = {

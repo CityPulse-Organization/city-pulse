@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
-import { type Photo } from "@/src/constants/newPostConfig";
-import { CONFIG } from "@/src/constants/newPostConfig";
+import { type Photo } from "@/src/types/newPostImage";
+import { CONFIG } from "@/src/utils/newPostImageUtils";
 
 
 export const useGallerySelection = () => {

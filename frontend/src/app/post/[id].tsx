@@ -5,7 +5,7 @@ import {
   ThemedBackground,
 } from "@/src/components";
 import { BlurButton } from "@/src/components/BlurButton";
-import { ImagesCarousel } from "@/src/components/post/imagesCarousel";
+import { ImagesCarousel } from "@/src/components/post/ImagesCarousel";
 import { MenuOptionBottomSheet } from "@/src/components/post/MenuOptionBottomSheet";
 import { GradientCard } from "@/src/components/referrals";
 import { usePostDetails } from "@/src/hooks/post/usePostDetails";

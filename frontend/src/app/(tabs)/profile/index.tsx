@@ -107,20 +107,6 @@ export const SEARCH_USERS: DiscoverUser[] = [
 ];
 
 
-const ItemSeparator = memo(() => <View style={styles.listSeparator} />);
-
-
-const SearchUserItem = memo(({ item }: { item: DiscoverUser }) => (
-  <View style={styles.itemContainer}>
-    <IconInfo
-      username={item.username}
-      profileImageUrl={item.profileImageUrl}
-      statusText={item.job}
-    />
-  </View>
-));
-
-
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
 const PROFILE_STATS_CONFIG: {
@@ -135,6 +121,21 @@ const PROFILE_STATS_CONFIG: {
     { id: "3", name: "followings", title: "Followings", iconName: "grid-outline", quantity: 34 },
     { id: "4", name: "saves", title: "Saves", iconName: "bookmark-outline", quantity: 34 },
   ];
+
+
+
+const ItemSeparator = memo(() => <View style={styles.listSeparator} />);
+
+
+const SearchUserItem = memo(({ item }: { item: DiscoverUser }) => (
+  <View style={styles.itemContainer}>
+    <IconInfo
+      username={item.username}
+      profileImageUrl={item.profileImageUrl}
+      statusText={item.job}
+    />
+  </View>
+));
 
 
 
@@ -156,8 +157,8 @@ const SearchInput = memo(() => {
       value={input}
       onChangeText={setInput}
     />
-  )
-})
+  );
+});
 
 
 

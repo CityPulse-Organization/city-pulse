@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import { Alert, PermissionsAndroid, Platform } from "react-native";
-import { CONFIG, type Photo } from "@/src/constants/newPostConfig";
 import { showSettingsAlert } from "@/src/utils/handleImagePickerError";
+import { Photo } from "@/src/types/newPostImage";
+import { CONFIG } from "@/src/utils/newPostImageUtils";
 
 
 export const useMediaLibrary = (
