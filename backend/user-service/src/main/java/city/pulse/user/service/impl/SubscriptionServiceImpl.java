@@ -12,6 +12,7 @@ import city.pulse.user.repository.UserProfileRepository;
 import city.pulse.user.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         var subscription = Subscription.build(subscriber, target);
 
-        subscriptionRepository.save(subscription);
+        try {
+            subscriptionRepository.saveAndFlush(subscription);
+        } catch (DataIntegrityViolationException e) {
+            throw new AlreadyFollowingException("You are already following this user (race condition)");
+        }
+
         log.info("User {} followed user {}", subscriberId, targetId);
     }
 
