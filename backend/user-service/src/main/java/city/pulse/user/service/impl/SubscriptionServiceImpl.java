@@ -42,12 +42,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             throw new AlreadyFollowingException("You are already following this user");
         }
 
-        var subscription = Subscription.build(subscriber, target);
-
         try {
-            subscriptionRepository.saveAndFlush(subscription);
+            subscriptionRepository.saveAndFlush(Subscription.build(subscriber, target));
         } catch (DataIntegrityViolationException e) {
-            throw new AlreadyFollowingException("You are already following this user (race condition)");
+            var message = e.getMessage() != null ? e.getMessage() : "";
+            if (message.contains("uq_subscription")) {
+                throw new AlreadyFollowingException("You are already following this user (race condition)");
+            }
+            throw e;
         }
 
         log.info("User {} followed user {}", subscriberId, targetId);

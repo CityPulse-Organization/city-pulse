@@ -9,10 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
 
-    @EntityGraph(attributePaths = {"subscriber", "target"})
+    @EntityGraph(attributePaths = {"subscriber"})
     Page<Subscription> findByTarget(UserProfile target, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"subscriber", "target"})
+    @EntityGraph(attributePaths = {"target"})
     Page<Subscription> findBySubscriber(UserProfile subscriber, Pageable pageable);
 
     boolean existsBySubscriberAndTarget(UserProfile subscriber, UserProfile target);
