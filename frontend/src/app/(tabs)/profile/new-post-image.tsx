@@ -1,32 +1,16 @@
 import { InteractiveImagePreview, NavigationHeader, ThemedBackground } from "@/src/components";
+import { GridItem, type Photo } from "@/src/types/newPostImage";
 import { useNewPostImage } from "@/src/hooks/post/useNewPostImage";
 import { UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
-import * as MediaLibrary from "expo-media-library";
 import { memo, useCallback } from "react";
-import { Dimensions, View } from "react-native";
+import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-
-export const CONFIG = {
-  SCREEN_WIDTH: Dimensions.get("window").width,
-  COLUMN_COUNT: 4,
-  FETCH_LIMIT: 40,
-  MAX_SELECTION: 10,
-  CROPPER: {
-    width: 1080,
-    height: 1350,
-    mediaType: "photo" as const,
-  },
-};
-
-const GAP = 4;
-export const ITEM_SIZE =
-  (CONFIG.SCREEN_WIDTH - GAP * (CONFIG.COLUMN_COUNT - 1)) / CONFIG.COLUMN_COUNT;
+import { CONFIG, ITEM_SIZE } from "@/src/utils/newPostImageUtils";
 
 
-export type GridItem = MediaLibrary.Asset | { id: "camera-id" };
 
 export default function AddNewPostImageScreen() {
   const { gridItems,
@@ -116,12 +100,12 @@ const CameraItem = memo(({ onPress }: { onPress: () => void }) => {
 });
 
 type GalleryItemProps = {
-  item: MediaLibrary.Asset;
+  item: Photo;
   isSelected: boolean;
   selectionIndex: number;
   isPreviewing: boolean;
   isMultiSelectMode: boolean;
-  onPress: (item: MediaLibrary.Asset) => void;
+  onPress: (item: Photo) => void;
 };
 
 const GalleryItem = memo(
@@ -133,9 +117,14 @@ const GalleryItem = memo(
     isMultiSelectMode,
     onPress,
   }: GalleryItemProps) => {
+
+    const handlePress = useCallback(() => {
+      onPress(item);
+    }, [item, onPress]);
+
     return (
       <UIButton
-        onPress={() => onPress(item)}
+        onPress={handlePress}
         style={styles.galleryCell}
         disabled={isPreviewing}
       >
@@ -263,8 +252,8 @@ const styles = StyleSheet.create((theme) => ({
   },
 
   galleryCell: {
-    marginRight: GAP,
-    marginBottom: GAP,
+    marginRight: 4,
+    marginBottom: 4,
   },
   previewBorder: {
     position: "absolute",

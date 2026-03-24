@@ -1,11 +1,11 @@
 import { useCallback, useState } from "react";
-import * as MediaLibrary from "expo-media-library";
-import { CONFIG } from "@/src/app/(tabs)/profile/new-post-image";
+import { type Photo } from "@/src/types/newPostImage";
+import { CONFIG } from "@/src/utils/newPostImageUtils";
 
 
 export const useGallerySelection = () => {
-  const [selectedImages, setSelectedImages] = useState<MediaLibrary.Asset[]>([]);
-  const [previewImage, setPreviewImage] = useState<MediaLibrary.Asset | null>(null);
+  const [selectedImages, setSelectedImages] = useState<Photo[]>([]);
+  const [previewImage, setPreviewImage] = useState<Photo | null>(null);
   const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
 
   const toggleMultiSelect = useCallback(() => {
@@ -21,7 +21,7 @@ export const useGallerySelection = () => {
   }, [previewImage]);
 
   const handleSelectImage = useCallback(
-    (item: MediaLibrary.Asset) => {
+    (item: Photo) => {
       setPreviewImage(item);
 
       if (!isMultiSelectMode) {

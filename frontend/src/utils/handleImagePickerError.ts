@@ -14,13 +14,9 @@ export const handleImagePickerError = (error: unknown) => {
   const message = pickerError?.message || "";
 
   if (code === 'E_PERMISSION_MISSING' || message.includes('permission')) {
-    Alert.alert(
+    showSettingsAlert(
       "No media access",
-      "To take a photo, you need to allow the app to access the photos in your phone’s settings",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Open Settings", onPress: () => Linking.openSettings() }
-      ]
+      "To take a photo, you need to allow the app to access the photos in your phone’s Settings"
     );
   } else if (code === 'E_PICKER_CANCELLED') {
     console.log("User cancelled image selection");
@@ -28,3 +24,17 @@ export const handleImagePickerError = (error: unknown) => {
     console.log("Camera/Gallery error:", error);
   }
 };
+
+export function showSettingsAlert(title: string, message: string) {
+  Alert.alert(
+    title,
+    message,
+    [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Open Settings",
+        onPress: () => Linking.openSettings(),
+      },
+    ],
+  );
+}

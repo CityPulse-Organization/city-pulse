@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native-unistyles";
 import { useRouter } from "expo-router";
 import { BlurButton } from "../BlurButton";
+import { GradientCard } from "../GradientCard";
 
 type PostMenuOptionItem = {
     id: string;
@@ -68,32 +69,23 @@ export const MenuOptionBottomSheet = memo(({ isOwnPost }: { isOwnPost: boolean }
         callback();
     }, []);
 
-
     const renderPostMenuOptionItem = useCallback(
         ({ item }: { item: PostMenuOptionItem }) => {
-            const itemColor = item.color ?? styles.ellipseOptionButtonIcon.color;
-            const textColor = item.color ?? styles.ellipseOptionButtonText.color;
-
             return (
-                <UIButton
-                    onPress={() => executeMenuOption(item.onExecuteAction)}
-                    style={styles.ellipseOptionButton}
-                >
-                    <Ionicons color={itemColor} size={styles.ellipseOptionButtonIcon.height} name={item.iconName} />
-                    <UIText size="md" style={{ color: textColor }}>
-                        {item.title}
-                    </UIText>
-                </UIButton>
+                <MenuOptionCard
+                    item={item}
+                    onExecute={executeMenuOption}
+                />
             );
         },
-        [executeMenuOption],
+        [executeMenuOption]
     );
 
     return (
         <>
             <BlurButton onPress={presentEllipsisSheet} iconName="ellipsis-vertical" style={{ left: undefined, right: styles.ellipsisButton.right }} />
 
-            <UIBottomSheet ref={ellipsisBottomSheetRef} snapPoints={["24%"]} >
+            <UIBottomSheet ref={ellipsisBottomSheetRef} snapPoints={["27%"]} >
                 <BottomSheetFlatList
                     data={postMenuOptions}
                     renderItem={renderPostMenuOptionItem}
@@ -104,6 +96,41 @@ export const MenuOptionBottomSheet = memo(({ isOwnPost }: { isOwnPost: boolean }
     )
 })
 
+type MenuOptionCardProps = {
+    item: PostMenuOptionItem;
+    onExecute: (action: () => void) => void;
+}
+
+const MenuOptionCard = memo(({ item, onExecute }: MenuOptionCardProps) => {
+    const handlePress = useCallback(() => {
+        onExecute(item.onExecuteAction);
+    }, [item, onExecute]);
+
+    const itemColor = item.color ?? styles.ellipseOptionButtonIcon.color;
+    const textColor = item.color ?? styles.ellipseOptionButtonText.color;
+
+    return (
+        <GradientCard
+            colors={[
+                "rgba(168,36,224,0.45)",
+                "rgba(124,77,255,0.20)",
+                "rgba(206,147,216,0.10)",
+            ]}
+            style={styles.ellipseOptionCard}
+        >
+            <UIButton
+                onPress={handlePress}
+                style={styles.ellipseOptionButton}
+            >
+                <Ionicons color={itemColor} size={styles.ellipseOptionButtonIcon.height} name={item.iconName} />
+                <UIText size="md" style={{ color: textColor }}>
+                    {item.title}
+                </UIText>
+            </UIButton>
+        </GradientCard>
+    );
+});
+
 
 
 const styles = StyleSheet.create((theme, rt) => ({
@@ -113,17 +140,19 @@ const styles = StyleSheet.create((theme, rt) => ({
     ellipseOptionContainer: {
         paddingHorizontal: theme.utils.s(20),
         paddingTop: theme.utils.s(10),
+        paddingBottom: Math.max(rt.insets.bottom, theme.utils.vs(30)),
+
+
+    },
+    ellipseOptionCard: {
+        paddingBottom: theme.utils.s(4),
+        marginBottom: theme.utils.s(8),
     },
     ellipseOptionButton: {
         flexDirection: "row",
         alignItems: "center",
         paddingHorizontal: theme.utils.s(20),
-        paddingVertical: theme.utils.vs(16),
-        marginBottom: theme.utils.vs(8),
-        borderRadius: theme.utils.ms(22),
-        backgroundColor: theme.colors.backgroundSubtle,
-        borderWidth: 1,
-        borderColor: theme.colors.borderSubtle,
+        paddingVertical: theme.utils.vs(20),
         gap: theme.utils.s(16),
     },
     ellipseOptionButtonIcon: {

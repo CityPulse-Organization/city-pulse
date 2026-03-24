@@ -177,7 +177,7 @@ const styles = StyleSheet.create((theme) => ({
     alignSelf: "stretch",
   },
   headerActionText: {
-    paddingHorizontal: theme.utils.s(5),
+    paddingHorizontal: theme.utils.s(12),
     paddingVertical: theme.utils.vs(10),
   },
   cancelText: {

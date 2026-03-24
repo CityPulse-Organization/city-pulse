@@ -75,12 +75,11 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.black,
   },
   handleStyle: {
-    backgroundColor: theme.colors.bottomSheetBackground,
     borderTopLeftRadius: theme.utils.s(14),
     borderTopRightRadius: theme.utils.s(14),
   },
   backgroundStyle: {
-    backgroundColor: theme.colors.bottomSheetBackground,
+    backgroundColor: theme.colors.background,
   },
   handleIndicatorStyle: {
     backgroundColor: theme.colors.mutedAccent,

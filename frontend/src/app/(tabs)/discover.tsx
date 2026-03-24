@@ -3,7 +3,7 @@ import { UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { memo, useCallback, useMemo, useState } from "react";
-import { Dimensions, Platform, Pressable, TextInput, View } from "react-native";
+import { Platform, Pressable, TextInput, View } from "react-native";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";

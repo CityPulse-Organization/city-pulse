@@ -123,7 +123,17 @@ const CommentsFooter = memo(({
 }: CommentsFooterProps) => {
     const [commentText, setCommentText] = useState("");
 
+    const [isInputActive, setIsInputActive] = useState(false);
+
     const isCommentValid = commentText.trim().length > 0;
+
+    const handleInputFocus = useCallback(() => {
+        setIsInputActive(true);
+    }, []);
+
+    const handleInputBlur = useCallback(() => {
+        setIsInputActive(false);
+    }, []);
 
     const handleSendComment = useCallback(() => {
         setCommentText("");
@@ -138,7 +148,9 @@ const CommentsFooter = memo(({
 
                 <UIDivider height={styles.footerDivider.height} />
 
-                <View style={styles.footerInputBar}>
+                <View
+                    style={styles.footerInputBar(isInputActive)}
+                >
                     <Icon
                         profileImageUrl={profileImageUrl}
                         size="comment"
@@ -150,6 +162,8 @@ const CommentsFooter = memo(({
                         placeholderTextColor={styles.inputPlaceholder.color}
                         onChangeText={setCommentText}
                         value={commentText}
+                        onFocus={handleInputFocus}
+                        onBlur={handleInputBlur}
                     />
 
                     <UIButton
@@ -173,6 +187,8 @@ const CommentsFooter = memo(({
     );
 },
 );
+
+
 
 
 
@@ -214,7 +230,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     },
 
     footerContainer: {
-        backgroundColor: theme.colors.bottomSheetBackground,
+        backgroundColor: theme.colors.background,
         alignItems: "center",
         justifyContent: "center",
         gap: theme.utils.s(14),
@@ -222,13 +238,13 @@ const styles = StyleSheet.create((theme, rt) => ({
     footerDivider: {
         height: theme.utils.vs(0.5)
     },
-    footerInputBar: {
+    footerInputBar: (isInputActive: boolean) => ({
         flexDirection: "row",
         alignItems: "center",
         gap: theme.utils.s(10),
         paddingHorizontal: theme.utils.s(10),
-        paddingBottom: Math.max(rt.insets.bottom, theme.utils.vs(30)),
-    },
+        paddingBottom: isInputActive ? theme.utils.vs(14) : Math.max(rt.insets.bottom, theme.utils.vs(30)),
+    }),
     footerInput: {
         flex: 1,
         backgroundColor: theme.colors.backgroundSubtle,
