@@ -1,7 +1,7 @@
 package city.pulse.user.service.impl;
 
 import city.pulse.user.dto.ProfileCreationRequest;
-import city.pulse.user.dto.UserSearchResponse;
+import city.pulse.user.dto.UserProfileResponse;
 import city.pulse.user.exception.UsernameAlreadyExistsException;
 import city.pulse.user.mapper.UserProfileMapper;
 import city.pulse.user.model.UserProfile;
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<UserSearchResponse> searchByUsername(String username, Pageable pageable) {
+    public Page<UserProfileResponse> searchByUsername(String username, Pageable pageable) {
         var specification = specifications.getSpecification(username);
         return repository.findAll(specification, pageable).map(mapper::toResponse);
     }
