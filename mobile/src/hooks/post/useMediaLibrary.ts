@@ -5,10 +5,7 @@ import { showSettingsAlert } from "@/src/utils/handleImagePickerError";
 import { Photo } from "@/src/types/newPostImage";
 import { CONFIG } from "@/src/utils/newPostImageUtils";
 
-
-export const useMediaLibrary = (
-  onInitialLoad: (firstAsset: Photo) => void,
-) => {
+export const useMediaLibrary = (onInitialLoad: (firstAsset: Photo) => void) => {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [endCursor, setEndCursor] = useState<string | undefined>(undefined);
   const [hasNextPage, setHasNextPage] = useState(true);
@@ -30,12 +27,12 @@ export const useMediaLibrary = (
     try {
       const result = await CameraRoll.getPhotos({
         first: CONFIG.FETCH_LIMIT,
-        assetType: "All",
+        assetType: "Photos",
         after: endCursor,
       });
 
       const newPhotos: Photo[] = result.edges.map((edge) => ({
-        id: edge.node.id,
+        id: edge.node.image.uri, // Use URI as ID if node.id is not available/consistent
         uri: edge.node.image.uri,
         width: edge.node.image.width,
         height: edge.node.image.height,
@@ -53,10 +50,14 @@ export const useMediaLibrary = (
     } catch (error: any) {
       console.error("Error loading images from gallery", error);
 
-      if (Platform.OS === "ios" && error?.message?.toLowerCase().includes("denied")) {
+      if (
+        Platform.OS === "ios" &&
+        error?.message?.toLowerCase().includes("denied")
+      ) {
         showSettingsAlert(
           "Photo Access Required",
-          "City Pulse needs access to your photo library to select images. Please enable it in your device Settings.");
+          "City Pulse needs access to your photo library to select images. Please enable it in your device Settings.",
+        );
       }
     } finally {
       isLoadingRef.current = false;
@@ -81,15 +82,16 @@ export const useMediaLibrary = (
 
     requestAndLoad();
 
-    return () => { cancelled = true; };
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [loadAssets]);
 
   return {
     photos,
     loadAssets,
   };
 };
-
 
 async function requestMediaPermission(): Promise<boolean> {
   if (Platform.OS !== "android") return true;
@@ -121,8 +123,7 @@ async function requestMediaPermission(): Promise<boolean> {
             resolve(result === PermissionsAndroid.RESULTS.GRANTED);
           },
         },
-      ]
+      ],
     );
   });
 }
-

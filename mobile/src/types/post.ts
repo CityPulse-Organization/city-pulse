@@ -1,5 +1,5 @@
-import * as MediaLibrary from "expo-media-library";
 import { Dimensions } from "react-native";
+import { type Photo } from "./newPostImage";
 
 export const POST_CONFIG = {
   SCREEN_WIDTH: Dimensions.get("window").width,
@@ -13,7 +13,7 @@ export const POST_CONFIG = {
   },
 };
 
-export type GridItem = MediaLibrary.Asset | { id: "camera-id" };
+export type GridItem = Photo | { id: "camera-id" };
 
 const GAP = 4;
 export const ITEM_SIZE =

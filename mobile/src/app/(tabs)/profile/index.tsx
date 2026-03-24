@@ -106,7 +106,6 @@ export const SEARCH_USERS: DiscoverUser[] = [
   },
 ];
 
-
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
 const PROFILE_STATS_CONFIG: {
@@ -116,16 +115,37 @@ const PROFILE_STATS_CONFIG: {
   iconName: IconName;
   quantity: number;
 }[] = [
-    { id: "1", name: "posts", title: "Posts", iconName: "document-text-outline", quantity: 398 },
-    { id: "2", name: "followers", title: "Followers", iconName: "people-outline", quantity: 398 },
-    { id: "3", name: "followings", title: "Followings", iconName: "grid-outline", quantity: 34 },
-    { id: "4", name: "saves", title: "Saves", iconName: "bookmark-outline", quantity: 34 },
-  ];
-
-
+  {
+    id: "1",
+    name: "posts",
+    title: "Posts",
+    iconName: "document-text-outline",
+    quantity: 398,
+  },
+  {
+    id: "2",
+    name: "followers",
+    title: "Followers",
+    iconName: "people-outline",
+    quantity: 398,
+  },
+  {
+    id: "3",
+    name: "followings",
+    title: "Followings",
+    iconName: "grid-outline",
+    quantity: 34,
+  },
+  {
+    id: "4",
+    name: "saves",
+    title: "Saves",
+    iconName: "bookmark-outline",
+    quantity: 34,
+  },
+];
 
 const ItemSeparator = memo(() => <View style={styles.listSeparator} />);
-
 
 const SearchUserItem = memo(({ item }: { item: DiscoverUser }) => (
   <View style={styles.itemContainer}>
@@ -136,8 +156,6 @@ const SearchUserItem = memo(({ item }: { item: DiscoverUser }) => (
     />
   </View>
 ));
-
-
 
 const SearchInput = memo(() => {
   const [input, setInput] = useState("");
@@ -152,6 +170,7 @@ const SearchInput = memo(() => {
         />
       }
       containerStyle={styles.searchContainer}
+      inputStyle={styles.searchInput}
       placeholder={"Search..."}
       placeholderTextColor={styles.placeholderInput.color}
       value={input}
@@ -160,29 +179,35 @@ const SearchInput = memo(() => {
   );
 });
 
-
-
-
 export default function ProfileScreen() {
   const router = useRouter();
 
-  const navigateToPostDetails = useCallback((id: string) => {
-    router.push({
-      pathname: `/post/[id]`,
-      params: {
-        id: id,
-        isOwnPost: "true",
-      },
-    });
-  }, [router]);
+  const navigateToPostDetails = useCallback(
+    (id: string) => {
+      router.push({
+        pathname: `/post/[id]`,
+        params: {
+          id: id,
+          isOwnPost: "true",
+        },
+      });
+    },
+    [router],
+  );
 
-  const renderPostItem = useCallback(({ item: postData }: { item: PostItem }) => (
-    <Post data={postData} onPress={navigateToPostDetails} />
-  ), [navigateToPostDetails]);
+  const renderPostItem = useCallback(
+    ({ item: postData }: { item: PostItem }) => (
+      <Post data={postData} onPress={navigateToPostDetails} />
+    ),
+    [navigateToPostDetails],
+  );
 
   const keyExtractor = useCallback((item: { id: string }) => item.id, []);
 
-  const renderUserItem = useCallback(({ item }: { item: DiscoverUser }) => <SearchUserItem item={item} />, []);
+  const renderUserItem = useCallback(
+    ({ item }: { item: DiscoverUser }) => <SearchUserItem item={item} />,
+    [],
+  );
 
   return (
     <ThemedBackground>
@@ -254,10 +279,6 @@ export default function ProfileScreen() {
   );
 }
 
-
-
-
-
 const ProfileHeader = () => {
   const router = useRouter();
 
@@ -268,7 +289,7 @@ const ProfileHeader = () => {
   const { mutate: logout } = useLogout();
 
   const onLogoutPress = useCallback(() => {
-    logout()
+    logout();
   }, [logout]);
 
   return (
@@ -327,14 +348,6 @@ const ProfileHeader = () => {
   );
 };
 
-
-
-
-
-
-
-
-
 const ProfileTabBar = (props: TabBarProps<string>) => {
   const [activeTab, setActiveTab] = useState("posts");
 
@@ -345,14 +358,17 @@ const ProfileTabBar = (props: TabBarProps<string>) => {
         runOnJS(setActiveTab)(value);
       }
     },
-    [props.focusedTab]
+    [props.focusedTab],
   );
 
   const isPostsTabFocused = activeTab === "posts";
 
-  const onPress = useCallback((name: string) => {
-    props.onTabPress(name);
-  }, [props]);
+  const onPress = useCallback(
+    (name: string) => {
+      props.onTabPress(name);
+    },
+    [props],
+  );
 
   return (
     <View style={styles.statsTabBar}>
@@ -383,19 +399,17 @@ const ProfileTabBar = (props: TabBarProps<string>) => {
         ))}
       </View>
 
-      {isPostsTabFocused &&
+      {isPostsTabFocused && (
         <View style={styles.postsHeader}>
           <UIText size="lg" weight="bold" style={styles.text}>
             Posts
           </UIText>
           <NewPostButton />
         </View>
-      }
-
+      )}
     </View>
   );
 };
-
 
 type StatsButtonProps = {
   name: string;
@@ -406,40 +420,45 @@ type StatsButtonProps = {
   activeTab: string;
 };
 
+const StatsButton = memo(
+  ({
+    name,
+    title,
+    iconName,
+    quantity,
+    onPress,
+    activeTab,
+  }: StatsButtonProps) => {
+    const isSelected = activeTab === name;
 
+    const handlePress = useCallback(() => {
+      onPress(name);
+    }, [name, onPress]);
 
-const StatsButton = memo(({ name, title, iconName, quantity, onPress, activeTab }: StatsButtonProps) => {
-  const isSelected = activeTab === name;
+    return (
+      <UIButton
+        style={[styles.statButton, isSelected && styles.statButtonActive]}
+        onPress={handlePress}
+        isLoading={false}
+      >
+        <View style={styles.statIconContainer}>
+          <Ionicons
+            color={styles.statIcon.color}
+            size={styles.statIcon.height}
+            name={iconName}
+          />
+        </View>
 
-  const handlePress = useCallback(() => {
-    onPress(name);
-  }, [name, onPress]);
-
-  return (
-    <UIButton
-      style={[styles.statButton, isSelected && styles.statButtonActive]}
-      onPress={handlePress}
-      isLoading={false}
-    >
-      <View style={styles.statIconContainer}>
-        <Ionicons
-          color={styles.statIcon.color}
-          size={styles.statIcon.height}
-          name={iconName}
-        />
-      </View>
-
-      <UIText style={styles.statQuantity} size="md" weight="bold">
-        {quantity}
-      </UIText>
-      <UIText style={styles.statTitle} size="xxs">
-        {title}
-      </UIText>
-    </UIButton>
-  );
-});
-
-
+        <UIText style={styles.statQuantity} size="md" weight="bold">
+          {quantity}
+        </UIText>
+        <UIText style={styles.statTitle} size="xxs">
+          {title}
+        </UIText>
+      </UIButton>
+    );
+  },
+);
 
 const NewPostButton = memo(() => {
   const router = useRouter();
@@ -466,7 +485,7 @@ const NewPostButton = memo(() => {
 const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
-    overflow: 'hidden'
+    overflow: "hidden",
   },
   list: {
     flex: 1,
@@ -483,7 +502,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
 
   itemContainer: {
-    width: '50%',
+    width: "50%",
     justifyContent: "flex-start",
     alignItems: "flex-start",
     paddingHorizontal: theme.utils.s(6),
@@ -564,6 +583,9 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   placeholderInput: {
     color: theme.colors.muted,
+  },
+  searchInput: {
+    paddingVertical: theme.utils.vs(10),
   },
 
   statsCard: {
