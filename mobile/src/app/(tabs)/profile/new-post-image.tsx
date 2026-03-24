@@ -1,5 +1,4 @@
 import { InteractiveImagePreview, NavigationHeader, ThemedBackground } from "@/src/components";
-import { GridItem, type Photo } from "@/src/types/newPostImage";
 import { useNewPostImage } from "@/src/hooks/post/useNewPostImage";
 import { UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,8 +7,8 @@ import { Image } from "expo-image";
 import { memo, useCallback } from "react";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-import { CONFIG, ITEM_SIZE } from "@/src/utils/newPostImageUtils";
-
+import { GridItem, ITEM_SIZE, POST_CONFIG } from "@/src/types/post";
+import type { Photo } from "@/src/types/post";
 
 
 export default function AddNewPostImageScreen() {
@@ -31,7 +30,7 @@ export default function AddNewPostImageScreen() {
       }
 
       const selectionIndex = selectedImages.findIndex(
-        (img) => img.id === item.id,
+        (img: MediaLibrary.Asset) => img.id === item.id,
       );
       const isSelected = selectionIndex >= 0;
       const isPreviewing = previewImage?.id === item.id;
@@ -74,7 +73,7 @@ export default function AddNewPostImageScreen() {
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           getItemType={getItemType}
-          numColumns={CONFIG.COLUMN_COUNT}
+          numColumns={POST_CONFIG.COLUMN_COUNT}
           onEndReached={loadAssets}
           onEndReachedThreshold={0.5}
           contentContainerStyle={styles.listContent}

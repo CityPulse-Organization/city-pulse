@@ -161,7 +161,6 @@ export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => {
   );
 });
 
-
 const styles = StyleSheet.create((theme) => ({
   itemWrapper: {
     flex: 1,
