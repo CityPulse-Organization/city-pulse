@@ -5,5 +5,6 @@ export * from "./Comment";
 export * from "./Icon";
 export * from "./IconInfo";
 export * from "./Post";
+export * from "./post-details";
 export * from "./profile";
 export * from "./ThemedBackground";

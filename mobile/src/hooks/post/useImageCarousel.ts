@@ -40,6 +40,10 @@ export const useImageCarousel = (imagesUrl: string[]) => {
         setIsVisible(false);
     }, []);
 
+    const onSnapToItem = useCallback((index: number) => {
+        setCurrentIndex(index);
+    }, []);
+
     return {
         visible,
         currentIndex,
@@ -47,6 +51,7 @@ export const useImageCarousel = (imagesUrl: string[]) => {
         progress,
         formattedImages,
         paginationData,
+        onSnapToItem,
         onPressPagination,
         onPressImage,
         onPressClose,

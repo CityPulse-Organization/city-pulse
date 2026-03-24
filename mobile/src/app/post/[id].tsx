@@ -3,10 +3,10 @@ import {
   MOCK_COMMENTS,
   MOCK_LIKE_COUNT,
   ThemedBackground,
+  ImagesCarousel,
 } from "@/src/components";
 import { BlurButton } from "@/src/components/BlurButton";
-import { ImagesCarousel } from "@/src/components/post/ImagesCarousel";
-import { MenuOptionBottomSheet } from "@/src/components/post/MenuOptionBottomSheet";
+import { MenuOptionBottomSheet } from "@/src/components/post-details/MenuOptionBottomSheet";
 import { GradientCard } from "@/src/components/referrals";
 import { usePostDetails } from "@/src/hooks/post/usePostDetails";
 import { UIButton, UIText } from "@/src/ui";
@@ -15,7 +15,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import React, { memo, useCallback, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-import { CommentsBottomSheet } from "@/src/components/post/CommentsBottomSheet";
+import { CommentsBottomSheet } from "@/src/components/post-details/CommentsBottomSheet";
 
 export default function PostDetailScreen() {
   const {
@@ -120,36 +120,54 @@ const UserInfoRow = memo(
         />
 
         <View style={styles.actionsRow}>
-
           <UIButton onPress={toggleLikeStatus} style={styles.actionPost}>
             <GradientIconBox
               isActive={isLikedByCurrentUser}
               iconName={isLikedByCurrentUser ? "heart" : "heart-outline"}
-              iconColor={isLikedByCurrentUser ? styles.likeIconActive.color : styles.likeIcon.color}
+              iconColor={
+                isLikedByCurrentUser
+                  ? styles.likeIconActive.color
+                  : styles.likeIcon.color
+              }
             />
 
-            <UIText weight="normal" size="sm" style={
-              isLikedByCurrentUser ? styles.actionCountActive : styles.actionCount
-            }>
+            <UIText
+              weight="normal"
+              size="sm"
+              style={
+                isLikedByCurrentUser
+                  ? styles.actionCountActive
+                  : styles.actionCount
+              }
+            >
               {totalLikeCount}
             </UIText>
           </UIButton>
 
-          <UIButton onPress={openPresentCommentsSheet} style={styles.actionPost}>
+          <UIButton
+            onPress={openPresentCommentsSheet}
+            style={styles.actionPost}
+          >
             <GradientIconBox
               isActive={false}
               iconName="chatbubble-outline"
               iconColor={styles.commentIcon.color}
             />
 
-            <UIText weight="normal" size="sm" style={styles.actionCount}>{MOCK_COMMENTS.length}</UIText>
+            <UIText weight="normal" size="sm" style={styles.actionCount}>
+              {MOCK_COMMENTS.length}
+            </UIText>
           </UIButton>
 
           <UIButton onPress={toggleSaveStatus} style={styles.actionPost}>
             <GradientIconBox
               isActive={isSavedByCurrentUser}
               iconName={isSavedByCurrentUser ? "bookmark" : "bookmark-outline"}
-              iconColor={isSavedByCurrentUser ? styles.saveIconActive.color : styles.saveIcon.color}
+              iconColor={
+                isSavedByCurrentUser
+                  ? styles.saveIconActive.color
+                  : styles.saveIcon.color
+              }
             />
           </UIButton>
         </View>
@@ -158,34 +176,42 @@ const UserInfoRow = memo(
   },
 );
 
-const GradientIconBox = memo(({
-  isActive,
-  iconName,
-  iconColor
-}: {
-  isActive: boolean;
-  iconName: keyof typeof Ionicons.glyphMap;
-  iconColor: string;
-}) => {
-  return (
-    <LinearGradient
-      colors={isActive
-        ? [styles.activeGradientActionIconStop0.backgroundColor, styles.activeGradientActionIconStop1.backgroundColor]
-        : [styles.inactiveGradientActionIconStop0.backgroundColor, styles.inactiveGradientActionIconStop1.backgroundColor]
-      }
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={styles.actionIconGrad}
-    >
-      <Ionicons
-        name={iconName}
-        size={styles.actionIcon.height}
-        color={iconColor}
-      />
-    </LinearGradient>
-  );
-});
-
+const GradientIconBox = memo(
+  ({
+    isActive,
+    iconName,
+    iconColor,
+  }: {
+    isActive: boolean;
+    iconName: keyof typeof Ionicons.glyphMap;
+    iconColor: string;
+  }) => {
+    return (
+      <LinearGradient
+        colors={
+          isActive
+            ? [
+                styles.activeGradientActionIconStop0.backgroundColor,
+                styles.activeGradientActionIconStop1.backgroundColor,
+              ]
+            : [
+                styles.inactiveGradientActionIconStop0.backgroundColor,
+                styles.inactiveGradientActionIconStop1.backgroundColor,
+              ]
+        }
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.actionIconGrad}
+      >
+        <Ionicons
+          name={iconName}
+          size={styles.actionIcon.height}
+          color={iconColor}
+        />
+      </LinearGradient>
+    );
+  },
+);
 
 const styles = StyleSheet.create((theme, rt) => ({
   page: {

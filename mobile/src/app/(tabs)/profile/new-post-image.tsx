@@ -1,4 +1,8 @@
-import { InteractiveImagePreview, NavigationHeader, ThemedBackground } from "@/src/components";
+import {
+  InteractiveImagePreview,
+  NavigationHeader,
+  ThemedBackground,
+} from "@/src/components";
 import { useNewPostImage } from "@/src/hooks/post/useNewPostImage";
 import { UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,12 +11,12 @@ import { Image } from "expo-image";
 import { memo, useCallback } from "react";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-import { GridItem, ITEM_SIZE, POST_CONFIG } from "@/src/types/post";
-import type { Photo } from "@/src/types/post";
-
+import { ITEM_SIZE, POST_CONFIG } from "@/src/types/post";
+import { GridItem, Photo } from "@/src/types/newPostImage";
 
 export default function AddNewPostImageScreen() {
-  const { gridItems,
+  const {
+    gridItems,
     loadAssets,
     previewImage,
     selectedImages,
@@ -21,7 +25,8 @@ export default function AddNewPostImageScreen() {
     handleSelectImage,
     onCancel,
     onDone,
-    openCamera } = useNewPostImage();
+    openCamera,
+  } = useNewPostImage();
 
   const renderItem = useCallback(
     ({ item }: { item: GridItem }) => {
@@ -30,7 +35,7 @@ export default function AddNewPostImageScreen() {
       }
 
       const selectionIndex = selectedImages.findIndex(
-        (img: MediaLibrary.Asset) => img.id === item.id,
+        (img: Photo) => img.id === item.id,
       );
       const isSelected = selectionIndex >= 0;
       const isPreviewing = previewImage?.id === item.id;
@@ -46,11 +51,20 @@ export default function AddNewPostImageScreen() {
         />
       );
     },
-    [selectedImages, previewImage?.id, isMultiSelectMode, handleSelectImage, openCamera],
+    [
+      selectedImages,
+      previewImage?.id,
+      isMultiSelectMode,
+      handleSelectImage,
+      openCamera,
+    ],
   );
 
   const keyExtractor = useCallback((item: GridItem) => item.id, []);
-  const getItemType = useCallback((item: GridItem) => item.id === "camera-id" ? "camera" : "gallery", []);
+  const getItemType = useCallback(
+    (item: GridItem) => (item.id === "camera-id" ? "camera" : "gallery"),
+    [],
+  );
 
   return (
     <ThemedBackground>
@@ -84,8 +98,6 @@ export default function AddNewPostImageScreen() {
   );
 }
 
-
-
 const CameraItem = memo(({ onPress }: { onPress: () => void }) => {
   return (
     <UIButton onPress={onPress} style={styles.cameraItem}>
@@ -116,7 +128,6 @@ const GalleryItem = memo(
     isMultiSelectMode,
     onPress,
   }: GalleryItemProps) => {
-
     const handlePress = useCallback(() => {
       onPress(item);
     }, [item, onPress]);
@@ -163,11 +174,7 @@ const GalleryHeader = memo(
     return (
       <View style={styles.headerContainer}>
         <View style={styles.textContainer}>
-          <UIText
-            size="md"
-            weight="normal"
-            style={styles.recentsText}
-          >
+          <UIText size="md" weight="normal" style={styles.recentsText}>
             Recents
           </UIText>
 
@@ -218,7 +225,7 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.utils.s(6),
   },
   recentsText: {
-    color: theme.colors.primaryText
+    color: theme.colors.primaryText,
   },
   chevronIcon: {
     height: theme.utils.s(14),
