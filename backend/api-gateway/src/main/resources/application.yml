@@ -11,7 +11,7 @@ spring:
       server:
         webflux:
           routes:
-            # --- AUTH SERVICE ---
+            # --- AUTH SERVICE (Port: 8081) ---
             - id: auth-service-route
               uri: http://auth-service:8081
               predicates:
@@ -24,20 +24,7 @@ spring:
               filters:
                 - RewritePath=/v3/api-docs/auth, /v3/api-docs
 
-            # --- REGISTRATION SERVICE ---
-            - id: registration-service-route
-              uri: http://registration-service:8083
-              predicates:
-                - Path=/api/v1/registration/**
-
-            - id: registration-service-openapi
-              uri: http://registration-service:8083
-              predicates:
-                - Path=/v3/api-docs/registration
-              filters:
-                - RewritePath=/v3/api-docs/registration, /v3/api-docs
-
-            # --- POST SERVICE ---
+            # --- POST SERVICE (Port: 8082) ---
             - id: post-service-route
               uri: http://post-service:8082
               predicates:
@@ -50,7 +37,20 @@ spring:
               filters:
                 - RewritePath=/v3/api-docs/post, /v3/api-docs
 
-            # --- USER SERVICE ---
+            # --- REGISTRATION SERVICE (Port: 8083) ---
+            - id: registration-service-route
+              uri: http://registration-service:8083
+              predicates:
+                - Path=/api/v1/registration/**
+
+            - id: registration-service-openapi
+              uri: http://registration-service:8083
+              predicates:
+                - Path=/v3/api-docs/registration
+              filters:
+                - RewritePath=/v3/api-docs/registration, /v3/api-docs
+
+            # --- USER SERVICE (Port: 8084) ---
             - id: user-service-route
               uri: http://user-service:8084
               predicates:
@@ -63,18 +63,30 @@ spring:
               filters:
                 - RewritePath=/v3/api-docs/user, /v3/api-docs
 
+            # --- STORAGE SERVICE (Port: 8085) ---
+            - id: storage-service-route
+              uri: http://storage-service:8085
+              predicates:
+                - Path=/api/v1/storage/**
+
+            - id: storage-service-openapi
+              uri: http://storage-service:8085
+              predicates:
+                - Path=/v3/api-docs/storage
+              filters:
+                - RewritePath=/v3/api-docs/storage, /v3/api-docs
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
     urls:
       - name: Auth Service
         url: /v3/api-docs/auth
-
-      - name: Registration Service
-        url: /v3/api-docs/registration
-
       - name: Post Service
         url: /v3/api-docs/post
-
+      - name: Registration Service
+        url: /v3/api-docs/registration
       - name: User Service
         url: /v3/api-docs/user
+      - name: Storage Service
+        url: /v3/api-docs/storage
