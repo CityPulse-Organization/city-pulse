@@ -2,8 +2,14 @@ networks:
   city-pulse-network:
     driver: bridge
 
+volumes:
+  postgres_data:
+  minio_data:
+
 services:
-  # --- Infrastructure ---
+  # ==========================================
+  # 1. INFRASTRUCTURE
+  # ==========================================
   postgres:
     image: postgres:18-alpine
     container_name: city-pulse-postgres
@@ -59,7 +65,9 @@ services:
       exit 0;
       "
 
-  # --- Microservices ---
+  # ==========================================
+  # 2. FOUNDATION SERVICES (Depends on Infra)
+  # ==========================================
   auth-service:
     image: denys1204/city-pulse-auth-service:${AUTH_SERVICE_VERSION:-latest}
     container_name: city-pulse-auth-service
@@ -75,6 +83,9 @@ services:
     volumes:
       - ./secrets/jwt:/app/secrets/jwt:ro
 
+  # ==========================================
+  # 3. INTERMEDIATE SERVICES (Depends on Auth/Infra)
+  # ==========================================
   user-service:
     image: denys1204/city-pulse-user-service:${USER_SERVICE_VERSION:-latest}
     container_name: city-pulse-user-service
@@ -90,6 +101,39 @@ services:
     env_file:
       - .env-user
 
+  storage-service:
+    image: denys1204/city-pulse-storage-service:${STORAGE_SERVICE_VERSION:-latest}
+    container_name: city-pulse-storage-service
+    expose:
+      - "8085"
+    networks:
+      - city-pulse-network
+    depends_on:
+      minio:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+    env_file:
+      - .env-storage
+
+  # ==========================================
+  # 4. COMPOSITE SERVICES (Depends on Intermediate)
+  # ==========================================
+  post-service:
+    image: denys1204/city-pulse-post-service:${POST_SERVICE_VERSION:-latest}
+    container_name: city-pulse-post-service
+    expose:
+      - "8082"
+    networks:
+      - city-pulse-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      storage-service:
+        condition: service_started
+    env_file:
+      - .env-post
+
   registration-service:
     image: denys1204/city-pulse-registration-service:${REGISTRATION_SERVICE_VERSION:-latest}
     container_name: city-pulse-registration-service
@@ -103,21 +147,9 @@ services:
     env_file:
       - .env-registration
 
-  post-service:
-    image: denys1204/city-pulse-post-service:${POST_SERVICE_VERSION:-latest}
-    container_name: city-pulse-post-service
-    expose:
-      - "8082"
-    networks:
-      - city-pulse-network
-    depends_on:
-      postgres:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-    env_file:
-      - .env-post
-
+  # ==========================================
+  # 5. EDGE / ENTRYPOINT (Depends on everything)
+  # ==========================================
   api-gateway:
     image: denys1204/city-pulse-api-gateway:${API_GATEWAY_VERSION:-latest}
     container_name: city-pulse-api-gateway
@@ -130,7 +162,4 @@ services:
       - post-service
       - registration-service
       - user-service
-
-volumes:
-  postgres_data:
-  minio_data:
+      - storage-service

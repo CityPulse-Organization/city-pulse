@@ -1,0 +1,5 @@
+storage:
+  endpoint: ${STORAGE_ENDPOINT:http://localhost:9000}
+  access-key: ${STORAGE_ACCESS_KEY:dev_minio_user}
+  secret-key: ${STORAGE_SECRET_KEY:dev_minio_password}
+  bucket: ${STORAGE_BUCKET:citypulse-local-bucket}

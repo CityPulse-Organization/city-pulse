@@ -1,0 +1,32 @@
+app:
+  api:
+    version: v1
+  base-path: /api/${app.api.version}
+
+spring:
+  application:
+    name: storage-service
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://auth-service:8081/api/v1/.well-known/jwks.json
+          issuer-uri: http://auth-service:8081
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
+
+server:
+  port: ${APP_PORT:8085}
+
+storage:
+  allowed-file-types:
+    - image/jpeg
+    - image/png
+    - image/heic
+    - image/heif
