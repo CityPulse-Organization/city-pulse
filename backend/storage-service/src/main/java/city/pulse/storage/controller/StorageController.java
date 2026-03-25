@@ -10,17 +10,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${app.base-path}/internal/storage")
+@RequestMapping("${app.base-path}")
 public class StorageController {
     private final FileUploadService service;
 
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/storage/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         var fileUrl = service.uploadFile(file);
         return ResponseEntity.status(HttpStatus.CREATED).body(fileUrl);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/internal/storage/delete")
     public ResponseEntity<Void> deleteFile(@RequestParam("fileUrl") String fileUrl) {
         service.deleteFile(fileUrl);
         return ResponseEntity.noContent().build();
