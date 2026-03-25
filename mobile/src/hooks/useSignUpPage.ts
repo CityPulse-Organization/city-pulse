@@ -3,7 +3,7 @@ import {
   useGoogleSignIn,
   useRegister,
 } from "./useAuth";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,7 +11,6 @@ import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import { isAxiosError } from "axios";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { Alert } from "react-native";
 
 const schema = z
   .object({
@@ -29,6 +28,7 @@ export type SignUpFormData = z.infer<typeof schema>;
 
 export const useSignUpPage = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync: register, isPending } = useRegister();
   const { mutateAsync: googleSignIn } = useGoogleSignIn();
   const { mutateAsync: completeGoogleRegistration } =
@@ -48,6 +48,7 @@ export const useSignUpPage = () => {
 
   const onGoogleSignIn = useCallback(async () => {
     try {
+      setIsLoading(true);
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       const idToken = userInfo.data?.idToken;
@@ -61,12 +62,13 @@ export const useSignUpPage = () => {
       console.error("Google login failed:", error);
       if (error.code !== "SIGN_IN_CANCELLED") {
         let message = "Something went wrong during Google Sign-In";
-        
+
         if (isAxiosError(error)) {
-          const data = typeof error.response?.data === 'string' 
-            ? JSON.parse(error.response.data) 
-            : error.response?.data;
-            
+          const data =
+            typeof error.response?.data === "string"
+              ? JSON.parse(error.response.data)
+              : error.response?.data;
+
           message = data?.message || error.message;
         } else if (error instanceof Error) {
           message = error.message;
@@ -78,6 +80,8 @@ export const useSignUpPage = () => {
           text2: message,
         });
       }
+    } finally {
+      setIsLoading(false);
     }
   }, [googleSignIn, completeGoogleRegistration]);
   const onSubmit = useCallback(
@@ -89,10 +93,11 @@ export const useSignUpPage = () => {
         let message = "Could not complete registration. Please try again.";
 
         if (isAxiosError(error)) {
-          const data = typeof error.response?.data === 'string' 
-            ? JSON.parse(error.response.data) 
-            : error.response?.data;
-            
+          const data =
+            typeof error.response?.data === "string"
+              ? JSON.parse(error.response.data)
+              : error.response?.data;
+
           message = data?.message || error.message;
         } else if (error instanceof Error) {
           message = error.message;
@@ -119,7 +124,7 @@ export const useSignUpPage = () => {
   return {
     control: form.control,
     onSubmit: form.handleSubmit(onSubmit),
-    isPending,
+    isLoading: isPending || isLoading,
     onBackPress,
     onSignInPress,
     onGoogleSignIn,

@@ -77,7 +77,7 @@ export const logout = async (): Promise<void> => {
   try {
     const refreshToken = await tokenStorage.getRefreshToken();
     if (refreshToken) {
-      await axios.post("/auth/logout", { token: refreshToken });
+      await axios.post("/auth/logout", { refreshToken });
     }
   } finally {
     await tokenStorage.clearTokens();

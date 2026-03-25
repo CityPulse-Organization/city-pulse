@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { searchUsers } from "../api/user";
+import { searchUsers } from "@/src/api";
 
 export const useSearchUsers = (username: string, sort?: string | string[]) => {
   return useInfiniteQuery({

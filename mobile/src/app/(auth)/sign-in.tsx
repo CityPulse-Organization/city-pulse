@@ -13,7 +13,8 @@ import { Image, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function SignUpPage() {
-  const { control, onSubmit, onGoogleSignIn, onSignUpPress } = useSignInPage();
+  const { control, onSubmit, onGoogleSignIn, onSignUpPress, isLoading } =
+    useSignInPage();
 
   return (
     <View style={styles.mainContainer}>
@@ -75,13 +76,18 @@ export default function SignUpPage() {
           <UIText style={styles.forgotPassword}>Forgot password?</UIText>
         </View>
         <View style={styles.bottomContainer}>
-          <UIButton style={styles.googleButton} onPress={onGoogleSignIn}>
+          <UIButton
+            style={styles.googleButton}
+            onPress={onGoogleSignIn}
+            disabled={isLoading}
+          >
             <Ionicons name="logo-google" size={26} color="white" />
             <UIText style={styles.googleText}>Continue with Google</UIText>
           </UIButton>
           <UIButton
             onPress={onSignUpPress}
             style={styles.signUpContainerBottom}
+            disabled={isLoading}
           >
             <UIText style={styles.dontHaveAccountText}>
               Don't have an account?
@@ -91,7 +97,7 @@ export default function SignUpPage() {
         </View>
       </UIKeyboardAvoidingScrollView>
 
-      <AuthButton label="Next" onPress={onSubmit} />
+      <AuthButton label="Next" onPress={onSubmit} loading={isLoading} />
     </View>
   );
 }

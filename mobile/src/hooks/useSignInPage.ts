@@ -110,6 +110,8 @@ export const useSignInPage = () => {
   }, [router]);
 
   return {
+    isLoading:
+      isSignInPending || isGooglePending || isCompletePending || loading,
     control: form.control,
     onSubmit: form.handleSubmit(onSubmit),
     onGoogleSignIn,

@@ -15,7 +15,7 @@ export default function SignUpPage() {
   const {
     control,
     onSubmit,
-    isPending,
+    isLoading,
     onBackPress,
     onSignInPress,
     onGoogleSignIn,
@@ -115,13 +115,18 @@ export default function SignUpPage() {
           />
         </View>
         <View style={styles.bottomContainer}>
-          <UIButton style={styles.googleButton} onPress={onGoogleSignIn}>
+          <UIButton
+            style={styles.googleButton}
+            onPress={onGoogleSignIn}
+            disabled={isLoading}
+          >
             <Ionicons name="logo-google" size={26} color="white" />
             <UIText style={styles.googleText}>Continue with Google</UIText>
           </UIButton>
           <UIButton
             onPress={onSignInPress}
             style={styles.signUpContainerBottom}
+            disabled={isLoading}
           >
             <UIText style={styles.dontHaveAccountText}>
               Already have an account?
@@ -130,7 +135,7 @@ export default function SignUpPage() {
           </UIButton>
         </View>
       </UIKeyboardAvoidingScrollView>
-      <AuthButton label="Next" onPress={onSubmit} loading={isPending} />
+      <AuthButton label="Next" onPress={onSubmit} loading={isLoading} />
     </View>
   );
 }
