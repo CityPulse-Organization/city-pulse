@@ -4,15 +4,17 @@ import city.pulse.post.exception.ForbiddenAccessException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class UserHelper {
-    public void checkUserPermissions(Long objectId, Long userId) {
+    public void checkUserPermissions(UUID objectId, UUID userId) {
         if (!objectId.equals(userId)) {
             throw new ForbiddenAccessException();
         }
     }
 
-    public Long getUserId(Jwt jwt) {
-        return Long.valueOf(jwt.getSubject());
+    public UUID getUserId(Jwt jwt) {
+        return UUID.fromString(jwt.getSubject());
     }
 }

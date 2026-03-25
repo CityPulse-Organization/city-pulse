@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +22,12 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper mapper;
 
     private final UserHelper helper;
-    private final PostService postService;
+    private final PostService service;
 
     @Override
     @Transactional
-    public CommentResponseDTO createComment(Long postId, Long userId, String text) {
-        postService.getPostEntityByIdOrThrow(postId);
+    public CommentResponseDTO createComment(Long postId, UUID userId, String text) {
+        service.getPostEntityByIdOrThrow(postId);
         var comment = Comment.createComment(postId, userId, text);
         return mapper.toDTO(repository.save(comment));
     }
@@ -34,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public List<CommentResponseDTO> getCommentsForPost(Long postId) {
-        postService.getPostEntityByIdOrThrow(postId);
+        service.getPostEntityByIdOrThrow(postId);
         return repository.findByPostIdOrderByCreatedAtAsc(postId).stream().map(mapper::toDTO).toList();
     }
 
@@ -46,7 +47,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void deleteComment(Long commentId, Long userId) {
+    public void deleteComment(Long commentId, UUID userId) {
         var comment = getCommentEntityByIdOrThrow(commentId);
         helper.checkUserPermissions(comment.getUserId(), userId);
         repository.delete(comment);

@@ -5,14 +5,15 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "comments")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "comments")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +23,7 @@ public class Comment {
     private Long postId;
 
     @Column(name = "user_id", nullable = false, updatable = false)
-    private Long userId;
+    private UUID userId;
 
     @Column(name = "text", nullable = false)
     private String text;
@@ -31,7 +32,7 @@ public class Comment {
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 
-    public static Comment createComment(Long postId, Long userId, String text) {
+    public static Comment createComment(Long postId, UUID userId, String text) {
         return Comment.builder()
                 .postId(postId)
                 .userId(userId)

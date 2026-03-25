@@ -23,6 +23,6 @@ spring:
 server:
   port: ${APP_PORT:8082}
 
-logging:
-  level:
-    org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer: ERROR
+services:
+  storage:
+    url: http://storage-service:8085/api/v1
