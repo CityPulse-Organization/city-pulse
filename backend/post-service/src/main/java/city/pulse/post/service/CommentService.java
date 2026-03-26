@@ -1,16 +1,18 @@
 package city.pulse.post.service;
 
-import city.pulse.post.dto.CommentResponseDTO;
+import city.pulse.post.dto.CommentResponse;
 import city.pulse.post.model.Comment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.util.UUID;
 
 public interface CommentService {
-    CommentResponseDTO createComment(Long postId, Long userId, String text);
+    CommentResponse createComment(Long postId, UUID userId, String text);
 
-    List<CommentResponseDTO> getCommentsForPost(Long postId);
+    Page<CommentResponse> getCommentsForPost(Long postId, Pageable pageable);
 
     Comment getCommentEntityByIdOrThrow(Long commentId);
 
-    void deleteComment(Long commentId, Long userId);
+    void deleteComment(Long commentId, UUID userId);
 }

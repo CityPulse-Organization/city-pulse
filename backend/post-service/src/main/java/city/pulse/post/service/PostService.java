@@ -1,25 +1,26 @@
 package city.pulse.post.service;
 
-import city.pulse.post.dto.PostResponseDTO;
+import city.pulse.post.dto.PostResponse;
 import city.pulse.post.model.Post;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.util.UUID;
 
 public interface PostService {
-    PostResponseDTO createPost(MultipartFile file, String caption, Long userId);
+    PostResponse createPost(String imageUrl, String caption, UUID userId);
 
-    void likePost(Long postId, Long userId);
+    void likePost(Long postId, UUID userId);
 
-    PostResponseDTO getPostById(Long postId);
+    PostResponse getPostById(Long postId);
 
     Post getPostEntityByIdOrThrow(Long postId);
 
-    List<PostResponseDTO> getPostsByUserId(Long userId);
+    Page<PostResponse> getPostsByUserId(UUID userId, Pageable pageable);
 
-    PostResponseDTO updatePostCaption(Long postId, Long currentUserId, String newCaption);
+    PostResponse updatePostCaption(Long postId, UUID currentUserId, String newCaption);
 
-    void deletePost(Long postId, Long currentUserId);
+    void deletePost(Long postId, UUID currentUserId);
 
-    void unlikePost(Long postId, Long userId);
+    void unlikePost(Long postId, UUID userId);
 }

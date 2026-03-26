@@ -1,4 +1,4 @@
-package city.pulse.post.config;
+package city.pulse.storage.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +26,7 @@ public class MinioConfig {
 
     @Bean
     public S3Client s3Client() {
-        AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
+        var credentials = AwsBasicCredentials.create(accessKey, secretKey);
 
         return S3Client.builder()
                 .endpointOverride(URI.create(endpoint))

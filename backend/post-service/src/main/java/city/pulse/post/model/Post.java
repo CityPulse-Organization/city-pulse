@@ -6,8 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
 
 import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -22,7 +21,7 @@ public class Post {
     private Long id;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private UUID userId;
 
     @Column(name = "image_url", nullable = false, columnDefinition = "TEXT")
     private String imageUrl;
@@ -34,21 +33,15 @@ public class Post {
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 
+    @Formula("(SELECT count(*) FROM post_likes l WHERE l.post_id = id)")
     @Builder.Default
-    @ElementCollection
-    @CollectionTable(name = "post_likes", joinColumns = @JoinColumn(name = "post_id"))
-    @Column(name = "user_id")
-    private Set<Long> likedByUsers = new HashSet<>();
-
-    public int getLikeCount() {
-        return likedByUsers.size();
-    }
+    private int likeCount = 0;
 
     @Formula("(SELECT count(*) FROM comments c WHERE c.post_id = id)")
     @Builder.Default
     private int commentCount = 0;
 
-    public static Post createPost(Long userId, String imageUrl, String caption) {
+    public static Post createPost(UUID userId, String imageUrl, String caption) {
         return Post.builder()
                 .userId(userId)
                 .imageUrl(imageUrl)

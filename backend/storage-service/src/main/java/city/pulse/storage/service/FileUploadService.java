@@ -1,9 +1,8 @@
-package city.pulse.post.service;
+package city.pulse.storage.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileUploadService {
     String uploadFile(MultipartFile file);
-
     void deleteFile(String imageUrl);
 }

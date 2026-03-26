@@ -5,7 +5,7 @@ app:
 
 spring:
   application:
-    name: post-service
+    name: storage-service
 
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
@@ -16,20 +16,17 @@ spring:
         jwt:
           jwk-set-uri: http://auth-service:8081/api/v1/.well-known/jwks.json
           issuer-uri: http://auth-service:8081
-
-  jpa:
-    open-in-view: false
-    hibernate:
-      ddl-auto: validate
-
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
 
 server:
-  port: ${APP_PORT:8082}
+  port: ${APP_PORT:8085}
 
-services:
-  storage:
-    url: http://storage-service:8085/api/v1
+storage:
+  allowed-file-types:
+    - image/jpeg
+    - image/png
+    - image/heic
+    - image/heif

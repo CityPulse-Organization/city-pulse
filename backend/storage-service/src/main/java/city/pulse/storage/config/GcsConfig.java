@@ -1,4 +1,4 @@
-package city.pulse.post.config;
+package city.pulse.storage.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Storage;
@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Profile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
@@ -33,9 +32,9 @@ public class GcsConfig {
 
     @Bean
     public Storage storage() throws IOException {
-        String formattedPrivateKey = privateKey.replace("\\n", "\n");
+        var formattedPrivateKey = privateKey.replace("\\n", "\n");
 
-        String jsonCredentials = String.format(
+        var jsonCredentials = String.format(
                 "{\"type\": \"service_account\", \"project_id\": \"%s\", \"client_email\": \"%s\", \"client_id\": \"%s\", \"private_key_id\": \"%s\", \"private_key\": \"%s\"}",
                 projectId,
                 clientEmail,
@@ -44,7 +43,7 @@ public class GcsConfig {
                 formattedPrivateKey.replace("\n", "\\n")
         );
 
-        InputStream serviceAccountStream = new ByteArrayInputStream(jsonCredentials.getBytes(StandardCharsets.UTF_8));
+        var serviceAccountStream = new ByteArrayInputStream(jsonCredentials.getBytes(StandardCharsets.UTF_8));
 
         return StorageOptions.newBuilder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccountStream))

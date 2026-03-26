@@ -1,4 +1,4 @@
-package city.pulse.post.exception;
+package city.pulse.storage.exception;
 
 public class FileUploadingException extends RuntimeException {
     public FileUploadingException(String message) {

@@ -10,7 +10,6 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.time.LocalDateTime;
@@ -43,7 +42,6 @@ public class GlobalExceptionHandler {
             MissingServletRequestParameterException.class,
             MethodArgumentTypeMismatchException.class,
             MissingServletRequestPartException.class,
-            FileUploadingException.class
     })
     public ResponseEntity<ErrorResponse> handleBadRequestExceptions(Exception ex) {
         String message = switch (ex) {
@@ -57,13 +55,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.of(HttpStatus.BAD_REQUEST, message));
-    }
-
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<ErrorResponse> handleMaxUploadSizeExceededException() {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.of(HttpStatus.BAD_REQUEST, "The maximum upload size exceeded. Max size = 10MB"));
     }
 
     @ExceptionHandler({PostNotFoundException.class, CommentNotFoundException.class})
