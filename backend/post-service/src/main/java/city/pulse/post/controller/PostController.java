@@ -1,8 +1,8 @@
 package city.pulse.post.controller;
 
-import city.pulse.post.dto.CreatePostRequestDTO;
-import city.pulse.post.dto.PostResponseDTO;
-import city.pulse.post.dto.UpdatePostRequestDTO;
+import city.pulse.post.dto.CreatePostRequest;
+import city.pulse.post.dto.PostResponse;
+import city.pulse.post.dto.UpdatePostRequest;
 import city.pulse.post.helper.UserHelper;
 import city.pulse.post.service.PostService;
 import jakarta.validation.Valid;
@@ -12,8 +12,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,20 +25,18 @@ public class PostController {
     private final UserHelper helper;
 
     @PostMapping
-    public ResponseEntity<PostResponseDTO> createNewPost(
-            @Valid @RequestBody CreatePostRequestDTO request,
-            @AuthenticationPrincipal Jwt jwt
-    ) {
+    public ResponseEntity<PostResponse> createNewPost(
+            @Valid @RequestBody CreatePostRequest dto,
+            @AuthenticationPrincipal Jwt jwt) {
         var created = service.createPost(
-                request.getImageUrl(),
-                request.getCaption(),
-                helper.getUserId(jwt)
-        );
+                dto.imageUrl(),
+                dto.caption(),
+                helper.getUserId(jwt));
 
         var location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(created.getId()).toUri();
+                .buildAndExpand(created.id()).toUri();
 
         return ResponseEntity.created(location).body(created);
     }
@@ -45,36 +44,35 @@ public class PostController {
     @PostMapping("/{id}/like")
     public ResponseEntity<Void> likePost(
             @PathVariable Long id,
-            @AuthenticationPrincipal Jwt jwt
-    ) {
+            @AuthenticationPrincipal Jwt jwt) {
         service.likePost(id, helper.getUserId(jwt));
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
-    public PostResponseDTO getPostById(@PathVariable Long id) {
+    public PostResponse getPostById(@PathVariable Long id) {
         return service.getPostById(id);
     }
 
     @GetMapping("/user/{userId}")
-    public List<PostResponseDTO> getPostsForUser(@PathVariable UUID userId) {
-        return service.getPostsByUserId(userId);
+    public PagedModel<PostResponse> getPostsForUser(
+            @PathVariable UUID userId,
+            Pageable pageable) {
+        return new PagedModel<>(service.getPostsByUserId(userId, pageable));
     }
 
     @PatchMapping("/{id}")
-    public PostResponseDTO updatePostCaption(
+    public PostResponse updatePostCaption(
             @PathVariable Long id,
-            @Valid @RequestBody UpdatePostRequestDTO request,
-            @AuthenticationPrincipal Jwt jwt
-    ) {
-        return service.updatePostCaption(id, helper.getUserId(jwt), request.getCaption());
+            @Valid @RequestBody UpdatePostRequest dto,
+            @AuthenticationPrincipal Jwt jwt) {
+        return service.updatePostCaption(id, helper.getUserId(jwt), dto.caption());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(
             @PathVariable Long id,
-            @AuthenticationPrincipal Jwt jwt
-    ) {
+            @AuthenticationPrincipal Jwt jwt) {
         service.deletePost(id, helper.getUserId(jwt));
         return ResponseEntity.noContent().build();
     }
@@ -82,8 +80,7 @@ public class PostController {
     @DeleteMapping("/{id}/like")
     public ResponseEntity<Void> unlikePost(
             @PathVariable Long id,
-            @AuthenticationPrincipal Jwt jwt
-    ) {
+            @AuthenticationPrincipal Jwt jwt) {
         service.unlikePost(id, helper.getUserId(jwt));
         return ResponseEntity.noContent().build();
     }

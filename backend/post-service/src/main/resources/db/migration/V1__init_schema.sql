@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS comments
     id         BIGSERIAL PRIMARY KEY,
     post_id    BIGINT                   NOT NULL,
     user_id    UUID                     NOT NULL,
-    text       TEXT                     NOT NULL,
+    text       VARCHAR(256)             NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
 
     CONSTRAINT fk_post_comment

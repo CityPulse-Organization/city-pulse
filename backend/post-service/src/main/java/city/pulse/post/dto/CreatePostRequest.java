@@ -1,12 +1,10 @@
 package city.pulse.post.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
 
-@Data
-public class CreatePostRequestDTO {
+public record CreatePostRequest(
     @NotBlank(message = "Image URL is mandatory")
-    private String imageUrl;
-
-    private String caption;
+    String imageUrl,
+    String caption
+) {
 }

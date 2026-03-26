@@ -25,7 +25,7 @@ public class Comment {
     @Column(name = "user_id", nullable = false, updatable = false)
     private UUID userId;
 
-    @Column(name = "text", nullable = false)
+    @Column(name = "text", nullable = false, length = 256)
     private String text;
 
     @CreationTimestamp

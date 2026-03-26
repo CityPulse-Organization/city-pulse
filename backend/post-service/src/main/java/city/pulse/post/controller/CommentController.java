@@ -1,7 +1,7 @@
 package city.pulse.post.controller;
 
-import city.pulse.post.dto.CommentRequestDTO;
-import city.pulse.post.dto.CommentResponseDTO;
+import city.pulse.post.dto.CommentRequest;
+import city.pulse.post.dto.CommentResponse;
 import city.pulse.post.helper.UserHelper;
 import city.pulse.post.service.CommentService;
 import jakarta.validation.Valid;
@@ -11,43 +11,43 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${app.base-path}")
 public class CommentController {
-    private final CommentService commentService;
+    private final CommentService service;
     private final UserHelper helper;
 
     @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<CommentResponseDTO> createComment(
+    public ResponseEntity<CommentResponse> createComment(
             @PathVariable Long postId,
-            @Valid @RequestBody CommentRequestDTO request,
-            @AuthenticationPrincipal Jwt jwt
-    ) {
-        var created = commentService.createComment(postId, helper.getUserId(jwt), request.getText());
+            @Valid @RequestBody CommentRequest dto,
+            @AuthenticationPrincipal Jwt jwt) {
+        var created = service.createComment(postId, helper.getUserId(jwt), dto.text());
 
         var location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(created.getId()).toUri();
+                .buildAndExpand(created.id()).toUri();
 
         return ResponseEntity.created(location).body(created);
     }
 
     @GetMapping("/posts/{postId}/comments")
-    public List<CommentResponseDTO> getComments(@PathVariable Long postId) {
-        return commentService.getCommentsForPost(postId);
+    public PagedModel<CommentResponse> getComments(
+            @PathVariable Long postId,
+            Pageable pageable) {
+        return new PagedModel<>(service.getCommentsForPost(postId, pageable));
     }
 
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long commentId,
-            @AuthenticationPrincipal Jwt jwt
-    ) {
-        commentService.deleteComment(commentId, helper.getUserId(jwt));
+            @AuthenticationPrincipal Jwt jwt) {
+        service.deleteComment(commentId, helper.getUserId(jwt));
         return ResponseEntity.noContent().build();
     }
 }

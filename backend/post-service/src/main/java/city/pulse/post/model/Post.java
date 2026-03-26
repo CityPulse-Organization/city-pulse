@@ -6,8 +6,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
 
 import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -35,15 +33,9 @@ public class Post {
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 
+    @Formula("(SELECT count(*) FROM post_likes l WHERE l.post_id = id)")
     @Builder.Default
-    @ElementCollection
-    @CollectionTable(name = "post_likes", joinColumns = @JoinColumn(name = "post_id"))
-    @Column(name = "user_id")
-    private Set<UUID> likedByUsers = new HashSet<>();
-
-    public int getLikeCount() {
-        return likedByUsers.size();
-    }
+    private int likeCount = 0;
 
     @Formula("(SELECT count(*) FROM comments c WHERE c.post_id = id)")
     @Builder.Default

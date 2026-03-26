@@ -1,15 +1,15 @@
 package city.pulse.post.mapper;
 
-import city.pulse.post.dto.PostResponseDTO;
+import city.pulse.post.dto.PostResponse;
 import city.pulse.post.model.Post;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PostMapper {
-    public PostResponseDTO toDto(Post post) {
+    public PostResponse toDto(Post post) {
         if (post == null) return null;
 
-        return PostResponseDTO.builder()
+        return PostResponse.builder()
                 .id(post.getId())
                 .userId(post.getUserId())
                 .imageUrl(post.getImageUrl())
