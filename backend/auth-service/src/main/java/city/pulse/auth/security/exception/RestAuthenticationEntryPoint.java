@@ -1,6 +1,6 @@
 package city.pulse.auth.security.exception;
 
-import city.pulse.auth.exception.ErrorResponse;
+import city.pulse.common.exception.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
