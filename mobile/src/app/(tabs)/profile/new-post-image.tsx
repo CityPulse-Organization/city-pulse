@@ -3,16 +3,25 @@ import {
   NavigationHeader,
   ThemedBackground,
 } from "@/src/components";
-import { useNewPostImage } from "@/src/hooks/post/useNewPostImage";
+import { useNewPostImage } from "@/src/hooks/new-post/useNewPostImage";
 import { UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
-import { memo, useCallback } from "react";
-import { View } from "react-native";
+import { memo, useCallback, useMemo } from "react";
+import { View, Dimensions } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { ITEM_SIZE, POST_CONFIG } from "@/src/types/post";
 import { GridItem, Photo } from "@/src/types/newPostImage";
+import { useCollapsibleGallery } from "@/src/hooks/new-post/useCollapsibleGallery";
+import Animated from "react-native-reanimated";
+
+
+const AnimatedFlashList = Animated.createAnimatedComponent(FlashList as any) as any;
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const PREVIEW_HEIGHT = SCREEN_WIDTH * 0.9;
+const GALLERY_HEADER_HEIGHT = 60;
+const TOTAL_HEADER_HEIGHT = PREVIEW_HEIGHT + GALLERY_HEADER_HEIGHT;
 
 export default function AddNewPostImageScreen() {
   const {
@@ -27,6 +36,22 @@ export default function AddNewPostImageScreen() {
     onDone,
     openCamera,
   } = useNewPostImage();
+
+  const {
+    scrollHandler,
+    headerAnimatedStyle,
+    listAnimatedStyle,
+    revealHeader
+  } = useCollapsibleGallery(PREVIEW_HEIGHT);
+
+  const onGalleryItemPress = useCallback(
+    (item: Photo) => {
+      handleSelectImage(item);
+      revealHeader();
+    },
+    [handleSelectImage, revealHeader],
+  );
+
 
   const renderItem = useCallback(
     ({ item }: { item: GridItem }) => {
@@ -47,7 +72,7 @@ export default function AddNewPostImageScreen() {
           selectionIndex={selectionIndex}
           isPreviewing={isPreviewing}
           isMultiSelectMode={isMultiSelectMode}
-          onPress={handleSelectImage}
+          onPress={onGalleryItemPress}
         />
       );
     },
@@ -55,7 +80,7 @@ export default function AddNewPostImageScreen() {
       selectedImages,
       previewImage?.id,
       isMultiSelectMode,
-      handleSelectImage,
+      onGalleryItemPress,
       openCamera,
     ],
   );
@@ -63,6 +88,23 @@ export default function AddNewPostImageScreen() {
   const keyExtractor = useCallback((item: GridItem) => item.id, []);
   const getItemType = useCallback(
     (item: GridItem) => (item.id === "camera-id" ? "camera" : "gallery"),
+    [],
+  );
+
+  const listExtraData = useMemo(
+    () => ({
+      selectedImages,
+      isMultiSelectMode,
+      previewImageId: previewImage?.id,
+    }),
+    [selectedImages, isMultiSelectMode, previewImage?.id],
+  );
+
+  const listContentStyle = useMemo(
+    () => ({
+      ...styles.listContent,
+      paddingTop: TOTAL_HEADER_HEIGHT,
+    }),
     [],
   );
 
@@ -75,24 +117,31 @@ export default function AddNewPostImageScreen() {
       />
 
       <View style={styles.container}>
-        <InteractiveImagePreview imageUri={previewImage?.uri} />
+        <Animated.View style={headerAnimatedStyle}>
+          <View style={{ height: PREVIEW_HEIGHT, width: "100%" }}>
+            <InteractiveImagePreview imageUri={previewImage?.uri} />
+          </View>
+          <GalleryHeader
+            isMultiSelectMode={isMultiSelectMode}
+            onToggleMultiSelect={toggleMultiSelect}
+          />
+        </Animated.View>
 
-        <GalleryHeader
-          isMultiSelectMode={isMultiSelectMode}
-          onToggleMultiSelect={toggleMultiSelect}
-        />
-
-        <FlashList
-          data={gridItems}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-          getItemType={getItemType}
-          numColumns={POST_CONFIG.COLUMN_COUNT}
-          onEndReached={loadAssets}
-          onEndReachedThreshold={0.5}
-          contentContainerStyle={styles.listContent}
-          extraData={{ selectedImages, isMultiSelectMode, previewImage }}
-        />
+        <Animated.View style={listAnimatedStyle}>
+          <AnimatedFlashList
+            data={gridItems}
+            renderItem={renderItem}
+            keyExtractor={keyExtractor}
+            getItemType={getItemType}
+            numColumns={POST_CONFIG.COLUMN_COUNT}
+            onEndReached={loadAssets}
+            onEndReachedThreshold={0.5}
+            contentContainerStyle={listContentStyle}
+            onScroll={scrollHandler}
+            scrollEventThrottle={16}
+            extraData={listExtraData}
+          />
+        </Animated.View>
       </View>
     </ThemedBackground>
   );
@@ -210,14 +259,16 @@ const GalleryHeader = memo(
 const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
-    paddingTop: theme.utils.vs(10),
+    overflow: "hidden",
   },
 
   headerContainer: {
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: theme.utils.s(14),
+    paddingHorizontal: theme.utils.s(14),
+    height: GALLERY_HEADER_HEIGHT,
+    backgroundColor: theme.colors.background,
   },
   textContainer: {
     alignItems: "baseline",

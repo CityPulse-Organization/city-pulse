@@ -58,8 +58,8 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     alignSelf: "stretch",
     alignItems: "center",
-    padding: 8,
-    paddingTop: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
   },
 
   headerLeft: {

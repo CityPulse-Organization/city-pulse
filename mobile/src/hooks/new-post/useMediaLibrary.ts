@@ -32,7 +32,7 @@ export const useMediaLibrary = (onInitialLoad: (firstAsset: Photo) => void) => {
       });
 
       const newPhotos: Photo[] = result.edges.map((edge) => ({
-        id: edge.node.image.uri, // Use URI as ID if node.id is not available/consistent
+        id: edge.node.image.uri,
         uri: edge.node.image.uri,
         width: edge.node.image.width,
         height: edge.node.image.height,
@@ -85,7 +85,7 @@ export const useMediaLibrary = (onInitialLoad: (firstAsset: Photo) => void) => {
     return () => {
       cancelled = true;
     };
-  }, [loadAssets]);
+  }, []);
 
   return {
     photos,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -12,11 +12,12 @@ import {
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  withSpring,
 } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
-const PREVIEW_HEIGHT = SCREEN_WIDTH * 0.75;
+const PREVIEW_HEIGHT = SCREEN_WIDTH * 0.9;
 
 type ImageDimensions = {
   width: number;
@@ -84,7 +85,7 @@ const useImageGeometry = (
     RNImage.getSize(
       imageUri,
       (width, height) => {
-        const newDims = calculateCoverDimensions(
+        const newDims = calculateFitDimensions(
           width,
           height,
           viewportWidth,
@@ -112,22 +113,67 @@ const useImageGeometry = (
     );
   }, [imageUri, viewportWidth, viewportHeight]);
 
-  const panGesture = Gesture.Pan()
-    .onStart(() => {
+
+  const rubberBand = (value: number, min: number, max: number) => {
+    "worklet";
+    const friction = 0.3;
+    if (value < min) return min - (min - value) * friction;
+    if (value > max) return max + (value - max) * friction;
+    return value;
+  };
+
+
+
+
+  const panGesture = useMemo(() => {
+    return Gesture.Pan().onStart(() => {
       context.value = { x: translateX.value, y: translateY.value };
     })
-    .onUpdate((event) => {
-      const rawX = context.value.x + event.translationX;
-      const rawY = context.value.y + event.translationY;
+      .onUpdate((event) => {
+        const rawX = context.value.x + event.translationX;
+        const rawY = context.value.y + event.translationY;
 
-      const minX = viewportWidth - imageWidth.value;
-      const minY = viewportHeight - imageHeight.value;
-      const maxX = 0;
-      const maxY = 0;
+        const isWider = imageWidth.value > viewportWidth;
+        const isTaller = imageHeight.value > viewportHeight;
 
-      translateX.value = Math.min(maxX, Math.max(minX, rawX));
-      translateY.value = Math.min(maxY, Math.max(minY, rawY));
-    });
+        const minX = isWider ? viewportWidth - imageWidth.value : (viewportWidth - imageWidth.value) / 2;
+        const maxX = isWider ? 0 : (viewportWidth - imageWidth.value) / 2;
+
+        const minY = isTaller ? viewportHeight - imageHeight.value : (viewportHeight - imageHeight.value) / 2;
+        const maxY = isTaller ? 0 : (viewportHeight - imageHeight.value) / 2;
+
+        translateX.value = rubberBand(rawX, minX, maxX);
+        translateY.value = rubberBand(rawY, minY, maxY);
+      })
+      .onEnd((event) => {
+        const isWider = imageWidth.value > viewportWidth;
+        const isTaller = imageHeight.value > viewportHeight;
+
+        const minX = isWider ? viewportWidth - imageWidth.value : (viewportWidth - imageWidth.value) / 2;
+        const maxX = isWider ? 0 : (viewportWidth - imageWidth.value) / 2;
+
+        const minY = isTaller ? viewportHeight - imageHeight.value : (viewportHeight - imageHeight.value) / 2;
+        const maxY = isTaller ? 0 : (viewportHeight - imageHeight.value) / 2;
+
+        const springConfig = {
+          damping: 20,
+          stiffness: 150,
+          mass: 0.6,
+        };
+
+        if (translateX.value > maxX) {
+          translateX.value = withSpring(maxX, { ...springConfig, velocity: event.velocityX });
+        } else if (translateX.value < minX) {
+          translateX.value = withSpring(minX, { ...springConfig, velocity: event.velocityX });
+        }
+
+        if (translateY.value > maxY) {
+          translateY.value = withSpring(maxY, { ...springConfig, velocity: event.velocityY });
+        } else if (translateY.value < minY) {
+          translateY.value = withSpring(minY, { ...springConfig, velocity: event.velocityY });
+        }
+      });
+  }, [viewportWidth, viewportHeight]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     width: imageWidth.value,
@@ -145,16 +191,22 @@ const useImageGeometry = (
   };
 };
 
-const calculateCoverDimensions = (
+const calculateFitDimensions = (
   originalW: number,
   originalH: number,
-  viewportWidth: number,
-  viewportHeight: number,
+  viewportW: number,
+  viewportH: number,
 ): ImageDimensions => {
-  const scale = Math.max(viewportWidth / originalW, viewportHeight / originalH);
+  const scaleCover = Math.max(viewportW / originalW, viewportH / originalH);
+  const scaleContain = Math.min(viewportW / originalW, viewportH / originalH);
+
+  const MAX_SHRINK_LIMIT = scaleCover * 0.8;
+
+  const finalScale = Math.max(scaleContain, MAX_SHRINK_LIMIT);
+
   return {
-    width: originalW * scale,
-    height: originalH * scale,
+    width: originalW * finalScale,
+    height: originalH * finalScale,
   };
 };
 

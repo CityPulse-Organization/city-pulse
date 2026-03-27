@@ -115,35 +115,35 @@ const PROFILE_STATS_CONFIG: {
   iconName: IconName;
   quantity: number;
 }[] = [
-  {
-    id: "1",
-    name: "posts",
-    title: "Posts",
-    iconName: "document-text-outline",
-    quantity: 398,
-  },
-  {
-    id: "2",
-    name: "followers",
-    title: "Followers",
-    iconName: "people-outline",
-    quantity: 398,
-  },
-  {
-    id: "3",
-    name: "followings",
-    title: "Followings",
-    iconName: "grid-outline",
-    quantity: 34,
-  },
-  {
-    id: "4",
-    name: "saves",
-    title: "Saves",
-    iconName: "bookmark-outline",
-    quantity: 34,
-  },
-];
+    {
+      id: "1",
+      name: "posts",
+      title: "Posts",
+      iconName: "document-text-outline",
+      quantity: 398,
+    },
+    {
+      id: "2",
+      name: "followers",
+      title: "Followers",
+      iconName: "people-outline",
+      quantity: 398,
+    },
+    {
+      id: "3",
+      name: "followings",
+      title: "Followings",
+      iconName: "grid-outline",
+      quantity: 34,
+    },
+    {
+      id: "4",
+      name: "saves",
+      title: "Saves",
+      iconName: "bookmark-outline",
+      quantity: 34,
+    },
+  ];
 
 const ItemSeparator = memo(() => <View style={styles.listSeparator} />);
 
@@ -482,7 +482,7 @@ const NewPostButton = memo(() => {
   );
 });
 
-const styles = StyleSheet.create((theme, rt) => ({
+const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
     overflow: "hidden",
