@@ -25,10 +25,11 @@ jobs:
           cache: 'maven'
           cache-dependency-path: 'backend/city-pulse-common/pom.xml'
           server-id: github
-          server-username: ${{ github.actor }}
-          server-password: ${{ secrets.GITHUB_TOKEN }}
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
 
       - name: Build and Publish to GitHub Packages
         run: mvn clean deploy -f backend/city-pulse-common/pom.xml -DskipTests
         env:
+          GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
