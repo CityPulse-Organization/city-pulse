@@ -8,7 +8,14 @@ WORKDIR /app
 RUN echo '<settings><servers><server><id>github</id><username>'${GITHUB_ACTOR}'</username><password>'${GITHUB_TOKEN}'</password></server></servers></settings>' > /usr/share/maven/ref/settings-docker.xml
 
 WORKDIR /app
+
 COPY backend/pom.xml backend/
+RUN mvn -s /usr/share/maven/ref/settings-docker.xml -f backend/pom.xml -N clean install
+
+COPY backend/city-pulse-common/pom.xml backend/city-pulse-common/
+COPY backend/city-pulse-common/src backend/city-pulse-common/src/
+RUN mvn -s /usr/share/maven/ref/settings-docker.xml -f backend/city-pulse-common/pom.xml clean install -DskipTests
+
 COPY backend/post-service/pom.xml backend/post-service/
 WORKDIR /app/backend/post-service
 
