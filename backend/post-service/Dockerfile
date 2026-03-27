@@ -7,17 +7,21 @@ WORKDIR /app
 
 RUN echo '<settings><servers><server><id>github</id><username>'${GITHUB_ACTOR}'</username><password>'${GITHUB_TOKEN}'</password></server></servers></settings>' > /usr/share/maven/ref/settings-docker.xml
 
-COPY pom.xml .
+WORKDIR /app
+COPY backend/pom.xml .
+COPY backend/post-service/pom.xml backend/post-service/
+WORKDIR /app/backend/post-service
 
-RUN mvn -s /usr/share/maven/ref/settings-docker.xml dependency:go-offline
+ARG REVISION
+RUN mvn -s /usr/share/maven/ref/settings-docker.xml dependency:go-offline -Drevision=${REVISION}
 
 COPY src src
-RUN mvn -s /usr/share/maven/ref/settings-docker.xml package -DskipTests
+RUN mvn -s /usr/share/maven/ref/settings-docker.xml package -DskipTests -Drevision=${REVISION}
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-COPY --from=builder /app/target/post-service-v1.0.jar app.jar
+COPY --from=builder /app/backend/post-service/target/post-service-v1.0.jar app.jar
 
 EXPOSE 8082
 

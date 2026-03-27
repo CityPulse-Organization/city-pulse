@@ -46,10 +46,12 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./backend/user-service
+          context: .
+          file: backend/user-service/Dockerfile
           platforms: linux/amd64,linux/arm64
           build-args: |
              GITHUB_ACTOR=${{ github.actor }}
              GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+             REVISION=${{ github.run_number }}
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/city-pulse-user-service:${{ env.DOCKER_TAG }}
