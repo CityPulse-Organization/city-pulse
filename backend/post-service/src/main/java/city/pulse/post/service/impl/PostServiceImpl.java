@@ -3,7 +3,7 @@ package city.pulse.post.service.impl;
 import city.pulse.post.client.StorageClient; // Наш Feign клієнт
 import city.pulse.post.dto.PostResponse;
 import city.pulse.post.exception.PostNotFoundException;
-import city.pulse.post.helper.UserHelper;
+
 import city.pulse.post.mapper.PostMapper;
 import city.pulse.post.model.Post;
 import city.pulse.post.model.PostLike;
@@ -25,7 +25,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository repository;
     private final PostLikeRepository likeRepository;
     private final PostMapper mapper;
-    private final UserHelper helper;
+
     private final StorageClient client;
 
     @Override
@@ -40,7 +40,9 @@ public class PostServiceImpl implements PostService {
     public void deletePost(Long postId, UUID userId) {
         var post = getPostEntityByIdOrThrow(postId);
 
-        helper.checkUserPermissions(post.getUserId(), userId);
+        if (!post.getUserId().equals(userId)) {
+            throw new RuntimeException("Access Denied");
+        }
 
         likeRepository.deleteByPostId(postId);
         repository.delete(post);
@@ -78,7 +80,9 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostResponse updatePostCaption(Long postId, UUID userId, String newCaption) {
         var post = getPostEntityByIdOrThrow(postId);
-        helper.checkUserPermissions(post.getUserId(), userId);
+        if (!post.getUserId().equals(userId)) {
+            throw new RuntimeException("Access Denied");
+        }
         post.setCaption(newCaption);
         return mapper.toDto(repository.save(post));
     }

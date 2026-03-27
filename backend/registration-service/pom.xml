@@ -3,13 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.11</version>
+        <groupId>city.pulse</groupId>
+        <artifactId>backend-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <groupId>city.pulse</groupId>
     <artifactId>registration-service</artifactId>
-    <version>1.0</version>
+    <version>${revision}</version>
     <name>registration-service</name>
     <url/>
     <licenses>
@@ -72,7 +72,6 @@
         <dependency>
             <groupId>city.pulse</groupId>
             <artifactId>city-pulse-common</artifactId>
-            <version>1.1</version>
         </dependency>
 
         <dependency>
