@@ -48,5 +48,8 @@ jobs:
         with:
           context: ./backend/registration-service
           platforms: linux/amd64,linux/arm64
+          build-args: |
+             GITHUB_ACTOR=${{ github.actor }}
+             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/city-pulse-registration-service:${{ env.DOCKER_TAG }}
