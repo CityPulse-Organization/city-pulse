@@ -8,7 +8,7 @@ WORKDIR /app
 RUN echo '<settings><servers><server><id>github</id><username>'${GITHUB_ACTOR}'</username><password>'${GITHUB_TOKEN}'</password></server></servers></settings>' > /usr/share/maven/ref/settings-docker.xml
 
 WORKDIR /app
-COPY backend/pom.xml .
+COPY backend/pom.xml backend/
 COPY backend/api-gateway/pom.xml backend/api-gateway/
 WORKDIR /app/backend/api-gateway
 

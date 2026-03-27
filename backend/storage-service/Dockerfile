@@ -8,7 +8,7 @@ WORKDIR /app
 RUN echo '<settings><servers><server><id>github</id><username>'${GITHUB_ACTOR}'</username><password>'${GITHUB_TOKEN}'</password></server></servers></settings>' > /usr/share/maven/ref/settings-docker.xml
 
 WORKDIR /app
-COPY backend/pom.xml .
+COPY backend/pom.xml backend/
 COPY backend/storage-service/pom.xml backend/storage-service/
 WORKDIR /app/backend/storage-service
 

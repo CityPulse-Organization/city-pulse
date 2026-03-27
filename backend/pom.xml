@@ -18,9 +18,9 @@
     <name>backend-parent</name>
 
     <properties>
-        <revision>1.2.0-SNAPSHOT</revision>
+        <revision>1.0-SNAPSHOT</revision>
         <java.version>21</java.version>
-        <city-pulse-common.version>${revision}</city-pulse-common.version>
+        <city-pulse-common.version>1.0-SNAPSHOT</city-pulse-common.version>
     </properties>
 
     <modules>
