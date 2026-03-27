@@ -16,20 +16,18 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @Slf4j
 @RestControllerAdvice
 public class BaseExceptionHandler {
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
-        List<ErrorResponse.ErrorDetails> errors = ex.getBindingResult()
+        var errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(fe -> new ErrorResponse.ErrorDetails(fe.getField(), fe.getDefaultMessage()))
                 .toList();
 
-        ErrorResponse errorResponse = new ErrorResponse(
+        var errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
