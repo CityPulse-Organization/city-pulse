@@ -6,13 +6,12 @@ import city.pulse.registration.dto.LocalRegistrationRequest;
 import city.pulse.registration.dto.OAuth2RegistrationRequest;
 import city.pulse.registration.dto.ProfileCreationRequest;
 import city.pulse.registration.dto.auth.InternalLocalRegistrationRequest;
-import city.pulse.registration.mapper.JwtRegistrationMapper;
+import city.pulse.registration.mapper.TokenRegistrationMapper;
 import city.pulse.registration.model.Role;
 import city.pulse.registration.service.RegistrationService;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -22,7 +21,7 @@ import java.util.function.Supplier;
 @Service
 @RequiredArgsConstructor
 public class RegistrationServiceImpl implements RegistrationService {
-    private final JwtRegistrationMapper mapper;
+    private final TokenRegistrationMapper mapper;
     private final AuthServiceClient authClient;
     private final UserServiceClient userClient;
 
@@ -35,8 +34,8 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public void registerOAuth2User(OAuth2RegistrationRequest dto, Jwt jwt) {
-        var authRequest = mapper.toOAuth2InternalRequest(jwt);
+    public void registerOAuth2User(OAuth2RegistrationRequest dto, String token) {
+        var authRequest = mapper.toOAuth2InternalRequest(token);
         log.info("Starting OAuth2 registration for email: {} via {}", authRequest.email(), authRequest.provider());
 
         executeRegistrationFlow(() -> authClient.createOAuth2Credential(authRequest), dto.username());

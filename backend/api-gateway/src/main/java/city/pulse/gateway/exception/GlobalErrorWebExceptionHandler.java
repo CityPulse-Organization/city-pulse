@@ -13,6 +13,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.*;
 import reactor.core.publisher.Mono;
 
+import city.pulse.common.exception.ErrorResponse;
+
 import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;
 

@@ -1,7 +1,6 @@
-package city.pulse.storage.exception;
+package city.pulse.common.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,10 +13,9 @@ public record ErrorResponse(
         String message,
         List<ErrorDetails> validationErrors
 ) {
-    public record ErrorDetails(String field, String message) {
-    }
+    public record ErrorDetails(String field, String message) {}
 
-    public static ErrorResponse of(HttpStatus status, String message) {
+    public static ErrorResponse of(org.springframework.http.HttpStatus status, String message) {
         return new ErrorResponse(
                 LocalDateTime.now(),
                 status.value(),

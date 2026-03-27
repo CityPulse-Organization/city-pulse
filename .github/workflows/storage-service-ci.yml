@@ -46,7 +46,14 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./backend/storage-service
+          context: .
+          file: backend/storage-service/Dockerfile
           platforms: linux/amd64,linux/arm64
+          build-args: |
+             GITHUB_ACTOR=${{ github.actor }}
+             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+             REVISION=${{ github.run_number }}
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/city-pulse-storage-service:${{ env.DOCKER_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

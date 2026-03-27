@@ -7,8 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
+import city.pulse.common.security.annotation.CurrentUser;
+import city.pulse.common.security.model.UserInfo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -22,8 +22,8 @@ public class SubscriptionController {
     @PostMapping("/{targetId}/follow")
     public ResponseEntity<Void> follow(
             @PathVariable UUID targetId,
-            @AuthenticationPrincipal Jwt jwt) {
-        var subscriberId = extractUserIdFromJwt(jwt);
+            @CurrentUser UserInfo userInfo) {
+        var subscriberId = userInfo.id();
         service.followUser(subscriberId, targetId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -45,13 +45,10 @@ public class SubscriptionController {
     @DeleteMapping("/{targetId}/unfollow")
     public ResponseEntity<Void> unfollow(
             @PathVariable UUID targetId,
-            @AuthenticationPrincipal Jwt jwt) {
-        var subscriberId = extractUserIdFromJwt(jwt);
+            @CurrentUser UserInfo userInfo) {
+        var subscriberId = userInfo.id();
         service.unfollowUser(subscriberId, targetId);
         return ResponseEntity.noContent().build();
     }
 
-    private UUID extractUserIdFromJwt(Jwt jwt) {
-        return UUID.fromString(jwt.getSubject());
-    }
 }
