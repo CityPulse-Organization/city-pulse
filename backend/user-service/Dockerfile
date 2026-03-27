@@ -15,7 +15,7 @@ WORKDIR /app/backend/user-service
 ARG REVISION
 RUN mvn -s /usr/share/maven/ref/settings-docker.xml dependency:go-offline -Drevision=${REVISION}
 
-COPY src src
+COPY backend/user-service/src src
 RUN mvn -s /usr/share/maven/ref/settings-docker.xml package -DskipTests -Drevision=${REVISION}
 
 FROM eclipse-temurin:21-jre-alpine
