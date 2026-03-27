@@ -7,8 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,9 +28,10 @@ public class RegistrationController {
     @PostMapping("/oauth2")
     public ResponseEntity<Void> registerOAuth2(
             @Valid @RequestBody OAuth2RegistrationRequest dto,
-            @AuthenticationPrincipal Jwt jwt
+            @RequestHeader("Authorization") String authHeader
     ) {
-        service.registerOAuth2User(dto, jwt);
+        var token = authHeader.replace("Bearer ", "");
+        service.registerOAuth2User(dto, token);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

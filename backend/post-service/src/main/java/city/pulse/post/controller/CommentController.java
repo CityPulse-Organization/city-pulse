@@ -2,13 +2,12 @@ package city.pulse.post.controller;
 
 import city.pulse.post.dto.CommentRequest;
 import city.pulse.post.dto.CommentResponse;
-import city.pulse.post.helper.UserHelper;
 import city.pulse.post.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
+import city.pulse.common.security.annotation.CurrentUser;
+import city.pulse.common.security.model.UserInfo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.data.domain.Pageable;
@@ -19,14 +18,13 @@ import org.springframework.data.web.PagedModel;
 @RequestMapping("${app.base-path}")
 public class CommentController {
     private final CommentService service;
-    private final UserHelper helper;
 
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<CommentResponse> createComment(
             @PathVariable Long postId,
             @Valid @RequestBody CommentRequest dto,
-            @AuthenticationPrincipal Jwt jwt) {
-        var created = service.createComment(postId, helper.getUserId(jwt), dto.text());
+            @CurrentUser UserInfo userInfo) {
+        var created = service.createComment(postId, userInfo.id(), dto.text());
 
         var location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -46,8 +44,8 @@ public class CommentController {
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long commentId,
-            @AuthenticationPrincipal Jwt jwt) {
-        service.deleteComment(commentId, helper.getUserId(jwt));
+            @CurrentUser UserInfo userInfo) {
+        service.deleteComment(commentId, userInfo.id());
         return ResponseEntity.noContent().build();
     }
 }
