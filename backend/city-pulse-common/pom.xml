@@ -12,8 +12,7 @@
 
     <artifactId>city-pulse-common</artifactId>
     <name>city-pulse-common</name>
-    <description>Shared common library for City Pulse microservices</description>
-
+    
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
