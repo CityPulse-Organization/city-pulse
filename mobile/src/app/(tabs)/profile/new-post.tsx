@@ -128,6 +128,7 @@ const styles = StyleSheet.create((theme, rt) => ({
 
   locationContainer: {
     backgroundColor: theme.colors.backgroundSubtle,
+    borderBottomWidth: 0,
     borderRadius: theme.utils.s(12),
     borderWidth: 1,
     borderColor: theme.colors.borderSubtle,
@@ -142,6 +143,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   descriptionContainer: {
     alignItems: "flex-start",
     backgroundColor: theme.colors.backgroundSubtle,
+    borderBottomWidth: 0,
     borderRadius: theme.utils.s(12),
     borderWidth: 1,
     borderColor: theme.colors.borderSubtle,
