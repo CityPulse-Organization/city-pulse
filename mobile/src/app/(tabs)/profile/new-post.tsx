@@ -35,7 +35,7 @@ export default function AddNewPostScreen() {
   };
 
   const onPost = () => {
-    router.back();
+    router.push("/(tabs)/profile");
   };
 
   return (
