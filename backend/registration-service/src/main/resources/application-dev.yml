@@ -1,6 +1,6 @@
 app:
   services:
     auth:
-      url: http://auth-service:8081/api/v1
+      url: http://localhost:8081/api/v1
     user:
-      url: http://user-service:8084/api/v1
+      url: http://localhost:8084/api/v1
