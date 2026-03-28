@@ -1,72 +1,9 @@
-networks:
-  city-pulse-network:
-    driver: bridge
-
-volumes:
-  postgres_data:
-  minio_data:
+include:
+  - docker-compose.infra.yml
 
 services:
   # ==========================================
-  # 1. INFRASTRUCTURE
-  # ==========================================
-  postgres:
-    image: postgres:18-alpine
-    container_name: city-pulse-postgres
-    environment:
-      POSTGRES_USER: dev_user
-      POSTGRES_PASSWORD: dev_password
-    ports:
-      - "5433:5432"
-    networks:
-      - city-pulse-network
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dev_user"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  minio:
-    image: minio/minio:latest
-    container_name: city-pulse-minio
-    environment:
-      MINIO_ROOT_USER: dev_minio_user
-      MINIO_ROOT_PASSWORD: dev_minio_password
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    networks:
-      - city-pulse-network
-    volumes:
-      - minio_data:/data
-    command: server /data --console-address ":9001"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  minio-init:
-    image: minio/mc:latest
-    container_name: city-pulse-minio-init
-    networks:
-      - city-pulse-network
-    depends_on:
-      minio:
-        condition: service_healthy
-    entrypoint: >
-      /bin/sh -c "
-      /usr/bin/mc alias set myminio http://minio:9000 dev_minio_user dev_minio_password;
-      /usr/bin/mc mb --ignore-existing myminio/citypulse-local-bucket;
-      /usr/bin/mc anonymous set download myminio/citypulse-local-bucket;
-      exit 0;
-      "
-
-  # ==========================================
-  # 2. FOUNDATION SERVICES (Depends on Infra)
+  # FOUNDATION SERVICES (Depends on Infra)
   # ==========================================
   auth-service:
     image: denys1204/city-pulse-auth-service:${AUTH_SERVICE_VERSION:-latest}
@@ -79,6 +16,7 @@ services:
       postgres:
         condition: service_healthy
     env_file:
+      - .env-shared
       - .env-auth
     volumes:
       - ./secrets/jwt:/app/secrets/jwt:ro
@@ -99,6 +37,7 @@ services:
       auth-service:
         condition: service_started
     env_file:
+      - .env-shared
       - .env-user
 
   storage-service:
@@ -114,6 +53,7 @@ services:
       auth-service:
         condition: service_started
     env_file:
+      - .env-shared
       - .env-storage
 
   # ==========================================
@@ -132,6 +72,7 @@ services:
       storage-service:
         condition: service_started
     env_file:
+      - .env-shared
       - .env-post
 
   registration-service:
@@ -145,6 +86,7 @@ services:
       - auth-service
       - user-service
     env_file:
+      - .env-shared
       - .env-registration
 
   # ==========================================
@@ -163,3 +105,6 @@ services:
       - registration-service
       - user-service
       - storage-service
+    env_file:
+      - .env-shared
+      - .env-gateway
