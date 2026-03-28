@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${app.api.base-path}/registration")
+@RequestMapping("${app.base-path}/registration")
 public class RegistrationController {
     private final RegistrationService service;
 
