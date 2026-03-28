@@ -1,45 +1,26 @@
+import { NEW_POST_IMAGE_CONFIG } from "@/src/utils/newPostImageUtils";
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  ActivityIndicator,
-  Dimensions,
-  Image as RNImage,
-  View,
-} from "react-native";
-import {
-  Gesture,
-  GestureDetector,
-} from "react-native-gesture-handler";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
+import { ActivityIndicator, Image as RNImage, View } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
 
-const SCREEN_WIDTH = Dimensions.get("window").width;
-const PREVIEW_HEIGHT = SCREEN_WIDTH * 0.9;
 
-type ImageDimensions = {
-  width: number;
-  height: number;
-};
+const SPRING_CONFIG = { damping: 20, stiffness: 150, mass: 0.6 };
 
-type InteractiveImagePreviewProps = {
-  imageUri: string | undefined;
-};
+type ImageDimensions = { width: number; height: number };
 
-export const InteractiveImagePreview = ({
-  imageUri,
-}: InteractiveImagePreviewProps) => {
-  const { isLoading, panGesture, animatedStyle } = useImageGeometry(
+
+type InteractiveImagePreviewProps = { imageUri: string | undefined };
+
+export const InteractiveImagePreview = React.memo(({ imageUri }: InteractiveImagePreviewProps) => {
+  const { isLoading, panGesture, animatedStyle, staticStyle } = useImageGeometry(
     imageUri,
-    SCREEN_WIDTH,
-    PREVIEW_HEIGHT,
+    NEW_POST_IMAGE_CONFIG.SCREEN_WIDTH,
+    NEW_POST_IMAGE_CONFIG.IMAGE_PREVIEW_HEIGHT,
   );
 
-  if (!imageUri) {
-    return null;
-  }
+  if (!imageUri) return null;
 
   if (isLoading) {
     return (
@@ -55,14 +36,16 @@ export const InteractiveImagePreview = ({
         <Animated.View style={styles.imageContainer}>
           <Animated.Image
             source={{ uri: imageUri }}
-            style={animatedStyle}
+            style={[staticStyle, animatedStyle]}
             resizeMode="cover"
           />
         </Animated.View>
       </GestureDetector>
     </View>
   );
-};
+});
+
+
 
 const useImageGeometry = (
   imageUri: string | undefined,
@@ -70,10 +53,10 @@ const useImageGeometry = (
   viewportHeight: number,
 ) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [imageDims, setImageDims] = useState<ImageDimensions | null>(null);
 
   const imageWidth = useSharedValue(0);
   const imageHeight = useSharedValue(0);
-
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const context = useSharedValue({ x: 0, y: 0 });
@@ -85,24 +68,13 @@ const useImageGeometry = (
     RNImage.getSize(
       imageUri,
       (width, height) => {
-        const newDims = calculateFitDimensions(
-          width,
-          height,
-          viewportWidth,
-          viewportHeight,
-        );
+        const newDims = calculateFitDimensions(width, height, viewportWidth, viewportHeight);
+        setImageDims(newDims);
 
         imageWidth.value = newDims.width;
         imageHeight.value = newDims.height;
-
-        translateX.value = calculateCenterPosition(
-          newDims.width,
-          viewportWidth,
-        );
-        translateY.value = calculateCenterPosition(
-          newDims.height,
-          viewportHeight,
-        );
+        translateX.value = calculateCenterPosition(newDims.width, viewportWidth);
+        translateY.value = calculateCenterPosition(newDims.height, viewportHeight);
 
         setIsLoading(false);
       },
@@ -113,122 +85,93 @@ const useImageGeometry = (
     );
   }, [imageUri, viewportWidth, viewportHeight]);
 
-
-  const rubberBand = (value: number, min: number, max: number) => {
-    "worklet";
-    const friction = 0.3;
-    if (value < min) return min - (min - value) * friction;
-    if (value > max) return max + (value - max) * friction;
-    return value;
-  };
-
-
-
-
   const panGesture = useMemo(() => {
-    return Gesture.Pan().onStart(() => {
-      context.value = { x: translateX.value, y: translateY.value };
-    })
+    return Gesture.Pan()
+      .onStart(() => {
+        context.value = { x: translateX.value, y: translateY.value };
+      })
       .onUpdate((event) => {
+        const boundsX = calculateBoundaries(imageWidth.value, viewportWidth);
+        const boundsY = calculateBoundaries(imageHeight.value, viewportHeight);
+
         const rawX = context.value.x + event.translationX;
         const rawY = context.value.y + event.translationY;
 
-        const isWider = imageWidth.value > viewportWidth;
-        const isTaller = imageHeight.value > viewportHeight;
-
-        const minX = isWider ? viewportWidth - imageWidth.value : (viewportWidth - imageWidth.value) / 2;
-        const maxX = isWider ? 0 : (viewportWidth - imageWidth.value) / 2;
-
-        const minY = isTaller ? viewportHeight - imageHeight.value : (viewportHeight - imageHeight.value) / 2;
-        const maxY = isTaller ? 0 : (viewportHeight - imageHeight.value) / 2;
-
-        translateX.value = rubberBand(rawX, minX, maxX);
-        translateY.value = rubberBand(rawY, minY, maxY);
+        translateX.value = rubberBand(rawX, boundsX.min, boundsX.max);
+        translateY.value = rubberBand(rawY, boundsY.min, boundsY.max);
       })
       .onEnd((event) => {
-        const isWider = imageWidth.value > viewportWidth;
-        const isTaller = imageHeight.value > viewportHeight;
+        const boundsX = calculateBoundaries(imageWidth.value, viewportWidth);
+        const boundsY = calculateBoundaries(imageHeight.value, viewportHeight);
 
-        const minX = isWider ? viewportWidth - imageWidth.value : (viewportWidth - imageWidth.value) / 2;
-        const maxX = isWider ? 0 : (viewportWidth - imageWidth.value) / 2;
-
-        const minY = isTaller ? viewportHeight - imageHeight.value : (viewportHeight - imageHeight.value) / 2;
-        const maxY = isTaller ? 0 : (viewportHeight - imageHeight.value) / 2;
-
-        const springConfig = {
-          damping: 20,
-          stiffness: 150,
-          mass: 0.6,
-        };
-
-        if (translateX.value > maxX) {
-          translateX.value = withSpring(maxX, { ...springConfig, velocity: event.velocityX });
-        } else if (translateX.value < minX) {
-          translateX.value = withSpring(minX, { ...springConfig, velocity: event.velocityX });
-        }
-
-        if (translateY.value > maxY) {
-          translateY.value = withSpring(maxY, { ...springConfig, velocity: event.velocityY });
-        } else if (translateY.value < minY) {
-          translateY.value = withSpring(minY, { ...springConfig, velocity: event.velocityY });
-        }
+        translateX.value = snapToBoundary(translateX.value, event.velocityX, boundsX.min, boundsX.max);
+        translateY.value = snapToBoundary(translateY.value, event.velocityY, boundsY.min, boundsY.max);
       });
   }, [viewportWidth, viewportHeight]);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    width: imageWidth.value,
-    height: imageHeight.value,
-    transform: [
-      { translateX: translateX.value },
-      { translateY: translateY.value },
-    ],
+    transform: [{ translateX: translateX.value }, { translateY: translateY.value }],
   }));
 
-  return {
-    isLoading,
-    panGesture,
-    animatedStyle,
-  };
+  const staticStyle = useMemo(() => {
+    if (!imageDims) return undefined;
+    return { width: imageDims.width, height: imageDims.height };
+  }, [imageDims]);
+
+  return { isLoading, panGesture, animatedStyle, staticStyle };
 };
 
-const calculateFitDimensions = (
-  originalW: number,
-  originalH: number,
-  viewportW: number,
-  viewportH: number,
-): ImageDimensions => {
+
+
+const calculateFitDimensions = (originalW: number, originalH: number, viewportW: number, viewportH: number): ImageDimensions => {
   const scaleCover = Math.max(viewportW / originalW, viewportH / originalH);
   const scaleContain = Math.min(viewportW / originalW, viewportH / originalH);
-
   const MAX_SHRINK_LIMIT = scaleCover * 0.8;
-
   const finalScale = Math.max(scaleContain, MAX_SHRINK_LIMIT);
 
-  return {
-    width: originalW * finalScale,
-    height: originalH * finalScale,
-  };
+  return { width: originalW * finalScale, height: originalH * finalScale };
 };
 
-const calculateCenterPosition = (
-  imageSize: number,
-  viewportSize: number,
-): number => {
+const calculateCenterPosition = (imageSize: number, viewportSize: number): number => {
   return (viewportSize - imageSize) / 2;
 };
 
+
+
+const rubberBand = (value: number, min: number, max: number) => {
+  "worklet";
+  const friction = 0.3;
+  if (value < min) return min - (min - value) * friction;
+  if (value > max) return max + (value - max) * friction;
+  return value;
+};
+
+
+const calculateBoundaries = (imageSize: number, viewportSize: number) => {
+  "worklet";
+  const isLargerThanViewport = imageSize > viewportSize;
+  const min = isLargerThanViewport ? viewportSize - imageSize : (viewportSize - imageSize) / 2;
+  const max = isLargerThanViewport ? 0 : (viewportSize - imageSize) / 2;
+  return { min, max };
+};
+
+
+const snapToBoundary = (currentValue: number, velocity: number, min: number, max: number) => {
+  "worklet";
+  if (currentValue > max) {
+    return withSpring(max, { ...SPRING_CONFIG, velocity });
+  }
+  if (currentValue < min) {
+    return withSpring(min, { ...SPRING_CONFIG, velocity });
+  }
+  return currentValue;
+};
+
+
+
+
 const styles = StyleSheet.create({
-  viewport: {
-    width: SCREEN_WIDTH,
-    height: PREVIEW_HEIGHT,
-    overflow: "hidden",
-    position: "relative",
-  },
-  imageContainer: {
-    flex: 1,
-  },
-  centered: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  viewport: { width: NEW_POST_IMAGE_CONFIG.SCREEN_WIDTH, height: NEW_POST_IMAGE_CONFIG.IMAGE_PREVIEW_HEIGHT, overflow: "hidden", position: "relative" },
+  imageContainer: { flex: 1 },
+  centered: { justifyContent: "center", alignItems: "center" },
 });

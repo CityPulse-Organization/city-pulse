@@ -1,15 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
-import { Alert, PermissionsAndroid, Platform } from "react-native";
-import { showSettingsAlert } from "@/src/utils/handleImagePickerError";
-import { Photo } from "@/src/types/newPostImage";
-import { CONFIG } from "@/src/utils/newPostImageUtils";
+import { Linking, PermissionsAndroid, Platform } from "react-native";
+import { NEW_POST_IMAGE_CONFIG } from "@/src/utils/newPostImageUtils";
+import { Photo } from "@/src/app/(tabs)/profile/new-post-image";
+import { UIAlert } from "@/src/hoc";
 
 export const useMediaLibrary = (onInitialLoad: (firstAsset: Photo) => void) => {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [endCursor, setEndCursor] = useState<string | undefined>(undefined);
   const [hasNextPage, setHasNextPage] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
 
   const isLoadingRef = useRef(false);
 
@@ -22,13 +21,13 @@ export const useMediaLibrary = (onInitialLoad: (firstAsset: Photo) => void) => {
     if (isLoadingRef.current || !hasNextPage) return;
 
     isLoadingRef.current = true;
-    setIsLoading(true);
 
     try {
       const result = await CameraRoll.getPhotos({
-        first: CONFIG.FETCH_LIMIT,
+        first: NEW_POST_IMAGE_CONFIG.FETCH_LIMIT,
         assetType: "Photos",
         after: endCursor,
+        groupTypes: Platform.OS === "ios" ? "SavedPhotos" : "All",
       });
 
       const newPhotos: Photo[] = result.edges.map((edge) => ({
@@ -54,14 +53,20 @@ export const useMediaLibrary = (onInitialLoad: (firstAsset: Photo) => void) => {
         Platform.OS === "ios" &&
         error?.message?.toLowerCase().includes("denied")
       ) {
-        showSettingsAlert(
+        UIAlert.alert(
           "Photo Access Required",
           "City Pulse needs access to your photo library to select images. Please enable it in your device Settings.",
+          [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Open Settings",
+              onPress: () => Linking.openSettings(),
+            },
+          ]
         );
       }
     } finally {
       isLoadingRef.current = false;
-      setIsLoading(false);
     }
   }, [endCursor, hasNextPage]);
 
@@ -93,7 +98,7 @@ export const useMediaLibrary = (onInitialLoad: (firstAsset: Photo) => void) => {
   };
 };
 
-async function requestMediaPermission(): Promise<boolean> {
+const requestMediaPermission = async () => {
   if (Platform.OS !== "android") return true;
 
   const sdkVersion = parseInt(String(Platform.Version), 10);
@@ -107,7 +112,7 @@ async function requestMediaPermission(): Promise<boolean> {
   if (hasPermission) return true;
 
   return new Promise((resolve) => {
-    Alert.alert(
+    UIAlert.alert(
       "Photo Access Required",
       "City Pulse needs access to your photo library to select images.",
       [
@@ -120,10 +125,17 @@ async function requestMediaPermission(): Promise<boolean> {
           text: "Allow",
           onPress: async () => {
             const result = await PermissionsAndroid.request(permission);
+
+            if (result === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+              Linking.openSettings();
+              resolve(false);
+              return;
+            }
+
             resolve(result === PermissionsAndroid.RESULTS.GRANTED);
           },
         },
-      ],
+      ]
     );
   });
 }

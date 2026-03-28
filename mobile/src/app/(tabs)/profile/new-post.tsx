@@ -1,20 +1,19 @@
 import { NavigationHeader, ThemedBackground } from "@/src/components";
-import { UIImage } from "@/src/ui";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { Image } from "expo-image";
+import { StyleSheet } from "react-native-unistyles";
 
 export default function AddNewPostScreen() {
   const router = useRouter();
 
-  const { imageUri } = useLocalSearchParams();
-
-  const isMultiImages = Array.isArray(imageUri);
+  const { uris } = useLocalSearchParams();
 
   const onCancel = () => {
     router.back();
   };
 
   const onShare = () => {
-    router.navigate("/(tabs)/profile");
+    router.back();
   };
   return (
     <ThemedBackground>
@@ -24,9 +23,14 @@ export default function AddNewPostScreen() {
         onRightAction={onShare}
         rightActionLabel="Share"
       />
-      {!isMultiImages && (
-        <UIImage size="post" isAspectRatio={true} imageUrl={imageUri} />
-      )}
+      <Image source={{ uri: uris[0] }} style={styles.image} />
     </ThemedBackground>
   );
 }
+
+const styles = StyleSheet.create({
+  image: {
+    width: "100%",
+    height: "100%",
+  },
+});

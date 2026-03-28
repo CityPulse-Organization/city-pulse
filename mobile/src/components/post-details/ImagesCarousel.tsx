@@ -87,11 +87,12 @@ export const ImagesCarousel = memo(
 
     const renderHeader = useCallback(
       ({ imageIndex }: { imageIndex: number }) => (
-        <BlurButton
-          iconName="close"
-          onPress={() => onPressClose(imageIndex)}
-          style={styles.fullScreenHeader}
-        />
+        <View style={styles.fullScreenHeader}>
+          <BlurButton
+            iconName="close"
+            onPress={() => onPressClose(imageIndex)}
+          />
+        </View>
       ),
       [onPressClose],
     );

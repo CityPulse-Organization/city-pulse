@@ -67,7 +67,9 @@ export default function PostDetailScreen() {
         </View>
       </ScrollView>
 
-      <BlurButton onPress={handleBack} iconName="chevron-back" />
+      <View style={styles.backButton}>
+        <BlurButton onPress={handleBack} iconName="chevron-back" />
+      </View>
 
       <CommentsBottomSheet
         profileImageUrl={profileImageUrl}
@@ -191,13 +193,13 @@ const GradientIconBox = memo(
         colors={
           isActive
             ? [
-                styles.activeGradientActionIconStop0.backgroundColor,
-                styles.activeGradientActionIconStop1.backgroundColor,
-              ]
+              styles.activeGradientActionIconStop0.backgroundColor,
+              styles.activeGradientActionIconStop1.backgroundColor,
+            ]
             : [
-                styles.inactiveGradientActionIconStop0.backgroundColor,
-                styles.inactiveGradientActionIconStop1.backgroundColor,
-              ]
+              styles.inactiveGradientActionIconStop0.backgroundColor,
+              styles.inactiveGradientActionIconStop1.backgroundColor,
+            ]
         }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -306,5 +308,11 @@ const styles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.primaryText,
     lineHeight: theme.utils.ms(22),
     letterSpacing: 0.5,
+  },
+  backButton: {
+    position: "absolute",
+    left: theme.utils.s(16),
+    zIndex: 10,
+    top: Math.max(rt.insets.top, theme.utils.vs(50)),
   },
 }));

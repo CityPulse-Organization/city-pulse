@@ -4,24 +4,26 @@ import {
   ThemedBackground,
 } from "@/src/components";
 import { useNewPostImage } from "@/src/hooks/new-post/useNewPostImage";
-import { UIButton, UIText } from "@/src/ui";
+import { UIBottomSheet, UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
-import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
 import { memo, useCallback, useMemo } from "react";
-import { View, Dimensions } from "react-native";
+import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-import { ITEM_SIZE, POST_CONFIG } from "@/src/types/post";
-import { GridItem, Photo } from "@/src/types/newPostImage";
-import { useCollapsibleGallery } from "@/src/hooks/new-post/useCollapsibleGallery";
-import Animated from "react-native-reanimated";
+import { ITEM_SIZE, NEW_POST_IMAGE_CONFIG } from "@/src/utils/newPostImageUtils";
+import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
 
 
-const AnimatedFlashList = Animated.createAnimatedComponent(FlashList as any) as any;
-const SCREEN_WIDTH = Dimensions.get("window").width;
-const PREVIEW_HEIGHT = SCREEN_WIDTH * 0.9;
-const GALLERY_HEADER_HEIGHT = 60;
-const TOTAL_HEADER_HEIGHT = PREVIEW_HEIGHT + GALLERY_HEADER_HEIGHT;
+export type Photo = {
+  id: string;
+  uri: string;
+  width: number;
+  height: number;
+};
+
+export type GridItem = Photo | { id: "camera-id" };
+
+
 
 export default function AddNewPostImageScreen() {
   const {
@@ -31,26 +33,26 @@ export default function AddNewPostImageScreen() {
     selectedImages,
     isMultiSelectMode,
     toggleMultiSelect,
-    handleSelectImage,
     onCancel,
     onDone,
     openCamera,
+    bottomSheetRef,
+    snapPoints,
+    onGalleryItemPress,
+    renderNullBackdrop
   } = useNewPostImage();
 
-  const {
-    scrollHandler,
-    headerAnimatedStyle,
-    listAnimatedStyle,
-    revealHeader
-  } = useCollapsibleGallery(PREVIEW_HEIGHT);
 
-  const onGalleryItemPress = useCallback(
-    (item: Photo) => {
-      handleSelectImage(item);
-      revealHeader();
-    },
-    [handleSelectImage, revealHeader],
-  );
+
+  const renderHeader = useCallback(() => {
+    return (
+      <GalleryHeader
+        isMultiSelectMode={isMultiSelectMode}
+        onToggleMultiSelect={toggleMultiSelect}
+      />
+    );
+  }, [isMultiSelectMode, toggleMultiSelect]);
+
 
 
   const renderItem = useCallback(
@@ -100,16 +102,9 @@ export default function AddNewPostImageScreen() {
     [selectedImages, isMultiSelectMode, previewImage?.id],
   );
 
-  const listContentStyle = useMemo(
-    () => ({
-      ...styles.listContent,
-      paddingTop: TOTAL_HEADER_HEIGHT,
-    }),
-    [],
-  );
 
   return (
-    <ThemedBackground>
+    <ThemedBackground >
       <NavigationHeader
         title="New Post"
         onLeftAction={onCancel}
@@ -117,35 +112,33 @@ export default function AddNewPostImageScreen() {
       />
 
       <View style={styles.container}>
-        <Animated.View style={headerAnimatedStyle}>
-          <View style={{ height: PREVIEW_HEIGHT, width: "100%" }}>
-            <InteractiveImagePreview imageUri={previewImage?.uri} />
-          </View>
-          <GalleryHeader
-            isMultiSelectMode={isMultiSelectMode}
-            onToggleMultiSelect={toggleMultiSelect}
-          />
-        </Animated.View>
+        <InteractiveImagePreview imageUri={previewImage?.uri} />
 
-        <Animated.View style={listAnimatedStyle}>
-          <AnimatedFlashList
+        <UIBottomSheet
+          ref={bottomSheetRef}
+          index={0}
+          snapPoints={snapPoints}
+          enablePanDownToClose={false}
+          backdropComponent={renderNullBackdrop}
+          handleComponent={renderHeader}
+        >
+          <BottomSheetFlashList
             data={gridItems}
             renderItem={renderItem}
-            keyExtractor={keyExtractor}
             getItemType={getItemType}
-            numColumns={POST_CONFIG.COLUMN_COUNT}
+            keyExtractor={keyExtractor}
+            numColumns={NEW_POST_IMAGE_CONFIG.COLUMN_COUNT}
             onEndReached={loadAssets}
             onEndReachedThreshold={0.5}
-            contentContainerStyle={listContentStyle}
-            onScroll={scrollHandler}
-            scrollEventThrottle={16}
+            contentContainerStyle={styles.listContent}
             extraData={listExtraData}
           />
-        </Animated.View>
+        </UIBottomSheet>
       </View>
     </ThemedBackground>
   );
 }
+
 
 const CameraItem = memo(({ onPress }: { onPress: () => void }) => {
   return (
@@ -262,12 +255,15 @@ const styles = StyleSheet.create((theme) => ({
     overflow: "hidden",
   },
 
+  bottomSheet: {
+    backgroundColor: theme.colors.background,
+  },
+
   headerContainer: {
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: theme.utils.s(14),
-    height: GALLERY_HEADER_HEIGHT,
+    padding: theme.utils.s(14),
     backgroundColor: theme.colors.background,
   },
   textContainer: {
@@ -326,6 +322,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   listContent: {
     paddingBottom: theme.utils.vs(80),
+    backgroundColor: theme.colors.background,
   },
   selectionBadge: {
     position: "absolute",
@@ -342,3 +339,4 @@ const styles = StyleSheet.create((theme) => ({
     zIndex: 10,
   },
 }));
+

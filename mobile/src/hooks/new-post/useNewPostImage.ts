@@ -2,10 +2,11 @@ import { useCallback, useMemo } from "react";
 import { useGallerySelection } from "./useGallerySelection";
 import { useMediaLibrary } from "./useMediaLibrary";
 import { useRouter } from "expo-router";
-import { GridItem, type Photo } from "@/src/types/newPostImage";
 import ImagePicker from "react-native-image-crop-picker";
-import { handleImagePickerError } from "@/src/utils/handleImagePickerError";
-import { CONFIG } from "@/src/utils/newPostImageUtils";
+import { GridItem, Photo } from "@/src/app/(tabs)/profile/new-post-image";
+import { useGalleryBottomSheet } from "./useGalleryBottomSheet";
+import { UIAlert } from "@/src/hoc";
+import { Linking, Platform, PermissionsAndroid } from "react-native";
 
 
 export const useNewPostImage = () => {
@@ -26,38 +27,49 @@ export const useNewPostImage = () => {
     setSelectedImages([firstImage]);
   }, [setPreviewImage, setSelectedImages]);
 
+
   const { photos, loadAssets } = useMediaLibrary(onInitialLoad);
+
+
+  const {
+    bottomSheetRef,
+    snapPoints,
+    onGalleryItemPress,
+    renderNullBackdrop
+  } = useGalleryBottomSheet(handleSelectImage);
 
   const gridItems: GridItem[] = useMemo(() => [{ id: "camera-id" }, ...photos], [photos]);
 
-  const onCancel = useCallback(async () => router.back(), [router]);
+
+  const onCancel = useCallback(async () => {
+    bottomSheetRef.current?.dismiss();
+    router.back();
+  }, [router]);
 
   const onDone = useCallback(async () => {
-    const processedUris = await processSelectedImages(selectedImages);
+    bottomSheetRef.current?.dismiss();
+    const processedUris = selectedImages.map((image) => image.uri);
 
     if (processedUris) {
       router.navigate({
         pathname: "/(tabs)/profile/new-post",
-        params:
-          processedUris.length === 1
-            ? { imageUri: processedUris[0] }
-            : { uris: processedUris },
+        params: {
+          uris: processedUris
+        }
       });
     }
   }, [selectedImages, router]);
 
-  const openCamera = useCallback(() => {
+  const openCamera = useCallback(async () => {
     ImagePicker.openCamera({
-      width: CONFIG.CROPPER.width,
-      height: CONFIG.CROPPER.height,
-      cropping: true,
-      mediaType: CONFIG.CROPPER.mediaType,
-      includeExif: false,
+      mediaType: "photo",
     })
       .then((image) => {
+        bottomSheetRef.current?.dismiss();
+
         router.navigate({
           pathname: "/(tabs)/profile/new-post",
-          params: { imageUri: image.path },
+          params: { uris: [image.path] },
         });
       })
       .catch((e: unknown) => {
@@ -76,34 +88,52 @@ export const useNewPostImage = () => {
     onCancel,
     onDone,
     openCamera,
+    bottomSheetRef,
+    snapPoints,
+    onGalleryItemPress,
+    renderNullBackdrop
   };
 }
 
 
-const processSelectedImages = async (
-  selectedImages: Photo[],
-): Promise<string[] | null> => {
-  if (selectedImages.length === 0) return null;
+const handleImagePickerError = async (error: unknown) => {
+  if (Platform.OS !== "android") return
 
-  try {
-    if (selectedImages.length === 1) {
-      const image = await ImagePicker.openCropper({
-        path: selectedImages[0].uri,
-        width: CONFIG.CROPPER.width,
-        height: CONFIG.CROPPER.height,
-        compressImageMaxWidth: CONFIG.CROPPER.width,
-        compressImageMaxHeight: CONFIG.CROPPER.height,
-        cropping: true,
-        cropperCircleOverlay: false,
-        freeStyleCropEnabled: true,
-        mediaType: CONFIG.CROPPER.mediaType,
-      });
-      return [image.path];
-    } else {
-      return selectedImages.map((image) => image.uri);
-    }
-  } catch (e: unknown) {
-    handleImagePickerError(e);
-    return null;
+  const granted = await PermissionsAndroid.request(
+    PermissionsAndroid.PERMISSIONS.CAMERA,
+  );
+
+  if (typeof error !== 'object' || error === null) {
+    console.log("Unknown error format:", error);
+    return;
+  }
+
+  const pickerError = error as { code?: string; message?: string };
+
+  const code = pickerError?.code;
+  const message = (pickerError?.message || "").toLowerCase();
+
+
+  if (
+    code === "E_PERMISSION_MISSING" ||
+    code === "E_NO_CAMERA_PERMISSION" ||
+    message.includes("permission") ||
+    message.includes("denied")
+  ) {
+    UIAlert.alert(
+      "No media access",
+      "To take a photo, you need to allow the app to access the photos in your phone’s Settings",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Open Settings",
+          onPress: () => Linking.openSettings(),
+        },
+      ]
+    );
+  } else if (code === 'E_PICKER_CANCELLED') {
+    console.log("User cancelled image selection");
+  } else {
+    console.log("Camera/Gallery error:", error);
   }
 };

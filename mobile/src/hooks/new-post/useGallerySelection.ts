@@ -1,6 +1,7 @@
+import { Photo } from "@/src/app/(tabs)/profile/new-post-image";
+import { NEW_POST_IMAGE_CONFIG } from "@/src/utils/newPostImageUtils";
 import { useCallback, useState } from "react";
-import { type Photo } from "@/src/types/newPostImage";
-import { CONFIG } from "@/src/utils/newPostImageUtils";
+
 
 
 export const useGallerySelection = () => {
@@ -36,7 +37,7 @@ export const useGallerySelection = () => {
           const newSelection = prevSelected.filter((img) => img.id !== item.id);
           return newSelection.length > 0 ? newSelection : prevSelected;
         } else {
-          if (prevSelected.length < CONFIG.MAX_SELECTION) {
+          if (prevSelected.length < NEW_POST_IMAGE_CONFIG.MAX_SELECTION) {
             return [...prevSelected, item];
           }
           return prevSelected;

@@ -6,6 +6,7 @@ import { StyleSheet } from "react-native-unistyles";
 import { useRouter } from "expo-router";
 import { BlurButton } from "../BlurButton";
 import { GradientCard } from "../GradientCard";
+import { View } from "react-native";
 
 type PostMenuOptionItem = {
     id: string;
@@ -83,7 +84,9 @@ export const MenuOptionBottomSheet = memo(({ isOwnPost }: { isOwnPost: boolean }
 
     return (
         <>
-            <BlurButton onPress={presentEllipsisSheet} iconName="ellipsis-vertical" style={{ left: undefined, right: styles.ellipsisButton.right }} />
+            <View style={styles.ellipsisButton}>
+                <BlurButton onPress={presentEllipsisSheet} iconName="ellipsis-vertical" />
+            </View>
 
             <UIBottomSheet ref={ellipsisBottomSheetRef} snapPoints={["27%"]} >
                 <BottomSheetFlatList
@@ -135,7 +138,10 @@ const MenuOptionCard = memo(({ item, onExecute }: MenuOptionCardProps) => {
 
 const styles = StyleSheet.create((theme, rt) => ({
     ellipsisButton: {
+        position: "absolute",
         right: theme.utils.s(16),
+        zIndex: 10,
+        top: Math.max(rt.insets.top, theme.utils.vs(50)),
     },
     ellipseOptionContainer: {
         paddingHorizontal: theme.utils.s(20),
