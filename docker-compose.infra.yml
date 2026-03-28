@@ -19,6 +19,7 @@ services:
     environment:
       POSTGRES_USER: dev_user
       POSTGRES_PASSWORD: dev_password
+      POSTGRES_DB: city_pulse
     ports:
       - "5433:5432"
     networks:

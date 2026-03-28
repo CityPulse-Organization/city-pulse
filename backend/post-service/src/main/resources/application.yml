@@ -20,11 +20,16 @@ spring:
 
   jpa:
     open-in-view: false
+    properties:
+      hibernate:
+        default_schema: post_schema
     hibernate:
       ddl-auto: validate
 
   flyway:
     enabled: true
+    default-schema: post_schema
+    create-schemas: true
     locations: classpath:db/migration
     baseline-on-migrate: true
 

@@ -1,3 +1,3 @@
-CREATE DATABASE auth_db;
-CREATE DATABASE post_db;
-CREATE DATABASE user_db;
+-- Legacy individual databases are no longer created.
+-- We now use a single database 'city_pulse' (created by POSTGRES_DB env var)
+-- with a Schema-Per-Service pattern managed automatically by Flyway.

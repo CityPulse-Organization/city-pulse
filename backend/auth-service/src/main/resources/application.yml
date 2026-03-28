@@ -24,10 +24,15 @@ spring:
             client-id: ${OAUTH_GOOGLE_CLIENT_ID:notexists}
   jpa:
     open-in-view: false
+    properties:
+      hibernate:
+        default_schema: auth_schema
     hibernate:
       ddl-auto: validate
   flyway:
     enabled: true
+    default-schema: auth_schema
+    create-schemas: true
     locations: classpath:db/migration
     baseline-on-migrate: true
 
