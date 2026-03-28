@@ -7,6 +7,7 @@ import { UIText } from "./UIText";
 
 type UIInputProps = {
   leftElement?: React.ReactNode;
+  rightElement?: React.ReactNode;
   containerStyle?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<TextStyle>;
   dividerColor?: "accent";
@@ -16,6 +17,7 @@ type UIInputProps = {
 
 export const UIInput = ({
   leftElement,
+  rightElement,
   dividerColor,
   containerStyle,
   inputStyle,
@@ -39,6 +41,10 @@ export const UIInput = ({
         style={[styles.input, inputStyle]}
         {...props}
       />
+
+      {rightElement && (
+        <View style={styles.rightElement}>{rightElement}</View>
+      )}
 
       {error ? (
         <UIText style={styles.errorText} size="xxs">
@@ -79,6 +85,11 @@ const styles = StyleSheet.create((theme) => ({
   },
 
   leftElement: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  rightElement: {
     justifyContent: "center",
     alignItems: "center",
   },

@@ -50,12 +50,12 @@ export const useNewPostImage = () => {
     bottomSheetRef.current?.dismiss();
     const processedUris = selectedImages.map((image) => image.uri);
 
-    if (processedUris) {
+    if (processedUris.length > 0) {
       router.navigate({
         pathname: "/(tabs)/profile/new-post",
         params: {
-          uris: processedUris
-        }
+          uris: JSON.stringify(processedUris),
+        },
       });
     }
   }, [selectedImages, router]);
@@ -69,7 +69,7 @@ export const useNewPostImage = () => {
 
         router.navigate({
           pathname: "/(tabs)/profile/new-post",
-          params: { uris: [image.path] },
+          params: { uris: JSON.stringify([image.path]) },
         });
       })
       .catch((e: unknown) => {

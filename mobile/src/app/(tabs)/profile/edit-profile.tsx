@@ -144,10 +144,13 @@ const FormFieldItem = memo(({ field, control, errorMessage }: {
               field.isMultiline && styles.inputContainerMultiline,
               errorMessage && styles.inputErrorBorder
             ]}
-            inputStyle={field.isMultiline ? styles.biographyInput : undefined}
+
             multiline={field.isMultiline}
+            numberOfLines={16}
+
             placeholder={field.placeholder}
             placeholderTextColor={styles.placeholderInput.color}
+
             autoCapitalize={field.autoCapitalize}
             value={value}
             onChangeText={onChange}
@@ -213,10 +216,6 @@ const styles = StyleSheet.create((theme) => ({
     color: theme.colors.muted,
     height: theme.utils.s(18),
     marginTop: theme.utils.vs(12),
-  },
-  biographyInput: {
-    maxHeight: theme.utils.vs(340),
-    textAlignVertical: "top",
   },
   placeholderInput: {
     color: theme.colors.muted,
