@@ -7,8 +7,6 @@ WORKDIR /app
 
 RUN echo '<settings><servers><server><id>github</id><username>'${GITHUB_ACTOR}'</username><password>'${GITHUB_TOKEN}'</password></server></servers></settings>' > /usr/share/maven/ref/settings-docker.xml
 
-WORKDIR /app
-
 COPY backend/pom.xml backend/
 RUN mvn -s /usr/share/maven/ref/settings-docker.xml -f backend/pom.xml -N clean install
 
@@ -28,8 +26,8 @@ RUN mvn -s /usr/share/maven/ref/settings-docker.xml package -DskipTests -Drevisi
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-COPY --from=builder /app/backend/storage-service/target/storage-service-v1.0.jar app.jar
+COPY --from=builder /app/backend/storage-service/target/*.jar app.jar
 
 EXPOSE 8085
 
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75.0", "-XX:+UseG1GC", "-jar", "app.jar"]
