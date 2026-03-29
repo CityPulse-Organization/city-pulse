@@ -12,16 +12,7 @@ import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { ITEM_SIZE, NEW_POST_IMAGE_CONFIG } from "@/src/utils/newPostImageUtils";
 import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
-
-
-export type Photo = {
-  id: string;
-  uri: string;
-  width: number;
-  height: number;
-};
-
-export type GridItem = Photo | { id: "camera-id" };
+import { GridItem, Photo } from "@/src/types/newPostImage";
 
 
 

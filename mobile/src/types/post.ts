@@ -1,5 +1,5 @@
 import { Dimensions } from "react-native";
-import { type Photo } from "./newPostImage";
+import { Photo } from "./newPostImage";
 
 export const POST_CONFIG = {
   SCREEN_WIDTH: Dimensions.get("window").width,

@@ -56,7 +56,7 @@ export default function EditProfileScreen() {
       />
 
       <UIKeyboardAvoidingScrollView
-        keyboardVerticalOffset={styles.keyboardVertivalOffset.paddingBottom}
+        keyboardVerticalOffset={styles.keyboardVerticalOffset.paddingBottom}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         bounces={false}
@@ -229,7 +229,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     borderColor: theme.colors.alert,
   },
 
-  keyboardVertivalOffset: {
+  keyboardVerticalOffset: {
     paddingBottom: theme.utils.vs(60),
   },
 }));

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import { Linking, PermissionsAndroid, Platform } from "react-native";
 import { NEW_POST_IMAGE_CONFIG } from "@/src/utils/newPostImageUtils";
-import { Photo } from "@/src/app/(tabs)/profile/new-post-image";
+import { Photo } from "@/src/types/newPostImage";
 import { UIAlert } from "@/src/hoc";
 
 export const useMediaLibrary = (onInitialLoad: (firstAsset: Photo) => void) => {

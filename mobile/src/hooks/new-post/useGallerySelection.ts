@@ -1,4 +1,4 @@
-import { Photo } from "@/src/app/(tabs)/profile/new-post-image";
+import { Photo } from "@/src/types/newPostImage";
 import { NEW_POST_IMAGE_CONFIG } from "@/src/utils/newPostImageUtils";
 import { useCallback, useState } from "react";
 

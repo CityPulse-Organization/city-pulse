@@ -3,10 +3,10 @@ import { useGallerySelection } from "./useGallerySelection";
 import { useMediaLibrary } from "./useMediaLibrary";
 import { useRouter } from "expo-router";
 import ImagePicker from "react-native-image-crop-picker";
-import { GridItem, Photo } from "@/src/app/(tabs)/profile/new-post-image";
 import { useGalleryBottomSheet } from "./useGalleryBottomSheet";
 import { UIAlert } from "@/src/hoc";
-import { Linking, Platform, PermissionsAndroid } from "react-native";
+import { Linking, Platform } from "react-native";
+import { GridItem, Photo } from "@/src/types/newPostImage";
 
 
 export const useNewPostImage = () => {
@@ -98,10 +98,6 @@ export const useNewPostImage = () => {
 
 const handleImagePickerError = async (error: unknown) => {
   if (Platform.OS !== "android") return
-
-  const granted = await PermissionsAndroid.request(
-    PermissionsAndroid.PERMISSIONS.CAMERA,
-  );
 
   if (typeof error !== 'object' || error === null) {
     console.log("Unknown error format:", error);

@@ -1,7 +1,7 @@
-import { Photo } from "@/src/app/(tabs)/profile/new-post-image";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
+import { Photo } from "@/src/types/newPostImage";
 
 export const useGalleryBottomSheet = (handleSelectImage: (item: Photo) => void) => {
     const bottomSheetRef = useRef<BottomSheetModal>(null);
