@@ -1,4 +1,4 @@
-import { Icon, ThemedBackground } from "@/src/components";
+import { Icon, NavigationHeader, ThemedBackground } from "@/src/components";
 import { ProfileData, useEditProfile } from "@/src/hooks/profile/useEditProfileForm";
 import { UIButton, UIInput, UIText } from "@/src/ui";
 import { UIKeyboardAvoidingScrollView } from "@/src/ui/molecules/UIKeyboardAvoidingScrollView";
@@ -7,8 +7,6 @@ import { ComponentProps, memo } from "react";
 import { Control, Controller, FieldErrors, useWatch } from "react-hook-form";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-
-
 
 type FormFieldConfig = {
   id: keyof ProfileData;
@@ -24,18 +22,18 @@ const FORM_FIELDS_CONFIG: FormFieldConfig[] = [
   {
     id: "nickname",
     iconName: "person-outline",
-    placeholder: "Edit nickname",
+    placeholder: "Nickname",
     autoCapitalize: "none",
   },
   {
     id: "job",
     iconName: "briefcase-outline",
-    placeholder: "Edit job"
+    placeholder: "Job or Title"
   },
   {
     id: "biography",
     iconName: "chatbox-outline",
-    placeholder: "Edit biography",
+    placeholder: "Biography. Tell us about yourself.",
     isMultiline: true,
   },
 ];
@@ -49,21 +47,38 @@ export default function EditProfileScreen() {
   });
 
   return (
-    <ThemedBackground style={styles.page}>
-      <HeaderSection onSave={onSave} onCancel={onCancel} />
+    <ThemedBackground>
+      <NavigationHeader
+        title="Edit Profile"
+        onLeftAction={onCancel}
+        onRightAction={onSave}
+        rightActionLabel="Save"
+      />
 
       <UIKeyboardAvoidingScrollView
-        keyboardVerticalOffset={styles.keyboardVertivalOffset.paddingBottom}
+        keyboardVerticalOffset={styles.keyboardVerticalOffset.paddingBottom}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
       >
-        <UIButton
-          style={styles.avatarContainer}
-          onPress={handleAvatarPress}
-          isLoading={false}
-        >
-          <View pointerEvents="none">
-            <Icon size="medium" profileImageUrl={avatarUrl} />
-          </View>
-        </UIButton>
+        <View style={styles.avatarSection}>
+          <UIButton
+            onPress={handleAvatarPress}
+            isLoading={false}
+          >
+            <View pointerEvents="none">
+              <Icon size="medium" profileImageUrl={avatarUrl} />
+            </View>
+
+            <View style={styles.editBadge}>
+              <Ionicons name="camera" size={styles.cameraIcon.height} color={styles.cameraIcon.color} />
+            </View>
+          </UIButton>
+
+          <UIText size="md" weight="bold" style={styles.editPhotoText}>
+            Change Photo
+          </UIText>
+        </View>
 
         <FormSection control={control} errors={errors} />
       </UIKeyboardAvoidingScrollView>
@@ -71,36 +86,6 @@ export default function EditProfileScreen() {
     </ThemedBackground>
   );
 }
-
-
-type HeaderSectionProps = {
-  onCancel: () => void;
-  onSave: () => void;
-};
-
-const HeaderSection = memo(({ onCancel, onSave }: HeaderSectionProps) => {
-  return (
-    <View style={styles.headerContainer}>
-      <UIButton onPress={onCancel} isLoading={false}>
-        <UIText style={[styles.headerActionText, styles.cancelText]} size="md">
-          Cancel
-        </UIText>
-      </UIButton>
-
-      <UIButton onPress={onSave} isLoading={false}>
-        <UIText
-          style={[styles.headerActionText, styles.doneText]}
-          size="md"
-          weight="bold"
-        >
-          Done
-        </UIText>
-      </UIButton>
-    </View>
-  );
-});
-
-
 
 type FormSectionProps = {
   control: Control<ProfileData>;
@@ -119,7 +104,6 @@ const FormSection = memo(({ control, errors }: FormSectionProps) => (
     ))}
   </View>
 ));
-
 
 const FormFieldItem = memo(({ field, control, errorMessage }: {
   field: FormFieldConfig;
@@ -141,11 +125,14 @@ const FormFieldItem = memo(({ field, control, errorMessage }: {
               />
             }
             containerStyle={[
+              styles.inputContainer,
               field.isMultiline && styles.inputContainerMultiline,
               errorMessage && styles.inputErrorBorder
             ]}
-            inputStyle={field.isMultiline ? styles.biographyInput : undefined}
+            inputStyle={field.isMultiline && styles.inputMultilineText}
             multiline={field.isMultiline}
+            numberOfLines={field.isMultiline ? 12 : 1}
+            textAlignVertical={field.isMultiline ? "top" : "center"}
             placeholder={field.placeholder}
             placeholderTextColor={styles.placeholderInput.color}
             autoCapitalize={field.autoCapitalize}
@@ -164,69 +151,85 @@ const FormFieldItem = memo(({ field, control, errorMessage }: {
   );
 });
 
-
-
-const styles = StyleSheet.create((theme) => ({
-  page: {
-    gap: theme.utils.s(10),
+const styles = StyleSheet.create((theme, rt) => ({
+  scrollContent: {
+    paddingBottom: rt.insets.bottom + theme.utils.vs(40),
   },
 
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignSelf: "stretch",
+  avatarSection: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: theme.utils.vs(20),
+    paddingBottom: theme.utils.vs(20),
+    gap: theme.utils.vs(14),
   },
-  headerActionText: {
-    paddingHorizontal: theme.utils.s(12),
-    paddingVertical: theme.utils.vs(10),
+
+  editBadge: {
+    position: "absolute",
+    bottom: theme.utils.vs(4),
+    right: theme.utils.s(-4),
+    backgroundColor: theme.colors.accent,
+    padding: theme.utils.s(6),
+    borderRadius: theme.utils.s(999),
+    borderWidth: 3,
+    borderColor: theme.colors.background,
   },
-  cancelText: {
-    color: theme.colors.muted,
+
+  cameraIcon: {
+    height: theme.utils.s(16),
+    color: theme.colors.white,
   },
-  doneText: {
+
+  editPhotoText: {
     color: theme.colors.accent,
-  },
-
-  keyboardVertivalOffset: {
-    paddingBottom: theme.utils.vs(60),
-  },
-
-  avatarContainer: {
-    borderRadius: theme.utils.ms(999),
-    backgroundColor: theme.colors.backgroundSubtle,
-    alignSelf: "center",
+    letterSpacing: 0.5,
   },
 
   formContainer: {
-    alignSelf: "stretch",
-    paddingHorizontal: theme.utils.s(30),
-    paddingTop: theme.utils.vs(10),
-    gap: theme.utils.s(14),
+    paddingHorizontal: theme.utils.s(16),
+    gap: theme.utils.vs(16),
   },
+
   fieldWrapper: {
     gap: theme.utils.vs(4),
   },
+
+  inputContainer: {
+    borderBottomWidth: 0,
+    backgroundColor: theme.colors.backgroundSubtle,
+    borderRadius: theme.utils.s(12),
+    borderWidth: 1,
+    borderColor: theme.colors.borderSubtle,
+    paddingHorizontal: theme.utils.s(14),
+  },
+
   inputContainerMultiline: {
     alignItems: "baseline",
   },
+
+  inputMultilineText: {
+    minHeight: theme.utils.vs(140),
+  },
+
   iconInput: {
     color: theme.colors.muted,
-    height: theme.utils.s(18),
-    marginTop: theme.utils.vs(12),
+    height: theme.utils.s(20),
   },
-  biographyInput: {
-    maxHeight: theme.utils.vs(340),
-    textAlignVertical: "top",
-  },
+
   placeholderInput: {
     color: theme.colors.muted,
   },
 
   errorText: {
     color: theme.colors.alert,
-    marginLeft: theme.utils.s(28),
+    marginLeft: theme.utils.s(16),
   },
+
   inputErrorBorder: {
     borderColor: theme.colors.alert,
-  }
+  },
+
+  keyboardVerticalOffset: {
+    paddingBottom: theme.utils.vs(60),
+  },
 }));

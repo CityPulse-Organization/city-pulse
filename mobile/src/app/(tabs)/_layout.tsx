@@ -1,12 +1,18 @@
 import { NativeTabs, Icon, Label } from "expo-router/unstable-native-tabs";
 import { Platform } from "react-native";
 import { BottomTabBar } from "@/src/components";
-import { Tabs } from "expo-router";
+import { Tabs, useSegments, Slot } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function TabLayout() {
+  const segments = useSegments();
+  const isTabBarVisible = !segments.some((segment) =>
+    ["new-post", "new-post-image"].includes(segment)
+  );
+
   if (Platform.OS === "ios") {
+    if (!isTabBarVisible) return <Slot />;
     return (
       <NativeTabs>
         <NativeTabs.Trigger name="index">
@@ -37,12 +43,15 @@ export default function TabLayout() {
       </NativeTabs>
     );
   }
+
   return (
     <Tabs
       screenOptions={{
         header: () => null,
       }}
-      tabBar={(props) => <BottomTabBar {...props} />}
+      tabBar={(props) =>
+        isTabBarVisible ? <BottomTabBar {...props} /> : null
+      }
     >
       <Tabs.Screen
         name="index"

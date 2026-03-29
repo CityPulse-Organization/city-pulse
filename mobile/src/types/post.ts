@@ -1,5 +1,5 @@
 import { Dimensions } from "react-native";
-import { type Photo } from "./newPostImage";
+import { Photo } from "./newPostImage";
 
 export type PostResponse = {
   id: number;

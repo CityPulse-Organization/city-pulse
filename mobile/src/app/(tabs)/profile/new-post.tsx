@@ -1,87 +1,191 @@
-import { NavigationHeader, ThemedBackground } from "@/src/components";
-import { UIImage, UIInput } from "@/src/ui";
+import { BlurButton } from "@/src/components/BlurButton";
+import { ImagesCarousel } from "@/src/components/post-details/ImagesCarousel";
+import {
+  UIButton,
+  UIKeyboardAvoidingScrollView,
+  UIText,
+} from "@/src/ui";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { View } from "react-native";
+import { ThemedBackground } from "@/src/components";
+import { UIInput } from "@/src/ui";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState, useCallback } from "react";
-import { useCreatePost } from "@/src/hooks/post/useCreatePost";
-import { View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function AddNewPostScreen() {
   const router = useRouter();
-  const { imageUri } = useLocalSearchParams();
-  const [caption, setCaption] = useState("");
-  const { sharePost, isCreating } = useCreatePost();
+  const { uris } = useLocalSearchParams<{ uris: string }>();
 
-  const isMultiImages = Array.isArray(imageUri);
-  const singleImageUri = isMultiImages ? undefined : (imageUri as string);
+  const imageUris: string[] = (() => {
+    try {
+      const parsed = JSON.parse(uris ?? "[]");
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  })();
+
+  const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
 
   const onCancel = useCallback(() => {
     router.back();
   }, [router]);
 
-  const onShare = useCallback(() => {
-    if (singleImageUri) {
-      sharePost({ imageUri: singleImageUri, caption });
-    }
-  }, [singleImageUri, caption, sharePost]);
+  const onPost = () => {
+    router.push("/(tabs)/profile");
+  };
 
   return (
-    <ThemedBackground>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
+    <ThemedBackground style={styles.page}>
+      <View style={styles.backButton}>
+        <BlurButton onPress={onCancel} iconName="chevron-back" />
+      </View>
+
+      <UIKeyboardAvoidingScrollView
+        contentContainerStyle={styles.scrollContent}
+        bounces={false}
+        showsVerticalScrollIndicator={false}
       >
-        <NavigationHeader
-          title="New Post"
-          onLeftAction={onCancel}
-          onRightAction={onShare}
-          rightActionLabel="Share"
-          isLoading={isCreating}
-        />
-        <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.imageWrapper}>
-            {!isMultiImages && singleImageUri && (
-              <UIImage
-                size="post"
-                isAspectRatio={true}
-                imageUrl={singleImageUri}
+        <ImagesCarousel imagesUrl={imageUris} location={location} />
+
+        <View style={styles.formContainer}>
+          <UIInput
+            rightElement={
+              <Ionicons
+                name="location-outline"
+                size={styles.locationIcon.height}
+                color={styles.locationIcon.color}
               />
-            )}
-          </View>
+            }
+            placeholder="Location"
+            value={location}
+            onChangeText={setLocation}
+            returnKeyType="next"
+            containerStyle={styles.locationContainer}
+          />
 
           <UIInput
-            placeholder="Write a caption..."
-            value={caption}
-            onChangeText={setCaption}
+            placeholder="Description"
+            value={description}
+            onChangeText={setDescription}
             multiline
-            style={styles.captionInput}
-            containerStyle={styles.inputContainer}
+            numberOfLines={8}
+            textAlignVertical="top"
+            returnKeyType="done"
+            containerStyle={styles.descriptionContainer}
+            inputStyle={styles.descriptionInput}
           />
-        </ScrollView>
-      </KeyboardAvoidingView>
+        </View>
+
+      </UIKeyboardAvoidingScrollView>
+
+      <View style={styles.buttonWrapper}>
+        <UIButton onPress={onPost} style={styles.postButton}>
+          <LinearGradient
+            colors={[
+              styles.gradientStart.backgroundColor,
+              styles.gradientEnd.backgroundColor,
+            ]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.postButtonGradient}
+          >
+            <UIText weight="bold" size="md" style={styles.postButtonText}>
+              Post
+            </UIText>
+          </LinearGradient>
+        </UIButton>
+      </View>
     </ThemedBackground>
   );
 }
 
-const styles = StyleSheet.create((theme) => ({
-  content: {
-    paddingBottom: theme.utils.vs(40),
+const styles = StyleSheet.create((theme, rt) => ({
+  page: {
+    paddingTop: 0,
   },
-  imageWrapper: {
-    width: "100%",
-    aspectRatio: 1,
-    backgroundColor: theme.colors.backgroundSubtle,
+
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: rt.insets.bottom + theme.utils.vs(90),
   },
-  inputContainer: {
+
+  backButton: {
+    position: "absolute",
+    left: theme.utils.s(16),
+    zIndex: 10,
+    top: Math.max(rt.insets.top, theme.utils.vs(50)),
+  },
+
+  formContainer: {
     paddingHorizontal: theme.utils.s(16),
-    marginTop: theme.utils.vs(16),
-    borderWidth: 0,
-    backgroundColor: "transparent",
+    paddingTop: theme.utils.vs(36),
+    gap: theme.utils.vs(16),
   },
-  captionInput: {
-    fontSize: theme.utils.s(16),
+
+  locationContainer: {
+    backgroundColor: theme.colors.backgroundSubtle,
+    borderBottomWidth: 0,
+    borderRadius: theme.utils.s(12),
+    borderWidth: 1,
+    borderColor: theme.colors.borderSubtle,
+    paddingHorizontal: theme.utils.s(14),
+  },
+
+  locationIcon: {
+    height: theme.utils.s(20),
+    color: theme.colors.muted,
+  },
+
+  descriptionContainer: {
+    alignItems: "flex-start",
+    backgroundColor: theme.colors.backgroundSubtle,
+    borderBottomWidth: 0,
+    borderRadius: theme.utils.s(12),
+    borderWidth: 1,
+    borderColor: theme.colors.borderSubtle,
+    paddingHorizontal: theme.utils.s(14),
+  },
+
+  descriptionInput: {
+    minHeight: theme.utils.vs(120),
+  },
+
+
+  buttonWrapper: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: theme.utils.s(16),
+    paddingBottom: Math.max(rt.insets.bottom, theme.utils.vs(16)),
+    paddingTop: theme.utils.vs(12),
+  },
+
+  postButton: {
+    borderRadius: theme.utils.s(14),
+    overflow: "hidden",
+  },
+
+  postButtonGradient: {
+    paddingVertical: theme.utils.vs(16),
+    borderRadius: theme.utils.s(14),
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  postButtonText: {
     color: theme.colors.primaryText,
-    minHeight: theme.utils.vs(100),
-    textAlignVertical: "top",
+    letterSpacing: 0.5,
+  },
+
+  gradientStart: {
+    backgroundColor: theme.colors.mutedAccent,
+  },
+  gradientEnd: {
+    backgroundColor: theme.colors.accent,
   },
 }));

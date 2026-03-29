@@ -300,7 +300,7 @@ const ProfileHeader = ({
       <View style={styles.avatarWrapper}>
         <Icon
           size="medium"
-          profileImageUrl={undefined} // No avatar URL from backend yet
+          profileImageUrl={undefined} // TODO: No avatar URL from backend yet
         />
         <UIButton
           style={styles.editProfileButton}
@@ -330,7 +330,7 @@ const ProfileHeader = ({
           </UIButton>
         </View>
 
-        {/* Temporary placeholders for job/bio until backend adds them */}
+        {/* TODO: Temporary placeholders for job/bio until backend adds them */}
         <View style={[styles.row, styles.jobRow]}>
           <UIText size="sm" style={styles.roleText}>
             User
@@ -522,7 +522,7 @@ const NewPostButton = memo(() => {
   );
 });
 
-const styles = StyleSheet.create((theme, rt) => ({
+const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
     overflow: "hidden",

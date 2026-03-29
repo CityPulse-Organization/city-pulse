@@ -3,6 +3,7 @@ import { memo } from "react";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { UIButton, UIText } from "../../ui/atoms";
+import { BlurButton } from "../BlurButton";
 
 type NavigationHeaderProps = {
   title: string;
@@ -22,13 +23,12 @@ export const NavigationHeader = memo(
   }: NavigationHeaderProps) => (
     <View style={styles.headerContainer}>
       <View style={styles.headerLeft}>
-        <UIButton onPress={onLeftAction} isLoading={false}>
-          <Ionicons
-            color={styles.actionLeftIcon.color}
-            size={styles.actionLeftIcon.size}
-            name={"chevron-back-outline"}
-          />
-        </UIButton>
+        <BlurButton
+          onPress={onLeftAction}
+          iconName="chevron-back-outline"
+          style={styles.headerLeftBlurButton}
+        />
+
       </View>
 
       <View style={styles.headerCenter}>
@@ -53,17 +53,17 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     alignSelf: "stretch",
     alignItems: "center",
-    padding: 8,
-    paddingTop: 10,
+    paddingBottom: theme.utils.vs(10),
+    paddingHorizontal: theme.utils.s(12),
   },
 
   headerLeft: {
     flex: 1,
     alignItems: "flex-start",
   },
-  actionLeftIcon: {
-    color: theme.colors.icon,
-    size: theme.utils.s(20),
+  headerLeftBlurButton: {
+    paddingHorizontal: theme.utils.s(4),
+    paddingVertical: theme.utils.vs(4),
   },
 
   headerCenter: {

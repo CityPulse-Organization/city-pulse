@@ -6,6 +6,7 @@ import { StyleSheet } from "react-native-unistyles";
 import { useRouter } from "expo-router";
 import { BlurButton } from "../BlurButton";
 import { GradientCard } from "../GradientCard";
+import { View } from "react-native";
 import { Alert } from "react-native";
 
 type PostMenuOptionItem = {
@@ -66,7 +67,7 @@ export const MenuOptionBottomSheet = memo(
           id: "share",
           title: "Share",
           iconName: "share-social-outline",
-          onExecuteAction: () => {},
+          onExecuteAction: () => { },
         },
         {
           id: "report",
@@ -100,14 +101,9 @@ export const MenuOptionBottomSheet = memo(
 
     return (
       <>
-        <BlurButton
-          onPress={presentEllipsisSheet}
-          iconName="ellipsis-vertical"
-          style={{
-            left: undefined,
-            right: styles.ellipsisButton.right,
-          }}
-        />
+        <View style={styles.ellipsisButton}>
+          <BlurButton onPress={presentEllipsisSheet} iconName="ellipsis-vertical" />
+        </View>
 
         <UIBottomSheet ref={ellipsisBottomSheetRef} snapPoints={["27%"]}>
           <BottomSheetFlatList
@@ -122,70 +118,73 @@ export const MenuOptionBottomSheet = memo(
 );
 
 type MenuOptionCardProps = {
-    item: PostMenuOptionItem;
-    onExecute: (action: () => void) => void;
+  item: PostMenuOptionItem;
+  onExecute: (action: () => void) => void;
 }
 
 const MenuOptionCard = memo(({ item, onExecute }: MenuOptionCardProps) => {
-    const handlePress = useCallback(() => {
-        onExecute(item.onExecuteAction);
-    }, [item, onExecute]);
+  const handlePress = useCallback(() => {
+    onExecute(item.onExecuteAction);
+  }, [item, onExecute]);
 
-    const itemColor = item.color ?? styles.ellipseOptionButtonIcon.color;
-    const textColor = item.color ?? styles.ellipseOptionButtonText.color;
+  const itemColor = item.color ?? styles.ellipseOptionButtonIcon.color;
+  const textColor = item.color ?? styles.ellipseOptionButtonText.color;
 
-    return (
-        <GradientCard
-            colors={[
-                "rgba(168,36,224,0.45)",
-                "rgba(124,77,255,0.20)",
-                "rgba(206,147,216,0.10)",
-            ]}
-            style={styles.ellipseOptionCard}
-        >
-            <UIButton
-                onPress={handlePress}
-                style={styles.ellipseOptionButton}
-            >
-                <Ionicons color={itemColor} size={styles.ellipseOptionButtonIcon.height} name={item.iconName} />
-                <UIText size="md" style={{ color: textColor }}>
-                    {item.title}
-                </UIText>
-            </UIButton>
-        </GradientCard>
-    );
+  return (
+    <GradientCard
+      colors={[
+        "rgba(168,36,224,0.45)",
+        "rgba(124,77,255,0.20)",
+        "rgba(206,147,216,0.10)",
+      ]}
+      style={styles.ellipseOptionCard}
+    >
+      <UIButton
+        onPress={handlePress}
+        style={styles.ellipseOptionButton}
+      >
+        <Ionicons color={itemColor} size={styles.ellipseOptionButtonIcon.height} name={item.iconName} />
+        <UIText size="md" style={{ color: textColor }}>
+          {item.title}
+        </UIText>
+      </UIButton>
+    </GradientCard>
+  );
 });
 
 
 
 const styles = StyleSheet.create((theme, rt) => ({
-    ellipsisButton: {
-        right: theme.utils.s(16),
-    },
-    ellipseOptionContainer: {
-        paddingHorizontal: theme.utils.s(20),
-        paddingTop: theme.utils.s(10),
-        paddingBottom: Math.max(rt.insets.bottom, theme.utils.vs(30)),
+  ellipsisButton: {
+    position: "absolute",
+    right: theme.utils.s(16),
+    zIndex: 10,
+    top: Math.max(rt.insets.top, theme.utils.vs(50)),
+  },
+  ellipseOptionContainer: {
+    paddingHorizontal: theme.utils.s(20),
+    paddingTop: theme.utils.s(10),
+    paddingBottom: Math.max(rt.insets.bottom, theme.utils.vs(30)),
 
 
-    },
-    ellipseOptionCard: {
-        paddingBottom: theme.utils.s(4),
-        marginBottom: theme.utils.s(8),
-    },
-    ellipseOptionButton: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: theme.utils.s(20),
-        paddingVertical: theme.utils.vs(20),
-        gap: theme.utils.s(16),
-    },
-    ellipseOptionButtonIcon: {
-        height: theme.utils.s(24),
-        color: theme.colors.accent,
-    },
-    ellipseOptionButtonText: {
-        color: theme.colors.primaryText,
-        fontSize: theme.utils.ms(14),
-    },
+  },
+  ellipseOptionCard: {
+    paddingBottom: theme.utils.s(4),
+    marginBottom: theme.utils.s(8),
+  },
+  ellipseOptionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: theme.utils.s(20),
+    paddingVertical: theme.utils.vs(20),
+    gap: theme.utils.s(16),
+  },
+  ellipseOptionButtonIcon: {
+    height: theme.utils.s(24),
+    color: theme.colors.accent,
+  },
+  ellipseOptionButtonText: {
+    color: theme.colors.primaryText,
+    fontSize: theme.utils.ms(14),
+  },
 }));
