@@ -6,95 +6,120 @@ import { StyleSheet } from "react-native-unistyles";
 import { useRouter } from "expo-router";
 import { BlurButton } from "../BlurButton";
 import { GradientCard } from "../GradientCard";
+import { Alert } from "react-native";
 
 type PostMenuOptionItem = {
-    id: string;
-    title: string;
-    iconName: ComponentProps<typeof Ionicons>["name"];
-    color?: string;
-    onExecuteAction: () => void;
+  id: string;
+  title: string;
+  iconName: ComponentProps<typeof Ionicons>["name"];
+  color?: string;
+  onExecuteAction: () => void;
 };
 
+type MenuOptionBottomSheetProps = {
+  isOwnPost: boolean;
+  postId: number;
+  removePost?: () => void;
+};
 
-export const MenuOptionBottomSheet = memo(({ isOwnPost }: { isOwnPost: boolean }) => {
+export const MenuOptionBottomSheet = memo(
+  ({ isOwnPost, postId, removePost }: MenuOptionBottomSheetProps) => {
     const router = useRouter();
 
+    const handleDelete = useCallback(() => {
+      Alert.alert("Delete Post", "Are you sure you want to delete this post?", [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => removePost?.(),
+        },
+      ]);
+    }, [removePost]);
+
     const postMenuOptions: PostMenuOptionItem[] = useMemo(() => {
-        if (isOwnPost) {
-            return [
-                {
-                    id: "edit",
-                    title: "Edit",
-                    iconName: "pencil-outline",
-                    onExecuteAction: () => router.navigate("/(tabs)/profile/edit-post"),
-                },
-                {
-                    id: "delete",
-                    title: "Delete",
-                    iconName: "trash-outline",
-                    color: "red",
-                    onExecuteAction: () => console.log("Usuwanie posta..."),
-                },
-            ];
-        }
-
+      if (isOwnPost) {
         return [
-            {
-                id: "share",
-                title: "Share",
-                iconName: "share-social-outline",
-                onExecuteAction: () => { },
+          {
+            id: "edit",
+            title: "Edit",
+            iconName: "pencil-outline",
+            onExecuteAction: () => {
+              router.navigate({
+                pathname: "/(tabs)/profile/edit-post",
+                params: { id: postId },
+              });
             },
-            {
-                id: "report",
-                title: "Report",
-                iconName: "alert-circle-outline",
-                color: "red",
-                onExecuteAction: () => {
-                    throw new Error("Function not implemented.");
-                },
-            },
+          },
+          {
+            id: "delete",
+            title: "Delete",
+            iconName: "trash-outline",
+            color: "red",
+            onExecuteAction: handleDelete,
+          },
         ];
-    }, [isOwnPost, router]);
+      }
 
+      return [
+        {
+          id: "share",
+          title: "Share",
+          iconName: "share-social-outline",
+          onExecuteAction: () => {},
+        },
+        {
+          id: "report",
+          title: "Report",
+          iconName: "alert-circle-outline",
+          color: "red",
+          onExecuteAction: () => {
+            throw new Error("Function not implemented.");
+          },
+        },
+      ];
+    }, [isOwnPost, router, postId, handleDelete]);
 
     const ellipsisBottomSheetRef = useRef<BottomSheetModal>(null);
 
     const presentEllipsisSheet = useCallback(() => {
-        ellipsisBottomSheetRef.current?.present();
+      ellipsisBottomSheetRef.current?.present();
     }, []);
 
     const executeMenuOption = useCallback((callback: () => void) => {
-        ellipsisBottomSheetRef.current?.close();
-        callback();
+      ellipsisBottomSheetRef.current?.close();
+      callback();
     }, []);
 
     const renderPostMenuOptionItem = useCallback(
-        ({ item }: { item: PostMenuOptionItem }) => {
-            return (
-                <MenuOptionCard
-                    item={item}
-                    onExecute={executeMenuOption}
-                />
-            );
-        },
-        [executeMenuOption]
+      ({ item }: { item: PostMenuOptionItem }) => {
+        return <MenuOptionCard item={item} onExecute={executeMenuOption} />;
+      },
+      [executeMenuOption],
     );
 
     return (
-        <>
-            <BlurButton onPress={presentEllipsisSheet} iconName="ellipsis-vertical" style={{ left: undefined, right: styles.ellipsisButton.right }} />
+      <>
+        <BlurButton
+          onPress={presentEllipsisSheet}
+          iconName="ellipsis-vertical"
+          style={{
+            left: undefined,
+            right: styles.ellipsisButton.right,
+          }}
+        />
 
-            <UIBottomSheet ref={ellipsisBottomSheetRef} snapPoints={["27%"]} >
-                <BottomSheetFlatList
-                    data={postMenuOptions}
-                    renderItem={renderPostMenuOptionItem}
-                    contentContainerStyle={styles.ellipseOptionContainer}
-                />
-            </UIBottomSheet>
-        </>
-    )
-})
+        <UIBottomSheet ref={ellipsisBottomSheetRef} snapPoints={["27%"]}>
+          <BottomSheetFlatList
+            data={postMenuOptions}
+            renderItem={renderPostMenuOptionItem}
+            contentContainerStyle={styles.ellipseOptionContainer}
+          />
+        </UIBottomSheet>
+      </>
+    );
+  },
+);
 
 type MenuOptionCardProps = {
     item: PostMenuOptionItem;

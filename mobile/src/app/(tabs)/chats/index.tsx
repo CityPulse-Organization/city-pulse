@@ -1,5 +1,5 @@
 import { ThemedBackground } from "@/src/components";
-import { UIText } from "@/src/ui";
+import { UIText, UIEmptyState } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -10,8 +10,6 @@ import { ListRenderItem } from "@shopify/flash-list";
 import { Tabs, TabBarProps } from "react-native-collapsible-tab-view";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
-
-// ─── Mock Data ────────────────────────────────────────────────────────────────
 
 const USER_CHATS = [
   {
@@ -107,16 +105,14 @@ const ORGANIZER_CHATS = [
   },
 ];
 
-
-
 type ChatItem = (typeof USER_CHATS)[0];
 
-// ─── Chat Item ────────────────────────────────────────────────────────────────
-
 const ChatRow = memo(({ item }: { item: ChatItem }) => (
-  <Pressable 
+  <Pressable
     style={styles.chatRow}
-    onPress={() => router.push({ pathname: "/chat/[id]", params: { id: item.id } })}
+    onPress={() =>
+      router.push({ pathname: "/chat/[id]", params: { id: item.id } })
+    }
   >
     <View style={styles.avatarWrapper}>
       <Image
@@ -162,10 +158,6 @@ const ChatRow = memo(({ item }: { item: ChatItem }) => (
     </View>
   </Pressable>
 ));
-
-
-
-// ─── Tab Bar ──────────────────────────────────────────────────────────────────
 
 const ChatTab = ({
   name,
@@ -225,25 +217,17 @@ const ChatTabBar = (props: TabBarProps<string>) => {
         label="Events"
         onPress={onEventsPress}
         focusedTab={props.focusedTab}
-        icon={
-          <Ionicons name="business" size={18} style={styles.tabIcon} />
-        }
+        icon={<Ionicons name="business" size={18} style={styles.tabIcon} />}
       />
     </View>
   );
 };
 
-// ─── Header ───────────────────────────────────────────────────────────────────
-
 const HEADER_HEIGHT = 0;
 
 const Header = () => <View style={{ height: HEADER_HEIGHT }} />;
 
-// ─── Separators ───────────────────────────────────────────────────────────────
-
 const ChatSeparator = memo(() => <View style={styles.chatSeparator} />);
-
-// ─── Screen ───────────────────────────────────────────────────────────────────
 
 export default function ChatsScreen() {
   const renderChat: ListRenderItem<ChatItem> = useCallback(
@@ -268,6 +252,13 @@ export default function ChatsScreen() {
             ItemSeparatorComponent={ChatSeparator}
             contentContainerStyle={styles.chatListContent}
             showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <UIEmptyState
+                icon="chatbubble-outline"
+                title="No Chats Yet"
+                description="Your conversation history is empty. Start a new chat!"
+              />
+            }
           />
         </Tabs.Tab>
         <Tabs.Tab name="events" label="Events">
@@ -278,6 +269,13 @@ export default function ChatsScreen() {
             ItemSeparatorComponent={ChatSeparator}
             contentContainerStyle={styles.chatListContent}
             showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <UIEmptyState
+                icon="people-outline"
+                title="No Events Found"
+                description="You haven't joined any group conversations or events yet."
+              />
+            }
           />
         </Tabs.Tab>
       </Tabs.Container>
@@ -285,10 +283,7 @@ export default function ChatsScreen() {
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
-
 const styles = StyleSheet.create((theme, rt) => ({
-  // ── Tab Bar ──
   tabBar: {
     flexDirection: "row",
     alignItems: "center",
@@ -314,7 +309,6 @@ const styles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.accent,
   },
 
-  // ── Chat List ──
   chatListContent: {
     paddingTop: Platform.OS === "ios" ? theme.utils.vs(12) : theme.utils.vs(60),
     paddingBottom: theme.utils.vs(120),
@@ -396,6 +390,4 @@ const styles = StyleSheet.create((theme, rt) => ({
     backgroundColor: theme.colors.divider,
     marginLeft: theme.utils.s(68),
   },
-
-
 }));

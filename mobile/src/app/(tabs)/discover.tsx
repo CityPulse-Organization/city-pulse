@@ -1,5 +1,5 @@
-import { IconInfo, Post, POSTS, ThemedBackground } from "@/src/components";
-import { UIText } from "@/src/ui";
+import { IconInfo, Post, ThemedBackground } from "@/src/components";
+import { UIText, UIEmptyState } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { memo, useCallback, useMemo, useState } from "react";
@@ -7,10 +7,9 @@ import { Platform, Pressable, TextInput, View } from "react-native";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";
-import { PostItem } from "@/src/components/Post";
 import { router } from "expo-router";
 import { useSearchUsers } from "@/src/hooks/useSearchUsers";
-import { DiscoverUser } from "@/src/types";
+import { DiscoverUser, PostItem } from "@/src/types";
 
 const PLACES = [
   {
@@ -197,15 +196,9 @@ export default function DiscoverScreen() {
     },
     [router],
   );
-  const filteredPosts = useMemo(() => {
-    if (!input.trim()) return POSTS;
-    const query = input.toLowerCase().trim();
-    return POSTS.filter(
-      (post) =>
-        post.username.toLowerCase().includes(query) ||
-        post.description?.toLowerCase().includes(query) ||
-        post.location.toLowerCase().includes(query),
-    );
+  const filteredPosts: PostItem[] = useMemo(() => {
+    // TODO: Wire to a real feed endpoint when available
+    return [];
   }, [input]);
 
   const filteredPlaces = useMemo(() => {
@@ -274,6 +267,13 @@ export default function DiscoverScreen() {
             bounces={false}
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <UIEmptyState
+                icon="pulse"
+                title="No Pulse Found"
+                description="We couldn't find any recent activities in your area right now."
+              />
+            }
           />
         </Tabs.Tab>
         <Tabs.Tab name="people" label="People">
@@ -299,6 +299,13 @@ export default function DiscoverScreen() {
                 fetchNextPage();
             }}
             onEndReachedThreshold={0.1}
+            ListEmptyComponent={
+              <UIEmptyState
+                icon="people-outline"
+                title="No results found"
+                description={`We couldn't find any users matching "${input}"`}
+              />
+            }
           />
         </Tabs.Tab>
         <Tabs.Tab name="posts" label="Posts">
@@ -312,6 +319,13 @@ export default function DiscoverScreen() {
             bounces={false}
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <UIEmptyState
+                icon="list-outline"
+                title="No Posts"
+                description="Be the first one to share something in this area!"
+              />
+            }
           />
         </Tabs.Tab>
 
@@ -324,6 +338,13 @@ export default function DiscoverScreen() {
             ItemSeparatorComponent={ItemSeparator}
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <UIEmptyState
+                icon="location-outline"
+                title="No Places"
+                description="Try searching for a different city or category."
+              />
+            }
           />
         </Tabs.Tab>
       </Tabs.Container>

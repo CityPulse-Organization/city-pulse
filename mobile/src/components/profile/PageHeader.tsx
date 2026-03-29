@@ -9,6 +9,7 @@ type NavigationHeaderProps = {
   rightActionLabel?: string;
   onLeftAction: () => void;
   onRightAction: () => void;
+  isLoading?: boolean;
 };
 
 export const NavigationHeader = memo(
@@ -17,6 +18,7 @@ export const NavigationHeader = memo(
     rightActionLabel = "Done",
     onLeftAction,
     onRightAction,
+    isLoading = false,
   }: NavigationHeaderProps) => (
     <View style={styles.headerContainer}>
       <View style={styles.headerLeft}>
@@ -30,28 +32,21 @@ export const NavigationHeader = memo(
       </View>
 
       <View style={styles.headerCenter}>
-        <UIText
-          style={styles.headerCenterText}
-          size="md"
-          weight="bold"
-        >
+        <UIText style={styles.headerCenterText} size="md" weight="bold">
           {title}
         </UIText>
       </View>
 
       <View style={styles.headerRight}>
-        <UIButton onPress={onRightAction} isLoading={false}>
-          <UIText
-            style={styles.headerRightText}
-            size="lg"
-            weight="bold"
-          >
+        <UIButton onPress={onRightAction} isLoading={isLoading}>
+          <UIText style={styles.headerRightText} size="lg" weight="bold">
             {rightActionLabel}
           </UIText>
         </UIButton>
       </View>
     </View>
-  ));
+  ),
+);
 
 const styles = StyleSheet.create((theme) => ({
   headerContainer: {
