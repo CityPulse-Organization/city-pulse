@@ -11,41 +11,7 @@ import { router } from "expo-router";
 import { useSearchUsers } from "@/src/hooks/useSearchUsers";
 import { DiscoverUser, PostItem } from "@/src/types";
 
-const PLACES = [
-  {
-    id: "1",
-    name: "Union Square",
-    location: "San Francisco, CA",
-    type: "Park",
-  },
-  {
-    id: "2",
-    name: "Golden Gate Bridge",
-    location: "San Francisco, CA",
-    type: "Landmark",
-  },
-  {
-    id: "3",
-    name: "Fisherman's Wharf",
-    location: "San Francisco, CA",
-    type: "Tourist Attraction",
-  },
-  { id: "4", name: "Pier 39", location: "San Francisco, CA", type: "Shopping" },
-  {
-    id: "5",
-    name: "Alcatraz Island",
-    location: "San Francisco, CA",
-    type: "Historical Site",
-  },
-  {
-    id: "6",
-    name: "Chinatown",
-    location: "San Francisco, CA",
-    type: "Neighborhood",
-  },
-];
 
-type Place = (typeof PLACES)[0];
 
 const DiscoverItem = memo(({ item }: { item: DiscoverUser }) => (
   <View style={styles.itemContainer}>
@@ -57,23 +23,7 @@ const DiscoverItem = memo(({ item }: { item: DiscoverUser }) => (
   </View>
 ));
 
-const PlaceItem = memo(({ item }: { item: Place }) => (
-  <View style={styles.placeItemContainer}>
-    <View style={styles.placeIconContainer}>
-      <Ionicons
-        name="location"
-        size={20}
-        color={UnistylesRuntime.getTheme().colors.primaryText}
-      />
-    </View>
-    <View style={styles.placeTextContainer}>
-      <UIText weight="bold">{item.name}</UIText>
-      <UIText size="sm" style={styles.placeLocationText}>
-        {item.type} • {item.location}
-      </UIText>
-    </View>
-  </View>
-));
+
 
 const ItemSeparator = memo(() => <View style={styles.separator} />);
 
@@ -121,9 +71,7 @@ const DiscoverTabBar = (props: TabBarProps<string>) => {
   const onPostsPress = useCallback(() => {
     props.onTabPress("posts");
   }, [props]);
-  const onPlacesPress = useCallback(() => {
-    props.onTabPress("places");
-  }, [props]);
+
   return (
     <View style={styles.tabBar}>
       <DiscoverTab
@@ -147,13 +95,7 @@ const DiscoverTabBar = (props: TabBarProps<string>) => {
         focusedTab={props.focusedTab}
         icon={<Ionicons name="list" size={20} style={styles.tabIcon} />}
       />
-      <DiscoverTab
-        name="places"
-        label="Places"
-        onPress={onPlacesPress}
-        focusedTab={props.focusedTab}
-        icon={<Ionicons name="location" size={20} style={styles.tabIcon} />}
-      />
+
     </View>
   );
 };
@@ -201,16 +143,7 @@ export default function DiscoverScreen() {
     return [];
   }, [input]);
 
-  const filteredPlaces = useMemo(() => {
-    if (!input.trim()) return PLACES;
-    const query = input.toLowerCase().trim();
-    return PLACES.filter(
-      (place) =>
-        place.name.toLowerCase().includes(query) ||
-        place.location.toLowerCase().includes(query) ||
-        place.type.toLowerCase().includes(query),
-    );
-  }, [input]);
+
 
   const renderPost = useCallback(
     ({ item }: { item: PostItem }) => (
@@ -219,10 +152,7 @@ export default function DiscoverScreen() {
     [openPost],
   );
 
-  const renderPlace = useCallback(
-    ({ item }: { item: Place }) => <PlaceItem item={item} />,
-    [],
-  );
+
   const clearSearch = useCallback(() => {
     setInput("");
   }, []);
@@ -261,7 +191,6 @@ export default function DiscoverScreen() {
             data={filteredPosts}
             renderItem={renderPost}
             keyExtractor={keyExtractor}
-            getItemType={() => "PostItem"}
             numColumns={2}
             style={styles.list}
             bounces={false}
@@ -282,7 +211,6 @@ export default function DiscoverScreen() {
             renderItem={renderItem}
             keyExtractor={keyExtractor}
             ItemSeparatorComponent={ItemSeparator}
-            getItemType={() => "SearchUser"}
             style={styles.list}
             numColumns={2}
             bounces={false}
@@ -313,7 +241,6 @@ export default function DiscoverScreen() {
             data={filteredPosts}
             renderItem={renderPost}
             keyExtractor={keyExtractor}
-            getItemType={() => "PostItem"}
             numColumns={2}
             style={styles.list}
             bounces={false}
@@ -329,24 +256,7 @@ export default function DiscoverScreen() {
           />
         </Tabs.Tab>
 
-        <Tabs.Tab name="places" label="Places">
-          <Tabs.FlashList
-            data={filteredPlaces}
-            renderItem={renderPlace}
-            keyExtractor={keyExtractor}
-            bounces={false}
-            ItemSeparatorComponent={ItemSeparator}
-            contentContainerStyle={styles.containerStyle}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
-              <UIEmptyState
-                icon="location-outline"
-                title="No Places"
-                description="Try searching for a different city or category."
-              />
-            }
-          />
-        </Tabs.Tab>
+
       </Tabs.Container>
     </ThemedBackground>
   );

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { User } from "../types";
+import { User, Session, SessionContextType } from "../types";
 import { tokenStorage } from "../config";
 
 import { jwtDecode } from "jwt-decode";
@@ -11,17 +11,6 @@ const decodeToken = (token: string): User | null => {
   } catch {
     return null;
   }
-};
-
-type Session = {
-  user: User | null;
-  isLoading: boolean;
-};
-
-type SessionContextType = {
-  session: Session;
-  setSession: (user: User | null) => void;
-  isLoading: boolean;
 };
 
 export const SessionContext = createContext<SessionContextType>({

@@ -20,7 +20,7 @@ LogBox.ignoreLogs([
 ]);
 
 configureReanimatedLogger({
-  level: ReanimatedLogLevel.warn,
+  level: ReanimatedLogLevel.error,
   strict: false,
 });
 

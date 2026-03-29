@@ -164,7 +164,7 @@ export default function ProfileScreen() {
           )}
         >
           <Tabs.Tab name="posts" label="Posts">
-            <Tabs.FlatList
+            <Tabs.FlashList
               data={posts}
               renderItem={renderPostItem}
               keyExtractor={keyExtractor}
@@ -189,7 +189,7 @@ export default function ProfileScreen() {
             />
           </Tabs.Tab>
           <Tabs.Tab name="followers" label="Followers">
-            <Tabs.FlatList
+            <Tabs.FlashList
               data={followers}
               renderItem={renderUserItem}
               keyExtractor={keyExtractor}
@@ -218,7 +218,7 @@ export default function ProfileScreen() {
             />
           </Tabs.Tab>
           <Tabs.Tab name="followings" label="Followings">
-            <Tabs.FlatList
+            <Tabs.FlashList
               data={following}
               renderItem={renderUserItem}
               keyExtractor={keyExtractor}
@@ -247,7 +247,7 @@ export default function ProfileScreen() {
             />
           </Tabs.Tab>
           <Tabs.Tab name="saves" label="Saves">
-            <Tabs.FlatList
+            <Tabs.FlashList
               data={[]}
               renderItem={renderPostItem}
               keyExtractor={keyExtractor}
