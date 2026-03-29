@@ -1,15 +1,11 @@
 import { tokenStorage, axios } from "../config";
 import { AuthRequest, AuthResponse, User } from "../types";
 
+import { jwtDecode } from "jwt-decode";
+
 const decodeJWT = (token: string): User | null => {
   try {
-    const base64Payload = token
-      .split(".")[1]
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
-    const padded =
-      base64Payload + "=".repeat((4 - (base64Payload.length % 4)) % 4);
-    const payload = JSON.parse(atob(padded));
+    const payload = jwtDecode<{ sub: string; role?: string }>(token);
     return { id: String(payload.sub), role: payload.role ?? "USER" };
   } catch {
     return null;

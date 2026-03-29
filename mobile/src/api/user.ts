@@ -12,3 +12,35 @@ export const searchUsers = async (
   });
   return data;
 };
+
+export const followUser = async (targetId: string): Promise<void> => {
+  await axios.post(`/users/${targetId}/follow`);
+};
+
+export const unfollowUser = async (targetId: string): Promise<void> => {
+  await axios.delete(`/users/${targetId}/unfollow`);
+};
+
+export const getFollowers = async (
+  userId: string,
+  page: number = 0,
+  size: number = 24,
+): Promise<PageResponse<UserSearchResponse>> => {
+  const { data } = await axios.get<PageResponse<UserSearchResponse>>(
+    `/users/${userId}/followers`,
+    { params: { page, size } },
+  );
+  return data;
+};
+
+export const getFollowing = async (
+  userId: string,
+  page: number = 0,
+  size: number = 24,
+): Promise<PageResponse<UserSearchResponse>> => {
+  const { data } = await axios.get<PageResponse<UserSearchResponse>>(
+    `/users/${userId}/following`,
+    { params: { page, size } },
+  );
+  return data;
+};

@@ -7,166 +7,184 @@ import { useRouter } from "expo-router";
 import { BlurButton } from "../BlurButton";
 import { GradientCard } from "../GradientCard";
 import { View } from "react-native";
+import { Alert } from "react-native";
 
 type PostMenuOptionItem = {
-    id: string;
-    title: string;
-    iconName: ComponentProps<typeof Ionicons>["name"];
-    color?: string;
-    onExecuteAction: () => void;
+  id: string;
+  title: string;
+  iconName: ComponentProps<typeof Ionicons>["name"];
+  color?: string;
+  onExecuteAction: () => void;
 };
 
+type MenuOptionBottomSheetProps = {
+  isOwnPost: boolean;
+  postId: number;
+  removePost?: () => void;
+};
 
-export const MenuOptionBottomSheet = memo(({ isOwnPost }: { isOwnPost: boolean }) => {
+export const MenuOptionBottomSheet = memo(
+  ({ isOwnPost, postId, removePost }: MenuOptionBottomSheetProps) => {
     const router = useRouter();
 
+    const handleDelete = useCallback(() => {
+      Alert.alert("Delete Post", "Are you sure you want to delete this post?", [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => removePost?.(),
+        },
+      ]);
+    }, [removePost]);
+
     const postMenuOptions: PostMenuOptionItem[] = useMemo(() => {
-        if (isOwnPost) {
-            return [
-                {
-                    id: "edit",
-                    title: "Edit",
-                    iconName: "pencil-outline",
-                    onExecuteAction: () => router.navigate("/(tabs)/profile/edit-post"),
-                },
-                {
-                    id: "delete",
-                    title: "Delete",
-                    iconName: "trash-outline",
-                    color: "red",
-                    onExecuteAction: () => console.log("Usuwanie posta..."),
-                },
-            ];
-        }
-
+      if (isOwnPost) {
         return [
-            {
-                id: "share",
-                title: "Share",
-                iconName: "share-social-outline",
-                onExecuteAction: () => { },
+          {
+            id: "edit",
+            title: "Edit",
+            iconName: "pencil-outline",
+            onExecuteAction: () => {
+              router.navigate({
+                pathname: "/(tabs)/profile/edit-post",
+                params: { id: postId },
+              });
             },
-            {
-                id: "report",
-                title: "Report",
-                iconName: "alert-circle-outline",
-                color: "red",
-                onExecuteAction: () => {
-                    throw new Error("Function not implemented.");
-                },
-            },
+          },
+          {
+            id: "delete",
+            title: "Delete",
+            iconName: "trash-outline",
+            color: "red",
+            onExecuteAction: handleDelete,
+          },
         ];
-    }, [isOwnPost, router]);
+      }
 
+      return [
+        {
+          id: "share",
+          title: "Share",
+          iconName: "share-social-outline",
+          onExecuteAction: () => { },
+        },
+        {
+          id: "report",
+          title: "Report",
+          iconName: "alert-circle-outline",
+          color: "red",
+          onExecuteAction: () => {
+            throw new Error("Function not implemented.");
+          },
+        },
+      ];
+    }, [isOwnPost, router, postId, handleDelete]);
 
     const ellipsisBottomSheetRef = useRef<BottomSheetModal>(null);
 
     const presentEllipsisSheet = useCallback(() => {
-        ellipsisBottomSheetRef.current?.present();
+      ellipsisBottomSheetRef.current?.present();
     }, []);
 
     const executeMenuOption = useCallback((callback: () => void) => {
-        ellipsisBottomSheetRef.current?.close();
-        callback();
+      ellipsisBottomSheetRef.current?.close();
+      callback();
     }, []);
 
     const renderPostMenuOptionItem = useCallback(
-        ({ item }: { item: PostMenuOptionItem }) => {
-            return (
-                <MenuOptionCard
-                    item={item}
-                    onExecute={executeMenuOption}
-                />
-            );
-        },
-        [executeMenuOption]
+      ({ item }: { item: PostMenuOptionItem }) => {
+        return <MenuOptionCard item={item} onExecute={executeMenuOption} />;
+      },
+      [executeMenuOption],
     );
 
     return (
-        <>
-            <View style={styles.ellipsisButton}>
-                <BlurButton onPress={presentEllipsisSheet} iconName="ellipsis-vertical" />
-            </View>
+      <>
+        <View style={styles.ellipsisButton}>
+          <BlurButton onPress={presentEllipsisSheet} iconName="ellipsis-vertical" />
+        </View>
 
-            <UIBottomSheet ref={ellipsisBottomSheetRef} snapPoints={["27%"]} >
-                <BottomSheetFlatList
-                    data={postMenuOptions}
-                    renderItem={renderPostMenuOptionItem}
-                    contentContainerStyle={styles.ellipseOptionContainer}
-                />
-            </UIBottomSheet>
-        </>
-    )
-})
+        <UIBottomSheet ref={ellipsisBottomSheetRef} snapPoints={["27%"]}>
+          <BottomSheetFlatList
+            data={postMenuOptions}
+            renderItem={renderPostMenuOptionItem}
+            contentContainerStyle={styles.ellipseOptionContainer}
+          />
+        </UIBottomSheet>
+      </>
+    );
+  },
+);
 
 type MenuOptionCardProps = {
-    item: PostMenuOptionItem;
-    onExecute: (action: () => void) => void;
+  item: PostMenuOptionItem;
+  onExecute: (action: () => void) => void;
 }
 
 const MenuOptionCard = memo(({ item, onExecute }: MenuOptionCardProps) => {
-    const handlePress = useCallback(() => {
-        onExecute(item.onExecuteAction);
-    }, [item, onExecute]);
+  const handlePress = useCallback(() => {
+    onExecute(item.onExecuteAction);
+  }, [item, onExecute]);
 
-    const itemColor = item.color ?? styles.ellipseOptionButtonIcon.color;
-    const textColor = item.color ?? styles.ellipseOptionButtonText.color;
+  const itemColor = item.color ?? styles.ellipseOptionButtonIcon.color;
+  const textColor = item.color ?? styles.ellipseOptionButtonText.color;
 
-    return (
-        <GradientCard
-            colors={[
-                "rgba(168,36,224,0.45)",
-                "rgba(124,77,255,0.20)",
-                "rgba(206,147,216,0.10)",
-            ]}
-            style={styles.ellipseOptionCard}
-        >
-            <UIButton
-                onPress={handlePress}
-                style={styles.ellipseOptionButton}
-            >
-                <Ionicons color={itemColor} size={styles.ellipseOptionButtonIcon.height} name={item.iconName} />
-                <UIText size="md" style={{ color: textColor }}>
-                    {item.title}
-                </UIText>
-            </UIButton>
-        </GradientCard>
-    );
+  return (
+    <GradientCard
+      colors={[
+        "rgba(168,36,224,0.45)",
+        "rgba(124,77,255,0.20)",
+        "rgba(206,147,216,0.10)",
+      ]}
+      style={styles.ellipseOptionCard}
+    >
+      <UIButton
+        onPress={handlePress}
+        style={styles.ellipseOptionButton}
+      >
+        <Ionicons color={itemColor} size={styles.ellipseOptionButtonIcon.height} name={item.iconName} />
+        <UIText size="md" style={{ color: textColor }}>
+          {item.title}
+        </UIText>
+      </UIButton>
+    </GradientCard>
+  );
 });
 
 
 
 const styles = StyleSheet.create((theme, rt) => ({
-    ellipsisButton: {
-        position: "absolute",
-        right: theme.utils.s(16),
-        zIndex: 10,
-        top: Math.max(rt.insets.top, theme.utils.vs(50)),
-    },
-    ellipseOptionContainer: {
-        paddingHorizontal: theme.utils.s(20),
-        paddingTop: theme.utils.s(10),
-        paddingBottom: Math.max(rt.insets.bottom, theme.utils.vs(30)),
+  ellipsisButton: {
+    position: "absolute",
+    right: theme.utils.s(16),
+    zIndex: 10,
+    top: Math.max(rt.insets.top, theme.utils.vs(50)),
+  },
+  ellipseOptionContainer: {
+    paddingHorizontal: theme.utils.s(20),
+    paddingTop: theme.utils.s(10),
+    paddingBottom: Math.max(rt.insets.bottom, theme.utils.vs(30)),
 
 
-    },
-    ellipseOptionCard: {
-        paddingBottom: theme.utils.s(4),
-        marginBottom: theme.utils.s(8),
-    },
-    ellipseOptionButton: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: theme.utils.s(20),
-        paddingVertical: theme.utils.vs(20),
-        gap: theme.utils.s(16),
-    },
-    ellipseOptionButtonIcon: {
-        height: theme.utils.s(24),
-        color: theme.colors.accent,
-    },
-    ellipseOptionButtonText: {
-        color: theme.colors.primaryText,
-        fontSize: theme.utils.ms(14),
-    },
+  },
+  ellipseOptionCard: {
+    paddingBottom: theme.utils.s(4),
+    marginBottom: theme.utils.s(8),
+  },
+  ellipseOptionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: theme.utils.s(20),
+    paddingVertical: theme.utils.vs(20),
+    gap: theme.utils.s(16),
+  },
+  ellipseOptionButtonIcon: {
+    height: theme.utils.s(24),
+    color: theme.colors.accent,
+  },
+  ellipseOptionButtonText: {
+    color: theme.colors.primaryText,
+    fontSize: theme.utils.ms(14),
+  },
 }));

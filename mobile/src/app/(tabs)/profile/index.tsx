@@ -1,161 +1,65 @@
-import { StyleSheet } from "react-native-unistyles";
-import {
-  Icon,
-  IconInfo,
-  Post,
-  PostItem,
-  POSTS,
-  ThemedBackground,
-} from "@/src/components";
-import { UIButton, UIInput, UIText } from "@/src/ui";
+import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
+import { Icon, IconInfo, Post, ThemedBackground } from "@/src/components";
+import { UIButton, UIEmptyState, UIInput, UIText } from "@/src/ui";
 import { useRouter } from "expo-router";
 import { ComponentProps, memo, useCallback, useState } from "react";
 import React from "react";
-import { View } from "react-native";
+import { RefreshControl, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLogout } from "@/src/hooks";
 import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";
 import { runOnJS, useAnimatedReaction } from "react-native-reanimated";
-import { DiscoverUser } from "@/src/types";
-
-export const SEARCH_USERS: DiscoverUser[] = [
-  {
-    id: "1",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "no",
-  },
-  {
-    id: "2",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Journalist",
-  },
-  {
-    id: "3",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Habd worker",
-  },
-  {
-    id: "4",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "no",
-  },
-  {
-    id: "5",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "no",
-  },
-  {
-    id: "6",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Software Engineer",
-  },
-  {
-    id: "7",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Software Engineer",
-  },
-  {
-    id: "8",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Software Engineer",
-  },
-  {
-    id: "9",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "no",
-  },
-  {
-    id: "10",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Software Engineer",
-  },
-  {
-    id: "11",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Software Engineer",
-  },
-  {
-    id: "12",
-    username: "kyrylo1",
-    profileImageUrl:
-      "https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg",
-    job: "Software Engineer",
-  },
-];
+import { DiscoverUser, PostItem } from "@/src/types";
+import { useProfile } from "@/src/hooks/profile/useProfile";
+import { useFollow } from "@/src/hooks/useFollow";
 
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
-const PROFILE_STATS_CONFIG: {
+type ProfileStat = {
   id: string;
   name: string;
   title: string;
   iconName: IconName;
   quantity: number;
-}[] = [
-    {
-      id: "1",
-      name: "posts",
-      title: "Posts",
-      iconName: "document-text-outline",
-      quantity: 398,
-    },
-    {
-      id: "2",
-      name: "followers",
-      title: "Followers",
-      iconName: "people-outline",
-      quantity: 398,
-    },
-    {
-      id: "3",
-      name: "followings",
-      title: "Followings",
-      iconName: "grid-outline",
-      quantity: 34,
-    },
-    {
-      id: "4",
-      name: "saves",
-      title: "Saves",
-      iconName: "bookmark-outline",
-      quantity: 34,
-    },
-  ];
+};
 
 const ItemSeparator = memo(() => <View style={styles.listSeparator} />);
 
-const SearchUserItem = memo(({ item }: { item: DiscoverUser }) => (
-  <View style={styles.itemContainer}>
-    <IconInfo
-      username={item.username}
-      profileImageUrl={item.profileImageUrl}
-      statusText={item.job}
-    />
-  </View>
-));
+const SearchUserItem = memo(({ item }: { item: DiscoverUser }) => {
+  const { isFollowing, toggleFollow, isPending, isSelf } = useFollow(item.id);
+
+  return (
+    <View style={styles.itemContainer}>
+      <IconInfo
+        username={item.username}
+        profileImageUrl={item.profileImageUrl}
+        statusText={item.job}
+      />
+      {!isSelf && (
+        <UIButton
+          style={[
+            styles.followButton,
+            isFollowing && styles.followButtonActive,
+          ]}
+          onPress={toggleFollow}
+          isLoading={isPending}
+        >
+          <UIText
+            size="xxs"
+            weight="bold"
+            style={[
+              styles.followButtonText,
+              isFollowing && styles.followButtonTextActive,
+            ]}
+          >
+            {isFollowing ? "Unfollow" : "Follow"}
+          </UIText>
+        </UIButton>
+      )}
+    </View>
+  );
+});
 
 const SearchInput = memo(() => {
   const [input, setInput] = useState("");
@@ -181,6 +85,35 @@ const SearchInput = memo(() => {
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const theme = UnistylesRuntime.getTheme();
+  const {
+    userId,
+    posts,
+    postsCount,
+    fetchNextPosts,
+    hasNextPostsPage,
+    isFetchingNextPosts,
+    followers,
+    followersCount,
+    fetchNextFollowers,
+    hasNextFollowersPage,
+    isFetchingNextFollowers,
+    following,
+    followingCount,
+    fetchNextFollowing,
+    hasNextFollowingPage,
+    isFetchingNextFollowing,
+    refetchAll,
+    isRefetching,
+  } = useProfile();
+
+  const refreshControl = (
+    <RefreshControl
+      refreshing={isRefetching}
+      onRefresh={refetchAll}
+      tintColor={theme.colors.accent}
+    />
+  );
 
   const navigateToPostDetails = useCallback(
     (id: string) => {
@@ -214,63 +147,123 @@ export default function ProfileScreen() {
       <View style={styles.container}>
         <Tabs.Container
           revealHeaderOnScroll={true}
-          renderHeader={ProfileHeader}
-          renderTabBar={ProfileTabBar}
+          renderHeader={() => (
+            <ProfileHeader
+              followersCount={followersCount}
+              followingCount={followingCount}
+              userId={userId}
+            />
+          )}
+          renderTabBar={(props) => (
+            <ProfileTabBar
+              {...props}
+              postsCount={postsCount}
+              followersCount={followersCount}
+              followingCount={followingCount}
+            />
+          )}
         >
           <Tabs.Tab name="posts" label="Posts">
-            <Tabs.FlatList
-              data={POSTS}
+            <Tabs.FlashList
+              data={posts}
               renderItem={renderPostItem}
               keyExtractor={keyExtractor}
               numColumns={2}
-              bounces={false}
+              bounces={true}
               style={styles.list}
               contentContainerStyle={styles.listContainerStyle}
               showsVerticalScrollIndicator={false}
+              refreshControl={refreshControl}
+              onEndReached={() => {
+                if (hasNextPostsPage && !isFetchingNextPosts)
+                  fetchNextPosts();
+              }}
+              onEndReachedThreshold={0.3}
+              ListEmptyComponent={
+                <UIEmptyState
+                  icon="image-outline"
+                  title="No Posts Yet"
+                  description="Share your first photo to see it here!"
+                />
+              }
             />
           </Tabs.Tab>
           <Tabs.Tab name="followers" label="Followers">
-            <Tabs.FlatList
-              data={SEARCH_USERS}
+            <Tabs.FlashList
+              data={followers}
               renderItem={renderUserItem}
               keyExtractor={keyExtractor}
               ItemSeparatorComponent={ItemSeparator}
               ListHeaderComponent={SearchInput}
               numColumns={2}
-              bounces={false}
+              bounces={true}
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode="on-drag"
               style={styles.list}
               contentContainerStyle={styles.listContainerStyle}
               showsVerticalScrollIndicator={false}
+              refreshControl={refreshControl}
+              onEndReached={() => {
+                if (hasNextFollowersPage && !isFetchingNextFollowers)
+                  fetchNextFollowers();
+              }}
+              onEndReachedThreshold={0.3}
+              ListEmptyComponent={
+                <UIEmptyState
+                  icon="people-outline"
+                  title="No Followers"
+                  description="When people follow you, they'll appear here."
+                />
+              }
             />
           </Tabs.Tab>
           <Tabs.Tab name="followings" label="Followings">
-            <Tabs.FlatList
-              data={SEARCH_USERS}
+            <Tabs.FlashList
+              data={following}
               renderItem={renderUserItem}
               keyExtractor={keyExtractor}
               ItemSeparatorComponent={ItemSeparator}
               ListHeaderComponent={SearchInput}
               numColumns={2}
-              bounces={false}
+              bounces={true}
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode="on-drag"
               style={styles.list}
               contentContainerStyle={styles.listContainerStyle}
               showsVerticalScrollIndicator={false}
+              refreshControl={refreshControl}
+              onEndReached={() => {
+                if (hasNextFollowingPage && !isFetchingNextFollowing)
+                  fetchNextFollowing();
+              }}
+              onEndReachedThreshold={0.3}
+              ListEmptyComponent={
+                <UIEmptyState
+                  icon="person-add-outline"
+                  title="No Following"
+                  description="Start following people to see their activities."
+                />
+              }
             />
           </Tabs.Tab>
           <Tabs.Tab name="saves" label="Saves">
-            <Tabs.FlatList
-              data={POSTS}
+            <Tabs.FlashList
+              data={[]}
               renderItem={renderPostItem}
               keyExtractor={keyExtractor}
               numColumns={2}
-              bounces={false}
+              bounces={true}
               style={styles.list}
               contentContainerStyle={styles.listContainerStyle}
               showsVerticalScrollIndicator={false}
+              refreshControl={refreshControl}
+              ListEmptyComponent={
+                <UIEmptyState
+                  icon="bookmark-outline"
+                  title="No Saved Posts"
+                  description="Keep track of what you love by saving posts."
+                />
+              }
             />
           </Tabs.Tab>
         </Tabs.Container>
@@ -279,7 +272,17 @@ export default function ProfileScreen() {
   );
 }
 
-const ProfileHeader = () => {
+type ProfileHeaderProps = {
+  followersCount: number;
+  followingCount: number;
+  userId?: string;
+};
+
+const ProfileHeader = ({
+  followersCount,
+  followingCount,
+  userId,
+}: ProfileHeaderProps) => {
   const router = useRouter();
 
   const navigateToEditProfile = useCallback(() => {
@@ -297,7 +300,7 @@ const ProfileHeader = () => {
       <View style={styles.avatarWrapper}>
         <Icon
           size="medium"
-          profileImageUrl="https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg"
+          profileImageUrl={undefined} // TODO: No avatar URL from backend yet
         />
         <UIButton
           style={styles.editProfileButton}
@@ -315,7 +318,7 @@ const ProfileHeader = () => {
       <View style={styles.infoContainer}>
         <View style={[styles.row, styles.usernameRow]}>
           <UIText size="lg" weight="bold" style={styles.text}>
-            Kyrylo
+            {userId ? `${userId.substring(0, 8)}...` : "Loading..."}
           </UIText>
 
           <UIButton onPress={onLogoutPress} isLoading={false}>
@@ -327,9 +330,10 @@ const ProfileHeader = () => {
           </UIButton>
         </View>
 
+        {/* TODO: Temporary placeholders for job/bio until backend adds them */}
         <View style={[styles.row, styles.jobRow]}>
           <UIText size="sm" style={styles.roleText}>
-            Boss
+            User
           </UIText>
 
           <Ionicons
@@ -340,15 +344,20 @@ const ProfileHeader = () => {
         </View>
 
         <UIText size="sm" style={styles.bioText}>
-          Hey! I'm Kyrylo 👋 A boss passionate about telling stories that
-          matter.
+          Welcome to my City Pulse profile!
         </UIText>
       </View>
     </View>
   );
 };
 
-const ProfileTabBar = (props: TabBarProps<string>) => {
+type ProfileTabBarProps = TabBarProps<string> & {
+  postsCount: number;
+  followersCount: number;
+  followingCount: number;
+};
+
+const ProfileTabBar = (props: ProfileTabBarProps) => {
   const [activeTab, setActiveTab] = useState("posts");
 
   useAnimatedReaction(
@@ -363,6 +372,37 @@ const ProfileTabBar = (props: TabBarProps<string>) => {
 
   const isPostsTabFocused = activeTab === "posts";
 
+  const stats: ProfileStat[] = [
+    {
+      id: "1",
+      name: "posts",
+      title: "Posts",
+      iconName: "document-text-outline",
+      quantity: props.postsCount,
+    },
+    {
+      id: "2",
+      name: "followers",
+      title: "Followers",
+      iconName: "people-outline",
+      quantity: props.followersCount,
+    },
+    {
+      id: "3",
+      name: "followings",
+      title: "Followings",
+      iconName: "grid-outline",
+      quantity: props.followingCount,
+    },
+    {
+      id: "4",
+      name: "saves",
+      title: "Saves",
+      iconName: "bookmark-outline",
+      quantity: 0,
+    },
+  ];
+
   const onPress = useCallback(
     (name: string) => {
       props.onTabPress(name);
@@ -373,7 +413,7 @@ const ProfileTabBar = (props: TabBarProps<string>) => {
   return (
     <View style={styles.statsTabBar}>
       <View style={styles.statsCard}>
-        {PROFILE_STATS_CONFIG.map((statConfig, index) => (
+        {stats.map((statConfig, index) => (
           <React.Fragment key={statConfig.id}>
             <View style={styles.statItemContainer}>
               <StatsButton
@@ -385,7 +425,7 @@ const ProfileTabBar = (props: TabBarProps<string>) => {
                 activeTab={activeTab}
               />
             </View>
-            {index < PROFILE_STATS_CONFIG.length - 1 && (
+            {index < stats.length - 1 && (
               <LinearGradient
                 colors={[
                   "rgba(176, 38, 255, 0)",
@@ -649,5 +689,25 @@ const styles = StyleSheet.create((theme) => ({
   newPostIcon: {
     color: theme.colors.white,
     height: theme.utils.s(20),
+  },
+
+  followButton: {
+    marginTop: theme.utils.vs(6),
+    paddingHorizontal: theme.utils.s(14),
+    paddingVertical: theme.utils.vs(5),
+    borderRadius: theme.utils.ms(16),
+    backgroundColor: theme.colors.accent,
+    alignSelf: "flex-start",
+  },
+  followButtonActive: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: theme.colors.muted,
+  },
+  followButtonText: {
+    color: theme.colors.white,
+  },
+  followButtonTextActive: {
+    color: theme.colors.muted,
   },
 }));

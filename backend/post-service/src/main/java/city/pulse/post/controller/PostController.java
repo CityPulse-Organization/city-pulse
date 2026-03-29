@@ -3,13 +3,12 @@ package city.pulse.post.controller;
 import city.pulse.post.dto.CreatePostRequest;
 import city.pulse.post.dto.PostResponse;
 import city.pulse.post.dto.UpdatePostRequest;
-import city.pulse.post.helper.UserHelper;
 import city.pulse.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
+import city.pulse.common.security.annotation.CurrentUser;
+import city.pulse.common.security.model.UserInfo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.data.domain.Pageable;
@@ -22,16 +21,15 @@ import java.util.UUID;
 @RequestMapping("${app.base-path}/posts")
 public class PostController {
     private final PostService service;
-    private final UserHelper helper;
 
     @PostMapping
     public ResponseEntity<PostResponse> createNewPost(
             @Valid @RequestBody CreatePostRequest dto,
-            @AuthenticationPrincipal Jwt jwt) {
+            @CurrentUser UserInfo userInfo) {
         var created = service.createPost(
                 dto.imageUrl(),
                 dto.caption(),
-                helper.getUserId(jwt));
+                userInfo.id());
 
         var location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -44,8 +42,8 @@ public class PostController {
     @PostMapping("/{id}/like")
     public ResponseEntity<Void> likePost(
             @PathVariable Long id,
-            @AuthenticationPrincipal Jwt jwt) {
-        service.likePost(id, helper.getUserId(jwt));
+            @CurrentUser UserInfo userInfo) {
+        service.likePost(id, userInfo.id());
         return ResponseEntity.ok().build();
     }
 
@@ -65,23 +63,23 @@ public class PostController {
     public PostResponse updatePostCaption(
             @PathVariable Long id,
             @Valid @RequestBody UpdatePostRequest dto,
-            @AuthenticationPrincipal Jwt jwt) {
-        return service.updatePostCaption(id, helper.getUserId(jwt), dto.caption());
+            @CurrentUser UserInfo userInfo) {
+        return service.updatePostCaption(id, userInfo.id(), dto.caption());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(
             @PathVariable Long id,
-            @AuthenticationPrincipal Jwt jwt) {
-        service.deletePost(id, helper.getUserId(jwt));
+            @CurrentUser UserInfo userInfo) {
+        service.deletePost(id, userInfo.id());
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}/like")
     public ResponseEntity<Void> unlikePost(
             @PathVariable Long id,
-            @AuthenticationPrincipal Jwt jwt) {
-        service.unlikePost(id, helper.getUserId(jwt));
+            @CurrentUser UserInfo userInfo) {
+        service.unlikePost(id, userInfo.id());
         return ResponseEntity.noContent().build();
     }
 }

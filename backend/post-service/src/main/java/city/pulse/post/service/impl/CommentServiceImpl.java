@@ -2,7 +2,7 @@ package city.pulse.post.service.impl;
 
 import city.pulse.post.dto.CommentResponse;
 import city.pulse.post.exception.CommentNotFoundException;
-import city.pulse.post.helper.UserHelper;
+
 import city.pulse.post.mapper.CommentMapper;
 import city.pulse.post.model.Comment;
 import city.pulse.post.repository.CommentRepository;
@@ -22,7 +22,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository repository;
     private final CommentMapper mapper;
     private final PostService service;
-    private final UserHelper helper;
+
 
     @Override
     @Transactional
@@ -49,7 +49,9 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public void deleteComment(Long commentId, UUID userId) {
         var comment = getCommentEntityByIdOrThrow(commentId);
-        helper.checkUserPermissions(comment.getUserId(), userId);
+        if (!comment.getUserId().equals(userId)) {
+            throw new RuntimeException("Access Denied");
+        }
         repository.delete(comment);
     }
 }

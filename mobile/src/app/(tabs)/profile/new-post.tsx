@@ -1,17 +1,17 @@
-import { ThemedBackground } from "@/src/components";
 import { BlurButton } from "@/src/components/BlurButton";
 import { ImagesCarousel } from "@/src/components/post-details/ImagesCarousel";
 import {
   UIButton,
-  UIInput,
   UIKeyboardAvoidingScrollView,
   UIText,
 } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useState } from "react";
 import { View } from "react-native";
+import { ThemedBackground } from "@/src/components";
+import { UIInput } from "@/src/ui";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useState, useCallback } from "react";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function AddNewPostScreen() {
@@ -30,9 +30,9 @@ export default function AddNewPostScreen() {
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
 
-  const onCancel = () => {
+  const onCancel = useCallback(() => {
     router.back();
-  };
+  }, [router]);
 
   const onPost = () => {
     router.push("/(tabs)/profile");

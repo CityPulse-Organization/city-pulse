@@ -1,7 +1,5 @@
 import {
   IconInfo,
-  MOCK_COMMENTS,
-  MOCK_LIKE_COUNT,
   ThemedBackground,
   ImagesCarousel,
 } from "@/src/components";
@@ -25,10 +23,20 @@ export default function PostDetailScreen() {
     profileImageUrl,
     accidentTime,
     location,
+    likeCount,
+    commentCount,
+    toggleLike,
+    comments,
+    sendComment,
     commentsBottomSheetRef,
     openPresentCommentsSheet,
     handleBack,
     isOwnPost,
+    postId,
+    removePost,
+    fetchNextComments,
+    hasNextCommentsPage,
+    isFetchingNextComments,
   } = usePostDetails();
 
   return (
@@ -45,6 +53,9 @@ export default function PostDetailScreen() {
             profileImageUrl={profileImageUrl}
             username={username}
             accidentTime={accidentTime}
+            likeCount={likeCount}
+            commentCount={commentCount}
+            toggleLike={toggleLike}
             openPresentCommentsSheet={openPresentCommentsSheet}
           />
 
@@ -74,8 +85,17 @@ export default function PostDetailScreen() {
       <CommentsBottomSheet
         profileImageUrl={profileImageUrl}
         commentsBottomSheetRef={commentsBottomSheetRef}
+        comments={comments}
+        onSendComment={sendComment}
+        fetchNextComments={fetchNextComments}
+        hasNextCommentsPage={hasNextCommentsPage}
+        isFetchingNextComments={isFetchingNextComments}
       />
-      <MenuOptionBottomSheet isOwnPost={isOwnPost} />
+      <MenuOptionBottomSheet
+        isOwnPost={isOwnPost}
+        postId={postId}
+        removePost={removePost}
+      />
     </ThemedBackground>
   );
 }
@@ -84,6 +104,9 @@ type UserInfoRowProps = {
   profileImageUrl: string;
   username: string;
   accidentTime: string;
+  likeCount: number;
+  commentCount: number;
+  toggleLike: (isCurrentlyLiked: boolean) => void;
   openPresentCommentsSheet: () => void;
 };
 
@@ -92,20 +115,17 @@ const UserInfoRow = memo(
     profileImageUrl,
     username,
     accidentTime,
+    likeCount,
+    commentCount,
+    toggleLike,
     openPresentCommentsSheet,
   }: UserInfoRowProps) => {
     const [isLikedByCurrentUser, setIsLikedByCurrentUser] = useState(false);
-    const [totalLikeCount, setTotalLikeCount] = useState(MOCK_LIKE_COUNT);
 
     const toggleLikeStatus = useCallback(() => {
-      setIsLikedByCurrentUser((prev) => {
-        const nextStatus = !prev;
-        setTotalLikeCount((currentCount) =>
-          nextStatus ? currentCount + 1 : currentCount - 1,
-        );
-        return nextStatus;
-      });
-    }, []);
+      toggleLike(isLikedByCurrentUser);
+      setIsLikedByCurrentUser((prev) => !prev);
+    }, [isLikedByCurrentUser, toggleLike]);
 
     const [isSavedByCurrentUser, setIsSavedByCurrentUser] = useState(false);
     const toggleSaveStatus = useCallback(() => {
@@ -142,7 +162,7 @@ const UserInfoRow = memo(
                   : styles.actionCount
               }
             >
-              {totalLikeCount}
+              {likeCount}
             </UIText>
           </UIButton>
 
@@ -157,7 +177,7 @@ const UserInfoRow = memo(
             />
 
             <UIText weight="normal" size="sm" style={styles.actionCount}>
-              {MOCK_COMMENTS.length}
+              {commentCount}
             </UIText>
           </UIButton>
 

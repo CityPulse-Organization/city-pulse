@@ -1,5 +1,5 @@
-import { IconInfo, Post, POSTS, ThemedBackground } from "@/src/components";
-import { UIText } from "@/src/ui";
+import { IconInfo, Post, ThemedBackground } from "@/src/components";
+import { UIText, UIEmptyState } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { memo, useCallback, useMemo, useState } from "react";
@@ -7,46 +7,11 @@ import { Platform, Pressable, TextInput, View } from "react-native";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";
-import { PostItem } from "@/src/components/Post";
 import { router } from "expo-router";
 import { useSearchUsers } from "@/src/hooks/useSearchUsers";
-import { DiscoverUser } from "@/src/types";
+import { DiscoverUser, PostItem } from "@/src/types";
 
-const PLACES = [
-  {
-    id: "1",
-    name: "Union Square",
-    location: "San Francisco, CA",
-    type: "Park",
-  },
-  {
-    id: "2",
-    name: "Golden Gate Bridge",
-    location: "San Francisco, CA",
-    type: "Landmark",
-  },
-  {
-    id: "3",
-    name: "Fisherman's Wharf",
-    location: "San Francisco, CA",
-    type: "Tourist Attraction",
-  },
-  { id: "4", name: "Pier 39", location: "San Francisco, CA", type: "Shopping" },
-  {
-    id: "5",
-    name: "Alcatraz Island",
-    location: "San Francisco, CA",
-    type: "Historical Site",
-  },
-  {
-    id: "6",
-    name: "Chinatown",
-    location: "San Francisco, CA",
-    type: "Neighborhood",
-  },
-];
 
-type Place = (typeof PLACES)[0];
 
 const DiscoverItem = memo(({ item }: { item: DiscoverUser }) => (
   <View style={styles.itemContainer}>
@@ -58,23 +23,7 @@ const DiscoverItem = memo(({ item }: { item: DiscoverUser }) => (
   </View>
 ));
 
-const PlaceItem = memo(({ item }: { item: Place }) => (
-  <View style={styles.placeItemContainer}>
-    <View style={styles.placeIconContainer}>
-      <Ionicons
-        name="location"
-        size={20}
-        color={UnistylesRuntime.getTheme().colors.primaryText}
-      />
-    </View>
-    <View style={styles.placeTextContainer}>
-      <UIText weight="bold">{item.name}</UIText>
-      <UIText size="sm" style={styles.placeLocationText}>
-        {item.type} • {item.location}
-      </UIText>
-    </View>
-  </View>
-));
+
 
 const ItemSeparator = memo(() => <View style={styles.separator} />);
 
@@ -122,9 +71,7 @@ const DiscoverTabBar = (props: TabBarProps<string>) => {
   const onPostsPress = useCallback(() => {
     props.onTabPress("posts");
   }, [props]);
-  const onPlacesPress = useCallback(() => {
-    props.onTabPress("places");
-  }, [props]);
+
   return (
     <View style={styles.tabBar}>
       <DiscoverTab
@@ -148,13 +95,7 @@ const DiscoverTabBar = (props: TabBarProps<string>) => {
         focusedTab={props.focusedTab}
         icon={<Ionicons name="list" size={20} style={styles.tabIcon} />}
       />
-      <DiscoverTab
-        name="places"
-        label="Places"
-        onPress={onPlacesPress}
-        focusedTab={props.focusedTab}
-        icon={<Ionicons name="location" size={20} style={styles.tabIcon} />}
-      />
+
     </View>
   );
 };
@@ -197,27 +138,12 @@ export default function DiscoverScreen() {
     },
     [router],
   );
-  const filteredPosts = useMemo(() => {
-    if (!input.trim()) return POSTS;
-    const query = input.toLowerCase().trim();
-    return POSTS.filter(
-      (post) =>
-        post.username.toLowerCase().includes(query) ||
-        post.description?.toLowerCase().includes(query) ||
-        post.location.toLowerCase().includes(query),
-    );
+  const filteredPosts: PostItem[] = useMemo(() => {
+    // TODO: Wire to a real feed endpoint when available
+    return [];
   }, [input]);
 
-  const filteredPlaces = useMemo(() => {
-    if (!input.trim()) return PLACES;
-    const query = input.toLowerCase().trim();
-    return PLACES.filter(
-      (place) =>
-        place.name.toLowerCase().includes(query) ||
-        place.location.toLowerCase().includes(query) ||
-        place.type.toLowerCase().includes(query),
-    );
-  }, [input]);
+
 
   const renderPost = useCallback(
     ({ item }: { item: PostItem }) => (
@@ -226,10 +152,7 @@ export default function DiscoverScreen() {
     [openPost],
   );
 
-  const renderPlace = useCallback(
-    ({ item }: { item: Place }) => <PlaceItem item={item} />,
-    [],
-  );
+
   const clearSearch = useCallback(() => {
     setInput("");
   }, []);
@@ -268,12 +191,18 @@ export default function DiscoverScreen() {
             data={filteredPosts}
             renderItem={renderPost}
             keyExtractor={keyExtractor}
-            getItemType={() => "PostItem"}
             numColumns={2}
             style={styles.list}
             bounces={false}
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <UIEmptyState
+                icon="pulse"
+                title="No Pulse Found"
+                description="We couldn't find any recent activities in your area right now."
+              />
+            }
           />
         </Tabs.Tab>
         <Tabs.Tab name="people" label="People">
@@ -282,7 +211,6 @@ export default function DiscoverScreen() {
             renderItem={renderItem}
             keyExtractor={keyExtractor}
             ItemSeparatorComponent={ItemSeparator}
-            getItemType={() => "SearchUser"}
             style={styles.list}
             numColumns={2}
             bounces={false}
@@ -299,6 +227,13 @@ export default function DiscoverScreen() {
                 fetchNextPage();
             }}
             onEndReachedThreshold={0.1}
+            ListEmptyComponent={
+              <UIEmptyState
+                icon="people-outline"
+                title="No results found"
+                description={`We couldn't find any users matching "${input}"`}
+              />
+            }
           />
         </Tabs.Tab>
         <Tabs.Tab name="posts" label="Posts">
@@ -306,26 +241,22 @@ export default function DiscoverScreen() {
             data={filteredPosts}
             renderItem={renderPost}
             keyExtractor={keyExtractor}
-            getItemType={() => "PostItem"}
             numColumns={2}
             style={styles.list}
             bounces={false}
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <UIEmptyState
+                icon="list-outline"
+                title="No Posts"
+                description="Be the first one to share something in this area!"
+              />
+            }
           />
         </Tabs.Tab>
 
-        <Tabs.Tab name="places" label="Places">
-          <Tabs.FlashList
-            data={filteredPlaces}
-            renderItem={renderPlace}
-            keyExtractor={keyExtractor}
-            bounces={false}
-            ItemSeparatorComponent={ItemSeparator}
-            contentContainerStyle={styles.containerStyle}
-            showsVerticalScrollIndicator={false}
-          />
-        </Tabs.Tab>
+
       </Tabs.Container>
     </ThemedBackground>
   );
