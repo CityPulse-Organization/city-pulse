@@ -97,7 +97,7 @@ export const useNewPostImage = () => {
 
 
 const handleImagePickerError = async (error: unknown) => {
-  if (Platform.OS !== "android") return
+  if (Platform.OS !== "android") return;
 
   if (typeof error !== 'object' || error === null) {
     console.log("Unknown error format:", error);
