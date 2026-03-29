@@ -2,11 +2,11 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { User } from "../types";
 import { tokenStorage } from "../config";
 
+import { jwtDecode } from "jwt-decode";
+
 const decodeToken = (token: string): User | null => {
   try {
-    const b64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
-    const padded = b64 + "=".repeat((4 - (b64.length % 4)) % 4);
-    const payload = JSON.parse(atob(padded));
+    const payload = jwtDecode<{ sub: string; role?: string }>(token);
     return { id: String(payload.sub), role: payload.role ?? "USER" };
   } catch {
     return null;

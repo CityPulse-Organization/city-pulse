@@ -87,6 +87,7 @@ export default function ProfileScreen() {
   const router = useRouter();
   const theme = UnistylesRuntime.getTheme();
   const {
+    userId,
     posts,
     postsCount,
     fetchNextPosts,
@@ -150,6 +151,7 @@ export default function ProfileScreen() {
             <ProfileHeader
               followersCount={followersCount}
               followingCount={followingCount}
+              userId={userId}
             />
           )}
           renderTabBar={(props) => (
@@ -273,11 +275,13 @@ export default function ProfileScreen() {
 type ProfileHeaderProps = {
   followersCount: number;
   followingCount: number;
+  userId?: string;
 };
 
 const ProfileHeader = ({
   followersCount,
   followingCount,
+  userId,
 }: ProfileHeaderProps) => {
   const router = useRouter();
 
@@ -296,7 +300,7 @@ const ProfileHeader = ({
       <View style={styles.avatarWrapper}>
         <Icon
           size="medium"
-          profileImageUrl="https://i.pinimg.com/originals/2c/e2/cd/2ce2cd3165d4c83cafca929027a89be3.jpg"
+          profileImageUrl={undefined} // No avatar URL from backend yet
         />
         <UIButton
           style={styles.editProfileButton}
@@ -314,7 +318,7 @@ const ProfileHeader = ({
       <View style={styles.infoContainer}>
         <View style={[styles.row, styles.usernameRow]}>
           <UIText size="lg" weight="bold" style={styles.text}>
-            Kyrylo
+            {userId ? `${userId.substring(0, 8)}...` : "Loading..."}
           </UIText>
 
           <UIButton onPress={onLogoutPress} isLoading={false}>
@@ -326,9 +330,10 @@ const ProfileHeader = ({
           </UIButton>
         </View>
 
+        {/* Temporary placeholders for job/bio until backend adds them */}
         <View style={[styles.row, styles.jobRow]}>
           <UIText size="sm" style={styles.roleText}>
-            Boss
+            User
           </UIText>
 
           <Ionicons
@@ -339,8 +344,7 @@ const ProfileHeader = ({
         </View>
 
         <UIText size="sm" style={styles.bioText}>
-          Hey! I'm Kyrylo 👋 A boss passionate about telling stories that
-          matter.
+          Welcome to my City Pulse profile!
         </UIText>
       </View>
     </View>
