@@ -99,7 +99,7 @@ export const useNewPostImage = () => {
 const handleImagePickerError = async (error: unknown) => {
   if (Platform.OS !== "android") return
 
-  const granted = await PermissionsAndroid.request(
+  await PermissionsAndroid.request(
     PermissionsAndroid.PERMISSIONS.CAMERA,
   );
 
