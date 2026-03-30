@@ -12,9 +12,6 @@ services:
       - "8081"
     networks:
       - city-pulse-network
-    depends_on:
-      postgres:
-        condition: service_healthy
     env_file:
       - .env-shared
       - .env-auth
@@ -32,8 +29,6 @@ services:
     networks:
       - city-pulse-network
     depends_on:
-      postgres:
-        condition: service_healthy
       auth-service:
         condition: service_started
     env_file:
@@ -67,8 +62,6 @@ services:
     networks:
       - city-pulse-network
     depends_on:
-      postgres:
-        condition: service_healthy
       storage-service:
         condition: service_started
     env_file:
