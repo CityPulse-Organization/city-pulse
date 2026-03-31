@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost, uploadFile } from "@/src/api";
 import { useRouter } from "expo-router";
+import Toast from "react-native-toast-message";
 
 export const useCreatePost = () => {
   const queryClient = useQueryClient();
@@ -23,7 +24,19 @@ export const useCreatePost = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userPosts"] });
+      Toast.show({
+        type: "success",
+        text1: "Post Shared",
+        text2: "Your post has been successfully sharing",
+      });
       router.replace("/(tabs)/profile");
+    },
+    onError: (err) => {
+      Toast.show({
+        type: "error",
+        text1: "Failed to Share Post",
+        text2: err.message,
+      });
     },
   });
 

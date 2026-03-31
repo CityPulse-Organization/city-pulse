@@ -11,12 +11,14 @@ import { View } from "react-native";
 import { ThemedBackground } from "@/src/components";
 import { UIInput } from "@/src/ui";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useCreatePost } from "@/src/hooks/post/useCreatePost";
 import { useState, useCallback } from "react";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function AddNewPostScreen() {
   const router = useRouter();
   const { uris } = useLocalSearchParams<{ uris: string }>();
+  const { sharePost, isCreating } = useCreatePost();
 
   const imageUris: string[] = (() => {
     try {
@@ -35,7 +37,12 @@ export default function AddNewPostScreen() {
   }, [router]);
 
   const onPost = () => {
-    router.push("/(tabs)/profile");
+    if (imageUris.length > 0) {
+      sharePost({
+        imageUri: imageUris[0], // Currently API only supports single image
+        caption: description,
+      });
+    }
   };
 
   return (
@@ -83,7 +90,11 @@ export default function AddNewPostScreen() {
       </UIKeyboardAvoidingScrollView>
 
       <View style={styles.buttonWrapper}>
-        <UIButton onPress={onPost} style={styles.postButton}>
+        <UIButton
+          onPress={onPost}
+          style={styles.postButton}
+          isLoading={isCreating}
+        >
           <LinearGradient
             colors={[
               styles.gradientStart.backgroundColor,
