@@ -62,7 +62,7 @@ export const useMediaLibrary = (onInitialLoad: (firstAsset: Photo) => void) => {
               text: "Open Settings",
               onPress: () => Linking.openSettings(),
             },
-          ]
+          ],
         );
       }
     } finally {
@@ -135,7 +135,7 @@ const requestMediaPermission = async () => {
             resolve(result === PermissionsAndroid.RESULTS.GRANTED);
           },
         },
-      ]
+      ],
     );
   });
-}
+};

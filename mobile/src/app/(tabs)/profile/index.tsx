@@ -175,8 +175,7 @@ export default function ProfileScreen() {
               showsVerticalScrollIndicator={false}
               refreshControl={refreshControl}
               onEndReached={() => {
-                if (hasNextPostsPage && !isFetchingNextPosts)
-                  fetchNextPosts();
+                if (hasNextPostsPage && !isFetchingNextPosts) fetchNextPosts();
               }}
               onEndReachedThreshold={0.3}
               ListEmptyComponent={
@@ -503,9 +502,9 @@ const StatsButton = memo(
 const NewPostButton = memo(() => {
   const router = useRouter();
 
-  const navigateToNewPost = useCallback(() => {
-    router.navigate("/(tabs)/profile/new-post-image");
-  }, [router]);
+  const navigateToNewPost = () => {
+    router.push("/new-post-image");
+  };
 
   return (
     <UIButton
