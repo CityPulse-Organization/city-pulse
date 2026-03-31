@@ -146,14 +146,8 @@ export default function ProfileScreen() {
     <ThemedBackground>
       <View style={styles.container}>
         <Tabs.Container
-          revealHeaderOnScroll={true}
-          renderHeader={() => (
-            <ProfileHeader
-              followersCount={followersCount}
-              followingCount={followingCount}
-              userId={userId}
-            />
-          )}
+          revealHeaderOnScroll={false}
+          renderHeader={() => <ProfileHeader userId={userId} />}
           renderTabBar={(props) => (
             <ProfileTabBar
               {...props}
@@ -272,16 +266,10 @@ export default function ProfileScreen() {
 }
 
 type ProfileHeaderProps = {
-  followersCount: number;
-  followingCount: number;
   userId?: string;
 };
 
-const ProfileHeader = ({
-  followersCount,
-  followingCount,
-  userId,
-}: ProfileHeaderProps) => {
+const ProfileHeader = ({ userId }: ProfileHeaderProps) => {
   const router = useRouter();
 
   const navigateToEditProfile = useCallback(() => {
@@ -521,7 +509,7 @@ const NewPostButton = memo(() => {
   );
 });
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
     overflow: "hidden",
@@ -533,6 +521,7 @@ const styles = StyleSheet.create((theme) => ({
 
   listContainerStyle: {
     paddingBottom: theme.utils.vs(100),
+    minHeight: rt.screen.height,
   },
   listSeparator: { height: 20 },
 
