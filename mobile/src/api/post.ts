@@ -77,3 +77,28 @@ export const createComment = async (
 export const deleteComment = async (commentId: number): Promise<void> => {
   await axios.delete(`/comments/${commentId}`);
 };
+
+export const searchPosts = async (
+  caption?: string,
+  page: number = 0,
+  size: number = 20,
+): Promise<PagedModelResponse<PostResponse>> => {
+  const { data } = await axios.get<PagedModelResponse<PostResponse>>(
+    "/posts/search",
+    { params: { caption, page, size, sort: "createdAt,desc" } },
+  );
+  return data;
+};
+
+export const getPulsePosts = async (
+  search?: string,
+  page: number = 0,
+  size: number = 20,
+): Promise<PagedModelResponse<PostResponse>> => {
+  const { data } = await axios.get<PagedModelResponse<PostResponse>>(
+    "/posts/pulse",
+    { params: { search, page, size, sort: "createdAt,desc" } },
+  );
+  return data;
+};
+

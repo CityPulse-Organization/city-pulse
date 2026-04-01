@@ -22,6 +22,20 @@ import java.util.UUID;
 public class PostController {
     private final PostService service;
 
+    @GetMapping("/search")
+    public PagedModel<PostResponse> searchPosts(
+            @RequestParam(required = false) String caption,
+            Pageable pageable) {
+        return new PagedModel<>(service.searchPosts(caption, pageable));
+    }
+
+    @GetMapping("/pulse")
+    public PagedModel<PostResponse> getPulsePosts(
+            @RequestParam(required = false) String search,
+            Pageable pageable) {
+        return new PagedModel<>(service.getPulsePosts(search, pageable));
+    }
+
     @PostMapping
     public ResponseEntity<PostResponse> createNewPost(
             @Valid @RequestBody CreatePostRequest dto,

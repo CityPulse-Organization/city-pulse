@@ -1,13 +1,18 @@
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 import { Icon, IconInfo, Post, ThemedBackground } from "@/src/components";
-import { UIButton, UIEmptyState, UIInput, UIText } from "@/src/ui";
-import { router, useRouter } from "expo-router";
+import {
+  UIBackButton,
+  UIButton,
+  UIEmptyState,
+  UIInput,
+  UIText,
+} from "@/src/ui";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { ComponentProps, memo, useCallback, useState } from "react";
 import React from "react";
-import { RefreshControl, View } from "react-native";
+import { Pressable, RefreshControl, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useLogout } from "@/src/hooks";
 import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";
 import { runOnJS, useAnimatedReaction } from "react-native-reanimated";
 import { DiscoverUser, PostItem } from "@/src/types";
@@ -26,18 +31,15 @@ type ProfileStat = {
 
 const ItemSeparator = memo(() => <View style={styles.listSeparator} />);
 
-const SearchUserItem = memo(({ item }: { item: DiscoverUser }) => {
+const UserItem = memo(({ item }: { item: DiscoverUser }) => {
   const { isFollowing, toggleFollow, isPending, isSelf } = useFollow(item.id);
-  const navigateToProfile = useCallback(() => {
-    router.push(`/user/${item.id}`);
-  }, []);
+
   return (
     <View style={styles.itemContainer}>
       <IconInfo
         username={item.username}
         profileImageUrl={item.profileImageUrl}
         statusText={item.job}
-        onPress={navigateToProfile}
       />
       {!isSelf && (
         <UIButton
@@ -86,9 +88,11 @@ const SearchInput = memo(() => {
   );
 });
 
-export default function ProfileScreen() {
+export default function UserScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const theme = UnistylesRuntime.getTheme();
+
   const {
     userId,
     username,
@@ -110,7 +114,7 @@ export default function ProfileScreen() {
     isFetchingNextFollowing,
     refetchAll,
     isRefetching,
-  } = useProfile();
+  } = useProfile(id);
 
   const refreshControl = (
     <RefreshControl
@@ -121,12 +125,11 @@ export default function ProfileScreen() {
   );
 
   const navigateToPostDetails = useCallback(
-    (id: string) => {
+    (postId: string) => {
       router.push({
         pathname: `/post/[id]`,
         params: {
-          id: id,
-          isOwnPost: "true",
+          id: postId,
         },
       });
     },
@@ -143,17 +146,19 @@ export default function ProfileScreen() {
   const keyExtractor = useCallback((item: { id: string }) => item.id, []);
 
   const renderUserItem = useCallback(
-    ({ item }: { item: DiscoverUser }) => <SearchUserItem item={item} />,
+    ({ item }: { item: DiscoverUser }) => <UserItem item={item} />,
     [],
   );
 
   return (
     <ThemedBackground>
+      <UIBackButton />
+
       <View style={styles.container}>
         <Tabs.Container
           revealHeaderOnScroll={false}
           renderHeader={() => (
-            <ProfileHeader
+            <UserHeader
               userId={userId}
               username={username}
               bio={profile?.bio}
@@ -162,7 +167,7 @@ export default function ProfileScreen() {
             />
           )}
           renderTabBar={(props) => (
-            <ProfileTabBar
+            <UserTabBar
               {...props}
               postsCount={postsCount}
               followersCount={followersCount}
@@ -188,8 +193,8 @@ export default function ProfileScreen() {
               ListEmptyComponent={
                 <UIEmptyState
                   icon="image-outline"
-                  title="No Posts Yet"
-                  description="Share your first photo to see it here!"
+                  title="No Posts"
+                  description="This user hasn't shared any photos yet."
                 />
               }
             />
@@ -218,7 +223,7 @@ export default function ProfileScreen() {
                 <UIEmptyState
                   icon="people-outline"
                   title="No Followers"
-                  description="When people follow you, they'll appear here."
+                  description="When people follow this user, they'll appear here."
                 />
               }
             />
@@ -247,27 +252,7 @@ export default function ProfileScreen() {
                 <UIEmptyState
                   icon="person-add-outline"
                   title="No Following"
-                  description="Start following people to see their activities."
-                />
-              }
-            />
-          </Tabs.Tab>
-          <Tabs.Tab name="saves" label="Saves">
-            <Tabs.FlashList
-              data={[]}
-              renderItem={renderPostItem}
-              keyExtractor={keyExtractor}
-              numColumns={2}
-              bounces={true}
-              style={styles.list}
-              contentContainerStyle={styles.listContainerStyle}
-              showsVerticalScrollIndicator={false}
-              refreshControl={refreshControl}
-              ListEmptyComponent={
-                <UIEmptyState
-                  icon="bookmark-outline"
-                  title="No Saved Posts"
-                  description="Keep track of what you love by saving posts."
+                  description="This user isn't following anyone yet."
                 />
               }
             />
@@ -278,7 +263,7 @@ export default function ProfileScreen() {
   );
 }
 
-type ProfileHeaderProps = {
+type UserHeaderProps = {
   userId?: string;
   username?: string;
   bio?: string;
@@ -286,40 +271,19 @@ type ProfileHeaderProps = {
   avatarUrl?: string;
 };
 
-const ProfileHeader = ({
+const UserHeader = ({
   userId,
   username,
   bio,
   jobTitle,
   avatarUrl,
-}: ProfileHeaderProps) => {
-  const router = useRouter();
-
-  const navigateToEditProfile = useCallback(() => {
-    router.navigate("/(tabs)/profile/edit-profile");
-  }, [router]);
-
-  const { mutate: logout } = useLogout();
-
-  const onLogoutPress = useCallback(() => {
-    logout();
-  }, [logout]);
+}: UserHeaderProps) => {
+  const { isFollowing, toggleFollow, isPending, isSelf } = useFollow(userId!);
 
   return (
     <View style={styles.headerContainer}>
       <View style={styles.avatarWrapper}>
         <Icon size="medium" profileImageUrl={avatarUrl} />
-        <UIButton
-          style={styles.editProfileButton}
-          onPress={navigateToEditProfile}
-          isLoading={false}
-        >
-          <Ionicons
-            color={styles.editProfileIcon.color}
-            size={styles.editProfileIcon.height}
-            name="pencil"
-          />
-        </UIButton>
       </View>
 
       <View style={styles.infoContainer}>
@@ -329,13 +293,27 @@ const ProfileHeader = ({
               (userId ? `${userId.substring(0, 8)}...` : "Loading...")}
           </UIText>
 
-          <UIButton onPress={onLogoutPress} isLoading={false}>
-            <Ionicons
-              color={styles.settingsIconButton.color}
-              size={styles.settingsIconButton.height}
-              name="menu-outline"
-            />
-          </UIButton>
+          {!isSelf && (
+            <UIButton
+              style={[
+                styles.actionFollowButton,
+                isFollowing && styles.followButtonActive,
+              ]}
+              onPress={toggleFollow}
+              isLoading={isPending}
+            >
+              <UIText
+                size="xxs"
+                weight="bold"
+                style={[
+                  styles.followButtonText,
+                  isFollowing && styles.followButtonTextActive,
+                ]}
+              >
+                {isFollowing ? "Unfollow" : "Follow"}
+              </UIText>
+            </UIButton>
+          )}
         </View>
 
         <View style={[styles.row, styles.jobRow]}>
@@ -358,13 +336,13 @@ const ProfileHeader = ({
   );
 };
 
-type ProfileTabBarProps = TabBarProps<string> & {
+type UserTabBarProps = TabBarProps<string> & {
   postsCount: number;
   followersCount: number;
   followingCount: number;
 };
 
-const ProfileTabBar = (props: ProfileTabBarProps) => {
+const UserTabBar = (props: UserTabBarProps) => {
   const [activeTab, setActiveTab] = useState("posts");
 
   useAnimatedReaction(
@@ -400,13 +378,6 @@ const ProfileTabBar = (props: ProfileTabBarProps) => {
       title: "Followings",
       iconName: "grid-outline",
       quantity: props.followingCount,
-    },
-    {
-      id: "4",
-      name: "saves",
-      title: "Saves",
-      iconName: "bookmark-outline",
-      quantity: 0,
     },
   ];
 
@@ -451,7 +422,6 @@ const ProfileTabBar = (props: ProfileTabBarProps) => {
           <UIText size="lg" weight="bold" style={styles.text}>
             Posts
           </UIText>
-          <NewPostButton />
         </View>
       )}
     </View>
@@ -507,28 +477,6 @@ const StatsButton = memo(
   },
 );
 
-const NewPostButton = memo(() => {
-  const router = useRouter();
-
-  const navigateToNewPost = () => {
-    router.push("/new-post-image");
-  };
-
-  return (
-    <UIButton
-      style={styles.newPostButton}
-      onPress={navigateToNewPost}
-      isLoading={false}
-    >
-      <Ionicons
-        color={styles.newPostIcon.color}
-        size={styles.newPostIcon.height}
-        name="add"
-      />
-    </UIButton>
-  );
-});
-
 const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
@@ -548,7 +496,6 @@ const styles = StyleSheet.create((theme, rt) => ({
   statsTabBar: {
     backgroundColor: theme.colors.background,
   },
-
   itemContainer: {
     width: "50%",
     justifyContent: "flex-start",
@@ -568,21 +515,8 @@ const styles = StyleSheet.create((theme, rt) => ({
     marginBottom: theme.utils.vs(12),
     position: "relative",
   },
-  editProfileButton: {
-    position: "absolute",
-    bottom: -theme.utils.vs(4),
-    right: -theme.utils.s(4),
-    backgroundColor: theme.colors.lightMuted,
-    borderRadius: 999,
-    padding: theme.utils.s(6),
-    borderWidth: 2,
-    borderColor: theme.colors.background,
-  },
-  editProfileIcon: {
-    color: theme.colors.primaryText,
-    height: theme.utils.s(12),
-  },
   infoContainer: {
+    flexGrow: 1,
     flexShrink: 1,
     gap: theme.utils.s(4),
   },
@@ -595,11 +529,6 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   jobRow: {
     gap: theme.utils.s(6),
-  },
-
-  settingsIconButton: {
-    color: theme.colors.primary,
-    height: theme.utils.s(24),
   },
 
   jobIcon: {
@@ -686,18 +615,6 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingHorizontal: theme.utils.s(16),
     paddingBottom: theme.utils.vs(10),
   },
-  newPostButton: {
-    width: theme.utils.s(30),
-    height: theme.utils.s(30),
-    backgroundColor: theme.colors.accent,
-    borderRadius: theme.utils.ms(20),
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  newPostIcon: {
-    color: theme.colors.white,
-    height: theme.utils.s(20),
-  },
 
   followButton: {
     marginTop: theme.utils.vs(6),
@@ -706,6 +623,12 @@ const styles = StyleSheet.create((theme, rt) => ({
     borderRadius: theme.utils.ms(16),
     backgroundColor: theme.colors.accent,
     alignSelf: "flex-start",
+  },
+  actionFollowButton: {
+    paddingHorizontal: theme.utils.s(14),
+    paddingVertical: theme.utils.vs(5),
+    borderRadius: theme.utils.ms(16),
+    backgroundColor: theme.colors.accent,
   },
   followButtonActive: {
     backgroundColor: "transparent",

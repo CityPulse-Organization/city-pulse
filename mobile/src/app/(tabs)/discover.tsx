@@ -9,21 +9,25 @@ import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";
 import { router } from "expo-router";
 import { useSearchUsers } from "@/src/hooks/useSearchUsers";
+import { usePulse } from "@/src/hooks/usePulse";
+import { useSearchPosts } from "@/src/hooks/useSearchPosts";
 import { DiscoverUser, PostItem } from "@/src/types";
 
-
-
-const DiscoverItem = memo(({ item }: { item: DiscoverUser }) => (
-  <View style={styles.itemContainer}>
-    <IconInfo
-      username={item.username}
-      profileImageUrl={item.profileImageUrl}
-      statusText={item.job}
-    />
-  </View>
-));
-
-
+const DiscoverItem = memo(({ item }: { item: DiscoverUser }) => {
+  const navigateToProfile = useCallback(() => {
+    router.push(`/user/${item.id}`);
+  }, []);
+  return (
+    <View style={styles.itemContainer}>
+      <IconInfo
+        username={item.username}
+        profileImageUrl={item.profileImageUrl}
+        statusText={item.job}
+        onPress={navigateToProfile}
+      />
+    </View>
+  );
+});
 
 const ItemSeparator = memo(() => <View style={styles.separator} />);
 
@@ -95,7 +99,6 @@ const DiscoverTabBar = (props: TabBarProps<string>) => {
         focusedTab={props.focusedTab}
         icon={<Ionicons name="list" size={20} style={styles.tabIcon} />}
       />
-
     </View>
   );
 };
@@ -106,19 +109,65 @@ export default function DiscoverScreen() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useSearchUsers(input, ["username,asc"]);
 
+  const { 
+    data: pulseData, 
+    fetchNextPage: fetchNextPulse, 
+    hasNextPage: hasNextPulsePage, 
+    isFetchingNextPage: isFetchingNextPulse 
+  } = usePulse(input);
+
+  const { 
+    data: postsData, 
+    fetchNextPage: fetchNextPosts, 
+    hasNextPage: hasNextPostsPage, 
+    isFetchingNextPage: isFetchingNextPosts 
+  } = useSearchPosts(input);
+
   const paginatedUsers = useMemo(() => {
     if (data?.pages && data.pages.length > 0) {
       return data.pages.flatMap((page) =>
         page.content.map((u) => ({
           id: u.id,
           username: u.username,
-          profileImageUrl: "",
-          job: "",
+          profileImageUrl: u.avatarUrl ?? "",
+          job: u.jobTitle ?? "",
         })),
       );
     }
     return [];
   }, [data]);
+
+  const pulsePosts = useMemo(() => {
+    if (pulseData?.pages) {
+      return pulseData.pages.flatMap((page) =>
+        page.content.map((p) => ({
+          id: String(p.id),
+          username: p.userId,
+          accidentTime: p.createdAt,
+          imagesUrl: [p.imageUrl],
+          description: p.caption ?? "",
+          location: "",
+        })),
+      );
+    }
+    return [];
+  }, [pulseData]);
+
+  const paginatedPosts = useMemo(() => {
+    if (postsData?.pages) {
+      return postsData.pages.flatMap((page) =>
+        page.content.map((p) => ({
+          id: String(p.id),
+          username: p.userId,
+          accidentTime: p.createdAt,
+          imagesUrl: [p.imageUrl],
+          description: p.caption ?? "",
+          location: "",
+        })),
+      );
+    }
+    return [];
+  }, [postsData]);
 
   const renderItem = useCallback(
     ({ item }: { item: DiscoverUser }) => <DiscoverItem item={item} />,
@@ -143,15 +192,12 @@ export default function DiscoverScreen() {
     return [];
   }, [input]);
 
-
-
   const renderPost = useCallback(
     ({ item }: { item: PostItem }) => (
       <Post data={item} onPress={() => openPost({ id: item.id })} />
     ),
     [openPost],
   );
-
 
   const clearSearch = useCallback(() => {
     setInput("");
@@ -255,8 +301,6 @@ export default function DiscoverScreen() {
             }
           />
         </Tabs.Tab>
-
-
       </Tabs.Container>
     </ThemedBackground>
   );

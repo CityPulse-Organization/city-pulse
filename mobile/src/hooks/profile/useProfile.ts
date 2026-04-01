@@ -9,9 +9,12 @@ import { useSession } from "@/src/hoc";
 import { useCallback, useMemo } from "react";
 import type { DiscoverUser, PostItem, PostResponse } from "@/src/types";
 
-export const useProfile = () => {
+import { getUserProfile } from "@/src/api/user";
+
+export const useProfile = (userId?: string) => {
   const { session } = useSession();
   const sessionUserId = session.user?.id;
+  const targetUserId = userId || sessionUserId;
 
   const {
     data: profile,
@@ -19,9 +22,9 @@ export const useProfile = () => {
     refetch: refetchProfile,
     isRefetching: isRefetchingProfile,
   } = useQuery({
-    queryKey: ["profile", sessionUserId],
-    queryFn: getMyProfile,
-    enabled: !!sessionUserId,
+    queryKey: ["profile", targetUserId],
+    queryFn: () => (userId ? getUserProfile(userId) : getMyProfile()),
+    enabled: !!targetUserId,
   });
 
   const {
@@ -33,15 +36,15 @@ export const useProfile = () => {
     refetch: refetchPosts,
     isRefetching: isRefetchingPosts,
   } = useInfiniteQuery({
-    queryKey: ["userPosts", sessionUserId],
-    queryFn: ({ pageParam = 0 }) => getPostsByUserId(sessionUserId!, pageParam),
+    queryKey: ["userPosts", targetUserId],
+    queryFn: ({ pageParam = 0 }) => getPostsByUserId(targetUserId!, pageParam),
     getNextPageParam: (lastPage) => {
       const currentPage = lastPage.page.number;
       if (currentPage + 1 >= lastPage.page.totalPages) return undefined;
       return currentPage + 1;
     },
     initialPageParam: 0,
-    enabled: !!sessionUserId,
+    enabled: !!targetUserId,
     retry: false,
   });
 
@@ -69,14 +72,14 @@ export const useProfile = () => {
     refetch: refetchFollowers,
     isRefetching: isRefetchingFollowers,
   } = useInfiniteQuery({
-    queryKey: ["followers", sessionUserId],
-    queryFn: ({ pageParam = 0 }) => getFollowers(sessionUserId!, pageParam, 24),
+    queryKey: ["followers", targetUserId],
+    queryFn: ({ pageParam = 0 }) => getFollowers(targetUserId!, pageParam, 24),
     getNextPageParam: (lastPage, allPages) => {
       if (lastPage.last) return undefined;
       return allPages.length;
     },
     initialPageParam: 0,
-    enabled: !!sessionUserId,
+    enabled: !!targetUserId,
     retry: false,
   });
 
@@ -88,14 +91,14 @@ export const useProfile = () => {
     refetch: refetchFollowing,
     isRefetching: isRefetchingFollowing,
   } = useInfiniteQuery({
-    queryKey: ["following", sessionUserId],
-    queryFn: ({ pageParam = 0 }) => getFollowing(sessionUserId!, pageParam, 24),
+    queryKey: ["following", targetUserId],
+    queryFn: ({ pageParam = 0 }) => getFollowing(targetUserId!, pageParam, 24),
     getNextPageParam: (lastPage, allPages) => {
       if (lastPage.last) return undefined;
       return allPages.length;
     },
     initialPageParam: 0,
-    enabled: !!sessionUserId,
+    enabled: !!targetUserId,
     retry: false,
   });
 
@@ -105,8 +108,8 @@ export const useProfile = () => {
       page.content.map((u) => ({
         id: u.id,
         username: u.username,
-        profileImageUrl: "",
-        job: "",
+        profileImageUrl: u.avatarUrl ?? "",
+        job: u.jobTitle ?? "",
       })),
     );
   }, [followersData]);
@@ -117,8 +120,8 @@ export const useProfile = () => {
       page.content.map((u) => ({
         id: u.id,
         username: u.username,
-        profileImageUrl: "",
-        job: "",
+        profileImageUrl: u.avatarUrl ?? "",
+        job: u.jobTitle ?? "",
       })),
     );
   }, [followingData]);
@@ -141,7 +144,7 @@ export const useProfile = () => {
     isRefetchingFollowing;
 
   return {
-    userId: sessionUserId,
+    userId: targetUserId,
     username: profile?.username,
     profile,
     posts,
