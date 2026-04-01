@@ -1,8 +1,10 @@
 package city.pulse.user.service.impl;
 
 import city.pulse.common.security.model.UserInfo;
+import city.pulse.user.dto.ChangeUsernameRequest;
 import city.pulse.user.dto.ProfileCreationRequest;
 import city.pulse.user.dto.UserProfileResponse;
+import city.pulse.user.dto.UserProfileUpdateRequest;
 import city.pulse.user.exception.UsernameAlreadyExistsException;
 import city.pulse.user.mapper.UserProfileMapper;
 import city.pulse.user.model.UserProfile;
@@ -60,5 +62,44 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Transactional(readOnly = true)
     public UserProfileResponse getUserProfileById(UUID userId) {
         return mapper.toResponse(service.findByIdOrThrow(userId));
+    }
+
+    @Override
+    @Transactional
+    public UserProfileResponse updateUserProfile(UserProfileUpdateRequest dto, UUID userId) {
+        var profile = service.findByIdOrThrow(userId);
+
+        profile.updateProfile(dto.bio(), dto.jobTitle(), dto.avatarUrl());
+
+        log.info("Profile updated for user ID: {}", userId);
+
+        return mapper.toResponse(profile);
+    }
+
+    @Override
+    @Transactional
+    public UserProfileResponse changeUsername(ChangeUsernameRequest dto, UUID userId) {
+        var newUsername = dto.username();
+        var profile = service.findByIdOrThrow(userId);
+
+        if (profile.getUsername().equals(newUsername)) {
+            return mapper.toResponse(profile);
+        }
+
+        if (service.existsByUsername(newUsername)) {
+            throw new UsernameAlreadyExistsException("Username already exists");
+        }
+
+        profile.changeUsername(newUsername);
+
+        try {
+            service.saveAndFlush(profile);
+            log.info("Username successfully changed to '{}' for user ID: {}", newUsername, userId);
+        } catch (DataIntegrityViolationException e) {
+            log.error("Race condition detected. Username change failed for user ID: {}", userId, e);
+            throw new UsernameAlreadyExistsException("Username already exists (race condition detected).");
+        }
+
+        return mapper.toResponse(profile);
     }
 }
