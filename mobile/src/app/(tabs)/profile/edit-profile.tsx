@@ -1,4 +1,5 @@
-import { Icon, NavigationHeader, ThemedBackground } from "@/src/components";
+import { Icon, ThemedBackground } from "@/src/components";
+import { NavigationHeader } from "@/src/components/NavigationHeader";
 import { ProfileData, useEditProfile } from "@/src/hooks/profile/useEditProfileForm";
 import { UIButton, UIInput, UIText } from "@/src/ui";
 import { UIKeyboardAvoidingScrollView } from "@/src/ui/molecules/UIKeyboardAvoidingScrollView";

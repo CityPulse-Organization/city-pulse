@@ -1,24 +1,23 @@
-import { Ionicons } from "@expo/vector-icons";
 import { memo } from "react";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-import { UIButton, UIText } from "../../ui/atoms";
-import { BlurButton } from "../BlurButton";
+import { UIButton, UIText } from "../ui/atoms";
+import { BlurButton } from "./BlurButton";
 
 type NavigationHeaderProps = {
   title: string;
   rightActionLabel?: string;
   onLeftAction: () => void;
-  onRightAction: () => void;
+  onRightAction?: () => void;
   isLoading?: boolean;
 };
 
 export const NavigationHeader = memo(
   ({
     title,
-    rightActionLabel = "Done",
+    rightActionLabel = "",
     onLeftAction,
-    onRightAction,
+    onRightAction = () => { },
     isLoading = false,
   }: NavigationHeaderProps) => (
     <View style={styles.headerContainer}>

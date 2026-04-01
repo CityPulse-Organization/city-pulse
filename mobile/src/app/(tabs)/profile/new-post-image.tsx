@@ -1,8 +1,8 @@
 import {
   InteractiveImagePreview,
-  NavigationHeader,
   ThemedBackground,
 } from "@/src/components";
+import { NavigationHeader } from "@/src/components/NavigationHeader";
 import { useNewPostImage } from "@/src/hooks/new-post/useNewPostImage";
 import { UIBottomSheet, UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
@@ -98,6 +98,7 @@ export default function AddNewPostImageScreen() {
     <ThemedBackground >
       <NavigationHeader
         title="New Post"
+        rightActionLabel="Next"
         onLeftAction={onCancel}
         onRightAction={onDone}
       />

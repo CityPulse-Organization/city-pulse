@@ -65,6 +65,7 @@ const colors = {
   muted: "rgba(0, 0, 0, 0.6)",
   lightMuted: "rgba(0, 0, 0, 0.2)",
   accent: "rgba(168, 36, 224, 1)",
+  lightAccent: "rgba(192, 132, 252, 1)",
   mutedAccent: "rgba(96, 44, 139, 1)",
 
   chartBackgroundColor: "#888888ff",

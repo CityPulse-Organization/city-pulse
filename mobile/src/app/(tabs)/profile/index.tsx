@@ -7,7 +7,6 @@ import React from "react";
 import { RefreshControl, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useLogout } from "@/src/hooks";
 import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";
 import { runOnJS, useAnimatedReaction } from "react-native-reanimated";
 import { DiscoverUser, PostItem } from "@/src/types";
@@ -289,11 +288,10 @@ const ProfileHeader = ({
     router.navigate("/(tabs)/profile/edit-profile");
   }, [router]);
 
-  const { mutate: logout } = useLogout();
 
-  const onLogoutPress = useCallback(() => {
-    logout();
-  }, [logout]);
+  const navigateToSettings = useCallback(() => {
+    router.navigate("/(settings)");
+  }, [router]);
 
   return (
     <View style={styles.headerContainer}>
@@ -321,7 +319,7 @@ const ProfileHeader = ({
             {userId ? `${userId.substring(0, 8)}...` : "Loading..."}
           </UIText>
 
-          <UIButton onPress={onLogoutPress} isLoading={false}>
+          <UIButton onPress={navigateToSettings} isLoading={false}>
             <Ionicons
               color={styles.settingsIconButton.color}
               size={styles.settingsIconButton.height}
@@ -575,7 +573,7 @@ const styles = StyleSheet.create((theme) => ({
     height: theme.utils.s(12),
   },
   infoContainer: {
-    flexShrink: 1,
+    flex: 1,
     gap: theme.utils.s(4),
   },
   row: {
