@@ -17,6 +17,19 @@ spring:
       server:
         webflux:
           routes:
+            # --- MOBILE BFF SERVICE ---
+            - id: mobile-bff-service-route
+              uri: ${MOBILE_BFF_SERVICE_URL:http://mobile-bff-service:8086}
+              predicates:
+                - Path=/mobile/api/v1/**
+
+            - id: mobile-bff-service-openapi
+              uri: ${MOBILE_BFF_SERVICE_URL:http://mobile-bff-service:8086}
+              predicates:
+                - Path=/v3/api-docs/mobile-bff
+              filters:
+                - RewritePath=/v3/api-docs/mobile-bff, /v3/api-docs
+
             # --- AUTH SERVICE ---
             - id: auth-service-route
               uri: ${AUTH_SERVICE_URL:http://auth-service:8081}
@@ -86,6 +99,8 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     urls:
+      - name: Mobile BFF Service
+        url: /v3/api-docs/mobile-bff
       - name: Auth Service
         url: /v3/api-docs/auth
       - name: Post Service

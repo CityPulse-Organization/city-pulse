@@ -1,7 +1,7 @@
 app:
   api:
     version: v1
-  base-path: /api/${app.api.version}
+  base-path: mobile/api/${app.api.version}
 
 spring:
   application:
