@@ -19,6 +19,7 @@ public class SecurityConfig {
                 .pathMatchers("/v3/api-docs/**", "/swagger-ui.html", "/webjars/**").permitAll()
                 .pathMatchers("/api/v1/registration/**").permitAll()
                 .pathMatchers("/api/v1/users/public/**").permitAll()
+                .pathMatchers("/mobile/api/v1/signup").permitAll()
                 .anyExchange().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}))

@@ -1,0 +1,13 @@
+app:
+  api:
+    version: v1
+  base-path: mobile/api/${app.api.version}
+
+spring:
+  application:
+    name: mobile-bff-service
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+server:
+  port: ${APP_PORT:8086}
