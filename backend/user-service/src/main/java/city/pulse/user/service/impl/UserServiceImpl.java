@@ -2,6 +2,7 @@ package city.pulse.user.service.impl;
 
 import city.pulse.user.dto.ProfileCreationRequest;
 import city.pulse.user.dto.UserProfileResponse;
+import city.pulse.user.exception.UserNotFoundException;
 import city.pulse.user.exception.UsernameAlreadyExistsException;
 import city.pulse.user.mapper.UserProfileMapper;
 import city.pulse.user.model.UserProfile;
@@ -10,6 +11,9 @@ import city.pulse.user.service.UserService;
 import city.pulse.user.specification.UserProfileSpecifications;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.UUID;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,8 +51,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<UserProfileResponse> searchByUsername(String username, Pageable pageable) {
-        var specification = specifications.getSpecification(username);
+    public Page<UserProfileResponse> searchByUsername(String username, UUID currentUserId, Pageable pageable) {
+        var specification = specifications.getSpecification(username, currentUserId);
         return repository.findAll(specification, pageable).map(mapper::toResponse);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserProfileResponse getUserById(UUID userId) {
+        return repository.findById(userId)
+                .map(mapper::toResponse)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
     }
 }

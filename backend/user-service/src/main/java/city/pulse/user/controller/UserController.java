@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import city.pulse.common.security.annotation.CurrentUser;
+import city.pulse.common.security.model.UserInfo;
+import org.springframework.web.bind.annotation.*;
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${app.base-path}/users")
@@ -20,8 +25,19 @@ public class UserController {
     @GetMapping("/search")
     public Page<UserProfileResponse> searchUsers(
             @RequestParam(required = false) @Size(max = 32) String username,
+            @CurrentUser UserInfo userInfo,
             Pageable pageable
     ) {
-        return service.searchByUsername(username, pageable);
+        return service.searchByUsername(username, userInfo.id(), pageable);
+    }
+
+    @GetMapping("/me")
+    public UserProfileResponse getCurrentUser(@CurrentUser UserInfo userInfo) {
+        return service.getUserById(userInfo.id());
+    }
+
+    @GetMapping("/{userId}")
+    public UserProfileResponse getUserById(@PathVariable UUID userId) {
+        return service.getUserById(userId);
     }
 }
