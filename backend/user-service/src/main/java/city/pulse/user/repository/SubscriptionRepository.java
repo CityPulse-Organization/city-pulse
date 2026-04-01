@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
-
     @EntityGraph(attributePaths = {"subscriber"})
     Page<Subscription> findByTarget(UserProfile target, Pageable pageable);
 
