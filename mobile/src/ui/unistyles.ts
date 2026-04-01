@@ -54,6 +54,7 @@ const colors = {
   darkGray: "#333333",
   darkOrange: "#995400ff",
   violet: "#C7B4FD",
+  success: "#4E9F3D",
 
   background: "rgba(240, 240, 242, 1)",
   primary: "rgba(0, 0, 0, 1)",

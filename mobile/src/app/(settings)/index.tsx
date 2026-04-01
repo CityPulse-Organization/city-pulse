@@ -35,6 +35,8 @@ export default function SettingsScreen() {
     const [isPushEnabled, setIsPushEnabled] = useState(true);
     const [isSafetyAlertsEnabled, setIsSafetyAlertsEnabled] = useState(true);
     const [isEventsNearbyEnabled, setIsEventsNearbyEnabled] = useState(true);
+    const [isBiometricEnabled, setIsBiometricEnabled] = useState(true);
+
 
 
     const onLogoutPress = useCallback(() => {
@@ -127,17 +129,32 @@ export default function SettingsScreen() {
                     />
                 </SettingsSection>
 
-                <SettingsSection title="PRIVACY">
+                <SettingsSection title="SECURITY">
                     <SettingsRow
                         icon="shield-outline"
                         title="Restricted Accounts"
                         rightElement={{ type: 'chevron' }}
                         showDivider
                     />
+
                     <SettingsRow
-                        icon="lock-closed-outline"
-                        title="Privacy Settings"
+                        icon="key-outline"
+                        title="Change Password"
                         rightElement={{ type: 'chevron' }}
+                        onPress={() => router.push('/(settings)/change-password')}
+                        showDivider
+                    />
+
+                    <SettingsRow
+                        icon="finger-print-outline"
+                        title="Biometric Unlock"
+                        subtitle="Use Face ID or fingerprint to open the app"
+                        rightElement={{
+                            type: 'switch',
+                            value: isBiometricEnabled,
+                            onToggle: () => setIsBiometricEnabled((prev) => !prev),
+                        }}
+                        showDivider
                     />
                 </SettingsSection>
 
@@ -153,6 +170,7 @@ export default function SettingsScreen() {
                         icon="bug-outline"
                         title="Report a Problem"
                         rightElement={{ type: 'chevron' }}
+                        onPress={() => router.push('/(settings)/report-problem')}
                         showDivider
                     />
                     <SettingsRow
@@ -204,7 +222,7 @@ type SettingsSectionProps = {
 };
 
 
-const SettingsSection = ({ title, children }: SettingsSectionProps) => (
+export const SettingsSection = ({ title, children }: SettingsSectionProps) => (
     <View style={styles.section}>
         <UIText size="xs" style={styles.sectionTitle}>
             {title}
@@ -219,6 +237,7 @@ const SettingsSection = ({ title, children }: SettingsSectionProps) => (
 type SettingsRowProps = {
     icon: IoniconsName;
     title: string;
+    subtitle?: string;
     rightElement?: RightElement;
     isDestructive?: boolean;
     showDivider?: boolean;
@@ -226,9 +245,10 @@ type SettingsRowProps = {
 };
 
 
-const SettingsRow = ({
+export const SettingsRow = ({
     icon,
     title,
+    subtitle,
     rightElement,
     isDestructive = false,
     showDivider = false,
@@ -245,9 +265,18 @@ const SettingsRow = ({
                     <View style={styles.rowIconContainer}>
                         <Ionicons name={icon} size={styles.rowIcon.height} color={iconColor} />
                     </View>
-                    <UIText size="sm" weight="normal" style={[styles.rowTitle, { color: textColor }]}>
-                        {title}
-                    </UIText>
+                    <View style={styles.rowTextGroup}>
+
+                        <UIText size="sm" weight="normal" style={[styles.rowTitle, { color: textColor }]}>
+                            {title}
+                        </UIText>
+                        {subtitle && (
+                            <UIText size="xs" style={styles.rowSubtitle}>
+                                {subtitle}
+                            </UIText>
+                        )}
+                    </View>
+
                 </View>
 
                 {rightElement?.type === 'switch' && (
@@ -341,8 +370,16 @@ const styles = StyleSheet.create((theme, rt) => ({
     rowIcon: {
         height: theme.utils.s(20),
     },
+    rowTextGroup: {
+        flex: 1,
+        gap: theme.utils.vs(2),
+    },
     rowTitle: {
         color: theme.colors.primaryText,
+    },
+    rowSubtitle: {
+        color: theme.colors.muted,
+        lineHeight: 16,
     },
 
     rowRightTextContainer: {

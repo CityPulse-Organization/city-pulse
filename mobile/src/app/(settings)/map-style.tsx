@@ -13,6 +13,7 @@ import { UIText } from '../../ui';
 import { Ionicons } from '@expo/vector-icons';
 import { MapStyleCard } from '@/src/components/settings/MapStyleCard';
 import { useSettingsStore } from '@/src/hooks/useSettingsStore';
+import { InfoBanner } from '@/src/components/settings/InfoBanner';
 
 
 export type MapStyleId = 'dark' | 'light' | 'satellite' | 'terrain';
@@ -102,10 +103,11 @@ export default function MapStyleScreen() {
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
-                <UIText size="xs" style={styles.subtitle}>
-                    Choose how the map looks across the whole app. Switching to a light
-                    style helps readability in bright sunlight.
-                </UIText>
+                <InfoBanner
+                    text="Choose how the map looks across the whole app. Switching to a light style helps readability in bright sunlight."
+                    icon="map"
+                />
+
                 <View style={styles.grid}>
                     {MAP_STYLES.map((option) => (
                         <MapStyleCard
