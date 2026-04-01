@@ -1,12 +1,13 @@
 package city.pulse.user.service.impl;
 
+import city.pulse.common.security.model.UserInfo;
 import city.pulse.user.dto.ProfileCreationRequest;
 import city.pulse.user.dto.UserProfileResponse;
 import city.pulse.user.exception.UsernameAlreadyExistsException;
 import city.pulse.user.mapper.UserProfileMapper;
 import city.pulse.user.model.UserProfile;
-import city.pulse.user.repository.UserProfileRepository;
-import city.pulse.user.service.UserService;
+import city.pulse.user.service.UserProfileEntityService;
+import city.pulse.user.service.UserProfileService;
 import city.pulse.user.specification.UserProfileSpecifications;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,12 +17,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileSpecifications specifications;
-    private final UserProfileRepository repository;
+    private final UserProfileEntityService service;
     private final UserProfileMapper mapper;
 
     @Override
@@ -32,12 +35,12 @@ public class UserServiceImpl implements UserService {
 
         log.info("Creating profile for user ID: {}", userId);
 
-        if (repository.existsByUsername(username)) {
+        if (service.existsByUsername(username)) {
             throw new UsernameAlreadyExistsException("Username already exists");
         }
 
         try {
-            repository.saveAndFlush(UserProfile.build(userId, username));
+            service.saveAndFlush(UserProfile.build(userId, username));
             log.info("Profile created successfully for username: {}", username);
         } catch (DataIntegrityViolationException e) {
             log.error("Race condition detected. Profile creation failed for user ID: {}", userId, e);
@@ -47,8 +50,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<UserProfileResponse> searchByUsername(String username, Pageable pageable) {
-        var specification = specifications.getSpecification(username);
-        return repository.findAll(specification, pageable).map(mapper::toResponse);
+    public Page<UserProfileResponse> searchByUsername(String searchUsername, UserInfo userInfo, Pageable pageable) {
+        var currentUsername = service.findByIdOrThrow(userInfo.id()).getUsername();
+        var specification = specifications.getSpecification(searchUsername, currentUsername);
+        return service.findBySpec(specification, pageable).map(mapper::toResponse);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserProfileResponse getUserProfileById(UUID userId) {
+        return mapper.toResponse(service.findByIdOrThrow(userId));
     }
 }

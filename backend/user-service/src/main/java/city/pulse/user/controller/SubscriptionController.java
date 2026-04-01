@@ -50,5 +50,4 @@ public class SubscriptionController {
         service.unfollowUser(subscriberId, targetId);
         return ResponseEntity.noContent().build();
     }
-
 }

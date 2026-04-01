@@ -10,12 +10,16 @@ import java.util.Locale;
 
 @Component
 public class UserProfileSpecifications {
-    public Specification<UserProfile> getSpecification(String username) {
+    public Specification<UserProfile> getSpecification(String searchUsername, String currentUsername) {
         return (root, criteriaQuery, criteriaBuilder) -> {
             var predicates = new ArrayList<Predicate>();
 
-            if (username != null && !username.isBlank()) {
-                var escapedUsername = escapeLikePattern(username.toLowerCase(Locale.ROOT));
+            if (currentUsername != null) {
+                predicates.add(criteriaBuilder.notEqual(root.get("username"), currentUsername));
+            }
+
+            if (searchUsername != null && !searchUsername.isBlank()) {
+                var escapedUsername = escapeLikePattern(searchUsername.toLowerCase(Locale.ROOT));
                 predicates.add(criteriaBuilder.like(
                         criteriaBuilder.lower(root.get("username")),
                         "%" + escapedUsername + "%",

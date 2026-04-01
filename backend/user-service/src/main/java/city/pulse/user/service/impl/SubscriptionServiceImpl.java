@@ -3,13 +3,11 @@ package city.pulse.user.service.impl;
 import city.pulse.user.dto.UserProfileResponse;
 import city.pulse.user.exception.AlreadyFollowingException;
 import city.pulse.user.exception.CannotFollowSelfException;
-import city.pulse.user.exception.UserNotFoundException;
 import city.pulse.user.mapper.SubscriptionMapper;
 import city.pulse.user.model.Subscription;
-import city.pulse.user.model.UserProfile;
 import city.pulse.user.repository.SubscriptionRepository;
-import city.pulse.user.repository.UserProfileRepository;
 import city.pulse.user.service.SubscriptionService;
+import city.pulse.user.service.UserProfileEntityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,8 +22,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class SubscriptionServiceImpl implements SubscriptionService {
-    private final SubscriptionRepository subscriptionRepository;
-    private final UserProfileRepository userProfileRepository;
+    private final SubscriptionRepository repository;
+    private final UserProfileEntityService service;
     private final SubscriptionMapper mapper;
 
     @Override
@@ -35,15 +33,15 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             throw new CannotFollowSelfException("User cannot follow themselves");
         }
 
-        var subscriber = findUserOrThrow(subscriberId);
-        var target = findUserOrThrow(targetId);
+        var subscriber = service.findByIdOrThrow(subscriberId);
+        var target = service.findByIdOrThrow(targetId);
 
-        if (subscriptionRepository.existsBySubscriberAndTarget(subscriber, target)) {
+        if (repository.existsBySubscriberAndTarget(subscriber, target)) {
             throw new AlreadyFollowingException("You are already following this user");
         }
 
         try {
-            subscriptionRepository.saveAndFlush(Subscription.build(subscriber, target));
+            repository.saveAndFlush(Subscription.build(subscriber, target));
         } catch (DataIntegrityViolationException e) {
             var message = e.getMessage() != null ? e.getMessage() : "";
             if (message.contains("uq_subscription")) {
@@ -58,29 +56,24 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     @Transactional
     public void unfollowUser(UUID subscriberId, UUID targetId) {
-        var subscriber = findUserOrThrow(subscriberId);
-        var target = findUserOrThrow(targetId);
+        var subscriber = service.findByIdOrThrow(subscriberId);
+        var target = service.findByIdOrThrow(targetId);
 
-        subscriptionRepository.deleteBySubscriberAndTarget(subscriber, target);
+        repository.deleteBySubscriberAndTarget(subscriber, target);
         log.info("User {} unfollowed user {}", subscriberId, targetId);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<UserProfileResponse> getFollowers(UUID userId, Pageable pageable) {
-        var user = findUserOrThrow(userId);
-        return subscriptionRepository.findByTarget(user, pageable).map(mapper::toFollowerResponse);
+        var user = service.findByIdOrThrow(userId);
+        return repository.findByTarget(user, pageable).map(mapper::toFollowerResponse);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<UserProfileResponse> getFollowing(UUID userId, Pageable pageable) {
-        var user = findUserOrThrow(userId);
-        return subscriptionRepository.findBySubscriber(user, pageable).map(mapper::toFollowingResponse);
-    }
-
-    private UserProfile findUserOrThrow(UUID userId) {
-        return userProfileRepository.findById(userId).orElseThrow(
-                () -> new UserNotFoundException("User not found with ID: " + userId));
+        var user = service.findByIdOrThrow(userId);
+        return repository.findBySubscriber(user, pageable).map(mapper::toFollowingResponse);
     }
 }
