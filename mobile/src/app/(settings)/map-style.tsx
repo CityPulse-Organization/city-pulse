@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import {
     ScrollView,
     View,
@@ -12,6 +12,7 @@ import { NavigationHeader } from '../../components/NavigationHeader';
 import { UIText } from '../../ui';
 import { Ionicons } from '@expo/vector-icons';
 import { MapStyleCard } from '@/src/components/settings/MapStyleCard';
+import { useSettingsStore } from '@/src/hooks/useSettingsStore';
 
 
 export type MapStyleId = 'dark' | 'light' | 'satellite' | 'terrain';
@@ -64,7 +65,13 @@ const MAP_STYLES: MapStyleOption[] = [
 
 export default function MapStyleScreen() {
     const router = useRouter();
-    const [selected, setSelected] = useState<MapStyleId>('dark');
+    const mapStyle = useSettingsStore((state) => state.mapStyle);
+    const setMapStyle = useSettingsStore((state) => state.setMapStyle);
+    const [selected, setSelected] = useState<MapStyleId>(mapStyle);
+
+    useEffect(() => {
+        setSelected(mapStyle);
+    }, [mapStyle]);
 
     const handleSelect = useCallback((id: MapStyleId) => {
         setSelected(id);
@@ -75,9 +82,9 @@ export default function MapStyleScreen() {
     }, [router]);
 
     const handleApply = useCallback(() => {
-        // TODO: persist storage
+        setMapStyle(selected);
         router.back();
-    }, [router]);
+    }, [router, selected, setMapStyle]);
 
     const selectedOption = MAP_STYLES.find((s) => s.id === selected)!;
 

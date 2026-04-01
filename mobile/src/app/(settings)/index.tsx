@@ -8,6 +8,8 @@ import { ThemedBackground } from '../../components';
 import { UIButton, UIDivider, UIText } from '../../ui';
 import { useLogout } from '../../hooks';
 import { NavigationHeader } from '../../components/NavigationHeader';
+import { useSettingsStore } from '@/src/hooks/useSettingsStore';
+
 
 type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -19,14 +21,21 @@ type RightElement =
 
 export default function SettingsScreen() {
     const router = useRouter();
+
+    const mapStyle = useSettingsStore((state) => state.mapStyle);
+
+    const theme = useSettingsStore((state) => state.theme);
+    const setTheme = useSettingsStore((state) => state.setTheme);
+
     const { mutate: logout } = useLogout();
 
-    const [isDarkMode, setIsDarkMode] = useState(true);
-    const [mapStyle, setMapStyle] = useState<string>('Dark');
+
+    const isDarkMode = theme === 'dark';
 
     const [isPushEnabled, setIsPushEnabled] = useState(true);
     const [isSafetyAlertsEnabled, setIsSafetyAlertsEnabled] = useState(true);
     const [isEventsNearbyEnabled, setIsEventsNearbyEnabled] = useState(true);
+
 
     const onLogoutPress = useCallback(() => {
         logout();
@@ -66,7 +75,7 @@ export default function SettingsScreen() {
                         rightElement={{
                             type: 'switch',
                             value: isDarkMode,
-                            onToggle: () => setIsDarkMode((prev) => !prev),
+                            onToggle: () => setTheme(isDarkMode ? 'light' : 'dark'),
                         }}
                         showDivider
                     />
