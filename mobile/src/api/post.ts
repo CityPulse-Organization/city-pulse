@@ -85,7 +85,13 @@ export const searchPosts = async (
 ): Promise<PagedModelResponse<PostResponse>> => {
   const { data } = await axios.get<PagedModelResponse<PostResponse>>(
     "/posts/search",
-    { params: { caption, page, size, sort: "createdAt,desc" } },
+    {
+      params: {
+        caption: caption?.trim() || undefined,
+        page,
+        size,
+      },
+    },
   );
   return data;
 };
@@ -97,7 +103,13 @@ export const getPulsePosts = async (
 ): Promise<PagedModelResponse<PostResponse>> => {
   const { data } = await axios.get<PagedModelResponse<PostResponse>>(
     "/posts/pulse",
-    { params: { search, page, size, sort: "createdAt,desc" } },
+    {
+      params: {
+        search: search?.trim() || undefined,
+        page,
+        size,
+      },
+    },
   );
   return data;
 };

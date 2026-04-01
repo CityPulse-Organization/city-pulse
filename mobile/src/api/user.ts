@@ -56,3 +56,4 @@ export const getUserProfile = async (
   const { data } = await axios.get<UserSearchResponse>(`/users/${userId}`);
   return data;
 };
+

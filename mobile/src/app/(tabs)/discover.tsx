@@ -142,7 +142,8 @@ export default function DiscoverScreen() {
       return pulseData.pages.flatMap((page) =>
         page.content.map((p) => ({
           id: String(p.id),
-          username: p.userId,
+          username: p.username ?? p.userId,
+          profileImageUrl: p.avatarUrl ?? "",
           accidentTime: p.createdAt,
           imagesUrl: [p.imageUrl],
           description: p.caption ?? "",
@@ -158,7 +159,8 @@ export default function DiscoverScreen() {
       return postsData.pages.flatMap((page) =>
         page.content.map((p) => ({
           id: String(p.id),
-          username: p.userId,
+          username: p.username ?? p.userId,
+          profileImageUrl: p.avatarUrl ?? "",
           accidentTime: p.createdAt,
           imagesUrl: [p.imageUrl],
           description: p.caption ?? "",
@@ -234,7 +236,7 @@ export default function DiscoverScreen() {
       <Tabs.Container renderTabBar={DiscoverTabBar}>
         <Tabs.Tab name="pulse" label="Pulse">
           <Tabs.FlashList
-            data={filteredPosts}
+            data={pulsePosts}
             renderItem={renderPost}
             keyExtractor={keyExtractor}
             numColumns={2}
@@ -284,7 +286,7 @@ export default function DiscoverScreen() {
         </Tabs.Tab>
         <Tabs.Tab name="posts" label="Posts">
           <Tabs.FlashList
-            data={filteredPosts}
+            data={paginatedPosts}
             renderItem={renderPost}
             keyExtractor={keyExtractor}
             numColumns={2}

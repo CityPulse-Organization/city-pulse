@@ -4,6 +4,8 @@ import { Photo } from "./newPostImage";
 export type PostResponse = {
   id: number;
   userId: string;
+  username: string | null;
+  avatarUrl: string | null;
   imageUrl: string;
   caption: string | null;
   createdAt: string;
