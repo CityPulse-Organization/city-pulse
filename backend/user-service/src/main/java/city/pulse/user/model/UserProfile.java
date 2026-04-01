@@ -24,6 +24,15 @@ public class UserProfile {
     @Column(nullable = false, unique = true, length = 32)
     private String username;
 
+    @Column(length = 255)
+    private String bio;
+
+    @Column(length = 64)
+    private String jobTitle;
+
+    @Column(length = 255)
+    private String avatarUrl;
+
     public static UserProfile build(UUID userId, String username) {
         return UserProfile.builder()
                 .id(userId)

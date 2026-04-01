@@ -88,6 +88,8 @@ export default function ProfileScreen() {
   const theme = UnistylesRuntime.getTheme();
   const {
     userId,
+    username,
+    profile,
     posts,
     postsCount,
     fetchNextPosts,
@@ -147,7 +149,15 @@ export default function ProfileScreen() {
       <View style={styles.container}>
         <Tabs.Container
           revealHeaderOnScroll={false}
-          renderHeader={() => <ProfileHeader userId={userId} />}
+          renderHeader={() => (
+            <ProfileHeader
+              userId={userId}
+              username={username}
+              bio={profile?.bio}
+              jobTitle={profile?.jobTitle}
+              avatarUrl={profile?.avatarUrl}
+            />
+          )}
           renderTabBar={(props) => (
             <ProfileTabBar
               {...props}
@@ -267,9 +277,19 @@ export default function ProfileScreen() {
 
 type ProfileHeaderProps = {
   userId?: string;
+  username?: string;
+  bio?: string;
+  jobTitle?: string;
+  avatarUrl?: string;
 };
 
-const ProfileHeader = ({ userId }: ProfileHeaderProps) => {
+const ProfileHeader = ({
+  userId,
+  username,
+  bio,
+  jobTitle,
+  avatarUrl,
+}: ProfileHeaderProps) => {
   const router = useRouter();
 
   const navigateToEditProfile = useCallback(() => {
@@ -285,10 +305,7 @@ const ProfileHeader = ({ userId }: ProfileHeaderProps) => {
   return (
     <View style={styles.headerContainer}>
       <View style={styles.avatarWrapper}>
-        <Icon
-          size="medium"
-          profileImageUrl={undefined} // TODO: No avatar URL from backend yet
-        />
+        <Icon size="medium" profileImageUrl={avatarUrl} />
         <UIButton
           style={styles.editProfileButton}
           onPress={navigateToEditProfile}
@@ -305,7 +322,7 @@ const ProfileHeader = ({ userId }: ProfileHeaderProps) => {
       <View style={styles.infoContainer}>
         <View style={[styles.row, styles.usernameRow]}>
           <UIText size="lg" weight="bold" style={styles.text}>
-            {userId ? `${userId.substring(0, 8)}...` : "Loading..."}
+            {username ?? (userId ? `${userId.substring(0, 8)}...` : "Loading...")}
           </UIText>
 
           <UIButton onPress={onLogoutPress} isLoading={false}>
@@ -317,10 +334,9 @@ const ProfileHeader = ({ userId }: ProfileHeaderProps) => {
           </UIButton>
         </View>
 
-        {/* TODO: Temporary placeholders for job/bio until backend adds them */}
         <View style={[styles.row, styles.jobRow]}>
           <UIText size="sm" style={styles.roleText}>
-            User
+            {jobTitle ?? "User"}
           </UIText>
 
           <Ionicons
@@ -331,7 +347,7 @@ const ProfileHeader = ({ userId }: ProfileHeaderProps) => {
         </View>
 
         <UIText size="sm" style={styles.bioText}>
-          Welcome to my City Pulse profile!
+          {bio ?? "Welcome to my City Pulse profile!"}
         </UIText>
       </View>
     </View>

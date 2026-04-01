@@ -1,12 +1,28 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getFollowers, getFollowing, getPostsByUserId } from "@/src/api";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  getFollowers,
+  getFollowing,
+  getMyProfile,
+  getPostsByUserId,
+} from "@/src/api";
 import { useSession } from "@/src/hoc";
 import { useCallback, useMemo } from "react";
 import type { DiscoverUser, PostItem, PostResponse } from "@/src/types";
 
 export const useProfile = () => {
   const { session } = useSession();
-  const userId = session.user?.id;
+  const sessionUserId = session.user?.id;
+
+  const {
+    data: profile,
+    isLoading: isProfileLoading,
+    refetch: refetchProfile,
+    isRefetching: isRefetchingProfile,
+  } = useQuery({
+    queryKey: ["profile", sessionUserId],
+    queryFn: getMyProfile,
+    enabled: !!sessionUserId,
+  });
 
   const {
     data: postsData,
@@ -17,15 +33,15 @@ export const useProfile = () => {
     refetch: refetchPosts,
     isRefetching: isRefetchingPosts,
   } = useInfiniteQuery({
-    queryKey: ["userPosts", userId],
-    queryFn: ({ pageParam = 0 }) => getPostsByUserId(userId!, pageParam),
+    queryKey: ["userPosts", sessionUserId],
+    queryFn: ({ pageParam = 0 }) => getPostsByUserId(sessionUserId!, pageParam),
     getNextPageParam: (lastPage) => {
       const currentPage = lastPage.page.number;
       if (currentPage + 1 >= lastPage.page.totalPages) return undefined;
       return currentPage + 1;
     },
     initialPageParam: 0,
-    enabled: !!userId,
+    enabled: !!sessionUserId,
     retry: false,
   });
 
@@ -34,7 +50,7 @@ export const useProfile = () => {
     return postsData.pages.flatMap((page) =>
       page.content.map((p: PostResponse) => ({
         id: String(p.id),
-        username: String(p.userId),
+        username: profile?.username ?? "",
         accidentTime: new Date(p.createdAt).toLocaleDateString(),
         imagesUrl: [p.imageUrl],
         description: p.caption ?? undefined,
@@ -43,7 +59,7 @@ export const useProfile = () => {
         commentCount: p.commentCount,
       })),
     );
-  }, [postsData]);
+  }, [postsData, profile]);
 
   const {
     data: followersData,
@@ -53,14 +69,14 @@ export const useProfile = () => {
     refetch: refetchFollowers,
     isRefetching: isRefetchingFollowers,
   } = useInfiniteQuery({
-    queryKey: ["followers", userId],
-    queryFn: ({ pageParam = 0 }) => getFollowers(userId!, pageParam, 24),
+    queryKey: ["followers", sessionUserId],
+    queryFn: ({ pageParam = 0 }) => getFollowers(sessionUserId!, pageParam, 24),
     getNextPageParam: (lastPage, allPages) => {
       if (lastPage.last) return undefined;
       return allPages.length;
     },
     initialPageParam: 0,
-    enabled: !!userId,
+    enabled: !!sessionUserId,
     retry: false,
   });
 
@@ -72,14 +88,14 @@ export const useProfile = () => {
     refetch: refetchFollowing,
     isRefetching: isRefetchingFollowing,
   } = useInfiniteQuery({
-    queryKey: ["following", userId],
-    queryFn: ({ pageParam = 0 }) => getFollowing(userId!, pageParam, 24),
+    queryKey: ["following", sessionUserId],
+    queryFn: ({ pageParam = 0 }) => getFollowing(sessionUserId!, pageParam, 24),
     getNextPageParam: (lastPage, allPages) => {
       if (lastPage.last) return undefined;
       return allPages.length;
     },
     initialPageParam: 0,
-    enabled: !!userId,
+    enabled: !!sessionUserId,
     retry: false,
   });
 
@@ -112,18 +128,25 @@ export const useProfile = () => {
   const postsCount = postsData?.pages?.[0]?.page?.totalElements ?? 0;
 
   const refetchAll = useCallback(() => {
+    refetchProfile();
     refetchPosts();
     refetchFollowers();
     refetchFollowing();
-  }, [refetchPosts, refetchFollowers, refetchFollowing]);
+  }, [refetchProfile, refetchPosts, refetchFollowers, refetchFollowing]);
 
   const isRefetching =
-    isRefetchingPosts || isRefetchingFollowers || isRefetchingFollowing;
+    isRefetchingProfile ||
+    isRefetchingPosts ||
+    isRefetchingFollowers ||
+    isRefetchingFollowing;
 
   return {
-    userId,
+    userId: sessionUserId,
+    username: profile?.username,
+    profile,
     posts,
     postsCount,
+    isProfileLoading,
     isPostsLoading,
     fetchNextPosts,
     hasNextPostsPage,
