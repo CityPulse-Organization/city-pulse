@@ -12,6 +12,7 @@ import { InfoBanner } from '@/src/components/settings/InfoBanner';
 import { SaveButton } from '@/src/components/SaveButton';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Toast from 'react-native-toast-message';
 
 
 
@@ -78,6 +79,16 @@ export default function ChangePasswordScreen() {
         try {
             // TODO: call API to change password
             router.back();
+            Toast.show({
+                type: "success",
+                text1: "Password changed successfully",
+            });
+        } catch (error) {
+            Toast.show({
+                type: "error",
+                text1: "Error",
+                text2: "Failed to change password",
+            });
         } finally {
             setIsLoading(false);
         }
@@ -268,7 +279,6 @@ const styles = StyleSheet.create((theme) => ({
     },
     inputText: {
         paddingVertical: theme.utils.vs(8),
-        color: theme.colors.primaryText,
     },
 
     eyeButton: {

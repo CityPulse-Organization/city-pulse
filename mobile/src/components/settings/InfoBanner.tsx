@@ -38,11 +38,11 @@ const styles = StyleSheet.create((theme) => ({
 
     infoBannerIcon: {
         height: theme.utils.vs(22),
-        color: theme.colors.violet,
+        color: theme.colors.lightAccent,
     },
 
     textContainer: {
-        flex: 1,
+        flexShrink: 1,
     },
     infoBannerText: {
         color: theme.colors.muted,

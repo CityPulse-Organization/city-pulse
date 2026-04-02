@@ -94,10 +94,8 @@ export default function SettingsScreen() {
                         icon="globe-outline"
                         title="Language"
                         rightElement={{ type: 'text', value: 'English' }}
+                        showDivider
                     />
-                </SettingsSection>
-
-                <SettingsSection title="NOTIFICATIONS">
                     <SettingsRow
                         icon="notifications-outline"
                         title="Push Notifications"
@@ -105,26 +103,6 @@ export default function SettingsScreen() {
                             type: 'switch',
                             value: isPushEnabled,
                             onToggle: () => setIsPushEnabled((prev) => !prev),
-                        }}
-                        showDivider
-                    />
-                    <SettingsRow
-                        icon="warning-outline"
-                        title="Safety Alerts"
-                        rightElement={{
-                            type: 'switch',
-                            value: isSafetyAlertsEnabled,
-                            onToggle: () => setIsSafetyAlertsEnabled((prev) => !prev),
-                        }}
-                        showDivider
-                    />
-                    <SettingsRow
-                        icon="calendar-outline"
-                        title="New Events Nearby"
-                        rightElement={{
-                            type: 'switch',
-                            value: isEventsNearbyEnabled,
-                            onToggle: () => setIsEventsNearbyEnabled((prev) => !prev),
                         }}
                     />
                 </SettingsSection>
