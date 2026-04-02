@@ -11,11 +11,12 @@ export const useSettings = () => {
     const mapStyle = useSettingsStore((state) => state.mapStyle);
     const theme = useSettingsStore((state) => state.theme);
     const setTheme = useSettingsStore((state) => state.setTheme);
+    const language = useSettingsStore((state) => state.language);
     const { mutate: logout } = useLogout();
 
 
     const [isPushEnabled, setIsPushEnabled] = useState(true);
-    const [isBiometricEnabled, setIsBiometricEnabled] = useState(true);
+    const [isBiometricEnabled, setIsBiometricEnabled] = useState(false);
 
     const isDarkMode = theme === 'dark';
 
@@ -25,6 +26,7 @@ export const useSettings = () => {
     const navToChangePassword = useCallback(() => router.push('/(settings)/change-password'), [router]);
     const navToReportProblem = useCallback(() => router.push('/(settings)/report-problem'), [router]);
     const navToRestrictedAccounts = useCallback(() => router.push('/(settings)/restricted-accounts'), [router]);
+    const navToLanguage = useCallback(() => router.push('/(settings)/language'), [router]);
 
 
     const toggleTheme = useCallback(() => setTheme(isDarkMode ? 'light' : 'dark'), [isDarkMode, setTheme]);
@@ -44,10 +46,10 @@ export const useSettings = () => {
     const handleRateApp = useCallback(() => openUrl('https://apps.apple.com/app/idYOUR_APP_ID'), [openUrl]);
 
     return {
-        state: { mapStyle, isDarkMode, isPushEnabled, isBiometricEnabled },
+        state: { mapStyle, isDarkMode, isPushEnabled, isBiometricEnabled, language },
         actions: {
             handleBack, navToMapStyle, navToChangePassword, navToReportProblem,
-            navToRestrictedAccounts, openHelpUrl, openPrivacyUrl, openTermsUrl,
+            navToRestrictedAccounts, navToLanguage, openHelpUrl, openPrivacyUrl, openTermsUrl,
             handleRateApp, toggleTheme, togglePushEnabled, toggleBiometric, onLogoutPress
         }
     };

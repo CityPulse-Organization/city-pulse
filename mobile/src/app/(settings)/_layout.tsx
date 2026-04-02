@@ -8,6 +8,7 @@ export default function SettingsLayout() {
             <Stack.Screen name="restricted-accounts" />
             <Stack.Screen name="change-password" />
             <Stack.Screen name="report-problem" />
+            <Stack.Screen name="language" />
         </Stack>
     );
 }

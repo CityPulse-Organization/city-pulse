@@ -47,7 +47,7 @@ export default function SettingsScreen() {
                     <SettingsRow
                         icon="map-outline"
                         title="Map Style"
-                        rightElement={{ type: 'text', value: state.mapStyle }}
+                        rightElement={{ type: 'text', value: state.mapStyle.toUpperCase() }}
                         onPress={actions.navToMapStyle}
                     />
                 </SettingsSection>
@@ -56,7 +56,8 @@ export default function SettingsScreen() {
                     <SettingsRow
                         icon="globe-outline"
                         title="Language"
-                        rightElement={{ type: 'text', value: 'English' }}
+                        rightElement={{ type: 'text', value: state.language.toUpperCase() }}
+                        onPress={actions.navToLanguage}
                         showDivider
                     />
                     <SettingsRow

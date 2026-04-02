@@ -1,42 +1,48 @@
-import {
-    Pressable,
-    View,
-} from 'react-native';
-import { StyleSheet } from 'react-native-unistyles';
+import React, { ReactNode } from 'react';
+import { Pressable, View } from 'react-native';
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    withSpring,
+    withTiming,
+} from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
-import { UIText } from '../../ui';
-import { LinearGradient } from 'expo-linear-gradient';
-import { MapStyleId, MapStyleOption } from '@/src/app/(settings)/map-style';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import { StyleSheet } from 'react-native-unistyles';
+import { UIText } from '@/src/ui';
 
 
-type MapStyleCardProps = {
-    option: MapStyleOption;
+
+type SelectableCardProps = {
     isSelected: boolean;
-    onSelect: (id: MapStyleId) => void;
+    onSelect: (id: any) => void;
+    previewContent: ReactNode;
+    id: any;
+    title: string;
+    description: string;
+    iconName: React.ComponentProps<typeof Ionicons>['name'];
 };
 
-export const MapStyleCard = ({ option, isSelected, onSelect }: MapStyleCardProps) => {
+export const SelectableCard = ({
+    isSelected,
+    onSelect,
+    previewContent,
+    id,
+    title,
+    description,
+    iconName,
+}: SelectableCardProps) => {
     const scale = useSharedValue(1);
 
     const handlePressIn = () => {
-        scale.value = withSpring(0.96, {
-            stiffness: 400,
-            damping: 20,
-            mass: 1
-        });
+        scale.value = withSpring(0.96, { stiffness: 400, damping: 20, mass: 1 });
     };
 
     const handlePressOut = () => {
-        scale.value = withSpring(1, {
-            stiffness: 400,
-            damping: 15,
-            mass: 1
-        });
+        scale.value = withSpring(1, { stiffness: 400, damping: 15, mass: 1 });
     };
 
     const handlePress = () => {
-        onSelect(option.id);
+        onSelect(id);
     };
 
     const animatedCardStyle = useAnimatedStyle(() => ({
@@ -49,11 +55,15 @@ export const MapStyleCard = ({ option, isSelected, onSelect }: MapStyleCardProps
 
     const animatedBadgeStyle = useAnimatedStyle(() => ({
         opacity: withTiming(isSelected ? 1 : 0, { duration: 200 }),
-        scale: withSpring(isSelected ? 1 : 0, {
-            stiffness: 300,
-            damping: 20,
-            mass: 1
-        })
+        transform: [
+            {
+                scale: withSpring(isSelected ? 1 : 0, {
+                    stiffness: 300,
+                    damping: 20,
+                    mass: 1,
+                }),
+            },
+        ],
     }));
 
     return (
@@ -64,14 +74,13 @@ export const MapStyleCard = ({ option, isSelected, onSelect }: MapStyleCardProps
             style={styles.pressable}
         >
             <Animated.View style={[styles.card, animatedCardStyle]}>
-
                 <Animated.View
                     style={[styles.accentRing, animatedRingStyle]}
                     pointerEvents="none"
                 />
 
                 <View style={styles.previewContainer}>
-                    <MapPreviewTile gradient={option.previewGradient} accentColor={option.accentColor} />
+                    {previewContent}
 
                     <Animated.View style={[styles.checkBadge, animatedBadgeStyle]}>
                         <Ionicons
@@ -85,7 +94,7 @@ export const MapStyleCard = ({ option, isSelected, onSelect }: MapStyleCardProps
                 <View style={styles.info}>
                     <View style={styles.labelRow}>
                         <Ionicons
-                            name={option.icon}
+                            name={iconName}
                             size={styles.iconLabel.height}
                             color={isSelected ? styles.selectedIconLabel.color : styles.iconLabel.color}
                         />
@@ -94,58 +103,17 @@ export const MapStyleCard = ({ option, isSelected, onSelect }: MapStyleCardProps
                             weight="bold"
                             style={[styles.label, isSelected && styles.labelSelected]}
                         >
-                            {option.label}
+                            {title}
                         </UIText>
                     </View>
                     <UIText size="xxs" style={styles.description} numberOfLines={2}>
-                        {option.description}
+                        {description}
                     </UIText>
                 </View>
-
             </Animated.View>
         </Pressable>
     );
 };
-
-
-
-const MapPreviewTile = ({ gradient, accentColor }: {
-    gradient: readonly [string, string, ...string[]];
-    accentColor: string;
-}) => (
-    <LinearGradient colors={gradient} style={styles.tile} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
-        <HorizontalRoads accentColor={accentColor} />
-        <VerticalRoad accentColor={accentColor} />
-        <CityBlocks accentColor={accentColor} />
-        <CityPulseDot />
-    </LinearGradient>
-);
-
-const HorizontalRoads = ({ accentColor }: { accentColor: string }) => (
-    <>
-        <View style={[styles.road, styles.roadH1, { backgroundColor: accentColor }]} />
-        <View style={[styles.road, styles.roadH2, { backgroundColor: accentColor }]} />
-    </>
-);
-
-const VerticalRoad = ({ accentColor }: { accentColor: string }) => (
-    <View style={[styles.road, styles.roadV1, { backgroundColor: accentColor }]} />
-);
-
-const CityBlocks = ({ accentColor }: { accentColor: string }) => (
-    <>
-        <View style={[styles.block, styles.block1, { backgroundColor: accentColor }]} />
-        <View style={[styles.block, styles.block2, { backgroundColor: accentColor }]} />
-        <View style={[styles.block, styles.block3, { backgroundColor: accentColor }]} />
-    </>
-);
-
-const CityPulseDot = () => (
-    <View style={styles.pulseDot} />
-);
-
-
-
 
 
 const styles = StyleSheet.create((theme) => ({
@@ -168,12 +136,16 @@ const styles = StyleSheet.create((theme) => ({
         borderColor: theme.colors.lightAccent,
         zIndex: 10,
     },
+
     previewContainer: {
         height: theme.utils.vs(110),
         margin: theme.utils.s(8),
         borderRadius: theme.utils.ms(10),
         overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
+
     checkBadge: {
         position: 'absolute',
         top: theme.utils.s(7),
@@ -220,73 +192,5 @@ const styles = StyleSheet.create((theme) => ({
     description: {
         color: theme.colors.muted,
         lineHeight: 16,
-    },
-
-
-    tile: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 12,
-        overflow: 'hidden',
-        position: 'relative',
-    },
-
-    road: {
-        position: 'absolute',
-        borderRadius: 2,
-    },
-
-    roadH1: {
-        top: '30%',
-        left: 0,
-        right: 0,
-        height: 2,
-    },
-    roadH2: {
-        top: '65%',
-        left: 0,
-        right: 0,
-        height: 1,
-    },
-
-    roadV1: {
-        left: '45%',
-        top: 0,
-        bottom: 0,
-        width: 2,
-    },
-
-    block: {
-        position: 'absolute',
-        borderRadius: 3,
-        opacity: 0.7,
-    },
-    block1: {
-        top: '10%',
-        left: '10%',
-        width: '28%',
-        height: '16%',
-    },
-    block2: {
-        top: '40%',
-        left: '55%',
-        width: '32%',
-        height: '20%',
-    },
-    block3: {
-        top: '72%',
-        left: '10%',
-        width: '22%',
-        height: '14%',
-    },
-
-    pulseDot: {
-        position: 'absolute',
-        width: 8,
-        height: 8,
-        borderRadius: 4,
-        backgroundColor: theme.colors.lightAccent,
-        top: '28%',
-        left: '43%',
     },
 }));
