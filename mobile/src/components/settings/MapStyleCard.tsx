@@ -1,7 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
 import {
-    Animated,
-    Easing,
     Pressable,
     View,
 } from 'react-native';
@@ -10,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { UIText } from '../../ui';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MapStyleId, MapStyleOption } from '@/src/app/(settings)/map-style';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 
 
 type MapStyleCardProps = {
@@ -19,68 +17,63 @@ type MapStyleCardProps = {
 };
 
 export const MapStyleCard = ({ option, isSelected, onSelect }: MapStyleCardProps) => {
-    const scaleAnim = useRef(new Animated.Value(1)).current;
-    const checkScale = useRef(new Animated.Value(isSelected ? 1 : 0)).current;
-    const ringOpacity = useRef(new Animated.Value(isSelected ? 1 : 0)).current;
+    const scale = useSharedValue(1);
 
-    const handlePress = useCallback(() => {
-        Animated.sequence([
-            Animated.timing(scaleAnim, {
-                toValue: 0.96,
-                duration: 80,
-                easing: Easing.out(Easing.quad),
-                useNativeDriver: true,
-            }),
-            Animated.spring(scaleAnim, {
-                toValue: 1,
-                friction: 5,
-                useNativeDriver: true,
-            }),
-        ]).start();
+    const handlePressIn = () => {
+        scale.value = withSpring(0.96, {
+            stiffness: 400,
+            damping: 20,
+            mass: 1
+        });
+    };
 
+    const handlePressOut = () => {
+        scale.value = withSpring(1, {
+            stiffness: 400,
+            damping: 15,
+            mass: 1
+        });
+    };
+
+    const handlePress = () => {
         onSelect(option.id);
-    }, [onSelect, option.id, scaleAnim]);
+    };
 
+    const animatedCardStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: scale.value }],
+    }));
 
-    useEffect(() => {
-        Animated.parallel([
-            Animated.spring(checkScale, {
-                toValue: isSelected ? 1 : 0,
-                friction: 4,
-                tension: 200,
-                useNativeDriver: true,
-            }),
-            Animated.timing(ringOpacity, {
-                toValue: isSelected ? 1 : 0,
-                duration: 200,
-                useNativeDriver: true,
-            }),
-        ]).start();
-    }, [isSelected, checkScale, ringOpacity]);
+    const animatedRingStyle = useAnimatedStyle(() => ({
+        opacity: withTiming(isSelected ? 1 : 0, { duration: 200 }),
+    }));
+
+    const animatedBadgeStyle = useAnimatedStyle(() => ({
+        opacity: withTiming(isSelected ? 1 : 0, { duration: 200 }),
+        scale: withSpring(isSelected ? 1 : 0, {
+            stiffness: 300,
+            damping: 20,
+            mass: 1
+        })
+    }));
 
     return (
-        <Pressable onPress={handlePress} style={styles.pressable}>
-            <Animated.View style={[styles.card, { transform: [{ scale: scaleAnim }] }]}>
+        <Pressable
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            onPress={handlePress}
+            style={styles.pressable}
+        >
+            <Animated.View style={[styles.card, animatedCardStyle]}>
+
                 <Animated.View
-                    style={[
-                        styles.accentRing,
-                        { opacity: ringOpacity },
-                    ]}
+                    style={[styles.accentRing, animatedRingStyle]}
                     pointerEvents="none"
                 />
 
                 <View style={styles.previewContainer}>
-                    <MapPreviewTile
-                        gradient={option.previewGradient}
-                        accentColor={option.accentColor}
-                    />
+                    <MapPreviewTile gradient={option.previewGradient} accentColor={option.accentColor} />
 
-                    <Animated.View
-                        style={[
-                            styles.checkBadge,
-                            { transform: [{ scale: checkScale }], opacity: checkScale },
-                        ]}
-                    >
+                    <Animated.View style={[styles.checkBadge, animatedBadgeStyle]}>
                         <Ionicons
                             name="checkmark"
                             size={styles.iconCheckBadge.height}
@@ -99,10 +92,7 @@ export const MapStyleCard = ({ option, isSelected, onSelect }: MapStyleCardProps
                         <UIText
                             size="sm"
                             weight="bold"
-                            style={[
-                                styles.label,
-                                isSelected && styles.labelSelected,
-                            ]}
+                            style={[styles.label, isSelected && styles.labelSelected]}
                         >
                             {option.label}
                         </UIText>
@@ -111,6 +101,7 @@ export const MapStyleCard = ({ option, isSelected, onSelect }: MapStyleCardProps
                         {option.description}
                     </UIText>
                 </View>
+
             </Animated.View>
         </Pressable>
     );

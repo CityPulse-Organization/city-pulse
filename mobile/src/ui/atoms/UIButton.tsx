@@ -1,4 +1,4 @@
-import { Pressable, StyleProp, ViewStyle } from "react-native";
+import { Pressable, PressableStateCallbackType, StyleProp, ViewStyle } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { moderateScale } from "../unistyles";
 
@@ -6,8 +6,7 @@ import { UISkeleton } from "./UISkeleton";
 
 type UIButtonProps = {
   children?: React.ReactNode;
-  style?: StyleProp<ViewStyle>;
-  onPress: () => void;
+  style?: StyleProp<ViewStyle> | ((state: PressableStateCallbackType) => StyleProp<ViewStyle>); onPress: () => void;
   isLoading?: boolean;
 } & React.ComponentProps<typeof Pressable>;
 
@@ -20,7 +19,10 @@ export const UIButton = ({
 }: UIButtonProps) => {
   return (
     <UISkeleton show={isLoading}>
-      <Pressable onPress={onPress} {...rest} style={[styles.button, style]}>
+      <Pressable onPress={onPress} {...rest} style={(state) => [
+        styles.button,
+        typeof style === "function" ? style(state) : style,
+      ]}>
         {children}
       </Pressable>
     </UISkeleton>

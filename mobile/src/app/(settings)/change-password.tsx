@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,7 +7,7 @@ import { useForm, Controller, useWatch, Control } from 'react-hook-form';
 
 import { ThemedBackground } from '../../components';
 import { NavigationHeader } from '../../components/NavigationHeader';
-import { UIDivider, UIInput, UIKeyboardAvoidingScrollView, UIText } from '../../ui';
+import { UIButton, UIDivider, UIInput, UIKeyboardAvoidingScrollView, UIText } from '../../ui';
 import { InfoBanner } from '@/src/components/settings/InfoBanner';
 import { SaveButton } from '@/src/components/SaveButton';
 import z from 'zod';
@@ -179,13 +179,13 @@ const PasswordField = memo(({ control, name, label, placeholder, errorMessage }:
 });
 
 const EyeToggle = memo(({ visible, onToggle }: { visible: boolean; onToggle: () => void }) => (
-    <Pressable onPress={onToggle} style={styles.eyeButton}>
+    <UIButton onPress={onToggle} style={styles.eyeButton}>
         <Ionicons
             name={visible ? 'eye-outline' : 'eye-off-outline'}
             size={styles.eyeIcon.height}
             color={styles.eyeIconColor.color}
         />
-    </Pressable>
+    </UIButton>
 ));
 
 

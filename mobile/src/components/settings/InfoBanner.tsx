@@ -7,11 +7,11 @@ import { StyleSheet } from "react-native-unistyles"
 
 interface InfoBannerProps {
     text: string
-    icon: React.ComponentProps<typeof Ionicons>['name'],
+    icon?: React.ComponentProps<typeof Ionicons>['name'],
     style?: StyleProp<ViewStyle>;
 }
 
-export const InfoBanner = memo(({ text, icon, style }: InfoBannerProps) => (
+export const InfoBanner = memo(({ text, icon = "information-circle-outline", style }: InfoBannerProps) => (
     <View style={[styles.infoBanner, style]}>
         <Ionicons name={icon} size={styles.infoBannerIcon.height} color={styles.infoBannerIcon.color} />
         <View style={styles.textContainer}>

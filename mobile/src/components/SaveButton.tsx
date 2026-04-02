@@ -1,7 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { memo } from "react";
-import { Pressable, StyleSheet as RNStyleSheet, View, ActivityIndicator } from 'react-native';
-import { UIText } from "../ui";
+import { StyleSheet as RNStyleSheet, View, ActivityIndicator } from 'react-native';
+import { UIButton, UIText } from "../ui";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -13,7 +13,7 @@ type SaveButtonProps = {
 
 export const SaveButton = memo(({ label, onPress, isLoading }: SaveButtonProps) => (
     <View style={styles.wrapper} pointerEvents="box-none" >
-        <Pressable
+        <UIButton
             onPress={onPress}
             disabled={isLoading}
             style={({ pressed }) => [styles.button, pressed && styles.pressed]}
@@ -27,9 +27,9 @@ export const SaveButton = memo(({ label, onPress, isLoading }: SaveButtonProps) 
             <UIText size="lg" weight="bold" style={styles.text}>{label}</UIText>
             {isLoading
                 ? <ActivityIndicator color={styles.loading.color} size="small" />
-                : <Ionicons name="checkmark" color={styles.icon.color} size={styles.icon.height} />
+                : <Ionicons name="send" color={styles.icon.color} size={styles.icon.height} />
             }
-        </Pressable>
+        </UIButton>
     </View>
 ));
 
