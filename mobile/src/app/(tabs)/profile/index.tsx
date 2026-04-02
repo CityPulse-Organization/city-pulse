@@ -1,6 +1,6 @@
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 import { Icon, IconInfo, Post, ThemedBackground } from "@/src/components";
-import { UIButton, UIEmptyState, UIInput, UIText } from "@/src/ui";
+import { UIButton, UIEmptyState, UIText } from "@/src/ui";
 import { useRouter } from "expo-router";
 import { ComponentProps, memo, useCallback, useState } from "react";
 import React from "react";
@@ -12,6 +12,7 @@ import { runOnJS, useAnimatedReaction } from "react-native-reanimated";
 import { DiscoverUser, PostItem } from "@/src/types";
 import { useProfile } from "@/src/hooks/profile/useProfile";
 import { useFollow } from "@/src/hooks/useFollow";
+import { SearchInput } from "@/src/components/SearchInput";
 
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
@@ -60,27 +61,6 @@ const SearchUserItem = memo(({ item }: { item: DiscoverUser }) => {
   );
 });
 
-const SearchInput = memo(() => {
-  const [input, setInput] = useState("");
-
-  return (
-    <UIInput
-      leftElement={
-        <Ionicons
-          name="search"
-          size={styles.iconInput.height}
-          color={styles.iconInput.color}
-        />
-      }
-      containerStyle={styles.searchContainer}
-      inputStyle={styles.searchInput}
-      placeholder={"Search..."}
-      placeholderTextColor={styles.placeholderInput.color}
-      value={input}
-      onChangeText={setInput}
-    />
-  );
-});
 
 export default function ProfileScreen() {
   const router = useRouter();
