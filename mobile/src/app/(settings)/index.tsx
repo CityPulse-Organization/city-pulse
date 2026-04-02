@@ -1,14 +1,12 @@
-import React, { useCallback, useState } from 'react';
-import { Linking, ScrollView, Switch, View } from 'react-native';
+import React from 'react';
+import { ScrollView, Switch, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
 
 import { ThemedBackground } from '../../components';
 import { UIButton, UIDivider, UIText } from '../../ui';
-import { useLogout } from '../../hooks';
 import { NavigationHeader } from '../../components/NavigationHeader';
-import { useSettingsStore } from '@/src/hooks/useSettingsStore';
+import { useSettings } from '@/src/hooks/settings/useSettings';
 
 
 type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
@@ -20,48 +18,13 @@ type RightElement =
 
 
 export default function SettingsScreen() {
-    const router = useRouter();
-
-    const mapStyle = useSettingsStore((state) => state.mapStyle);
-
-    const theme = useSettingsStore((state) => state.theme);
-    const setTheme = useSettingsStore((state) => state.setTheme);
-
-    const { mutate: logout } = useLogout();
-
-
-    const isDarkMode = theme === 'dark';
-
-    const [isPushEnabled, setIsPushEnabled] = useState(true);
-    const [isSafetyAlertsEnabled, setIsSafetyAlertsEnabled] = useState(true);
-    const [isEventsNearbyEnabled, setIsEventsNearbyEnabled] = useState(true);
-    const [isBiometricEnabled, setIsBiometricEnabled] = useState(true);
-
-
-
-    const onLogoutPress = useCallback(() => {
-        logout();
-    }, [logout]);
-
-    const handleBack = useCallback(() => {
-        router.back();
-    }, [router]);
-
-
-    const openUrl = useCallback((url: string) => {
-        Linking.openURL(url).catch(() => { });
-    }, []);
-
-    const handleRateApp = useCallback(() => {
-        // TODO: replace with actual store URL
-        openUrl('https://apps.apple.com/app/idYOUR_APP_ID');
-    }, [openUrl]);
+    const { state, actions } = useSettings();
 
     return (
         <ThemedBackground>
             <NavigationHeader
                 title="Settings"
-                onLeftAction={handleBack}
+                onLeftAction={actions.handleBack}
             />
 
 
@@ -76,16 +39,16 @@ export default function SettingsScreen() {
                         title="Dark Mode"
                         rightElement={{
                             type: 'switch',
-                            value: isDarkMode,
-                            onToggle: () => setTheme(isDarkMode ? 'light' : 'dark'),
+                            value: state.isDarkMode,
+                            onToggle: actions.toggleTheme,
                         }}
                         showDivider
                     />
                     <SettingsRow
                         icon="map-outline"
                         title="Map Style"
-                        rightElement={{ type: 'text', value: mapStyle }}
-                        onPress={() => router.push('/(settings)/map-style')}
+                        rightElement={{ type: 'text', value: state.mapStyle }}
+                        onPress={actions.navToMapStyle}
                     />
                 </SettingsSection>
 
@@ -101,8 +64,8 @@ export default function SettingsScreen() {
                         title="Push Notifications"
                         rightElement={{
                             type: 'switch',
-                            value: isPushEnabled,
-                            onToggle: () => setIsPushEnabled((prev) => !prev),
+                            value: state.isPushEnabled,
+                            onToggle: actions.togglePushEnabled,
                         }}
                     />
                 </SettingsSection>
@@ -112,6 +75,7 @@ export default function SettingsScreen() {
                         icon="shield-outline"
                         title="Restricted Accounts"
                         rightElement={{ type: 'chevron' }}
+                        onPress={actions.navToRestrictedAccounts}
                         showDivider
                     />
 
@@ -119,7 +83,7 @@ export default function SettingsScreen() {
                         icon="key-outline"
                         title="Change Password"
                         rightElement={{ type: 'chevron' }}
-                        onPress={() => router.push('/(settings)/change-password')}
+                        onPress={actions.navToChangePassword}
                         showDivider
                     />
 
@@ -129,10 +93,9 @@ export default function SettingsScreen() {
                         subtitle="Use Face ID or fingerprint to open the app"
                         rightElement={{
                             type: 'switch',
-                            value: isBiometricEnabled,
-                            onToggle: () => setIsBiometricEnabled((prev) => !prev),
+                            value: state.isBiometricEnabled,
+                            onToggle: actions.toggleBiometric,
                         }}
-                        showDivider
                     />
                 </SettingsSection>
 
@@ -141,36 +104,35 @@ export default function SettingsScreen() {
                         icon="help-circle-outline"
                         title="Help Center"
                         rightElement={{ type: 'chevron' }}
-                        onPress={() => openUrl('https://citypulse.app/help')} // TODO: replace with actual page URL
+                        onPress={actions.openHelpUrl}
                         showDivider
                     />
                     <SettingsRow
                         icon="bug-outline"
                         title="Report a Problem"
                         rightElement={{ type: 'chevron' }}
-                        onPress={() => router.push('/(settings)/report-problem')}
+                        onPress={actions.navToReportProblem}
                         showDivider
                     />
                     <SettingsRow
                         icon="star-outline"
                         title="Rate the App"
                         rightElement={{ type: 'chevron' }}
-                        onPress={handleRateApp}
+                        onPress={actions.handleRateApp}
                         showDivider
                     />
                     <SettingsRow
                         icon="document-text-outline"
                         title="Privacy Policy"
                         rightElement={{ type: 'chevron' }}
-                        onPress={() => openUrl('https://citypulse.app/privacy')} // TODO: replace with actual page URL
+                        onPress={actions.openPrivacyUrl}
                         showDivider
                     />
                     <SettingsRow
                         icon="reader-outline"
                         title="Terms of Service"
                         rightElement={{ type: 'chevron' }}
-                        onPress={() => openUrl('https://citypulse.app/terms')} // TODO: replace with actual page URL
-                        showDivider
+                        onPress={actions.openTermsUrl}
                     />
                 </SettingsSection>
 
@@ -184,7 +146,7 @@ export default function SettingsScreen() {
                     <SettingsRow
                         icon="log-out-outline"
                         title="Sign Out"
-                        onPress={onLogoutPress}
+                        onPress={actions.onLogoutPress}
                     />
                 </SettingsSection>
             </ScrollView>

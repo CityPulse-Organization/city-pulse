@@ -152,6 +152,7 @@ const SuccessView = memo(({ onReset, onBack }: { onReset: () => void, onBack: ()
 
 
 const CategoryPicker = memo(({ control, errorMessage }: { control: Control<FormValues>; errorMessage?: string }) => {
+
     return (
         <View style={styles.fieldGroup}>
             <UIText size="xs" style={styles.fieldLabel}>CATEGORY</UIText>
@@ -161,11 +162,14 @@ const CategoryPicker = memo(({ control, errorMessage }: { control: Control<FormV
                 render={({ field: { onChange, value } }) => (
                     <View style={styles.categoryGrid}>
                         {CATEGORIES.map((category) => {
+
                             const isActive = value === category.id;
+                            const onPress = useCallback(() => onChange(category.id), [onChange, category.id]);
+
                             return (
                                 <UIButton
                                     key={category.id}
-                                    onPress={() => onChange(category.id)}
+                                    onPress={onPress}
                                     style={({ pressed }) => [
                                         styles.categoryChip,
                                         isActive && styles.categoryChipActive,
