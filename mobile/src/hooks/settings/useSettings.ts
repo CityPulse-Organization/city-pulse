@@ -3,6 +3,7 @@ import { Linking } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSettingsStore } from '@/src/hooks/useSettingsStore';
 import { useLogout } from '../../hooks';
+import { useBiometric } from './useBiometric';
 
 
 export const useSettings = () => {
@@ -16,7 +17,13 @@ export const useSettings = () => {
 
 
     const [isPushEnabled, setIsPushEnabled] = useState(true);
-    const [isBiometricEnabled, setIsBiometricEnabled] = useState(false);
+
+    const {
+        isBiometricEnabled,
+        supportStatus: biometricSupportStatus,
+        isAuthenticating: isBiometricAuthenticating,
+        toggleBiometric,
+    } = useBiometric();
 
     const isDarkMode = theme === 'dark';
 
@@ -31,7 +38,6 @@ export const useSettings = () => {
 
     const toggleTheme = useCallback(() => setTheme(isDarkMode ? 'light' : 'dark'), [isDarkMode, setTheme]);
     const togglePushEnabled = useCallback(() => setIsPushEnabled((prev) => !prev), []);
-    const toggleBiometric = useCallback(() => setIsBiometricEnabled((prev) => !prev), []);
     const onLogoutPress = useCallback(() => logout(), [logout]);
 
 
@@ -46,7 +52,7 @@ export const useSettings = () => {
     const handleRateApp = useCallback(() => openUrl('https://apps.apple.com/app/idYOUR_APP_ID'), [openUrl]);
 
     return {
-        state: { mapStyle, isDarkMode, isPushEnabled, isBiometricEnabled, language },
+        state: { mapStyle, isDarkMode, isPushEnabled, isBiometricEnabled, isBiometricAuthenticating, biometricSupportStatus, language },
         actions: {
             handleBack, navToMapStyle, navToChangePassword, navToReportProblem,
             navToRestrictedAccounts, navToLanguage, openHelpUrl, openPrivacyUrl, openTermsUrl,

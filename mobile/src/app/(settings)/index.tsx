@@ -91,12 +91,26 @@ export default function SettingsScreen() {
                     <SettingsRow
                         icon="finger-print-outline"
                         title="Biometric Unlock"
-                        subtitle="Use Face ID or fingerprint to open the app"
+                        subtitle={
+                            state.biometricSupportStatus === 'checking'
+                                ? 'Checking device support…'
+                                : state.biometricSupportStatus === 'unavailable'
+                                    ? 'Not available on this device'
+                                    : state.biometricSupportStatus === 'not_enrolled'
+                                        ? 'No biometrics enrolled'
+                                        : 'Use Face ID or fingerprint to open the app'
+                        }
                         rightElement={{
                             type: 'switch',
                             value: state.isBiometricEnabled,
                             onToggle: actions.toggleBiometric,
                         }}
+                        isDisabled={
+                            state.biometricSupportStatus === 'checking' ||
+                            state.biometricSupportStatus === 'unavailable' ||
+                            state.isBiometricAuthenticating
+                        }
+                        isLoading={state.isBiometricAuthenticating}
                     />
                 </SettingsSection>
 
@@ -181,6 +195,8 @@ type SettingsRowProps = {
     subtitle?: string;
     rightElement?: RightElement;
     isDestructive?: boolean;
+    isDisabled?: boolean;
+    isLoading?: boolean;
     showDivider?: boolean;
     onPress?: () => void;
 };
@@ -192,14 +208,25 @@ export const SettingsRow = ({
     subtitle,
     rightElement,
     isDestructive = false,
+    isDisabled = false,
+    isLoading = false,
     showDivider = false,
-    onPress,
+    onPress = () => { },
 }: SettingsRowProps) => {
-    const iconColor = isDestructive ? styles.destructiveColor.color : styles.iconColor.color;
-    const textColor = isDestructive ? styles.destructiveColor.color : styles.primaryTextColor.color;
+    const iconColor = isDisabled
+        ? styles.mutedColor.color
+        : isDestructive ? styles.destructiveColor.color : styles.iconColor.color;
+    const textColor = isDisabled
+        ? styles.mutedColor.color
+        : isDestructive ? styles.destructiveColor.color : styles.primaryTextColor.color;
 
     return (
-        <UIButton onPress={onPress ?? (() => { })} style={styles.rowButton} isLoading={false}>
+        <UIButton
+            onPress={onPress}
+            style={[styles.rowButton, isDisabled && styles.rowDisabled]}
+            isLoading={isLoading}
+            disabled={isDisabled}
+        >
             <View style={styles.rowInner}>
 
                 <View style={styles.rowLeft}>
@@ -224,12 +251,14 @@ export const SettingsRow = ({
                     <Switch
                         value={rightElement.value}
                         onValueChange={rightElement.onToggle}
+                        disabled={isDisabled}
                         trackColor={{
                             false: styles.switchTrackOff.backgroundColor,
                             true: styles.switchTrackOn.backgroundColor,
                         }}
                         thumbColor={styles.switchThumb.backgroundColor}
                         ios_backgroundColor={styles.switchTrackOff.backgroundColor}
+                        style={isDisabled ? styles.switchDisabled : undefined}
                     />
                 )}
                 {rightElement?.type === 'text' && (
@@ -343,6 +372,13 @@ const styles = StyleSheet.create((theme, rt) => ({
     },
     switchThumb: {
         backgroundColor: theme.colors.white,
+    },
+
+    rowDisabled: {
+        opacity: 0.5,
+    },
+    switchDisabled: {
+        opacity: 0.5,
     },
 
     divider: {

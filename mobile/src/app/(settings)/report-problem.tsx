@@ -341,7 +341,6 @@ const styles = StyleSheet.create((theme) => ({
         lineHeight: 22,
     },
 
-    // Success screen
     successContainer: {
         flex: 1,
         alignItems: 'center',

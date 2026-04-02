@@ -11,10 +11,12 @@ interface SettingsState {
     theme: AppTheme;
     mapStyle: MapStyleId;
     language: LanguageId;
+    isBiometricEnabled: boolean;
 
     setTheme: (theme: AppTheme) => void;
     setMapStyle: (style: MapStyleId) => void;
     setLanguage: (language: LanguageId) => void;
+    setIsBiometricEnabled: (enabled: boolean) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -23,6 +25,7 @@ export const useSettingsStore = create<SettingsState>()(
             theme: 'dark',
             mapStyle: 'dark',
             language: 'en',
+            isBiometricEnabled: false,
 
             setTheme: (theme) => {
                 UnistylesRuntime.setTheme(theme);
@@ -30,6 +33,7 @@ export const useSettingsStore = create<SettingsState>()(
             },
             setMapStyle: (mapStyle) => set({ mapStyle }),
             setLanguage: (language) => set({ language }),
+            setIsBiometricEnabled: (isBiometricEnabled) => set({ isBiometricEnabled }),
         }),
         {
             name: 'app-settings-storage',
