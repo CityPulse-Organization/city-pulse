@@ -3,21 +3,16 @@ import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useForm, Controller, useWatch, Control, RegisterOptions } from 'react-hook-form';
+import { useForm, Controller, useWatch, Control } from 'react-hook-form';
 
 import { ThemedBackground } from '../../components';
 import { NavigationHeader } from '../../components/NavigationHeader';
 import { UIDivider, UIInput, UIKeyboardAvoidingScrollView, UIText } from '../../ui';
 import { InfoBanner } from '@/src/components/settings/InfoBanner';
 import { SaveButton } from '@/src/components/SaveButton';
+import z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-
-
-type FormValues = {
-    currentPassword: string;
-    newPassword: string;
-    confirmPassword: string;
-};
 
 
 type StrengthLevel = 0 | 1 | 2 | 3 | 4;
@@ -26,7 +21,6 @@ function getStrength(password: string): StrengthLevel {
     if (!password) return 0;
     let score = 0;
     if (password.length >= 8) score++;
-    if (password.length >= 12) score++;
     if (/[A-Z]/.test(password)) score++;
     if (/[0-9]/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
@@ -49,23 +43,22 @@ const STRENGTH_COLORS: Record<StrengthLevel, string> = {
     4: '#C7B4FD',
 };
 
+const changePasswordSchema = z.object({
+    currentPassword: z.string().min(1, 'Current password is required.'),
 
-const CURRENT_PASSWORD_RULES = { required: 'Current password is required.' };
+    newPassword: z.string()
+        .min(8, 'Must be at least 8 characters.')
+        .regex(/[A-Z]/, 'Include at least one uppercase letter.')
+        .regex(/[0-9]/, 'Include at least one number.'),
 
-const NEW_PASSWORD_RULES = {
-    required: 'New password is required.',
-    minLength: { value: 8, message: 'Must be at least 8 characters.' },
-    validate: {
-        hasUpper: (v: string) => /[A-Z]/.test(v) || 'Include at least one uppercase letter.',
-        hasNumber: (v: string) => /[0-9]/.test(v) || 'Include at least one number.',
-    }
-};
+    confirmPassword: z.string().min(1, 'Please confirm your password.'),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+});
 
-const CONFIRM_PWD_RULES = {
-    required: 'Please confirm your password.',
-    validate: (v: string, formValues: FormValues) =>
-        v === formValues.newPassword || 'Passwords do not match.',
-};
+
+type FormValues = z.infer<typeof changePasswordSchema>;
 
 
 export default function ChangePasswordScreen() {
@@ -73,6 +66,7 @@ export default function ChangePasswordScreen() {
     const [isLoading, setIsLoading] = useState(false);
 
     const { control, handleSubmit, formState: { errors } } = useForm<FormValues>({
+        resolver: zodResolver(changePasswordSchema),
         defaultValues: { currentPassword: '', newPassword: '', confirmPassword: '' },
         mode: 'onChange',
     });
@@ -107,7 +101,6 @@ export default function ChangePasswordScreen() {
                         name="currentPassword"
                         label="CURRENT PASSWORD"
                         placeholder="Enter current password"
-                        rules={CURRENT_PASSWORD_RULES}
                         errorMessage={errors.currentPassword?.message}
                     />
 
@@ -118,7 +111,6 @@ export default function ChangePasswordScreen() {
                         name="newPassword"
                         label="NEW PASSWORD"
                         placeholder="Enter new password"
-                        rules={NEW_PASSWORD_RULES}
                         errorMessage={errors.newPassword?.message}
                     />
 
@@ -129,7 +121,6 @@ export default function ChangePasswordScreen() {
                         name="confirmPassword"
                         label="CONFIRM NEW PASSWORD"
                         placeholder="Repeat new password"
-                        rules={CONFIRM_PWD_RULES}
                         errorMessage={errors.confirmPassword?.message}
                     />
 
@@ -151,11 +142,10 @@ type PasswordFieldProps = {
     name: keyof FormValues;
     label: string;
     placeholder: string;
-    rules: RegisterOptions<FormValues>;
     errorMessage?: string;
 };
 
-const PasswordField = memo(({ control, name, label, placeholder, rules, errorMessage }: PasswordFieldProps) => {
+const PasswordField = memo(({ control, name, label, placeholder, errorMessage }: PasswordFieldProps) => {
     const [isVisible, setIsVisible] = useState(false);
 
     const toggleVisibility = useCallback(() => {
@@ -168,7 +158,6 @@ const PasswordField = memo(({ control, name, label, placeholder, rules, errorMes
             <Controller
                 control={control}
                 name={name}
-                rules={rules}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <UIInput
                         placeholder={placeholder}
@@ -203,7 +192,7 @@ const EyeToggle = memo(({ visible, onToggle }: { visible: boolean; onToggle: () 
 
 
 const PasswordStrengthMeter = memo(({ control }: { control: Control<FormValues> }) => {
-    const newPasswordValue = useWatch({ control, name: 'newPassword' }) || '';
+    const newPasswordValue = useWatch({ control, name: 'newPassword' });
     const strength = getStrength(newPasswordValue);
 
     if (newPasswordValue.length === 0) return null;
