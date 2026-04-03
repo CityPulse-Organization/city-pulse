@@ -2,6 +2,9 @@ CREATE TABLE user_profiles
 (
     id         UUID PRIMARY KEY,
     username   VARCHAR(32) NOT NULL UNIQUE,
+    bio        VARCHAR(512),
+    job_title  VARCHAR(128),
+    avatar_url VARCHAR(512),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
