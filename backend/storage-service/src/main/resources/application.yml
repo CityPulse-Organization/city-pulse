@@ -24,6 +24,9 @@ spring:
       group-id: storage-service-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.type.mapping: file-deletion:city.pulse.storage.event.FileDeleteRequestEvent
 
 server:
   port: ${APP_PORT:8085}
@@ -31,6 +34,7 @@ server:
 storage:
   allowed-file-types:
     - image/jpeg
+    - image/jpg
     - image/png
     - image/heic
     - image/heif

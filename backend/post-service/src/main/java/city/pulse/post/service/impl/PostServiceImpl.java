@@ -84,7 +84,7 @@ public class PostServiceImpl implements PostService {
         if (!post.getUserId().equals(userId)) {
             throw new ForbiddenAccessException();
         }
-        post.setCaption(newCaption);
+        post.updateCaption(newCaption);
         return mapper.toDto(repository.save(post));
     }
 

@@ -18,9 +18,9 @@ public class FileDeleteProducer {
 
     public void sendFileDeleteRequest(String fileUrl, Long postId) {
         var event = FileDeleteRequestEvent.of(fileUrl, postId);
-        log.info("Sending file deletion request: fileUrl={}, postId={}, requestId={}", fileUrl, postId, event.getRequestId());
+        log.info("Sending file deletion request: fileUrl={}, postId={}, requestId={}", fileUrl, postId, event.requestId());
 
-        kafka.send(topic, event.getRequestId(), event)
+        kafka.send(topic, event.requestId(), event)
                 .whenComplete((result, ex) -> {
                     if (ex != null) {
                         log.error("Failed to send file deletion request: fileUrl={}, postId={}, error={}", fileUrl, postId, ex.getMessage());

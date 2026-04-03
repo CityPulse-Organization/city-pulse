@@ -1,34 +1,28 @@
 package city.pulse.post.config;
 
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.support.serializer.JsonSerializer;
-
-import java.util.HashMap;
+import org.springframework.kafka.config.TopicBuilder;
+import org.springframework.kafka.support.converter.RecordMessageConverter;
+import org.springframework.kafka.support.converter.JsonMessageConverter;
 
 @Configuration
 public class KafkaProducerConfig {
-    @Value("${spring.kafka.bootstrap-servers}")
-    private String bootstrapServers;
+    @Value("${app.kafka.topics.file-deletion-requests}")
+    private String fileDeletionTopic;
 
     @Bean
-    public ProducerFactory<String, Object> producerFactory() {
-        var config = new HashMap<String, Object>();
-        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        config.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
-        return new DefaultKafkaProducerFactory<>(config);
+    public NewTopic fileDeletionTopic() {
+        return TopicBuilder.name(fileDeletionTopic)
+                .partitions(3)
+                .replicas(1)
+                .build();
     }
 
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public RecordMessageConverter converter() {
+        return new JsonMessageConverter();
     }
 }

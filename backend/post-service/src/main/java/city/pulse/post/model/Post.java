@@ -9,7 +9,6 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Getter
-@Setter
 @Entity
 @Builder
 @AllArgsConstructor
@@ -40,6 +39,12 @@ public class Post {
     @Formula("(SELECT count(*) FROM comments c WHERE c.post_id = id)")
     @Builder.Default
     private int commentCount = 0;
+
+    public void updateCaption(String caption) {
+        if (caption != null && !caption.isBlank()) {
+            this.caption = caption;
+        }
+    }
 
     public static Post createPost(UUID userId, String imageUrl, String caption) {
         return Post.builder()

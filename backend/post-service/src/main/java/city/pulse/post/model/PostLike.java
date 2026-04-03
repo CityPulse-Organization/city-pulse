@@ -5,16 +5,14 @@ import lombok.*;
 
 import java.util.UUID;
 
-@Entity
-@Table(name = "post_likes")
 @Getter
-@Setter
+@Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @IdClass(PostLikeId.class)
+@Table(name = "post_likes")
 public class PostLike {
-
     @Id
     @Column(name = "post_id", nullable = false)
     private Long postId;
