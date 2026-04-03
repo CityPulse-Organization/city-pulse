@@ -6,4 +6,3 @@ export * from "./UIText";
 export * from "./UILoader";
 export * from "./UISkeleton";
 export * from "./UIEmptyState";
-export * from "./UIBackButton";

@@ -43,6 +43,8 @@ export const IconInfo = memo(
             size={usernameSize}
             weight={usernameWeight}
             style={styles.usernameText}
+            numberOfLines={1}
+            ellipsizeMode="tail"
           >
             {username}
           </UIText>
@@ -57,6 +59,7 @@ export const IconInfo = memo(
 
 const styles = StyleSheet.create((theme) => ({
   container: {
+    flexShrink: 1,
     flexDirection: "row",
     alignItems: "center",
     gap: theme.utils.ms(10),
@@ -77,6 +80,7 @@ const styles = StyleSheet.create((theme) => ({
       },
     },
   },
+
   statusText: {
     variants: {
       mode: {

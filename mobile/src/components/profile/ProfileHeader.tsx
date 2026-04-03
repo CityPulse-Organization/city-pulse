@@ -35,7 +35,6 @@ export const ProfileHeader = ({
         logout();
     }, [logout]);
 
-    // Logic used when it is someone else's profile
     const { isFollowing, toggleFollow, isPending } = useFollow(userId || "");
 
     return (
@@ -61,10 +60,17 @@ export const ProfileHeader = ({
 
             <View style={styles.infoContainer}>
                 <View style={[styles.row, styles.usernameRow]}>
-                    <UIText size="lg" weight="bold" style={styles.text}>
-                        {username ??
-                            (userId ? `${userId.substring(0, 8)}...` : "Loading...")}
-                    </UIText>
+                    <View style={styles.nameWrapper}>
+                        <UIText
+                            size="lg"
+                            weight="bold"
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            style={styles.text}
+                        >
+                            {username ?? (userId ? `${userId.substring(0, 8)}...` : "Loading...")}
+                        </UIText>
+                    </View>
 
                     {isSelf ? (
                         <UIButton onPress={onLogoutPress} isLoading={false}>
@@ -146,7 +152,7 @@ const styles = StyleSheet.create((theme, rt) => ({
         height: theme.utils.s(12),
     },
     infoContainer: {
-        flexShrink: 1,
+        flex: 1,
         gap: theme.utils.s(4),
     },
     row: {
@@ -155,16 +161,21 @@ const styles = StyleSheet.create((theme, rt) => ({
     },
     usernameRow: {
         justifyContent: "space-between",
+        gap: theme.utils.s(16),
     },
-    jobRow: {
-        gap: theme.utils.s(6),
+    nameWrapper: {
+        flex: 1,
     },
+
 
     settingsIconButton: {
         color: theme.colors.primary,
         height: theme.utils.s(24),
     },
 
+    jobRow: {
+        gap: theme.utils.s(6),
+    },
     jobIcon: {
         color: theme.colors.accent,
         height: theme.utils.s(16),
@@ -185,10 +196,13 @@ const styles = StyleSheet.create((theme, rt) => ({
         paddingVertical: theme.utils.vs(6),
         borderRadius: theme.utils.ms(16),
         backgroundColor: theme.colors.accent,
+        borderWidth: 1,
+        borderColor: theme.colors.muted,
     },
     followButtonActive: {
         borderWidth: 1,
         borderColor: theme.colors.muted,
+        backgroundColor: theme.colors.mutedAccent,
     },
     followButtonText: {
         color: theme.colors.white,

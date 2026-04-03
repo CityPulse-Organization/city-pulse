@@ -2,11 +2,11 @@ import { axios } from "../config";
 
 export const uploadFile = async (uri: string): Promise<string> => {
   const formData = new FormData();
-  
+
   // Extract file name and type from URI
-  const filename = uri.split("/").pop() || "image.jpg";
+  const filename = uri.split("/").pop() || "image.jpeg";
   const match = /\.(\w+)$/.exec(filename);
-  const type = match ? `image/${match[1]}` : `image/jpg`;
+  const type = match ? `image/${match[1]}` : `image/jpeg`;
 
   console.log("[Storage API] Starting upload for:", filename);
 

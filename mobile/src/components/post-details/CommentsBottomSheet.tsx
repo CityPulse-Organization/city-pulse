@@ -8,7 +8,7 @@ import {
 import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { Comment } from "../Comment";
 import { UIBottomSheet, UIButton, UIDivider, UIText, UIEmptyState } from "@/src/ui";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, RefreshControl, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Icon } from "../Icon";
 import { StyleSheet } from "react-native-unistyles";
@@ -52,11 +52,11 @@ export const CommentsBottomSheet = memo(
 
     const mappedComments: CommentItem[] = useMemo(
       () =>
-        comments.map((c) => ({
-          id: String(c.id),
-          username: String(c.userId),
-          commentText: c.text,
-          timeAgo: new Date(c.createdAt).toLocaleDateString(),
+        comments.map((comment) => ({
+          id: String(comment.id),
+          username: String(comment.userId),
+          commentText: comment.text,
+          timeAgo: new Date(comment.createdAt).toLocaleDateString(),
           profileImageUrl: undefined,
         })),
       [comments],
@@ -92,6 +92,7 @@ export const CommentsBottomSheet = memo(
         <BottomSheetFlatList
           data={mappedComments}
           keyExtractor={keyExtractor}
+          renderItem={renderItem}
           contentContainerStyle={[
             styles.listContent,
             { paddingBottom: footerHeight },
@@ -110,7 +111,6 @@ export const CommentsBottomSheet = memo(
               description="Be the first to share your thoughts!"
             />
           }
-          renderItem={renderItem}
         />
       </UIBottomSheet>
     );

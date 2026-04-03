@@ -39,9 +39,11 @@ export const Comment = memo(({ comment, isReply = false }: CommentProps) => {
 
         <View style={styles.commentBody}>
           <View style={styles.commentMeta}>
-            <UIText size="sm" weight="bold" style={styles.username}>
-              {comment.username}
-            </UIText>
+            <View style={styles.usernameWrapper}>
+              <UIText size="sm" weight="bold" style={styles.username} numberOfLines={1} ellipsizeMode="tail">
+                {comment.username}
+              </UIText>
+            </View>
 
             <UIText size="xs" style={styles.commentTime}>
               {comment.timeAgo}
@@ -104,10 +106,14 @@ const styles = StyleSheet.create((theme) => ({
     paddingBottom: theme.utils.vs(4),
     gap: theme.utils.s(10),
   },
+  usernameWrapper: {
+    flexShrink: 1,
+  },
   username: {
     color: theme.colors.primaryText,
   },
   commentTime: {
+    flexShrink: 0,
     color: theme.colors.muted,
   },
   commentText: {
@@ -115,10 +121,10 @@ const styles = StyleSheet.create((theme) => ({
   },
 
   likeContainer: {
+    flexShrink: 0,
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "flex-start",
-    flexShrink: 0,
     paddingLeft: theme.utils.s(20),
     gap: theme.utils.s(2),
   },

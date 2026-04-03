@@ -253,6 +253,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: theme.utils.vs(20),
+    gap: theme.utils.s(16),
   },
   actionsRow: {
     flexDirection: "row",

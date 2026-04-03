@@ -587,17 +587,22 @@ const styles = StyleSheet.create((theme, rt) => ({
     height: theme.utils.s(20),
   },
 
+
+
+
   followButton: {
     paddingHorizontal: theme.utils.s(20),
     paddingVertical: theme.utils.vs(6),
     borderRadius: theme.utils.ms(16),
-    backgroundColor: theme.colors.accent,
+    backgroundColor: theme.colors.mutedAccent,
     alignSelf: "center",
     justifyContent: "center",
   },
+
   followButtonActive: {
     borderWidth: 1,
     borderColor: theme.colors.muted,
+    backgroundColor: theme.colors.mutedAccent,
   },
   followButtonText: {
     color: theme.colors.white,
