@@ -1,4 +1,3 @@
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { memo, useCallback } from "react";
 import { View } from "react-native";
@@ -82,6 +81,7 @@ const styles = StyleSheet.create((theme) => ({
     flex: 1,
     padding: theme.utils.s(5),
     minWidth: 0,
+    maxWidth: "50%",
   },
   card: {
     width: "100%",
@@ -92,6 +92,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   image: {
     minHeight: theme.utils.vs(220),
+    alignSelf: "center",
   },
 
   overlayWrapper: {
