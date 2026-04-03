@@ -1,6 +1,3 @@
-include:
-  - docker-compose.infra.yml
-
 services:
   # ==========================================
   # FOUNDATION SERVICES (Depends on Infra)
@@ -43,8 +40,6 @@ services:
     networks:
       - city-pulse-network
     depends_on:
-      minio:
-        condition: service_healthy
       auth-service:
         condition: service_started
     env_file:
@@ -83,7 +78,23 @@ services:
       - .env-registration
 
   # ==========================================
-  # 5. EDGE / ENTRYPOINT (Depends on everything)
+  # 5. BFF / AGGREGATOR SERVICES
+  # ==========================================
+  mobile-bff-service:
+    image: denys1204/city-pulse-mobile-bff-service:${MOBILE_BFF_SERVICE_VERSION:-latest}
+    container_name: city-pulse-mobile-bff-service
+    expose:
+      - "8086"
+    networks:
+      - city-pulse-network
+    depends_on:
+      - auth-service
+      - registration-service
+    env_file:
+      - .env-shared
+
+  # ==========================================
+  # 6. EDGE / ENTRYPOINT (Depends on everything)
   # ==========================================
   api-gateway:
     image: denys1204/city-pulse-api-gateway:${API_GATEWAY_VERSION:-latest}
@@ -98,6 +109,11 @@ services:
       - registration-service
       - user-service
       - storage-service
+      - mobile-bff-service
     env_file:
       - .env-shared
       - .env-gateway
+
+networks:
+  city-pulse-network:
+    driver: bridge

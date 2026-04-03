@@ -7,24 +7,23 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.UUID;
 
 @Component
 public class UserProfileSpecifications {
-    public Specification<UserProfile> getSpecification(String username, UUID excludeId) {
+    public Specification<UserProfile> getSpecification(String searchUsername, String currentUsername) {
         return (root, criteriaQuery, criteriaBuilder) -> {
             var predicates = new ArrayList<Predicate>();
 
-            if (username != null && !username.isBlank()) {
-                var escapedUsername = escapeLikePattern(username.toLowerCase(Locale.ROOT));
+            if (currentUsername != null) {
+                predicates.add(criteriaBuilder.notEqual(root.get("username"), currentUsername));
+            }
+
+            if (searchUsername != null && !searchUsername.isBlank()) {
+                var escapedUsername = escapeLikePattern(searchUsername.toLowerCase(Locale.ROOT));
                 predicates.add(criteriaBuilder.like(
                         criteriaBuilder.lower(root.get("username")),
                         "%" + escapedUsername + "%",
                         '\\'));
-            }
-
-            if (excludeId != null) {
-                predicates.add(criteriaBuilder.notEqual(root.get("id"), excludeId));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

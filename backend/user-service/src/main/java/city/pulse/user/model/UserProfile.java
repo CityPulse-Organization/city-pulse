@@ -24,13 +24,13 @@ public class UserProfile {
     @Column(nullable = false, unique = true, length = 32)
     private String username;
 
-    @Column(length = 255)
+    @Column(length = 512)
     private String bio;
 
-    @Column(length = 64)
+    @Column(name = "job_title", length = 128)
     private String jobTitle;
 
-    @Column(length = 255)
+    @Column(name = "avatar_url", length = 512)
     private String avatarUrl;
 
     public static UserProfile build(UUID userId, String username) {
@@ -38,5 +38,23 @@ public class UserProfile {
                 .id(userId)
                 .username(username)
                 .build();
+    }
+
+    public void updateProfile(String bio, String jobTitle, String avatarUrl) {
+        if (bio != null) {
+            this.bio = bio;
+        }
+        if (jobTitle != null) {
+            this.jobTitle = jobTitle;
+        }
+        if (avatarUrl != null) {
+            this.avatarUrl = avatarUrl;
+        }
+    }
+
+    public void changeUsername(String newUsername) {
+        if (newUsername != null && !newUsername.isBlank()) {
+            this.username = newUsername;
+        }
     }
 }

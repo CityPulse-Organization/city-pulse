@@ -1,7 +1,7 @@
 package city.pulse.user.controller;
 
 import city.pulse.user.dto.ProfileCreationRequest;
-import city.pulse.user.service.UserService;
+import city.pulse.user.service.UserProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${app.base-path}/internal/users")
-public class InternalUserController {
-    private final UserService service;
+public class InternalUserProfileController {
+    private final UserProfileService service;
 
     @PostMapping("/profile")
     public ResponseEntity<Void> createProfile(@Valid @RequestBody ProfileCreationRequest dto) {

@@ -7,33 +7,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
-
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
-        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.NOT_FOUND, ex.getMessage());
+        var errorResponse = ErrorResponse.of(HttpStatus.NOT_FOUND, ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(AlreadyFollowingException.class)
     public ResponseEntity<ErrorResponse> handleAlreadyFollowingException(AlreadyFollowingException ex) {
-        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.CONFLICT, ex.getMessage());
+        var errorResponse = ErrorResponse.of(HttpStatus.CONFLICT, ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
     @ExceptionHandler(CannotFollowSelfException.class)
     public ResponseEntity<ErrorResponse> handleCannotFollowSelfException(CannotFollowSelfException ex) {
-        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, ex.getMessage());
+        var errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException ex) {
-        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.CONFLICT, ex.getMessage());
+        var errorResponse = ErrorResponse.of(HttpStatus.CONFLICT, ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 }
