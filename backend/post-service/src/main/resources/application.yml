@@ -2,6 +2,9 @@ app:
   api:
     version: v1
   base-path: /api/${app.api.version}
+  kafka:
+    topics:
+      file-deletion-requests: file-deletion-requests
 
 spring:
   application:
@@ -18,7 +21,6 @@ spring:
       idle-timeout: 300000
       max-lifetime: 1200000
 
-
   jpa:
     open-in-view: false
     properties:
@@ -34,9 +36,11 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
 server:
   port: ${APP_PORT:8082}
-
-services:
-  storage:
-    url: ${STORAGE_SERVICE_URL:http://storage-service:8085}/api/v1

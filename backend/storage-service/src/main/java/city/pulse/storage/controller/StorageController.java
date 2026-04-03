@@ -19,10 +19,4 @@ public class StorageController {
         var fileUrl = service.uploadFile(file);
         return ResponseEntity.status(HttpStatus.CREATED).body(fileUrl);
     }
-
-    @DeleteMapping("/internal/storage/delete")
-    public ResponseEntity<Void> deleteFile(@RequestParam("fileUrl") String fileUrl) {
-        service.deleteFile(fileUrl);
-        return ResponseEntity.noContent().build();
-    }
 }
