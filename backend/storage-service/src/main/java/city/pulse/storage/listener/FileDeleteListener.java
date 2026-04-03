@@ -19,13 +19,13 @@ public class FileDeleteListener {
             containerFactory = "kafkaListenerContainerFactory"
     )
     public void handleFileDeleteRequest(FileDeleteRequestEvent event) {
-        log.info("Received file deletion request: fileUrl={}, postId={}, requestId={}", event.getFileUrl(), event.getPostId(), event.getRequestId());
+        log.info("Received file deletion request: fileUrl={}, postId={}, requestId={}", event.fileUrl(), event.postId(), event.requestId());
 
         try {
-            service.deleteFile(event.getFileUrl());
-            log.info("Successfully deleted file: fileUrl={}, postId={}, requestId={}", event.getFileUrl(), event.getPostId(), event.getRequestId());
+            service.deleteFile(event.fileUrl());
+            log.info("Successfully deleted file: fileUrl={}, postId={}, requestId={}", event.fileUrl(), event.postId(), event.requestId());
         } catch (Exception e) {
-            log.error("Failed to delete file: fileUrl={}, postId={}, requestId={}, error={}", event.getFileUrl(), event.getPostId(), event.getRequestId(), e.getMessage(), e);
+            log.error("Failed to delete file: fileUrl={}, postId={}, requestId={}, error={}", event.fileUrl(), event.postId(), event.requestId(), e.getMessage(), e);
         }
     }
 }
