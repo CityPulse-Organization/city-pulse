@@ -82,7 +82,7 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.background,
   },
   handleIndicatorStyle: {
-    backgroundColor: theme.colors.mutedAccent,
+    backgroundColor: theme.colors.darkAccent,
     width: theme.utils.s(40),
   },
 }));

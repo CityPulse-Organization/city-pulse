@@ -252,7 +252,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.accent,
   },
   headerDivider: {
-    color: theme.colors.mutedAccent,
+    color: theme.colors.darkAccent,
   },
 
   footerContainer: {

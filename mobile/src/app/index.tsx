@@ -138,7 +138,7 @@ const lockStyles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.lightAccent,
   },
   gradientEnd: {
-    color: theme.colors.mutedAccent,
+    color: theme.colors.darkAccent,
   },
 
   icon: {

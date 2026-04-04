@@ -323,7 +323,7 @@ const styles = StyleSheet.create((theme) => ({
     width: theme.utils.s(24),
     height: theme.utils.vs(24),
     borderRadius: theme.utils.ms(12),
-    backgroundColor: theme.colors.mutedAccent,
+    backgroundColor: theme.colors.darkAccent,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,

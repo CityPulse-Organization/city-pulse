@@ -63,7 +63,7 @@ const styles = StyleSheet.create((theme, rt) => ({
         backgroundColor: theme.colors.lightAccent,
     },
     gradientEnd: {
-        backgroundColor: theme.colors.mutedAccent,
+        backgroundColor: theme.colors.darkAccent,
     },
 
     text: {
