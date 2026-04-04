@@ -39,7 +39,7 @@ export default function AddNewPostScreen() {
   const onPost = () => {
     if (imageUris.length > 0) {
       sharePost({
-        imageUri: imageUris[0], // Currently API only supports single image
+        imageUri: imageUris[0], // TODO: Currently API only supports single image
         caption: description,
       });
     }

@@ -27,10 +27,11 @@ export const formatPrettyDate = (dateString: string | undefined): string => {
     if (diffMonths < 12) return `${diffMonths}mo ago`;
 
     return date.toLocaleDateString("en-US", {
+      day: "2-digit",
       month: "short",
-      day: "numeric",
       year: date.getFullYear() !== now.getFullYear() ? "numeric" : undefined,
     });
+
   } catch (error) {
     return "";
   }

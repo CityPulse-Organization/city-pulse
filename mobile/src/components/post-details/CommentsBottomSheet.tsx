@@ -8,13 +8,13 @@ import {
 import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { Comment } from "../Comment";
 import { UIBottomSheet, UIButton, UIDivider, UIText, UIEmptyState } from "@/src/ui";
-import { ActivityIndicator, RefreshControl, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Icon } from "../Icon";
 import { StyleSheet } from "react-native-unistyles";
 import type { CommentResponse, CommentItem } from "@/src/types";
+import { formatPrettyDate } from "@/src/utils";
 
-const COMMENTS_CHUNK = 20;
 
 type CommentsBottomSheetProps = {
   profileImageUrl: string;
@@ -26,95 +26,91 @@ type CommentsBottomSheetProps = {
   isFetchingNextComments: boolean;
 };
 
-export const CommentsBottomSheet = memo(
-  ({
-    profileImageUrl,
-    commentsBottomSheetRef,
-    comments,
-    onSendComment,
-    fetchNextComments,
-    hasNextCommentsPage,
-    isFetchingNextComments,
-  }: CommentsBottomSheetProps) => {
-    const [footerHeight, setFooterHeight] = useState(0);
+export const CommentsBottomSheet = memo(({
+  profileImageUrl,
+  commentsBottomSheetRef,
+  comments,
+  onSendComment,
+  fetchNextComments,
+  hasNextCommentsPage,
+  isFetchingNextComments,
+}: CommentsBottomSheetProps) => {
+  const [footerHeight, setFooterHeight] = useState(0);
 
-    const renderCommentsFooter = useCallback(
-      (footerProps: BottomSheetFooterProps) => (
-        <CommentsFooter
-          bottomSheetProps={footerProps}
-          profileImageUrl={profileImageUrl}
-          onHeightChange={setFooterHeight}
-          onSendComment={onSendComment}
-        />
-      ),
-      [profileImageUrl, onSendComment],
-    );
+  const renderCommentsFooter = useCallback(
+    (footerProps: BottomSheetFooterProps) => (
+      <CommentsFooter
+        bottomSheetProps={footerProps}
+        profileImageUrl={profileImageUrl}
+        onHeightChange={setFooterHeight}
+        onSendComment={onSendComment}
+      />
+    ),
+    [profileImageUrl, onSendComment],
+  );
 
-    const mappedComments: CommentItem[] = useMemo(
-      () =>
-        comments.map((comment) => ({
-          id: String(comment.id),
-          username: String(comment.userId),
-          commentText: comment.text,
-          timeAgo: new Date(comment.createdAt).toLocaleDateString(),
-          profileImageUrl: undefined,
-        })),
-      [comments],
-    );
+  const mappedComments: CommentItem[] = useMemo(() =>
+    comments.map((comment) => ({
+      id: String(comment.id),
+      username: String(comment.userId),
+      commentText: comment.text,
+      timeAgo: formatPrettyDate(comment?.createdAt),
+      profileImageUrl: undefined,
+    })),
+    [comments],
+  );
 
-    const handleLoadMore = useCallback(() => {
-      if (hasNextCommentsPage && !isFetchingNextComments) {
-        fetchNextComments();
-      }
-    }, [fetchNextComments, hasNextCommentsPage, isFetchingNextComments]);
+  const handleLoadMore = useCallback(() => {
+    if (hasNextCommentsPage && !isFetchingNextComments) {
+      fetchNextComments();
+    }
+  }, [fetchNextComments, hasNextCommentsPage, isFetchingNextComments]);
 
-    const keyExtractor = useCallback(
-      (commentData: CommentItem) => commentData.id,
-      [],
-    );
-    const renderItem = useCallback(
-      ({ item: commentData }: { item: CommentItem }) => (
-        <Comment comment={commentData} />
-      ),
-      [],
-    );
+  const keyExtractor = useCallback((commentData: CommentItem) => commentData.id, []);
 
-    return (
-      <UIBottomSheet
-        header={<CommentsHeader />}
-        ref={commentsBottomSheetRef}
-        snapPoints={["75%"]}
-        keyboardBehavior="interactive"
-        keyboardBlurBehavior="none"
-        topInset={styles.bottomSheet.top}
-        footerComponent={renderCommentsFooter}
-      >
-        <BottomSheetFlatList
-          data={mappedComments}
-          keyExtractor={keyExtractor}
-          renderItem={renderItem}
-          contentContainerStyle={[
-            styles.listContent,
-            { paddingBottom: footerHeight },
-          ]}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={
-            isFetchingNextComments ? (
-              <ActivityIndicator size="small" color={styles.loading.color} />
-            ) : null
-          }
-          ListEmptyComponent={
-            <UIEmptyState
-              icon="chatbubbles-outline"
-              title="No comments yet"
-              description="Be the first to share your thoughts!"
-            />
-          }
-        />
-      </UIBottomSheet>
-    );
-  },
+  const renderItem = useCallback(
+    ({ item: commentData }: { item: CommentItem }) => (
+      <Comment comment={commentData} />
+    ),
+    [],
+  );
+
+  return (
+    <UIBottomSheet
+      header={<CommentsHeader />}
+      ref={commentsBottomSheetRef}
+      snapPoints={["75%"]}
+      keyboardBehavior="interactive"
+      keyboardBlurBehavior="none"
+      topInset={styles.bottomSheet.top}
+      footerComponent={renderCommentsFooter}
+    >
+      <BottomSheetFlatList
+        data={mappedComments}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        contentContainerStyle={[
+          styles.listContent,
+          { paddingBottom: footerHeight },
+        ]}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          isFetchingNextComments ? (
+            <ActivityIndicator size="small" color={styles.loading.color} />
+          ) : null
+        }
+        ListEmptyComponent={
+          <UIEmptyState
+            icon="chatbubbles-outline"
+            title="No comments yet"
+            description="Be the first to share your thoughts!"
+          />
+        }
+      />
+    </UIBottomSheet>
+  );
+},
 );
 
 const CommentsHeader = memo(() => {

@@ -10,6 +10,7 @@ import { useCallback, useMemo } from "react";
 import type { DiscoverUser, PostItem, PostResponse } from "@/src/types";
 
 import { getUserProfile } from "@/src/api/user";
+import { formatPrettyDate } from "@/src/utils";
 
 export const useProfile = (userId?: string) => {
   const { session } = useSession();
@@ -51,15 +52,15 @@ export const useProfile = (userId?: string) => {
   const posts: PostItem[] = useMemo(() => {
     if (!postsData?.pages) return [];
     return postsData.pages.flatMap((page) =>
-      page.content.map((p: PostResponse) => ({
-        id: String(p.id),
+      page.content.map((post: PostResponse) => ({
+        id: String(post.id),
         username: profile?.username ?? "",
-        accidentTime: new Date(p.createdAt).toLocaleDateString(),
-        imagesUrl: [p.imageUrl],
-        description: p.caption ?? undefined,
+        accidentTime: formatPrettyDate(post.createdAt),
+        imagesUrl: [post.imageUrl],
+        description: post.caption ?? undefined,
         location: "",
-        likeCount: p.likeCount,
-        commentCount: p.commentCount,
+        likeCount: post.likeCount,
+        commentCount: post.commentCount,
       })),
     );
   }, [postsData, profile]);

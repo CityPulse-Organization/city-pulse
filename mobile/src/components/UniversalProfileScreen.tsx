@@ -515,9 +515,10 @@ const styles = StyleSheet.create((theme, rt) => ({
   itemContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
+    alignItems: "center",
     paddingHorizontal: theme.utils.s(16),
     paddingBottom: theme.utils.vs(10),
+    gap: theme.utils.s(10),
   },
 
   text: {
@@ -594,9 +595,9 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingHorizontal: theme.utils.s(20),
     paddingVertical: theme.utils.vs(6),
     borderRadius: theme.utils.ms(16),
-    backgroundColor: theme.colors.mutedAccent,
-    alignSelf: "center",
-    justifyContent: "center",
+    backgroundColor: theme.colors.accent,
+    borderWidth: 1,
+    borderColor: theme.colors.muted,
   },
 
   followButtonActive: {

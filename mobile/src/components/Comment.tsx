@@ -16,6 +16,7 @@ export const Comment = memo(({ comment, isReply = false }: CommentProps) => {
   const [isLikedByCurrentUser, setIsLikedByCurrentUser] = useState(false);
   const [totalLikeCount, setTotalLikeCount] = useState(0);
 
+  // TODO: Add like mutation
   const toggleLikeStatus = useCallback(() => {
     setIsLikedByCurrentUser((prev) => {
       const nextStatus = !prev;
@@ -125,7 +126,6 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingLeft: theme.utils.s(20),
     gap: theme.utils.s(2),
   },
   likeCountText: {

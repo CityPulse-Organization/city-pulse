@@ -11,6 +11,7 @@ export type PostResponse = {
   createdAt: string;
   likeCount: number;
   commentCount: number;
+  isLikedByCurrentUser: boolean;
 };
 
 export type CommentResponse = {
@@ -19,6 +20,8 @@ export type CommentResponse = {
   userId: string;
   text: string;
   createdAt: string;
+  likeCount: number;
+  isLikedByCurrentUser: boolean;
 };
 
 export type PostItem = {

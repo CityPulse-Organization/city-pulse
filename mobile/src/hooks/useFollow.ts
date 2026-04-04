@@ -8,8 +8,9 @@ export const useFollow = (targetUserId: string) => {
   const userId = session.user?.id;
   const queryClient = useQueryClient();
 
+  // TODO: remove getQueryData and use query state isFollowing from API
   const followingData = queryClient.getQueryData<any>(["following", userId]);
-  
+
   const initiallyFollowing = followingData?.pages?.some((page: any) =>
     page.content.some((u: any) => u.id === targetUserId)
   ) || false;

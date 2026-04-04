@@ -57,6 +57,7 @@ export const usePostDetails = () => {
     location: "",
 
     likeCount: post?.likeCount ?? 0,
+    isLikedByCurrentUser: post?.isLikedByCurrentUser ?? false,
     commentCount: post?.commentCount ?? 0,
     toggleLike,
     comments,
