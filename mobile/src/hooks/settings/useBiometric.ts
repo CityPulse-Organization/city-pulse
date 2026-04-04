@@ -3,15 +3,9 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import { Platform } from 'react-native';
 import { useSettingsStore } from '@/src/hooks/useSettingsStore';
 import { UIAlert } from '@/src/hoc';
-
-
-
-export type BiometricSupportStatus =
-    | 'checking'
-    | 'unavailable'
-    | 'not_enrolled'
-    | 'ready';
-
+import Toast from 'react-native-toast-message';
+import { BiometricSupportStatus } from '@/src/types/settings';
+import { checkBiometricAvailability } from '@/src/utils/settings';
 
 
 export const useBiometric = () => {
@@ -23,22 +17,10 @@ export const useBiometric = () => {
 
     useEffect(() => {
         (async () => {
-            const hasHardware = await LocalAuthentication.hasHardwareAsync();
-            if (!hasHardware) {
-                setSupportStatus('unavailable');
-                return;
-            }
-
-            const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-            if (!isEnrolled) {
-                setSupportStatus('not_enrolled');
-                return;
-            }
-
-            setSupportStatus('ready');
+            const status = await checkBiometricAvailability();
+            setSupportStatus(status);
         })();
     }, []);
-
 
 
     const authenticate = useCallback(async (reason: string): Promise<boolean> => {
@@ -51,9 +33,17 @@ export const useBiometric = () => {
             });
             return result.success;
         } catch {
+            Toast.show({
+                type: 'error',
+                text1: 'Biometric authentication failed',
+            });
             return false;
         } finally {
             setIsAuthenticating(false);
+            Toast.show({
+                type: 'success',
+                text1: 'Biometric authentication successful',
+            });
         }
     }, [supportStatus],
     );

@@ -13,7 +13,7 @@ import { UIInput } from "@/src/ui";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState, useCallback } from "react";
 import { StyleSheet } from "react-native-unistyles";
-import { SaveButton } from "@/src/components/SaveButton";
+import { FooterButton } from "@/src/components/SaveButton";
 
 export default function AddNewPostScreen() {
   const router = useRouter();
@@ -90,7 +90,7 @@ export default function AddNewPostScreen() {
 
       </UIKeyboardAvoidingScrollView>
 
-      <SaveButton label="Post" onPress={onPost} isLoading={isLoading} />
+      <FooterButton label="Post" onPress={onPost} isLoading={isLoading} />
     </ThemedBackground>
   );
 }

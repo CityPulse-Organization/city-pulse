@@ -9,40 +9,13 @@ import { ThemedBackground } from '../../components';
 import { NavigationHeader } from '../../components/NavigationHeader';
 import { UIButton, UIDivider, UIInput, UIKeyboardAvoidingScrollView, UIText } from '../../ui';
 import { InfoBanner } from '@/src/components/settings/InfoBanner';
-import { SaveButton } from '@/src/components/SaveButton';
+import { FooterButton } from '@/src/components/SaveButton';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Toast from 'react-native-toast-message';
+import { StrengthLevel } from '@/src/types/settings';
+import { getStrength, STRENGTH_COLORS, STRENGTH_LABELS } from '@/src/utils/settings';
 
-
-
-type StrengthLevel = 0 | 1 | 2 | 3 | 4;
-
-function getStrength(password: string): StrengthLevel {
-    if (!password) return 0;
-    let score = 0;
-    if (password.length >= 8) score++;
-    if (/[A-Z]/.test(password)) score++;
-    if (/[0-9]/.test(password)) score++;
-    if (/[^A-Za-z0-9]/.test(password)) score++;
-    return Math.min(4, score) as StrengthLevel;
-}
-
-const STRENGTH_LABELS: Record<StrengthLevel, string> = {
-    0: '',
-    1: 'Weak',
-    2: 'Fair',
-    3: 'Good',
-    4: 'Strong',
-};
-
-const STRENGTH_COLORS: Record<StrengthLevel, string> = {
-    0: 'transparent',
-    1: '#F7374F',
-    2: '#FEC260',
-    3: '#4E9F3D',
-    4: '#C7B4FD',
-};
 
 const changePasswordSchema = z.object({
     currentPassword: z.string().min(1, 'Current password is required.'),
@@ -139,7 +112,7 @@ export default function ChangePasswordScreen() {
 
             </UIKeyboardAvoidingScrollView>
 
-            <SaveButton label="Save Password" onPress={onSubmit} isLoading={isLoading} />
+            <FooterButton label="Save Password" onPress={onSubmit} isLoading={isLoading} />
 
         </ThemedBackground>
     );

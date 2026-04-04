@@ -13,26 +13,11 @@ import { ThemedBackground } from '../../components';
 import { NavigationHeader } from '../../components/NavigationHeader';
 import { UIButton, UIInput, UIKeyboardAvoidingScrollView, UIText } from '../../ui';
 import { InfoBanner } from '@/src/components/settings/InfoBanner';
-import { SaveButton } from '@/src/components/SaveButton';
+import { FooterButton } from '@/src/components/SaveButton';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { CATEGORIES } from '@/src/utils/settings';
 
-
-
-type Category = {
-    id: string;
-    label: string;
-    icon: React.ComponentProps<typeof Ionicons>['name'];
-};
-
-const CATEGORIES: Category[] = [
-    { id: 'bug', label: 'Bug / Crash', icon: 'bug-outline' },
-    { id: 'performance', label: 'Performance', icon: 'speedometer-outline' },
-    { id: 'ui', label: 'UI / Display', icon: 'phone-portrait-outline' },
-    { id: 'account', label: 'Account', icon: 'person-outline' },
-    { id: 'map', label: 'Map / Location', icon: 'map-outline' },
-    { id: 'other', label: 'Other', icon: 'ellipsis-horizontal-circle-outline' },
-];
 
 
 
@@ -112,7 +97,7 @@ export default function ReportProblemScreen() {
                 />
             </UIKeyboardAvoidingScrollView>
 
-            <SaveButton
+            <FooterButton
                 label="Send Report"
                 onPress={onSubmit}
                 isLoading={isLoading}
@@ -170,11 +155,8 @@ const CategoryPicker = memo(({ control, errorMessage }: { control: Control<FormV
                                 <UIButton
                                     key={category.id}
                                     onPress={onPress}
-                                    style={({ pressed }) => [
-                                        styles.categoryChip,
-                                        isActive && styles.categoryChipActive,
-                                        pressed && styles.categoryChipPressed,
-                                    ]}
+                                    hasPressEffect
+                                    style={[styles.categoryChip, isActive && styles.categoryChipActive]}
                                 >
                                     <Ionicons
                                         name={category.icon}
@@ -240,8 +222,8 @@ const TextAreaField = memo(({ control, name, label, placeholder, errorMessage }:
                         textAlignVertical="top"
                         containerStyle={styles.descriptionContainer}
                         inputStyle={styles.descriptionInput}
+                        error={errorMessage}
                     />
-                    {errorMessage && <UIText size="xxs" style={styles.errorText}>{errorMessage}</UIText>}
                 </View>
             )}
         />
@@ -301,10 +283,7 @@ const styles = StyleSheet.create((theme) => ({
     categoryChipActive: {
         borderColor: theme.colors.lightAccent,
     },
-    categoryChipPressed: {
-        opacity: 0.75,
-        transform: [{ scale: 0.97 }],
-    },
+
 
     categoryChipIcon: {
         height: theme.utils.s(16),

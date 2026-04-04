@@ -5,18 +5,20 @@ import { UIButton, UIText } from "../ui";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native-unistyles";
 
-type SaveButtonProps = {
+type FooterButtonProps = {
     label: string;
     onPress: () => void;
     isLoading: boolean;
+    iconName?: keyof typeof Ionicons.glyphMap;
 };
 
-export const SaveButton = memo(({ label, onPress, isLoading }: SaveButtonProps) => (
+export const FooterButton = memo(({ label, onPress, isLoading, iconName = 'send' }: FooterButtonProps) => (
     <View style={styles.wrapper} pointerEvents="box-none" >
         <UIButton
             onPress={onPress}
             disabled={isLoading}
-            style={({ pressed }) => [styles.button, pressed && styles.pressed]}
+            style={styles.button}
+            hasPressEffect
         >
             <LinearGradient
                 colors={[styles.gradientStart.backgroundColor, styles.gradientEnd.backgroundColor]}
@@ -27,7 +29,7 @@ export const SaveButton = memo(({ label, onPress, isLoading }: SaveButtonProps) 
             <UIText size="lg" weight="bold" style={styles.text}>{label}</UIText>
             {isLoading
                 ? <ActivityIndicator color={styles.loading.color} size="small" />
-                : <Ionicons name="send" color={styles.icon.color} size={styles.icon.height} />
+                : <Ionicons name={iconName} color={styles.icon.color} size={styles.icon.height} />
             }
         </UIButton>
     </View>
@@ -62,11 +64,6 @@ const styles = StyleSheet.create((theme, rt) => ({
     },
     gradientEnd: {
         backgroundColor: theme.colors.mutedAccent,
-    },
-
-    pressed: {
-        opacity: 0.85,
-        transform: [{ scale: 0.98 }],
     },
 
     text: {

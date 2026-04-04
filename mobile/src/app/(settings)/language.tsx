@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 
 import { ThemedBackground } from '../../components';
 import { NavigationHeader } from '../../components/NavigationHeader';
@@ -10,142 +9,33 @@ import { UIText } from '../../ui';
 import { InfoBanner } from '@/src/components/settings/InfoBanner';
 import { useSettingsStore } from '@/src/hooks/useSettingsStore';
 import { SelectableCard } from '@/src/components/settings/SelectableCard';
+import { LanguageId } from '@/src/types/settings';
+import { LANGUAGES } from '@/src/utils/settings';
 
-
-
-
-export type LanguageId =
-    | 'en'
-    | 'uk'
-    | 'de'
-    | 'fr'
-    | 'es'
-    | 'pl'
-    | 'it'
-    | 'pt'
-    | 'ru';
-
-export type LanguageOption = {
-    id: LanguageId;
-    label: string;
-    nativeLabel: string;
-    flag: string;
-    region: string;
-    icon: React.ComponentProps<typeof Ionicons>['name'];
-};
-
-
-
-const LANGUAGES: LanguageOption[] = [
-    {
-        id: 'en',
-        label: 'English',
-        nativeLabel: 'English',
-        flag: '🇺🇸',
-        region: 'United States',
-        icon: 'globe-outline',
-    },
-    {
-        id: 'uk',
-        label: 'Ukrainian',
-        nativeLabel: 'Українська',
-        flag: '🇺🇦',
-        region: 'Ukraine',
-        icon: 'globe-outline',
-    },
-    {
-        id: 'de',
-        label: 'German',
-        nativeLabel: 'Deutsch',
-        flag: '🇩🇪',
-        region: 'Germany',
-        icon: 'globe-outline',
-    },
-    {
-        id: 'fr',
-        label: 'French',
-        nativeLabel: 'Français',
-        flag: '🇫🇷',
-        region: 'France',
-        icon: 'globe-outline',
-    },
-    {
-        id: 'es',
-        label: 'Spanish',
-        nativeLabel: 'Español',
-        flag: '🇪🇸',
-        region: 'Spain',
-        icon: 'globe-outline',
-    },
-    {
-        id: 'pl',
-        label: 'Polish',
-        nativeLabel: 'Polski',
-        flag: '🇵🇱',
-        region: 'Poland',
-        icon: 'globe-outline',
-    },
-    {
-        id: 'it',
-        label: 'Italian',
-        nativeLabel: 'Italiano',
-        flag: '🇮🇹',
-        region: 'Italy',
-        icon: 'globe-outline',
-    },
-    {
-        id: 'pt',
-        label: 'Portuguese',
-        nativeLabel: 'Português',
-        flag: '🇵🇹',
-        region: 'Portugal',
-        icon: 'globe-outline',
-    },
-    {
-        id: 'ru',
-        label: 'Russian',
-        nativeLabel: 'Русский',
-        flag: '🇷🇺',
-        region: 'Russia',
-        icon: 'globe-outline',
-    },
-];
 
 
 
 export default function LanguageScreen() {
     const router = useRouter();
-    const language = useSettingsStore((s) => s.language);
+    const currentLanguage = useSettingsStore((s) => s.language);
     const setLanguage = useSettingsStore((s) => s.setLanguage);
 
-    const [selected, setSelected] = useState<LanguageId>(language);
-
-    useEffect(() => {
-        setSelected(language);
-    }, [language]);
-
     const handleSelect = useCallback((id: LanguageId) => {
-        setSelected(id);
+        // TODO: call API to change language
+        setLanguage(id);
     }, []);
 
     const handleBack = useCallback(() => {
         router.back();
     }, [router]);
 
-    const handleApply = useCallback(() => {
-        setLanguage(selected);
-        router.back();
-    }, [router, selected, setLanguage]);
-
-    const selectedOption = LANGUAGES.find((l) => l.id === selected)!;
+    const selectedOption = LANGUAGES.find((language) => language.id === currentLanguage)!;
 
     return (
         <ThemedBackground>
             <NavigationHeader
                 title="Language"
-                rightActionLabel="Apply"
                 onLeftAction={handleBack}
-                onRightAction={handleApply}
             />
 
             <ScrollView
@@ -162,7 +52,7 @@ export default function LanguageScreen() {
                     {LANGUAGES.map((option) => (
                         <SelectableCard
                             key={option.id}
-                            isSelected={selected === option.id}
+                            isSelected={currentLanguage === option.id}
                             onSelect={handleSelect}
                             previewContent={<UIText size="extraLarge">{option.flag}</UIText>}
                             id={option.id}

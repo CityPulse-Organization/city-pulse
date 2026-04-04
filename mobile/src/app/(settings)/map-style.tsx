@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import {
     ScrollView,
     View,
@@ -10,92 +10,39 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedBackground } from '../../components';
 import { NavigationHeader } from '../../components/NavigationHeader';
 import { UIText } from '../../ui';
-import { Ionicons } from '@expo/vector-icons';
 import { useSettingsStore } from '@/src/hooks/useSettingsStore';
 import { InfoBanner } from '@/src/components/settings/InfoBanner';
 import { SelectableCard } from '@/src/components/settings/SelectableCard';
+import { MapStyleId } from '@/src/types/settings';
+import { MAP_STYLES } from '@/src/utils/settings';
 
 
-export type MapStyleId = 'dark' | 'light' | 'satellite' | 'terrain';
-
-export type MapStyleOption = {
-    id: MapStyleId;
-    label: string;
-    description: string;
-    icon: React.ComponentProps<typeof Ionicons>['name'];
-    previewGradient: readonly [string, string, ...string[]];
-    accentColor: string;
-};
-
-const MAP_STYLES: MapStyleOption[] = [
-    {
-        id: 'dark',
-        label: 'Dark',
-        description: 'Minimalist dark canvas — ideal for night-time city navigation.',
-        icon: 'moon',
-        previewGradient: ['#0f0f1a', '#1a1a2e', '#16213e'],
-        accentColor: 'rgba(199, 180, 253, 0.55)',
-    },
-    {
-        id: 'light',
-        label: 'Light',
-        description: 'Clean, high-contrast view for daytime use.',
-        icon: 'sunny',
-        previewGradient: ['#e8eaf6', '#f3f4f6', '#dde1f0'],
-        accentColor: 'rgba(100, 60, 180, 0.4)',
-    },
-    {
-        id: 'satellite',
-        label: 'Satellite',
-        description: 'Real aerial imagery for precise location awareness.',
-        icon: 'earth',
-        previewGradient: ['#1b3a2d', '#2d5a3e', '#1a4a35'],
-        accentColor: 'rgba(120, 220, 150, 0.4)',
-    },
-    {
-        id: 'terrain',
-        label: 'Terrain',
-        description: 'Topographic layer — great for outdoor events and hiking.',
-        icon: 'trail-sign',
-        previewGradient: ['#2d3a1e', '#4a5e2b', '#3a4e24'],
-        accentColor: 'rgba(180, 220, 100, 0.4)',
-    },
-];
 
 
 
 export default function MapStyleScreen() {
     const router = useRouter();
-    const mapStyle = useSettingsStore((state) => state.mapStyle);
+    const currentMapStyle = useSettingsStore((state) => state.mapStyle);
     const setMapStyle = useSettingsStore((state) => state.setMapStyle);
-    const [selected, setSelected] = useState<MapStyleId>(mapStyle);
 
-    useEffect(() => {
-        setSelected(mapStyle);
-    }, [mapStyle]);
 
     const handleSelect = useCallback((id: MapStyleId) => {
-        setSelected(id);
-    }, []);
+        setMapStyle(id);
+        // TODO: logic to change map style
+    }, [setMapStyle]);
 
     const handleBack = useCallback(() => {
         router.back();
     }, [router]);
 
-    const handleApply = useCallback(() => {
-        setMapStyle(selected);
-        router.back();
-    }, [router, selected, setMapStyle]);
 
-    const selectedOption = MAP_STYLES.find((s) => s.id === selected)!;
+    const selectedOption = MAP_STYLES.find((mapStyle) => mapStyle.id === currentMapStyle)!;
 
     return (
         <ThemedBackground>
             <NavigationHeader
                 title="Map Style"
-                rightActionLabel="Apply"
                 onLeftAction={handleBack}
-                onRightAction={handleApply}
             />
 
             <ScrollView
@@ -112,7 +59,7 @@ export default function MapStyleScreen() {
                     {MAP_STYLES.map((option) => (
                         <SelectableCard
                             key={option.id}
-                            isSelected={selected === option.id}
+                            isSelected={currentMapStyle === option.id}
                             onSelect={handleSelect}
                             previewContent={<MapPreviewTile gradient={option.previewGradient} accentColor={option.accentColor} />}
                             id={option.id}
