@@ -3,7 +3,7 @@ import { UIText, UIEmptyState } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { memo, useCallback, useMemo, useState } from "react";
-import { Platform, Pressable, TextInput, View } from "react-native";
+import { Platform, Pressable, RefreshControl, TextInput, View } from "react-native";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";
@@ -109,21 +109,25 @@ const DiscoverTabBar = (props: TabBarProps<string>) => {
 export default function DiscoverScreen() {
   const [input, setInput] = useState("");
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch: refetchUsers, isRefetching: isRefetchingUsers } =
     useSearchUsers(input, ["username,asc"]);
 
   const { 
     data: pulseData, 
     fetchNextPage: fetchNextPulse, 
     hasNextPage: hasNextPulsePage, 
-    isFetchingNextPage: isFetchingNextPulse 
+    isFetchingNextPage: isFetchingNextPulse,
+    refetch: refetchPulse,
+    isRefetching: isRefetchingPulse,
   } = usePulse(input);
 
   const { 
     data: postsData, 
     fetchNextPage: fetchNextPosts, 
     hasNextPage: hasNextPostsPage, 
-    isFetchingNextPage: isFetchingNextPosts 
+    isFetchingNextPage: isFetchingNextPosts,
+    refetch: refetchPosts,
+    isRefetching: isRefetchingPosts,
   } = useSearchPosts(input);
 
   const paginatedUsers = useMemo(() => {
@@ -258,9 +262,16 @@ export default function DiscoverScreen() {
             keyExtractor={keyExtractor}
             numColumns={2}
             style={styles.list}
-            bounces={false}
+            bounces={true}
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={isRefetchingPulse} onRefresh={refetchPulse} tintColor={styles.refreshTint.color} />
+            }
+            onEndReached={() => {
+              if (hasNextPulsePage && !isFetchingNextPulse) fetchNextPulse();
+            }}
+            onEndReachedThreshold={0.3}
             ListEmptyComponent={
               <UIEmptyState
                 icon="pulse"
@@ -278,11 +289,14 @@ export default function DiscoverScreen() {
             ItemSeparatorComponent={ItemSeparator}
             style={styles.list}
             numColumns={2}
-            bounces={false}
+            bounces={true}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={isRefetchingUsers} onRefresh={refetchUsers} tintColor={styles.refreshTint.color} />
+            }
             onEndReached={() => {
               if (
                 paginatedUsers.length >= 24 &&
@@ -308,9 +322,16 @@ export default function DiscoverScreen() {
             keyExtractor={keyExtractor}
             numColumns={2}
             style={styles.list}
-            bounces={false}
+            bounces={true}
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={isRefetchingPosts} onRefresh={refetchPosts} tintColor={styles.refreshTint.color} />
+            }
+            onEndReached={() => {
+              if (hasNextPostsPage && !isFetchingNextPosts) fetchNextPosts();
+            }}
+            onEndReachedThreshold={0.3}
             ListEmptyComponent={
               <UIEmptyState
                 icon="list-outline"
@@ -328,6 +349,9 @@ export default function DiscoverScreen() {
 const styles = StyleSheet.create((theme, rt) => ({
   tab: {
     flex: 1,
+  },
+  refreshTint: {
+    color: theme.colors.accent,
   },
   tabTextBase: {
     fontSize: theme.utils.s(16),

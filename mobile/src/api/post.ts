@@ -1,5 +1,9 @@
 import { axios } from "../config";
-import type { PagedModelResponse, PostResponse, CommentResponse } from "../types";
+import type {
+  PagedModelResponse,
+  PostResponse,
+  CommentResponse,
+} from "../types";
 
 export const getPostsByUserId = async (
   userId: string,
@@ -111,6 +115,6 @@ export const getPulsePosts = async (
       },
     },
   );
+  console.log(data);
   return data;
 };
-
