@@ -50,6 +50,10 @@ export default function RootLayout() {
                   <Stack.Screen name="(auth)" />
                   <Stack.Screen name="(tabs)" />
                   <Stack.Screen name="post/[id]" />
+                  <Stack.Screen name="new-post" />
+                  <Stack.Screen name="new-post-image" />
+                  <Stack.Screen name="user/[id]" />
+                  <Stack.Screen name="(settings)" />
                 </Stack>
                 <Toast config={toastConfig} />
               </UIAlertProvider>

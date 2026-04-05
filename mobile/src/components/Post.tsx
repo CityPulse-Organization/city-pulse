@@ -1,4 +1,3 @@
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { memo, useCallback } from "react";
 import { View } from "react-native";
@@ -80,18 +79,18 @@ export const Post = memo(({ data, isLoading = false, onPress }: PostProps) => {
 const styles = StyleSheet.create((theme) => ({
   itemWrapper: {
     flex: 1,
-    padding: theme.utils.s(5),
-    minWidth: 0,
+    padding: theme.utils.s(4),
   },
   card: {
     width: "100%",
     position: "relative",
     overflow: "hidden",
     borderRadius: theme.utils.s(22),
-    minHeight: theme.utils.s(180),
+    minHeight: theme.utils.vs(200),
   },
   image: {
-    minHeight: theme.utils.vs(220),
+    width: "100%",
+    minHeight: theme.utils.vs(200),
   },
 
   overlayWrapper: {

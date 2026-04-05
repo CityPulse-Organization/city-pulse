@@ -1,4 +1,4 @@
-import { NavigationHeader, ThemedBackground } from "@/src/components";
+import { ThemedBackground } from "@/src/components";
 import { UIInput, UIText } from "@/src/ui";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState, useCallback, useEffect } from "react";
@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
+import { NavigationHeader } from "@/src/components/NavigationHeader";
 
 export default function EditPostScreen() {
   const router = useRouter();

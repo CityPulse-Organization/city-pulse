@@ -1,22 +1,22 @@
 import { BlurButton } from "@/src/components/BlurButton";
 import { ImagesCarousel } from "@/src/components/post-details/ImagesCarousel";
 import {
-  UIButton,
   UIKeyboardAvoidingScrollView,
-  UIText,
 } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { View } from "react-native";
 import { ThemedBackground } from "@/src/components";
 import { UIInput } from "@/src/ui";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useCreatePost } from "@/src/hooks/post/useCreatePost";
 import { useState, useCallback } from "react";
 import { StyleSheet } from "react-native-unistyles";
+import { FooterButton } from "@/src/components/SaveButton";
 
 export default function AddNewPostScreen() {
   const router = useRouter();
   const { uris } = useLocalSearchParams<{ uris: string }>();
+  const { sharePost, isCreating } = useCreatePost();
 
   const imageUris: string[] = (() => {
     try {
@@ -35,7 +35,12 @@ export default function AddNewPostScreen() {
   }, [router]);
 
   const onPost = () => {
-    router.push("/(tabs)/profile");
+    if (imageUris.length > 0) {
+      sharePost({
+        imageUri: imageUris[0], // TODO: Currently API only supports single image
+        caption: description,
+      });
+    }
   };
 
   return (
@@ -82,23 +87,7 @@ export default function AddNewPostScreen() {
 
       </UIKeyboardAvoidingScrollView>
 
-      <View style={styles.buttonWrapper}>
-        <UIButton onPress={onPost} style={styles.postButton}>
-          <LinearGradient
-            colors={[
-              styles.gradientStart.backgroundColor,
-              styles.gradientEnd.backgroundColor,
-            ]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.postButtonGradient}
-          >
-            <UIText weight="bold" size="md" style={styles.postButtonText}>
-              Post
-            </UIText>
-          </LinearGradient>
-        </UIButton>
-      </View>
+      <FooterButton label="Post" onPress={onPost} isLoading={isCreating} />
     </ThemedBackground>
   );
 }
@@ -152,40 +141,5 @@ const styles = StyleSheet.create((theme, rt) => ({
 
   descriptionInput: {
     minHeight: theme.utils.vs(120),
-  },
-
-
-  buttonWrapper: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: theme.utils.s(16),
-    paddingBottom: Math.max(rt.insets.bottom, theme.utils.vs(16)),
-    paddingTop: theme.utils.vs(12),
-  },
-
-  postButton: {
-    borderRadius: theme.utils.s(14),
-    overflow: "hidden",
-  },
-
-  postButtonGradient: {
-    paddingVertical: theme.utils.vs(16),
-    borderRadius: theme.utils.s(14),
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  postButtonText: {
-    color: theme.colors.primaryText,
-    letterSpacing: 0.5,
-  },
-
-  gradientStart: {
-    backgroundColor: theme.colors.mutedAccent,
-  },
-  gradientEnd: {
-    backgroundColor: theme.colors.accent,
   },
 }));

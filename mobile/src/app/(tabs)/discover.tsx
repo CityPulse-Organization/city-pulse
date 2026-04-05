@@ -3,27 +3,34 @@ import { UIText, UIEmptyState } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { memo, useCallback, useMemo, useState } from "react";
-import { Platform, Pressable, TextInput, View } from "react-native";
+import { Platform, Pressable, RefreshControl, TextInput, View } from "react-native";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";
 import { router } from "expo-router";
 import { useSearchUsers } from "@/src/hooks/useSearchUsers";
+import { usePulse } from "@/src/hooks/usePulse";
+import { useSearchPosts } from "@/src/hooks/useSearchPosts";
 import { DiscoverUser, PostItem } from "@/src/types";
 
-
-
-const DiscoverItem = memo(({ item }: { item: DiscoverUser }) => (
-  <View style={styles.itemContainer}>
-    <IconInfo
-      username={item.username}
-      profileImageUrl={item.profileImageUrl}
-      statusText={item.job}
-    />
-  </View>
-));
-
-
+const DiscoverItem = memo(({ item }: { item: DiscoverUser }) => {
+  const navigateToProfile = useCallback(() => {
+    router.push({
+      pathname: "/user/[id]",
+      params: { id: item.id, username: item.username }
+    });
+  }, [item.id, item.username]);
+  return (
+    <View style={styles.itemContainer}>
+      <IconInfo
+        username={item.username}
+        profileImageUrl={item.profileImageUrl}
+        statusText={item.job}
+        onPress={navigateToProfile}
+      />
+    </View>
+  );
+});
 
 const ItemSeparator = memo(() => <View style={styles.separator} />);
 
@@ -95,7 +102,6 @@ const DiscoverTabBar = (props: TabBarProps<string>) => {
         focusedTab={props.focusedTab}
         icon={<Ionicons name="list" size={20} style={styles.tabIcon} />}
       />
-
     </View>
   );
 };
@@ -103,8 +109,26 @@ const DiscoverTabBar = (props: TabBarProps<string>) => {
 export default function DiscoverScreen() {
   const [input, setInput] = useState("");
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch: refetchUsers, isRefetching: isRefetchingUsers } =
     useSearchUsers(input, ["username,asc"]);
+
+  const { 
+    data: pulseData, 
+    fetchNextPage: fetchNextPulse, 
+    hasNextPage: hasNextPulsePage, 
+    isFetchingNextPage: isFetchingNextPulse,
+    refetch: refetchPulse,
+    isRefetching: isRefetchingPulse,
+  } = usePulse(input);
+
+  const { 
+    data: postsData, 
+    fetchNextPage: fetchNextPosts, 
+    hasNextPage: hasNextPostsPage, 
+    isFetchingNextPage: isFetchingNextPosts,
+    refetch: refetchPosts,
+    isRefetching: isRefetchingPosts,
+  } = useSearchPosts(input);
 
   const paginatedUsers = useMemo(() => {
     if (data?.pages && data.pages.length > 0) {
@@ -112,13 +136,61 @@ export default function DiscoverScreen() {
         page.content.map((u) => ({
           id: u.id,
           username: u.username,
-          profileImageUrl: "",
-          job: "",
+          profileImageUrl: u.avatarUrl ?? "",
+          job: u.jobTitle ?? "",
         })),
       );
     }
     return [];
   }, [data]);
+
+  const pulsePosts = useMemo(() => {
+    if (pulseData?.pages) {
+      return pulseData.pages.flatMap((page) =>
+        page.content.map((p) => {
+          const date = new Date(p.createdAt);
+          const timeLabel = !isNaN(date.getTime()) 
+            ? `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+            : "Live";
+            
+          return {
+            id: String(p.id),
+            username: p.username ?? "User",
+            profileImageUrl: p.avatarUrl ?? "",
+            accidentTime: timeLabel,
+            imagesUrl: [p.imageUrl],
+            description: p.caption ?? "",
+            location: "",
+          };
+        }),
+      );
+    }
+    return [];
+  }, [pulseData]);
+
+  const paginatedPosts = useMemo(() => {
+    if (postsData?.pages) {
+      return postsData.pages.flatMap((page) =>
+        page.content.map((p) => {
+          const date = new Date(p.createdAt);
+          const dateLabel = !isNaN(date.getTime()) 
+            ? `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`
+            : "";
+
+          return {
+            id: String(p.id),
+            username: p.username ?? "User",
+            profileImageUrl: p.avatarUrl ?? "",
+            accidentTime: dateLabel,
+            imagesUrl: [p.imageUrl],
+            description: p.caption ?? "",
+            location: "",
+          };
+        }),
+      );
+    }
+    return [];
+  }, [postsData]);
 
   const renderItem = useCallback(
     ({ item }: { item: DiscoverUser }) => <DiscoverItem item={item} />,
@@ -143,15 +215,12 @@ export default function DiscoverScreen() {
     return [];
   }, [input]);
 
-
-
   const renderPost = useCallback(
     ({ item }: { item: PostItem }) => (
       <Post data={item} onPress={() => openPost({ id: item.id })} />
     ),
     [openPost],
   );
-
 
   const clearSearch = useCallback(() => {
     setInput("");
@@ -188,14 +257,21 @@ export default function DiscoverScreen() {
       <Tabs.Container renderTabBar={DiscoverTabBar}>
         <Tabs.Tab name="pulse" label="Pulse">
           <Tabs.FlashList
-            data={filteredPosts}
+            data={pulsePosts}
             renderItem={renderPost}
             keyExtractor={keyExtractor}
             numColumns={2}
             style={styles.list}
-            bounces={false}
+            bounces={true}
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={isRefetchingPulse} onRefresh={refetchPulse} tintColor={styles.refreshTint.color} />
+            }
+            onEndReached={() => {
+              if (hasNextPulsePage && !isFetchingNextPulse) fetchNextPulse();
+            }}
+            onEndReachedThreshold={0.3}
             ListEmptyComponent={
               <UIEmptyState
                 icon="pulse"
@@ -213,11 +289,14 @@ export default function DiscoverScreen() {
             ItemSeparatorComponent={ItemSeparator}
             style={styles.list}
             numColumns={2}
-            bounces={false}
+            bounces={true}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={isRefetchingUsers} onRefresh={refetchUsers} tintColor={styles.refreshTint.color} />
+            }
             onEndReached={() => {
               if (
                 paginatedUsers.length >= 24 &&
@@ -238,14 +317,21 @@ export default function DiscoverScreen() {
         </Tabs.Tab>
         <Tabs.Tab name="posts" label="Posts">
           <Tabs.FlashList
-            data={filteredPosts}
+            data={paginatedPosts}
             renderItem={renderPost}
             keyExtractor={keyExtractor}
             numColumns={2}
             style={styles.list}
-            bounces={false}
+            bounces={true}
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={isRefetchingPosts} onRefresh={refetchPosts} tintColor={styles.refreshTint.color} />
+            }
+            onEndReached={() => {
+              if (hasNextPostsPage && !isFetchingNextPosts) fetchNextPosts();
+            }}
+            onEndReachedThreshold={0.3}
             ListEmptyComponent={
               <UIEmptyState
                 icon="list-outline"
@@ -255,8 +341,6 @@ export default function DiscoverScreen() {
             }
           />
         </Tabs.Tab>
-
-
       </Tabs.Container>
     </ThemedBackground>
   );
@@ -265,6 +349,9 @@ export default function DiscoverScreen() {
 const styles = StyleSheet.create((theme, rt) => ({
   tab: {
     flex: 1,
+  },
+  refreshTint: {
+    color: theme.colors.accent,
   },
   tabTextBase: {
     fontSize: theme.utils.s(16),

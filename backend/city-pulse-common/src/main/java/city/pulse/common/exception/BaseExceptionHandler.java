@@ -46,11 +46,12 @@ public class BaseExceptionHandler {
             MissingServletRequestPartException.class,
     })
     public ResponseEntity<ErrorResponse> handleBadRequestExceptions(Exception ex) {
+        log.error("Bad Request Exception: ", ex);
         String message = switch (ex) {
             case HttpMessageNotReadableException e -> "The request body could not be read";
-            case MissingServletRequestParameterException e -> "Required parameter was not presented";
-            case MethodArgumentTypeMismatchException e -> "The request parameter type is invalid";
-            case MissingServletRequestPartException e -> "The request part was not presented";
+            case MissingServletRequestParameterException e -> String.format("Required parameter '%s' was not presented", e.getParameterName());
+            case MethodArgumentTypeMismatchException e -> String.format("The request parameter '%s' has an invalid value: '%s'", e.getName(), e.getValue());
+            case MissingServletRequestPartException e -> String.format("The request part '%s' was not presented", e.getRequestPartName());
             default -> ex.getMessage();
         };
 

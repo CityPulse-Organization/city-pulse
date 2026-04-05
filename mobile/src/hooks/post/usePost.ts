@@ -59,6 +59,7 @@ export const usePost = (postId: number) => {
         return {
           ...old,
           likeCount: isCurrentlyLiked ? old.likeCount - 1 : old.likeCount + 1,
+          isLikedByCurrentUser: !isCurrentlyLiked,
         };
       });
 

@@ -1,6 +1,5 @@
 import { ComponentProps, memo } from "react";
 import { ViewStyle } from "react-native";
-import { View } from "react-native";
 import { UIButton } from "../ui";
 import { BlurView } from "expo-blur";
 import { Ionicons } from "@expo/vector-icons";

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -27,6 +28,26 @@ public class PostServiceImpl implements PostService {
     private final PostMapper mapper;
 
     private final FileDeleteProducer producer;
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PostResponse> searchPosts(String caption, Pageable pageable) {
+        if (caption == null || caption.isBlank()) {
+            return repository.findAllByOrderByCreatedAtDesc(pageable).map(mapper::toDto);
+        }
+        return repository.findByCaptionContainingIgnoreCaseOrderByCreatedAtDesc(caption, pageable).map(mapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PostResponse> getPulsePosts(String search, Pageable pageable) {
+        var aDayAgo = LocalDateTime.now().minusDays(1);
+        if (search == null || search.isBlank()) {
+            return repository.findByCreatedAtAfterOrderByCreatedAtDesc(aDayAgo, pageable).map(mapper::toDto);
+        }
+        return repository.findByCaptionContainingIgnoreCaseAndCreatedAtAfterOrderByCreatedAtDesc(search, aDayAgo, pageable)
+                .map(mapper::toDto);
+    }
 
     @Override
     @Transactional

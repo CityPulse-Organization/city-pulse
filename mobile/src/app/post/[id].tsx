@@ -24,6 +24,7 @@ export default function PostDetailScreen() {
     accidentTime,
     location,
     likeCount,
+    isLikedByCurrentUser,
     commentCount,
     toggleLike,
     comments,
@@ -54,6 +55,7 @@ export default function PostDetailScreen() {
             username={username}
             accidentTime={accidentTime}
             likeCount={likeCount}
+            isLikedByCurrentUser={isLikedByCurrentUser}
             commentCount={commentCount}
             toggleLike={toggleLike}
             openPresentCommentsSheet={openPresentCommentsSheet}
@@ -105,6 +107,7 @@ type UserInfoRowProps = {
   username: string;
   accidentTime: string;
   likeCount: number;
+  isLikedByCurrentUser: boolean;
   commentCount: number;
   toggleLike: (isCurrentlyLiked: boolean) => void;
   openPresentCommentsSheet: () => void;
@@ -116,15 +119,13 @@ const UserInfoRow = memo(
     username,
     accidentTime,
     likeCount,
+    isLikedByCurrentUser,
     commentCount,
     toggleLike,
     openPresentCommentsSheet,
   }: UserInfoRowProps) => {
-    const [isLikedByCurrentUser, setIsLikedByCurrentUser] = useState(false);
-
     const toggleLikeStatus = useCallback(() => {
       toggleLike(isLikedByCurrentUser);
-      setIsLikedByCurrentUser((prev) => !prev);
     }, [isLikedByCurrentUser, toggleLike]);
 
     const [isSavedByCurrentUser, setIsSavedByCurrentUser] = useState(false);
@@ -147,7 +148,7 @@ const UserInfoRow = memo(
               isActive={isLikedByCurrentUser}
               iconName={isLikedByCurrentUser ? "heart" : "heart-outline"}
               iconColor={
-                isLikedByCurrentUser
+                isLikedByCurrentUser // TODO: Must get from API
                   ? styles.likeIconActive.color
                   : styles.likeIcon.color
               }
@@ -198,41 +199,36 @@ const UserInfoRow = memo(
   },
 );
 
-const GradientIconBox = memo(
-  ({
-    isActive,
-    iconName,
-    iconColor,
-  }: {
-    isActive: boolean;
-    iconName: keyof typeof Ionicons.glyphMap;
-    iconColor: string;
-  }) => {
-    return (
-      <LinearGradient
-        colors={
-          isActive
-            ? [
-              styles.activeGradientActionIconStop0.backgroundColor,
-              styles.activeGradientActionIconStop1.backgroundColor,
-            ]
-            : [
-              styles.inactiveGradientActionIconStop0.backgroundColor,
-              styles.inactiveGradientActionIconStop1.backgroundColor,
-            ]
-        }
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.actionIconGrad}
-      >
-        <Ionicons
-          name={iconName}
-          size={styles.actionIcon.height}
-          color={iconColor}
-        />
-      </LinearGradient>
-    );
-  },
+const GradientIconBox = memo(({ isActive, iconName, iconColor }: {
+  isActive: boolean;
+  iconName: keyof typeof Ionicons.glyphMap;
+  iconColor: string;
+}) => {
+  return (
+    <LinearGradient
+      colors={
+        isActive
+          ? [
+            styles.activeGradientActionIconStop0.backgroundColor,
+            styles.activeGradientActionIconStop1.backgroundColor,
+          ]
+          : [
+            styles.inactiveGradientActionIconStop0.backgroundColor,
+            styles.inactiveGradientActionIconStop1.backgroundColor,
+          ]
+      }
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.actionIconGrad}
+    >
+      <Ionicons
+        name={iconName}
+        size={styles.actionIcon.height}
+        color={iconColor}
+      />
+    </LinearGradient>
+  );
+},
 );
 
 const styles = StyleSheet.create((theme, rt) => ({
@@ -253,6 +249,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: theme.utils.vs(20),
+    gap: theme.utils.s(16),
   },
   actionsRow: {
     flexDirection: "row",

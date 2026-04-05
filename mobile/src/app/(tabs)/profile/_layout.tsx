@@ -8,8 +8,6 @@ export default function ProfileLayout() {
         }}>
             <Stack.Screen name='index' />
             <Stack.Screen name="edit-profile" />
-            <Stack.Screen name="new-post" />
-            <Stack.Screen name="new-post-image" />
             <Stack.Screen name="edit-post" />
         </Stack>
     );

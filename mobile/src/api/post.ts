@@ -1,5 +1,9 @@
 import { axios } from "../config";
-import type { PagedModelResponse, PostResponse, CommentResponse } from "../types";
+import type {
+  PagedModelResponse,
+  PostResponse,
+  CommentResponse,
+} from "../types";
 
 export const getPostsByUserId = async (
   userId: string,
@@ -76,4 +80,40 @@ export const createComment = async (
 
 export const deleteComment = async (commentId: number): Promise<void> => {
   await axios.delete(`/comments/${commentId}`);
+};
+
+export const searchPosts = async (
+  caption?: string,
+  page: number = 0,
+  size: number = 20,
+): Promise<PagedModelResponse<PostResponse>> => {
+  const { data } = await axios.get<PagedModelResponse<PostResponse>>(
+    "/posts/search",
+    {
+      params: {
+        caption: caption?.trim() || undefined,
+        page,
+        size,
+      },
+    },
+  );
+  return data;
+};
+
+export const getPulsePosts = async (
+  search?: string,
+  page: number = 0,
+  size: number = 20,
+): Promise<PagedModelResponse<PostResponse>> => {
+  const { data } = await axios.get<PagedModelResponse<PostResponse>>(
+    "/posts/search",
+    {
+      params: {
+        caption: search?.trim() || undefined,
+        page,
+        size,
+      },
+    },
+  );
+  return data;
 };

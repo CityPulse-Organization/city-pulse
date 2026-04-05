@@ -54,6 +54,7 @@ const colors = {
   darkGray: "#333333",
   darkOrange: "#995400ff",
   violet: "#C7B4FD",
+  success: "#4E9F3D",
 
   background: "rgba(240, 240, 242, 1)",
   primary: "rgba(0, 0, 0, 1)",
@@ -65,7 +66,9 @@ const colors = {
   muted: "rgba(0, 0, 0, 0.6)",
   lightMuted: "rgba(0, 0, 0, 0.2)",
   accent: "rgba(168, 36, 224, 1)",
-  mutedAccent: "rgba(96, 44, 139, 1)",
+  lightAccent: "rgba(192, 132, 252, 1)",
+  darkAccent: "rgba(96, 44, 139, 1)",
+  mutedAccent: "rgba(168, 36, 224, 0.14)",
 
   chartBackgroundColor: "#888888ff",
   chartBorderColor: "#4e4e4eff",

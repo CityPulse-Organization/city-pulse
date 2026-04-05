@@ -1,8 +1,8 @@
 import {
   InteractiveImagePreview,
-  NavigationHeader,
   ThemedBackground,
 } from "@/src/components";
+import { NavigationHeader } from "@/src/components/NavigationHeader";
 import { useNewPostImage } from "@/src/hooks/new-post/useNewPostImage";
 import { UIBottomSheet, UIButton, UIText } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
@@ -10,11 +10,12 @@ import { Image } from "expo-image";
 import { memo, useCallback, useMemo } from "react";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-import { ITEM_SIZE, NEW_POST_IMAGE_CONFIG } from "@/src/utils/newPostImageUtils";
+import {
+  ITEM_SIZE,
+  NEW_POST_IMAGE_CONFIG,
+} from "@/src/utils/newPostImageUtils";
 import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
 import { GridItem, Photo } from "@/src/types/newPostImage";
-
-
 
 export default function AddNewPostImageScreen() {
   const {
@@ -30,10 +31,8 @@ export default function AddNewPostImageScreen() {
     bottomSheetRef,
     snapPoints,
     onGalleryItemPress,
-    renderNullBackdrop
+    renderNullBackdrop,
   } = useNewPostImage();
-
-
 
   const renderHeader = useCallback(() => {
     return (
@@ -43,8 +42,6 @@ export default function AddNewPostImageScreen() {
       />
     );
   }, [isMultiSelectMode, toggleMultiSelect]);
-
-
 
   const renderItem = useCallback(
     ({ item }: { item: GridItem }) => {
@@ -93,11 +90,11 @@ export default function AddNewPostImageScreen() {
     [selectedImages, isMultiSelectMode, previewImage?.id],
   );
 
-
   return (
-    <ThemedBackground >
+    <ThemedBackground>
       <NavigationHeader
         title="New Post"
+        rightActionLabel="Next"
         onLeftAction={onCancel}
         onRightAction={onDone}
       />
@@ -129,7 +126,6 @@ export default function AddNewPostImageScreen() {
     </ThemedBackground>
   );
 }
-
 
 const CameraItem = memo(({ onPress }: { onPress: () => void }) => {
   return (
@@ -322,7 +318,7 @@ const styles = StyleSheet.create((theme) => ({
     width: theme.utils.s(24),
     height: theme.utils.vs(24),
     borderRadius: theme.utils.ms(12),
-    backgroundColor: theme.colors.mutedAccent,
+    backgroundColor: theme.colors.darkAccent,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
@@ -330,4 +326,3 @@ const styles = StyleSheet.create((theme) => ({
     zIndex: 10,
   },
 }));
-

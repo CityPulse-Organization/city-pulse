@@ -25,6 +25,7 @@ export default {
         NSPhotoLibraryUsageDescription:
           "Allow City Pulse to access your photos to select post images.",
         NSPhotoLibraryAddUsageDescription: "Allow City Pulse to save photos.",
+        NSFaceIDUsageDescription: "City Pulse uses Face ID to securely unlock your account."
       },
       config: {
         googleMapsApiKey: GOOGLE_MAPS_API_KEY,
@@ -90,6 +91,12 @@ export default {
             "com.googleusercontent.apps.502689896183-adk1466cgc1uma36ijlh7a6ia1ergqpp",
         },
       ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
+        }
+      ]
     ],
     experiments: {
       typedRoutes: true,

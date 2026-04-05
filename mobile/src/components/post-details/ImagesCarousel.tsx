@@ -186,11 +186,7 @@ const CarouselSlideItem = memo(
     return (
       <CustomItem animationValue={animationValue}>
         <UIButton onPress={handlePress} style={styles.carouselSlide}>
-          <UIImage
-            imageUrl={imageUrl}
-            isAspectRatio={false}
-            style={styles.headerImage}
-          />
+          <UIImage imageUrl={imageUrl} style={styles.headerImage} />
         </UIButton>
       </CustomItem>
     );
@@ -266,7 +262,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     gap: theme.utils.s(6),
     borderWidth: 1,
     backgroundColor: theme.colors.backgroundOverlay,
-    borderColor: theme.colors.mutedAccent,
+    borderColor: theme.colors.darkAccent,
     borderRadius: 999,
     paddingHorizontal: theme.utils.s(12),
     paddingVertical: theme.utils.vs(6),
@@ -291,7 +287,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   dotActive: {
     borderRadius: 100,
     overflow: "hidden",
-    backgroundColor: theme.colors.mutedAccent,
+    backgroundColor: theme.colors.darkAccent,
   },
 
   fullScreenHeader: {

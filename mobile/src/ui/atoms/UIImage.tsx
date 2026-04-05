@@ -1,9 +1,7 @@
-import { Image, ImageProps } from "expo-image";
+import { Image, ImageLoadEventData, ImageProps } from "expo-image";
 import { memo, useCallback, useState } from "react";
-import { View } from "react-native";
 import {
   StyleSheet,
-  UnistylesRuntime,
   UnistylesVariants,
 } from "react-native-unistyles";
 
@@ -22,7 +20,7 @@ export const UIImage = memo(
     size,
     borderRound,
     isLoading = false,
-    isAspectRatio,
+    isAspectRatio = false,
     style,
     ...props
   }: UIImageProps) => {
@@ -39,12 +37,15 @@ export const UIImage = memo(
     const handleLoadEnd = useCallback(() => setImagePreparing(false), []);
 
     const handleLoad = useCallback(
-      (event: { source: { width: number; height: number } }) => {
-        if (isAspectRatio && event.source.width && event.source.height) {
-          setAspectRatio(event.source.width / event.source.height);
+      (event: ImageLoadEventData) => {
+        if (!isAspectRatio) return;
+
+        const { width, height } = event.source;
+        if (width && height > 0) {
+          setAspectRatio(width / height);
         }
       },
-      [isAspectRatio],
+      [isAspectRatio]
     );
 
     return (
