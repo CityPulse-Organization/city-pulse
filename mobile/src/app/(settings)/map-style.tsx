@@ -10,7 +10,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedBackground } from '../../components';
 import { NavigationHeader } from '../../components/NavigationHeader';
 import { UIText } from '../../ui';
-import { useSettingsStore } from '@/src/hooks/useSettingsStore';
+import { settingsStore } from '@/src/store/settings';
+import { useStore } from 'zustand';
 import { InfoBanner } from '@/src/components/settings/InfoBanner';
 import { SelectableCard } from '@/src/components/settings/SelectableCard';
 import { MapStyleId } from '@/src/types/settings';
@@ -22,8 +23,8 @@ import { MAP_STYLES } from '@/src/utils/settings';
 
 export default function MapStyleScreen() {
     const router = useRouter();
-    const currentMapStyle = useSettingsStore((state) => state.mapStyle);
-    const setMapStyle = useSettingsStore((state) => state.setMapStyle);
+    const currentMapStyle = useStore(settingsStore, (state) => state.mapStyle);
+    const setMapStyle = useStore(settingsStore, (state) => state.setMapStyle);
 
 
     const handleSelect = useCallback((id: MapStyleId) => {

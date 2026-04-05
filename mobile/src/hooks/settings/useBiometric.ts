@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { Platform } from 'react-native';
-import { useSettingsStore } from '@/src/hooks/useSettingsStore';
+import { settingsStore } from '@/src/store/settings';
+import { useStore } from 'zustand';
 import { UIAlert } from '@/src/hoc';
 import Toast from 'react-native-toast-message';
 import { BiometricSupportStatus } from '@/src/types/settings';
@@ -9,8 +10,8 @@ import { checkBiometricAvailability } from '@/src/utils/settings';
 
 
 export const useBiometric = () => {
-    const isBiometricEnabled = useSettingsStore((state) => state.isBiometricEnabled);
-    const setIsBiometricEnabled = useSettingsStore((state) => state.setIsBiometricEnabled);
+    const isBiometricEnabled = useStore(settingsStore, (state) => state.isBiometricEnabled);
+    const setIsBiometricEnabled = useStore(settingsStore, (state) => state.setIsBiometricEnabled);
 
     const [supportStatus, setSupportStatus] = useState<BiometricSupportStatus>('checking');
     const [isAuthenticating, setIsAuthenticating] = useState(false);

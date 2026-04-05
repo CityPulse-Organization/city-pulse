@@ -1,9 +1,8 @@
-import { create } from 'zustand';
+import { createStore } from 'zustand/vanilla';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UnistylesRuntime } from 'react-native-unistyles';
-import type { MapStyleId } from '../app/(settings)/map-style';
-import type { LanguageId } from '../app/(settings)/language';
+import type { MapStyleId, LanguageId } from '@/src/types/settings';
 
 export type AppTheme = 'dark' | 'light';
 
@@ -19,7 +18,7 @@ interface SettingsState {
     setIsBiometricEnabled: (enabled: boolean) => void;
 }
 
-export const useSettingsStore = create<SettingsState>()(
+export const settingsStore = createStore<SettingsState>()(
     persist(
         (set) => ({
             theme: 'dark',
