@@ -22,9 +22,13 @@ export const useFollow = (targetUserId: string) => {
   }, [initiallyFollowing]);
 
   const invalidateQueries = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: ["followers"] });
-    queryClient.invalidateQueries({ queryKey: ["following"] });
-  }, [queryClient]);
+    queryClient.invalidateQueries({ queryKey: ["followers", targetUserId] });
+    queryClient.invalidateQueries({ queryKey: ["following", targetUserId] });
+    queryClient.invalidateQueries({ queryKey: ["followers", userId] });
+    queryClient.invalidateQueries({ queryKey: ["following", userId] });
+    queryClient.invalidateQueries({ queryKey: ["profile", targetUserId] });
+    queryClient.invalidateQueries({ queryKey: ["profile", userId] });
+  }, [queryClient, targetUserId, userId]);
 
   const { mutate: follow, isPending: isFollowPending } = useMutation({
     mutationFn: () => followUser(targetUserId),
