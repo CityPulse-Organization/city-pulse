@@ -6,13 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function TabLayout() {
-  const segments = useSegments();
-  const isTabBarVisible = !segments.some((segment) =>
-    ["new-post", "new-post-image"].includes(segment)
-  );
-
   if (Platform.OS === "ios") {
-    if (!isTabBarVisible) return <Slot />;
     return (
       <NativeTabs>
         <NativeTabs.Trigger name="index">
@@ -49,9 +43,7 @@ export default function TabLayout() {
       screenOptions={{
         header: () => null,
       }}
-      tabBar={(props) =>
-        isTabBarVisible ? <BottomTabBar {...props} /> : null
-      }
+      tabBar={(props) => <BottomTabBar {...props} />}
     >
       <Tabs.Screen
         name="index"

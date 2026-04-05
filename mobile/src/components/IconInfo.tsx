@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
 import { UIText } from "../ui";
 import { Icon } from "./Icon";
@@ -25,11 +25,12 @@ export const IconInfo = memo(
     usernameSize,
     usernameWeight,
     mode,
+    onPress,
   }: IconInfoProps) => {
     styles.useVariants({ mode: mode });
 
     return (
-      <View style={styles.container}>
+      <Pressable style={styles.container} onPress={onPress}>
         <Icon
           profileImageUrl={profileImageUrl}
           isLoading={isLoading}
@@ -42,6 +43,8 @@ export const IconInfo = memo(
             size={usernameSize}
             weight={usernameWeight}
             style={styles.usernameText}
+            numberOfLines={1}
+            ellipsizeMode="tail"
           >
             {username}
           </UIText>
@@ -49,13 +52,14 @@ export const IconInfo = memo(
             {statusText}
           </UIText>
         </View>
-      </View>
+      </Pressable>
     );
   },
 );
 
 const styles = StyleSheet.create((theme) => ({
   container: {
+    flexShrink: 1,
     flexDirection: "row",
     alignItems: "center",
     gap: theme.utils.ms(10),
@@ -76,6 +80,7 @@ const styles = StyleSheet.create((theme) => ({
       },
     },
   },
+
   statusText: {
     variants: {
       mode: {

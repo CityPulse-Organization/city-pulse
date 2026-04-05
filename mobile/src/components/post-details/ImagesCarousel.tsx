@@ -186,11 +186,7 @@ const CarouselSlideItem = memo(
     return (
       <CustomItem animationValue={animationValue}>
         <UIButton onPress={handlePress} style={styles.carouselSlide}>
-          <UIImage
-            imageUrl={imageUrl}
-            isAspectRatio={false}
-            style={styles.headerImage}
-          />
+          <UIImage imageUrl={imageUrl} style={styles.headerImage} />
         </UIButton>
       </CustomItem>
     );

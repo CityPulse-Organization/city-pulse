@@ -1,6 +1,9 @@
 export type UserSearchResponse = {
   id: string;
   username: string;
+  bio?: string;
+  jobTitle?: string;
+  avatarUrl?: string;
 };
 
 export type PageResponse<T> = {

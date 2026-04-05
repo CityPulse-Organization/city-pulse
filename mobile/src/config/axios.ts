@@ -136,6 +136,7 @@ axiosInstance.interceptors.response.use(
         method: error.config?.method,
         status: error.response?.status,
         data: JSON.stringify(error.response?.data, null, 2),
+        params: error.config?.params,
         message: error.message,
       });
     }

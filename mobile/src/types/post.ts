@@ -4,11 +4,14 @@ import { Photo } from "./newPostImage";
 export type PostResponse = {
   id: number;
   userId: string;
+  username: string | null;
+  avatarUrl: string | null;
   imageUrl: string;
   caption: string | null;
   createdAt: string;
   likeCount: number;
   commentCount: number;
+  isLikedByCurrentUser: boolean;
 };
 
 export type CommentResponse = {
@@ -17,6 +20,8 @@ export type CommentResponse = {
   userId: string;
   text: string;
   createdAt: string;
+  likeCount: number;
+  isLikedByCurrentUser: boolean;
 };
 
 export type PostItem = {

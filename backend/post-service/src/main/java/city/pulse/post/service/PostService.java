@@ -23,4 +23,8 @@ public interface PostService {
     void deletePost(Long postId, UUID currentUserId);
 
     void unlikePost(Long postId, UUID userId);
+
+    Page<PostResponse> searchPosts(String caption, Pageable pageable);
+
+    Page<PostResponse> getPulsePosts(String search, Pageable pageable);
 }

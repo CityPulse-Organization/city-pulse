@@ -1,14 +1,25 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { followUser, unfollowUser } from "@/src/api";
 import { useSession } from "@/src/hoc";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export const useFollow = (targetUserId: string) => {
   const { session } = useSession();
   const userId = session.user?.id;
   const queryClient = useQueryClient();
 
-  const [isFollowing, setIsFollowing] = useState(false);
+  // TODO: remove getQueryData and use query state isFollowing from API
+  const followingData = queryClient.getQueryData<any>(["following", userId]);
+
+  const initiallyFollowing = followingData?.pages?.some((page: any) =>
+    page.content.some((u: any) => u.id === targetUserId)
+  ) || false;
+
+  const [isFollowing, setIsFollowing] = useState(initiallyFollowing);
+
+  useEffect(() => {
+    setIsFollowing(initiallyFollowing);
+  }, [initiallyFollowing]);
 
   const invalidateQueries = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ["followers"] });
