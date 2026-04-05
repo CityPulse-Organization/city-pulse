@@ -115,6 +115,5 @@ export const getPulsePosts = async (
       },
     },
   );
-  console.log(data);
   return data;
 };
