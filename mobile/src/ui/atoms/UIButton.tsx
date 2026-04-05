@@ -1,4 +1,4 @@
-import { Pressable, PressableStateCallbackType, StyleProp, ViewStyle } from "react-native";
+import { Pressable, StyleProp, ViewStyle } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { moderateScale } from "../unistyles";
 
