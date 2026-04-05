@@ -139,7 +139,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     padding: theme.utils.s(8),
   },
   forgotPassword: {
-    color: theme.colors.mutedAccent,
+    color: theme.colors.darkAccent,
     paddingLeft: theme.utils.s(16),
   },
   bottomContainer: {
@@ -165,6 +165,6 @@ const styles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.violet,
   },
   dontHaveAccountText: {
-    color: theme.colors.mutedAccent,
+    color: theme.colors.darkAccent,
   },
 }));

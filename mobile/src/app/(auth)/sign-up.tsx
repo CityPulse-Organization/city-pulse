@@ -198,6 +198,6 @@ const styles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.violet,
   },
   dontHaveAccountText: {
-    color: theme.colors.mutedAccent,
+    color: theme.colors.darkAccent,
   },
 }));

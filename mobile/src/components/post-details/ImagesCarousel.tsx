@@ -262,7 +262,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     gap: theme.utils.s(6),
     borderWidth: 1,
     backgroundColor: theme.colors.backgroundOverlay,
-    borderColor: theme.colors.mutedAccent,
+    borderColor: theme.colors.darkAccent,
     borderRadius: 999,
     paddingHorizontal: theme.utils.s(12),
     paddingVertical: theme.utils.vs(6),
@@ -287,7 +287,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   dotActive: {
     borderRadius: 100,
     overflow: "hidden",
-    backgroundColor: theme.colors.mutedAccent,
+    backgroundColor: theme.colors.darkAccent,
   },
 
   fullScreenHeader: {

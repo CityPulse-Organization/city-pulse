@@ -25,7 +25,6 @@ export const SearchInput = memo(() => {
     );
 });
 
-
 const styles = StyleSheet.create((theme) => ({
     iconInput: {
         color: theme.colors.accent,

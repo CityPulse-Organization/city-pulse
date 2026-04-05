@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useCallback } from "react";
 import { View } from "react-native";
-import { useFollow, useLogout } from "@/src/hooks";
+import { useFollow } from "@/src/hooks";
 import { Icon } from "../Icon";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -30,10 +30,9 @@ export const ProfileHeader = ({
         router.navigate("/(tabs)/profile/edit-profile");
     }, [router]);
 
-    const { mutate: logout } = useLogout();
-    const onLogoutPress = useCallback(() => {
-        logout();
-    }, [logout]);
+    const navigateToSettings = useCallback(() => {
+        router.navigate("/(settings)");
+    }, [router]);
 
     const { isFollowing, toggleFollow, isPending } = useFollow(userId || "");
 
@@ -73,7 +72,7 @@ export const ProfileHeader = ({
                     </View>
 
                     {isSelf ? (
-                        <UIButton onPress={onLogoutPress} isLoading={false}>
+                        <UIButton onPress={navigateToSettings} isLoading={false}>
                             <Ionicons
                                 color={styles.settingsIconButton.color}
                                 size={styles.settingsIconButton.height}

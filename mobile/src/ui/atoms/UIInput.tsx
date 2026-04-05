@@ -29,34 +29,48 @@ export const UIInput = ({
     dividerColor: dividerColor,
   });
 
+  const isMultiline = props.multiline;
+
   return (
-    <View style={[styles.inputContainer, containerStyle]}>
+    <View style={styles.wrapper}>
+      <View style={[styles.inputContainer, containerStyle]}>
 
-      {leftElement && (
-        <View style={styles.leftElement}>{leftElement}</View>
-      )}
+        {leftElement && (
+          <View style={styles.leftElement}>{leftElement}</View>
+        )}
 
-      <TextInput
-        placeholderTextColor={placeholderTextColor ?? styles.placeholderColor.color}
-        style={[styles.input, inputStyle]}
-        {...props}
-      />
+        <TextInput
+          placeholderTextColor={placeholderTextColor ?? styles.placeholderColor.color}
+          style={[styles.input, inputStyle]}
+          {...props}
+        />
 
-      {rightElement && (
-        <View style={styles.rightElement}>{rightElement}</View>
-      )}
+        {rightElement && (
+          <View style={styles.rightElement}>{rightElement}</View>
+        )}
 
-      {error ? (
-        <UIText style={styles.errorText} size="xxs">
+        {!isMultiline && error && (
+          <UIText style={styles.errorText} size="xxs">
+            {error}
+          </UIText>
+        )}
+
+      </View>
+
+      {isMultiline && error && (
+        <UIText style={styles.errorTextBottom} size="xxs">
           {error}
         </UIText>
-      ) : null}
-
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create((theme) => ({
+  wrapper: {
+    width: "100%",
+    gap: theme.utils.vs(4),
+  },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -96,5 +110,9 @@ const styles = StyleSheet.create((theme) => ({
 
   errorText: {
     color: theme.colors.alert,
+  },
+  errorTextBottom: {
+    color: theme.colors.alert,
+    paddingLeft: theme.utils.s(4), // Delikatne wcięcie, żeby tekst zrównał się z wpisywanym hasłem/mailem
   },
 }));
