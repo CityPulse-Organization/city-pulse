@@ -114,6 +114,26 @@ services:
       - .env-shared
       - .env-gateway
 
+  kafka:
+    image: confluentinc/cp-kafka:7.7.0
+    container_name: city-pulse-kafka
+    env_file:
+      - .env-kafka
+    ports:
+      - "9092:9092"
+    networks:
+      - city-pulse-network
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
 networks:
   city-pulse-network:
     driver: bridge
+
+volumes:
+  kafka_data:

@@ -1,13 +1,13 @@
 package city.pulse.post.service.impl;
 
-import city.pulse.post.client.StorageClient; // Наш Feign клієнт
 import city.pulse.post.dto.PostResponse;
+import city.pulse.post.exception.ForbiddenAccessException;
 import city.pulse.post.exception.PostNotFoundException;
-
 import city.pulse.post.mapper.PostMapper;
 import city.pulse.post.model.Post;
 import city.pulse.post.model.PostLike;
 import city.pulse.post.model.PostLikeId;
+import city.pulse.post.producer.FileDeleteProducer;
 import city.pulse.post.repository.PostLikeRepository;
 import city.pulse.post.repository.PostRepository;
 import city.pulse.post.service.PostService;
@@ -27,7 +27,7 @@ public class PostServiceImpl implements PostService {
     private final PostLikeRepository likeRepository;
     private final PostMapper mapper;
 
-    private final StorageClient client;
+    private final FileDeleteProducer producer;
 
     @Override
     @Transactional(readOnly = true)
@@ -62,13 +62,13 @@ public class PostServiceImpl implements PostService {
         var post = getPostEntityByIdOrThrow(postId);
 
         if (!post.getUserId().equals(userId)) {
-            throw new RuntimeException("Access Denied");
+            throw new ForbiddenAccessException();
         }
 
         likeRepository.deleteByPostId(postId);
         repository.delete(post);
 
-        client.deleteFile(post.getImageUrl());
+        producer.sendFileDeleteRequest(post.getImageUrl(), postId);
     }
 
     @Override
@@ -87,6 +87,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Post getPostEntityByIdOrThrow(Long postId) {
         return repository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
@@ -102,9 +103,9 @@ public class PostServiceImpl implements PostService {
     public PostResponse updatePostCaption(Long postId, UUID userId, String newCaption) {
         var post = getPostEntityByIdOrThrow(postId);
         if (!post.getUserId().equals(userId)) {
-            throw new RuntimeException("Access Denied");
+            throw new ForbiddenAccessException();
         }
-        post.setCaption(newCaption);
+        post.updateCaption(newCaption);
         return mapper.toDto(repository.save(post));
     }
 

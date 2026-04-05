@@ -2,21 +2,9 @@ package city.pulse.post.mapper;
 
 import city.pulse.post.dto.PostResponse;
 import city.pulse.post.model.Post;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 
-@Component
-public class PostMapper {
-    public PostResponse toDto(Post post) {
-        if (post == null) return null;
-
-        return PostResponse.builder()
-                .id(post.getId())
-                .userId(post.getUserId())
-                .imageUrl(post.getImageUrl())
-                .caption(post.getCaption())
-                .createdAt(post.getCreatedAt())
-                .likeCount(post.getLikeCount())
-                .commentCount(post.getCommentCount())
-                .build();
-    }
+@Mapper(componentModel = "spring")
+public interface PostMapper {
+    PostResponse toDto(Post post);
 }
