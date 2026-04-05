@@ -52,7 +52,7 @@ export const CommentsBottomSheet = memo(({
   const mappedComments: CommentItem[] = useMemo(() =>
     comments.map((comment) => ({
       id: String(comment.id),
-      username: String(comment.userId),
+      username: "User",
       commentText: comment.text,
       timeAgo: formatPrettyDate(comment?.createdAt),
       profileImageUrl: undefined,

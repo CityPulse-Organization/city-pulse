@@ -15,8 +15,11 @@ import { DiscoverUser, PostItem } from "@/src/types";
 
 const DiscoverItem = memo(({ item }: { item: DiscoverUser }) => {
   const navigateToProfile = useCallback(() => {
-    router.push(`/user/${item.id}`);
-  }, []);
+    router.push({
+      pathname: "/user/[id]",
+      params: { id: item.id, username: item.username }
+    });
+  }, [item.id, item.username]);
   return (
     <View style={styles.itemContainer}>
       <IconInfo
@@ -140,15 +143,22 @@ export default function DiscoverScreen() {
   const pulsePosts = useMemo(() => {
     if (pulseData?.pages) {
       return pulseData.pages.flatMap((page) =>
-        page.content.map((p) => ({
-          id: String(p.id),
-          username: p.username ?? p.userId,
-          profileImageUrl: p.avatarUrl ?? "",
-          accidentTime: p.createdAt,
-          imagesUrl: [p.imageUrl],
-          description: p.caption ?? "",
-          location: "",
-        })),
+        page.content.map((p) => {
+          const date = new Date(p.createdAt);
+          const timeLabel = !isNaN(date.getTime()) 
+            ? `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+            : "Live";
+            
+          return {
+            id: String(p.id),
+            username: p.username ?? "User",
+            profileImageUrl: p.avatarUrl ?? "",
+            accidentTime: timeLabel,
+            imagesUrl: [p.imageUrl],
+            description: p.caption ?? "",
+            location: "",
+          };
+        }),
       );
     }
     return [];
@@ -157,15 +167,22 @@ export default function DiscoverScreen() {
   const paginatedPosts = useMemo(() => {
     if (postsData?.pages) {
       return postsData.pages.flatMap((page) =>
-        page.content.map((p) => ({
-          id: String(p.id),
-          username: p.username ?? p.userId,
-          profileImageUrl: p.avatarUrl ?? "",
-          accidentTime: p.createdAt,
-          imagesUrl: [p.imageUrl],
-          description: p.caption ?? "",
-          location: "",
-        })),
+        page.content.map((p) => {
+          const date = new Date(p.createdAt);
+          const dateLabel = !isNaN(date.getTime()) 
+            ? `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`
+            : "";
+
+          return {
+            id: String(p.id),
+            username: p.username ?? "User",
+            profileImageUrl: p.avatarUrl ?? "",
+            accidentTime: dateLabel,
+            imagesUrl: [p.imageUrl],
+            description: p.caption ?? "",
+            location: "",
+          };
+        }),
       );
     }
     return [];

@@ -12,7 +12,7 @@ import type { DiscoverUser, PostItem, PostResponse } from "@/src/types";
 import { getUserProfile } from "@/src/api/user";
 import { formatPrettyDate } from "@/src/utils";
 
-export const useProfile = (userId?: string) => {
+export const useProfile = (userId?: string, initialUsername?: string) => {
   const { session } = useSession();
   const sessionUserId = session.user?.id;
   const targetUserId = userId || sessionUserId;
@@ -54,7 +54,8 @@ export const useProfile = (userId?: string) => {
     return postsData.pages.flatMap((page) =>
       page.content.map((post: PostResponse) => ({
         id: String(post.id),
-        username: profile?.username ?? "",
+        username: post.username ?? (profile?.username ?? ""),
+        profileImageUrl: post.avatarUrl ?? (profile?.avatarUrl ?? ""),
         accidentTime: formatPrettyDate(post.createdAt),
         imagesUrl: [post.imageUrl],
         description: post.caption ?? undefined,
@@ -146,7 +147,7 @@ export const useProfile = (userId?: string) => {
 
   return {
     userId: targetUserId,
-    username: profile?.username,
+    username: profile?.username ?? initialUsername,
     profile,
     posts,
     postsCount,

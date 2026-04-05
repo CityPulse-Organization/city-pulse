@@ -57,3 +57,9 @@ export const getUserProfile = async (
   return data;
 };
 
+export const updateCurrentUser = async (
+  profile: Partial<UserSearchResponse>,
+): Promise<UserSearchResponse> => {
+  const { data } = await axios.put<UserSearchResponse>("/users/me", profile);
+  return data;
+};

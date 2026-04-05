@@ -51,7 +51,7 @@ export const usePostDetails = () => {
   return {
     imagesUrl,
     description: post?.caption ?? "",
-    username: authorProfile?.username ?? String(post?.userId ?? ""),
+    username: post?.username ?? authorProfile?.username ?? "Loading...",
     profileImageUrl: authorProfile?.avatarUrl ?? "",
     accidentTime: formatPrettyDate(post?.createdAt),
     location: "",

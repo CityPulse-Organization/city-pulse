@@ -6,7 +6,7 @@ import { UIKeyboardAvoidingScrollView } from "@/src/ui/molecules/UIKeyboardAvoid
 import { Ionicons } from "@expo/vector-icons";
 import { ComponentProps, memo } from "react";
 import { Control, Controller, FieldErrors, useWatch } from "react-hook-form";
-import { View } from "react-native";
+import { View, ActivityIndicator } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 type FormFieldConfig = {
@@ -21,18 +21,12 @@ type IconName = ComponentProps<typeof Ionicons>["name"];
 
 const FORM_FIELDS_CONFIG: FormFieldConfig[] = [
   {
-    id: "nickname",
-    iconName: "person-outline",
-    placeholder: "Nickname",
-    autoCapitalize: "none",
-  },
-  {
-    id: "job",
+    id: "jobTitle",
     iconName: "briefcase-outline",
     placeholder: "Job or Title"
   },
   {
-    id: "biography",
+    id: "bio",
     iconName: "chatbox-outline",
     placeholder: "Biography. Tell us about yourself.",
     isMultiline: true,
@@ -40,7 +34,7 @@ const FORM_FIELDS_CONFIG: FormFieldConfig[] = [
 ];
 
 export default function EditProfileScreen() {
-  const { control, errors, handleAvatarPress, onCancel, onSave } = useEditProfile()
+  const { control, errors, handleAvatarPress, onCancel, onSave, isLoading } = useEditProfile()
 
   const avatarUrl = useWatch({
     control,
@@ -53,7 +47,8 @@ export default function EditProfileScreen() {
         title="Edit Profile"
         onLeftAction={onCancel}
         onRightAction={onSave}
-        rightActionLabel="Save"
+        rightActionLabel={isLoading ? "" : "Save"}
+        rightElement={isLoading ? <ActivityIndicator size="small" color={styles.accentColor.color} /> : undefined}
       />
 
       <UIKeyboardAvoidingScrollView
@@ -66,6 +61,7 @@ export default function EditProfileScreen() {
           <UIButton
             onPress={handleAvatarPress}
             isLoading={false}
+            disabled={isLoading}
           >
             <View pointerEvents="none">
               <Icon size="medium" profileImageUrl={avatarUrl} />
@@ -81,7 +77,7 @@ export default function EditProfileScreen() {
           </UIText>
         </View>
 
-        <FormSection control={control} errors={errors} />
+        <FormSection control={control} errors={errors} isDisabled={isLoading} />
       </UIKeyboardAvoidingScrollView>
 
     </ThemedBackground>
@@ -91,9 +87,10 @@ export default function EditProfileScreen() {
 type FormSectionProps = {
   control: Control<ProfileData>;
   errors: FieldErrors<ProfileData>;
+  isDisabled?: boolean;
 };
 
-const FormSection = memo(({ control, errors }: FormSectionProps) => (
+const FormSection = memo(({ control, errors, isDisabled }: FormSectionProps) => (
   <View style={styles.formContainer}>
     {FORM_FIELDS_CONFIG.map((field) => (
       <FormFieldItem
@@ -101,15 +98,17 @@ const FormSection = memo(({ control, errors }: FormSectionProps) => (
         field={field}
         control={control}
         errorMessage={errors[field.id]?.message}
+        isDisabled={isDisabled}
       />
     ))}
   </View>
 ));
 
-const FormFieldItem = memo(({ field, control, errorMessage }: {
+const FormFieldItem = memo(({ field, control, errorMessage, isDisabled }: {
   field: FormFieldConfig;
   control: Control<ProfileData>;
   errorMessage?: string;
+  isDisabled?: boolean;
 }) => {
   return (
     <View style={styles.fieldWrapper}>
@@ -140,6 +139,7 @@ const FormFieldItem = memo(({ field, control, errorMessage }: {
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
+            editable={!isDisabled}
           />
         )}
       />
@@ -232,5 +232,8 @@ const styles = StyleSheet.create((theme, rt) => ({
 
   keyboardVerticalOffset: {
     paddingBottom: theme.utils.vs(60),
+  },
+  accentColor: {
+    color: theme.colors.accent,
   },
 }));

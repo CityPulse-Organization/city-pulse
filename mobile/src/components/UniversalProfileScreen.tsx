@@ -35,8 +35,11 @@ type ProfileStat = {
 const FollowListItem = memo(({ item }: { item: DiscoverUser }) => {
   const { isFollowing, toggleFollow, isPending, isSelf } = useFollow(item.id);
   const navigateToProfile = useCallback(() => {
-    router.push(`/user/${item.id}`);
-  }, [item.id]);
+    router.push({
+      pathname: "/user/[id]",
+      params: { id: item.id, username: item.username }
+    });
+  }, [item.id, item.username]);
 
   return (
     <View style={styles.itemContainer}>
@@ -77,9 +80,10 @@ const FollowListItem = memo(({ item }: { item: DiscoverUser }) => {
 
 type UniversalProfileScreenProps = {
   id?: string;
+  initialUsername?: string;
 };
 
-export function UniversalProfileScreen({ id }: UniversalProfileScreenProps) {
+export function UniversalProfileScreen({ id, initialUsername }: UniversalProfileScreenProps) {
   const isSelf = !id;
 
   const router = useRouter();
@@ -172,7 +176,7 @@ export function UniversalProfileScreen({ id }: UniversalProfileScreenProps) {
           )}
         >
           <Tabs.Tab name="posts" label="Posts">
-            <Tabs.FlatList
+            <Tabs.FlashList
               data={posts}
               renderItem={renderPostItem}
               keyExtractor={keyExtractor}
@@ -264,7 +268,7 @@ export function UniversalProfileScreen({ id }: UniversalProfileScreenProps) {
 
           {isSelf ? (
             <Tabs.Tab name="saves" label="Saves">
-              <Tabs.FlatList
+              <Tabs.FlashList
                 data={[]}
                 renderItem={renderPostItem}
                 keyExtractor={keyExtractor}

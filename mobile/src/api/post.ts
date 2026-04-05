@@ -102,10 +102,10 @@ export const getPulsePosts = async (
   size: number = 20,
 ): Promise<PagedModelResponse<PostResponse>> => {
   const { data } = await axios.get<PagedModelResponse<PostResponse>>(
-    "/posts/pulse",
+    "/posts/search",
     {
       params: {
-        search: search?.trim() || undefined,
+        caption: search?.trim() || undefined,
         page,
         size,
       },

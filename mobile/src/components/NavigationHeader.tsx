@@ -10,6 +10,7 @@ type NavigationHeaderProps = {
   onLeftAction: () => void;
   onRightAction?: () => void;
   isLoading?: boolean;
+  rightElement?: React.ReactNode;
 };
 
 export const NavigationHeader = memo(
@@ -19,6 +20,7 @@ export const NavigationHeader = memo(
     onLeftAction,
     onRightAction,
     isLoading = false,
+    rightElement,
   }: NavigationHeaderProps) => (
     <View style={styles.headerContainer}>
       <View style={styles.headerLeft}>
@@ -37,12 +39,16 @@ export const NavigationHeader = memo(
       </View>
 
       <View style={styles.headerRight}>
-        {onRightAction && (
-          <UIButton onPress={onRightAction} isLoading={isLoading}>
-            <UIText style={styles.headerRightText} size="lg" weight="bold">
-              {rightActionLabel}
-            </UIText>
-          </UIButton>
+        {rightElement ? (
+          rightElement
+        ) : (
+          onRightAction && (
+            <UIButton onPress={onRightAction} isLoading={isLoading}>
+              <UIText style={styles.headerRightText} size="lg" weight="bold">
+                {rightActionLabel}
+              </UIText>
+            </UIButton>
+          )
         )}
       </View>
     </View>

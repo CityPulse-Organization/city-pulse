@@ -1,4 +1,4 @@
 ALTER TABLE user_profiles
-    ADD COLUMN bio         VARCHAR(255) DEFAULT 'Welcome to my City Pulse profile!',
-    ADD COLUMN job_title   VARCHAR(64)  DEFAULT 'User',
-    ADD COLUMN avatar_url  VARCHAR(255);
+    ADD COLUMN IF NOT EXISTS bio         VARCHAR(255) DEFAULT 'Welcome to my City Pulse profile!',
+    ADD COLUMN IF NOT EXISTS job_title   VARCHAR(64)  DEFAULT 'User',
+    ADD COLUMN IF NOT EXISTS avatar_url  VARCHAR(255);
