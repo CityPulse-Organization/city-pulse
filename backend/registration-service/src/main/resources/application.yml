@@ -2,6 +2,11 @@ app:
   base-path: /api/${app.api.version}
   api:
     version: ${APP_API_VERSION:v1}
+  services:
+    auth:
+      url: ${AUTH_SERVICE_URL}
+    user:
+      url: ${USER_SERVICE_URL}
 
 spring:
   application:
