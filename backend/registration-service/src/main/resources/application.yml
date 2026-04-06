@@ -1,7 +1,7 @@
 app:
-  api:
-    version: v1
   base-path: /api/${app.api.version}
+  api:
+    version: ${APP_API_VERSION:v1}
 
 spring:
   application:
@@ -11,3 +11,9 @@ spring:
 
 server:
   port: ${APP_PORT:8083}
+
+springdoc:
+  api-docs:
+    enabled: ${SPRINGDOC_ENABLED:true}
+  swagger-ui:
+    enabled: ${SPRINGDOC_ENABLED:true}

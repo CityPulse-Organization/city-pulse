@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
 import { Linking } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useSettingsStore } from '@/src/hooks/useSettingsStore';
+import { settingsStore } from '@/src/store/settings';
+import { useStore } from 'zustand';
 import { useLogout } from '../../hooks';
 import { useBiometric } from './useBiometric';
 
@@ -9,10 +10,10 @@ import { useBiometric } from './useBiometric';
 export const useSettings = () => {
     const router = useRouter();
 
-    const mapStyle = useSettingsStore((state) => state.mapStyle);
-    const theme = useSettingsStore((state) => state.theme);
-    const setTheme = useSettingsStore((state) => state.setTheme);
-    const language = useSettingsStore((state) => state.language);
+    const mapStyle = useStore(settingsStore, (state) => state.mapStyle);
+    const theme = useStore(settingsStore, (state) => state.theme);
+    const setTheme = useStore(settingsStore, (state) => state.setTheme);
+    const language = useStore(settingsStore, (state) => state.language);
     const { mutate: logout } = useLogout();
 
 

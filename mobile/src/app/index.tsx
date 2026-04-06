@@ -15,7 +15,8 @@ import * as LocalAuthentication from "expo-local-authentication";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { UIText } from "../ui";
-import { useSettingsStore } from "../hooks/useSettingsStore";
+import { settingsStore } from "../store/settings";
+import { useStore } from "zustand";
 import { ThemedBackground } from "../components";
 
 
@@ -187,7 +188,7 @@ const lockStyles = StyleSheet.create((theme, rt) => ({
 
 export default function IndexRoute() {
   const { session, isLoading } = useSession();
-  const isBiometricEnabled = useSettingsStore((s) => s.isBiometricEnabled);
+  const isBiometricEnabled = useStore(settingsStore, (s) => s.isBiometricEnabled);
 
   const [animReady, setAnimReady] = useState(false);
   const [showBiometricGate, setShowBiometricGate] = useState(false);
@@ -225,13 +226,13 @@ export default function IndexRoute() {
         const isEnrolled = await LocalAuthentication.isEnrolledAsync();
 
         if (!hasHardware || !isEnrolled) {
-          useSettingsStore.getState().setIsBiometricEnabled(false);
+          settingsStore.getState().setIsBiometricEnabled(false);
           router.replace("/(tabs)");
         } else {
           setShowBiometricGate(true);
         }
       } catch (error) {
-        useSettingsStore.getState().setIsBiometricEnabled(false);
+        settingsStore.getState().setIsBiometricEnabled(false);
         router.replace("/(tabs)");
       }
     };

@@ -15,7 +15,7 @@ public abstract class AbstractFileUploadService implements FileUploadService {
     @Override
     public String uploadFile(MultipartFile file) {
         validateFile(file);
-        String generatedFileName = generateFileName(file.getOriginalFilename());
+        var generatedFileName = generateFileName(file.getOriginalFilename());
         return performUpload(file, generatedFileName);
     }
 
@@ -24,12 +24,12 @@ public abstract class AbstractFileUploadService implements FileUploadService {
         if (fileUrl == null || fileUrl.isBlank()) {
             return;
         }
-        String fileName = extractFileNameFromUrl(fileUrl);
+        var fileName = extractFileNameFromUrl(fileUrl);
         performDelete(fileName, fileUrl);
     }
 
     private void validateFile(MultipartFile file) {
-        String contentType = file.getContentType();
+        var contentType = file.getContentType();
 
         if (contentType == null || !config.getAllowedFileTypes().contains(contentType.toLowerCase())) {
             throw new FileUploadingException("File upload failed: Invalid or unsupported file type.");

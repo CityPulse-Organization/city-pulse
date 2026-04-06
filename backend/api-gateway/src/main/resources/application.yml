@@ -6,12 +6,14 @@ spring:
     name: api-gateway
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
+
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: ${AUTH_JWK_SET_URI:http://auth-service:8081/api/v1/.well-known/jwks.json}
-          issuer-uri: ${AUTH_ISSUER_URI:http://auth-service:8081}
+          jwk-set-uri: ${AUTH_JWK_SET_URI}
+          issuer-uri: ${AUTH_ISSUER_URI}
+
   cloud:
     gateway:
       server:
@@ -19,12 +21,12 @@ spring:
           routes:
             # --- MOBILE BFF SERVICE ---
             - id: mobile-bff-service-route
-              uri: ${MOBILE_BFF_SERVICE_URL:http://mobile-bff-service:8086}
+              uri: ${MOBILE_BFF_SERVICE_URL}
               predicates:
                 - Path=/mobile/api/v1/**
 
             - id: mobile-bff-service-openapi
-              uri: ${MOBILE_BFF_SERVICE_URL:http://mobile-bff-service:8086}
+              uri: ${MOBILE_BFF_SERVICE_URL}
               predicates:
                 - Path=/v3/api-docs/mobile-bff
               filters:
@@ -32,12 +34,12 @@ spring:
 
             # --- AUTH SERVICE ---
             - id: auth-service-route
-              uri: ${AUTH_SERVICE_URL:http://auth-service:8081}
+              uri: ${AUTH_SERVICE_URL}
               predicates:
                 - Path=/api/v1/auth/**, /api/v1/oauth2/**
 
             - id: auth-service-openapi
-              uri: ${AUTH_SERVICE_URL:http://auth-service:8081}
+              uri: ${AUTH_SERVICE_URL}
               predicates:
                 - Path=/v3/api-docs/auth
               filters:
@@ -45,12 +47,12 @@ spring:
 
             # --- POST SERVICE ---
             - id: post-service-route
-              uri: ${POST_SERVICE_URL:http://post-service:8082}
+              uri: ${POST_SERVICE_URL}
               predicates:
                 - Path=/api/v1/posts/**, /api/v1/comments/**
 
             - id: post-service-openapi
-              uri: ${POST_SERVICE_URL:http://post-service:8082}
+              uri: ${POST_SERVICE_URL}
               predicates:
                 - Path=/v3/api-docs/post
               filters:
@@ -58,12 +60,12 @@ spring:
 
             # --- REGISTRATION SERVICE ---
             - id: registration-service-route
-              uri: ${REGISTRATION_SERVICE_URL:http://registration-service:8083}
+              uri: ${REGISTRATION_SERVICE_URL}
               predicates:
                 - Path=/api/v1/registration/**
 
             - id: registration-service-openapi
-              uri: ${REGISTRATION_SERVICE_URL:http://registration-service:8083}
+              uri: ${REGISTRATION_SERVICE_URL}
               predicates:
                 - Path=/v3/api-docs/registration
               filters:
@@ -71,12 +73,12 @@ spring:
 
             # --- USER SERVICE ---
             - id: user-service-route
-              uri: ${USER_SERVICE_URL:http://user-service:8084}
+              uri: ${USER_SERVICE_URL}
               predicates:
                 - Path=/api/v1/users/**
 
             - id: user-service-openapi
-              uri: ${USER_SERVICE_URL:http://user-service:8084}
+              uri: ${USER_SERVICE_URL}
               predicates:
                 - Path=/v3/api-docs/user
               filters:
@@ -84,19 +86,22 @@ spring:
 
             # --- STORAGE SERVICE ---
             - id: storage-service-route
-              uri: ${STORAGE_SERVICE_URL:http://storage-service:8085}
+              uri: ${STORAGE_SERVICE_URL}
               predicates:
                 - Path=/api/v1/storage/**
 
             - id: storage-service-openapi
-              uri: ${STORAGE_SERVICE_URL:http://storage-service:8085}
+              uri: ${STORAGE_SERVICE_URL}
               predicates:
                 - Path=/v3/api-docs/storage
               filters:
                 - RewritePath=/v3/api-docs/storage, /v3/api-docs
 
 springdoc:
+  api-docs:
+    enabled: ${SPRINGDOC_ENABLED:true}
   swagger-ui:
+    enabled: ${SPRINGDOC_ENABLED:true}
     path: /swagger-ui.html
     urls:
       - name: Mobile BFF Service

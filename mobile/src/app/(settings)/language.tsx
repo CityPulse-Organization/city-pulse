@@ -7,7 +7,8 @@ import { useRouter } from 'expo-router';
 import { ThemedBackground } from '../../components';
 import { NavigationHeader } from '../../components/NavigationHeader';
 import { InfoBanner } from '@/src/components/settings/InfoBanner';
-import { useSettingsStore } from '@/src/hooks/useSettingsStore';
+import { settingsStore } from '@/src/store/settings';
+import { useStore } from 'zustand';
 import { LanguageId } from '@/src/types/settings';
 import { LANGUAGES } from '@/src/utils/settings';
 import { LanguageRow } from '@/src/components/settings/LanguageRow';
@@ -16,8 +17,8 @@ import { LanguageRow } from '@/src/components/settings/LanguageRow';
 
 export default function LanguageScreen() {
     const router = useRouter();
-    const currentLanguage = useSettingsStore((s) => s.language);
-    const setLanguage = useSettingsStore((s) => s.setLanguage);
+    const currentLanguage = useStore(settingsStore, (s) => s.language);
+    const setLanguage = useStore(settingsStore, (s) => s.setLanguage);
 
     const handleSelect = useCallback((id: LanguageId) => {
         setLanguage(id);
