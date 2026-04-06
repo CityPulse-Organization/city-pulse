@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler({PostNotFoundException.class, CommentNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleNotFoundException(RuntimeException ex) {
         return ResponseEntity

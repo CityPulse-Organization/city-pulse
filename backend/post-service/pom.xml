@@ -9,7 +9,6 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>post-service</artifactId>
-    <version>${revision}</version>
     <name>post-service</name>
     <url/>
     <licenses>
@@ -40,15 +39,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <repositories>
-        <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/CityPulse-Organization/city-pulse</url>
-            <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>true</enabled></snapshots>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>

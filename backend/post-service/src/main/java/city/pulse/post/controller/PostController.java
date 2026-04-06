@@ -1,6 +1,7 @@
 package city.pulse.post.controller;
 
 import city.pulse.post.dto.CreatePostRequest;
+import city.pulse.post.dto.PostFilterRequest;
 import city.pulse.post.dto.PostResponse;
 import city.pulse.post.dto.UpdatePostRequest;
 import city.pulse.post.service.PostService;
@@ -14,27 +15,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 
-import java.util.UUID;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${app.base-path}/posts")
 public class PostController {
     private final PostService service;
-
-    @GetMapping("/search")
-    public PagedModel<PostResponse> searchPosts(
-            @RequestParam(required = false) String caption,
-            Pageable pageable) {
-        return new PagedModel<>(service.searchPosts(caption, pageable));
-    }
-
-    @GetMapping("/pulse")
-    public PagedModel<PostResponse> getPulsePosts(
-            @RequestParam(required = false) String search,
-            Pageable pageable) {
-        return new PagedModel<>(service.getPulsePosts(search, pageable));
-    }
 
     @PostMapping
     public ResponseEntity<PostResponse> createNewPost(
@@ -53,47 +38,46 @@ public class PostController {
         return ResponseEntity.created(location).body(created);
     }
 
-    @PostMapping("/{id}/like")
-    public ResponseEntity<Void> likePost(
-            @PathVariable Long id,
-            @CurrentUser UserInfo userInfo) {
-        service.likePost(id, userInfo.id());
-        return ResponseEntity.ok().build();
+    @GetMapping
+    public PagedModel<PostResponse> getPosts(
+            @ModelAttribute PostFilterRequest filter,
+            @CurrentUser UserInfo userInfo,
+            Pageable pageable
+    ) {
+        return new PagedModel<>(service.getPosts(filter, userInfo.id(), pageable));
+    }
+
+    @GetMapping("/saved")
+    public PagedModel<PostResponse> getSavedPosts(
+            @CurrentUser UserInfo userInfo,
+            Pageable pageable
+    ) {
+        return new PagedModel<>(service.getSavedPosts(userInfo.id(), pageable));
     }
 
     @GetMapping("/{id}")
-    public PostResponse getPostById(@PathVariable Long id) {
-        return service.getPostById(id);
-    }
-
-    @GetMapping("/user/{userId}")
-    public PagedModel<PostResponse> getPostsForUser(
-            @PathVariable UUID userId,
-            Pageable pageable) {
-        return new PagedModel<>(service.getPostsByUserId(userId, pageable));
+    public PostResponse getPostById(
+            @PathVariable Long id,
+            @CurrentUser UserInfo userInfo
+    ) {
+        return service.getPostById(id, userInfo.id());
     }
 
     @PatchMapping("/{id}")
     public PostResponse updatePostCaption(
             @PathVariable Long id,
             @Valid @RequestBody UpdatePostRequest dto,
-            @CurrentUser UserInfo userInfo) {
+            @CurrentUser UserInfo userInfo
+    ) {
         return service.updatePostCaption(id, userInfo.id(), dto.caption());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(
             @PathVariable Long id,
-            @CurrentUser UserInfo userInfo) {
+            @CurrentUser UserInfo userInfo
+    ) {
         service.deletePost(id, userInfo.id());
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{id}/like")
-    public ResponseEntity<Void> unlikePost(
-            @PathVariable Long id,
-            @CurrentUser UserInfo userInfo) {
-        service.unlikePost(id, userInfo.id());
         return ResponseEntity.noContent().build();
     }
 }

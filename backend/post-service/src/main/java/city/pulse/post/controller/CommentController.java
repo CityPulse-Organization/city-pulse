@@ -24,7 +24,8 @@ public class CommentController {
             @PathVariable Long postId,
             @Valid @RequestBody CommentRequest dto,
             @CurrentUser UserInfo userInfo) {
-        var created = service.createComment(postId, userInfo.id(), dto.text());
+
+        var created = service.createComment(postId, dto.parentId(), userInfo.id(), dto.text());
 
         var location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -37,14 +38,26 @@ public class CommentController {
     @GetMapping("/posts/{postId}/comments")
     public PagedModel<CommentResponse> getComments(
             @PathVariable Long postId,
-            Pageable pageable) {
-        return new PagedModel<>(service.getCommentsForPost(postId, pageable));
+            @CurrentUser UserInfo userInfo,
+            Pageable pageable
+    ) {
+        return new PagedModel<>(service.getCommentsForPost(postId, userInfo.id(), pageable));
+    }
+
+    @GetMapping("/comments/{commentId}/replies")
+    public PagedModel<CommentResponse> getReplies(
+            @PathVariable Long commentId,
+            @CurrentUser UserInfo userInfo,
+            Pageable pageable
+    ) {
+        return new PagedModel<>(service.getRepliesForComment(commentId, userInfo.id(), pageable));
     }
 
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long commentId,
-            @CurrentUser UserInfo userInfo) {
+            @CurrentUser UserInfo userInfo
+    ) {
         service.deleteComment(commentId, userInfo.id());
         return ResponseEntity.noContent().build();
     }

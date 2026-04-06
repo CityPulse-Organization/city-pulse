@@ -7,10 +7,13 @@ import java.util.UUID;
 
 @Builder
 public record CommentResponse(
-    Long id,
-    Long postId,
-    UUID userId,
-    String text,
-    OffsetDateTime createdAt
-) {
-}
+        Long id,
+        Long postId,
+        Long parentId,
+        UUID userId,
+        String text,
+        OffsetDateTime createdAt,
+        int likeCount,
+        int replyCount,
+        boolean isLikedByMe
+) {}

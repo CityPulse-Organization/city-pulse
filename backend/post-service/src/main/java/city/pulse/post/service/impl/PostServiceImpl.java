@@ -1,120 +1,85 @@
 package city.pulse.post.service.impl;
 
+import city.pulse.post.dto.PostFilterRequest;
 import city.pulse.post.dto.PostResponse;
-import city.pulse.post.exception.ForbiddenAccessException;
+import city.pulse.post.enricher.PostEnricher;
+import city.pulse.post.event.PostDeletedEvent;
 import city.pulse.post.exception.PostNotFoundException;
 import city.pulse.post.mapper.PostMapper;
-import city.pulse.post.model.Post;
-import city.pulse.post.model.PostLike;
-import city.pulse.post.model.PostLikeId;
-import city.pulse.post.producer.FileDeleteProducer;
-import city.pulse.post.repository.PostLikeRepository;
+import city.pulse.post.model.post.Post;
 import city.pulse.post.repository.PostRepository;
 import city.pulse.post.service.PostService;
+import city.pulse.post.specification.PostSpecifications;
+import city.pulse.post.validator.OwnershipValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
-    private final PostRepository repository;
-    private final PostLikeRepository likeRepository;
+    private final ApplicationEventPublisher eventPublisher;
+    private final PostSpecifications specifications;
+    private final PostRepository postRepository;
+    private final OwnershipValidator validator;
+    private final PostEnricher enricher;
     private final PostMapper mapper;
-
-    private final FileDeleteProducer producer;
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PostResponse> searchPosts(String caption, Pageable pageable) {
-        if (caption == null || caption.isBlank()) {
-            return repository.findAllByOrderByCreatedAtDesc(pageable).map(mapper::toDto);
-        }
-        return repository.findByCaptionContainingIgnoreCaseOrderByCreatedAtDesc(caption, pageable).map(mapper::toDto);
+    public Page<PostResponse> getPosts(PostFilterRequest filter, UUID currentUserId, Pageable pageable) {
+        var spec = specifications.getSpecification(filter);
+        var postsPage = postRepository.findAll(spec, pageable);
+        return enricher.enrichPage(postsPage, currentUserId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PostResponse> getPulsePosts(String search, Pageable pageable) {
-        var aDayAgo = LocalDateTime.now().minusDays(1);
-        if (search == null || search.isBlank()) {
-            return repository.findByCreatedAtAfterOrderByCreatedAtDesc(aDayAgo, pageable).map(mapper::toDto);
-        }
-        return repository.findByCaptionContainingIgnoreCaseAndCreatedAtAfterOrderByCreatedAtDesc(search, aDayAgo, pageable)
-                .map(mapper::toDto);
+    public Page<PostResponse> getSavedPosts(UUID currentUserId, Pageable pageable) {
+        var postsPage = postRepository.findSavedPostsByUserId(currentUserId, pageable);
+        return enricher.enrichPage(postsPage, currentUserId);
     }
 
     @Override
     @Transactional
     public PostResponse createPost(String imageUrl, String caption, UUID userId) {
-        var post = Post.createPost(userId, imageUrl, caption);
-        return mapper.toDto(repository.save(post));
+        var post = postRepository.save(Post.create(userId, imageUrl, caption));
+        return mapper.toDto(post, false, false);
     }
 
     @Override
-    @Transactional
-    public void deletePost(Long postId, UUID userId) {
+    @Transactional(readOnly = true)
+    public PostResponse getPostById(Long postId, UUID currentUserId) {
         var post = getPostEntityByIdOrThrow(postId);
-
-        if (!post.getUserId().equals(userId)) {
-            throw new ForbiddenAccessException();
-        }
-
-        likeRepository.deleteByPostId(postId);
-        repository.delete(post);
-
-        producer.sendFileDeleteRequest(post.getImageUrl(), postId);
-    }
-
-    @Override
-    @Transactional
-    public void likePost(Long postId, UUID userId) {
-        if (!repository.existsById(postId)) {
-            throw new PostNotFoundException();
-        }
-        likeRepository.save(new PostLike(postId, userId));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public PostResponse getPostById(Long postId) {
-        return mapper.toDto(getPostEntityByIdOrThrow(postId));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Post getPostEntityByIdOrThrow(Long postId) {
-        return repository.findById(postId).orElseThrow(PostNotFoundException::new);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<PostResponse> getPostsByUserId(UUID userId, Pageable pageable) {
-        return repository.findByUserIdOrderByCreatedAtDesc(userId, pageable).map(mapper::toDto);
+        return enricher.enrichPost(post, currentUserId);
     }
 
     @Override
     @Transactional
     public PostResponse updatePostCaption(Long postId, UUID userId, String newCaption) {
         var post = getPostEntityByIdOrThrow(postId);
-        if (!post.getUserId().equals(userId)) {
-            throw new ForbiddenAccessException();
-        }
+        validator.validateOwnership(post.getUserId(), userId);
         post.updateCaption(newCaption);
-        return mapper.toDto(repository.save(post));
+        var saved = postRepository.save(post);
+        return enricher.enrichPost(saved, userId);
     }
 
     @Override
     @Transactional
-    public void unlikePost(Long postId, UUID userId) {
-        if (!repository.existsById(postId)) {
-            throw new PostNotFoundException();
-        }
-        likeRepository.deleteById(new PostLikeId(postId, userId));
+    public void deletePost(Long postId, UUID userId) {
+        var post = getPostEntityByIdOrThrow(postId);
+        validator.validateOwnership(post.getUserId(), userId);
+        postRepository.delete(post);
+
+        eventPublisher.publishEvent(new PostDeletedEvent(post.getImageUrl(), post.getId()));
+    }
+
+    private Post getPostEntityByIdOrThrow(Long postId) {
+        return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
 }
