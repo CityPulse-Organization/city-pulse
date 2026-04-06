@@ -4,9 +4,9 @@ app:
     version: ${APP_API_VERSION:v1}
   services:
     auth:
-      url: ${AUTH_SERVICE_URL}
+      url: ${AUTH_SERVICE_URL}/api/v1
     user:
-      url: ${USER_SERVICE_URL}
+      url: ${USER_SERVICE_URL}/api/v1
 
 spring:
   application:
