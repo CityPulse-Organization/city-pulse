@@ -1,7 +1,7 @@
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-COPY backend/post-service/target/*.jar app.jar
+COPY backend/mobile-bff-service/target/*.jar app.jar
 
 EXPOSE 8086
 
