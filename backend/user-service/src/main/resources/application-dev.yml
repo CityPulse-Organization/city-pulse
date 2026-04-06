@@ -1,5 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5433/city_pulse
-    username: dev_user
-    password: dev_password

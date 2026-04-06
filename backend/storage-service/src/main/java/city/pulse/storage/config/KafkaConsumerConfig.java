@@ -8,8 +8,8 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.support.converter.RecordMessageConverter;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 
-@Configuration
 @EnableKafka
+@Configuration
 public class KafkaConsumerConfig {
     @Bean
     public RecordMessageConverter converter() {
