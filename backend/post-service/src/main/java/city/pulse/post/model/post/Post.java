@@ -1,4 +1,4 @@
-package city.pulse.post.model;
+package city.pulse.post.model.post;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,9 +41,7 @@ public class Post {
     private int commentCount = 0;
 
     public void updateCaption(String caption) {
-        if (caption != null && !caption.isBlank()) {
-            this.caption = caption;
-        }
+        this.caption = caption;
     }
 
     public static Post createPost(UUID userId, String imageUrl, String caption) {

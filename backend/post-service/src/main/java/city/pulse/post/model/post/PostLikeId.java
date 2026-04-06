@@ -1,4 +1,4 @@
-package city.pulse.post.model;
+package city.pulse.post.model.post;
 
 import java.io.Serializable;
 import java.util.UUID;
