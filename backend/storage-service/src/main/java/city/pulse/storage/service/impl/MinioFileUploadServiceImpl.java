@@ -34,7 +34,7 @@ public class MinioFileUploadServiceImpl extends AbstractFileUploadService {
     @Override
     protected String performUpload(MultipartFile file, String generatedFileName) {
         try {
-            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+            var putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(generatedFileName)
                     .contentType(file.getContentType())
@@ -56,7 +56,7 @@ public class MinioFileUploadServiceImpl extends AbstractFileUploadService {
     @Override
     protected void performDelete(String fileName, String originalUrl) {
         try {
-            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+            var deleteObjectRequest = DeleteObjectRequest.builder()
                     .bucket(bucketName)
                     .key(fileName)
                     .build();
