@@ -46,7 +46,7 @@ public class PostInteractionServiceImpl implements PostInteractionService {
         if (!postRepository.existsById(postId)) {
             throw new PostNotFoundException();
         }
-        savedRepository.save(SavedPost.builder().postId(postId).userId(userId).build());
+        savedRepository.save(SavedPost.create(postId, userId));
     }
 
     @Override

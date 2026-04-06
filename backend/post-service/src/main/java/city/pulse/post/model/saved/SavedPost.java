@@ -29,4 +29,11 @@ public class SavedPost {
     @CreationTimestamp
     @Column(name = "saved_at", nullable = false, updatable = false)
     private OffsetDateTime savedAt;
+
+    public static SavedPost create(Long postId, UUID userId) {
+        return SavedPost.builder()
+                .postId(postId)
+                .userId(userId)
+                .build();
+    }
 }

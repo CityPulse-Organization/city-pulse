@@ -48,7 +48,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostResponse createPost(String imageUrl, String caption, UUID userId) {
-        var post = postRepository.save(Post.createPost(userId, imageUrl, caption));
+        var post = postRepository.save(Post.create(userId, imageUrl, caption));
         return mapper.toDto(post, false, false);
     }
 

@@ -25,7 +25,7 @@ public class Post {
     @Column(name = "image_url", nullable = false, columnDefinition = "TEXT")
     private String imageUrl;
 
-    @Column(name = "caption", columnDefinition = "TEXT")
+    @Column(name = "caption", columnDefinition = "TEXT", length = 256)
     private String caption;
 
     @CreationTimestamp
@@ -44,7 +44,7 @@ public class Post {
         this.caption = caption;
     }
 
-    public static Post createPost(UUID userId, String imageUrl, String caption) {
+    public static Post create(UUID userId, String imageUrl, String caption) {
         return Post.builder()
                 .userId(userId)
                 .imageUrl(imageUrl)
