@@ -18,7 +18,6 @@ export const FooterButton = memo(({ label, onPress, isLoading, iconName = 'send'
             onPress={onPress}
             disabled={isLoading}
             style={styles.button}
-            hasPressEffect
         >
             <LinearGradient
                 colors={[styles.gradientStart.backgroundColor, styles.gradientEnd.backgroundColor]}

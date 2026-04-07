@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import ImagePicker from "react-native-image-crop-picker";
 import * as z from "zod";
+import * as Haptics from 'expo-haptics';
 import { useProfile } from "./useProfile";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateCurrentUser } from "@/src/api/user";
@@ -58,6 +59,7 @@ export const useEditProfile = () => {
       queryClient.invalidateQueries({ queryKey: ["userPosts"] });
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       Toast.show({
         type: "success",
         text1: "Profile Updated",
@@ -66,6 +68,7 @@ export const useEditProfile = () => {
       router.back();
     },
     onError: () => {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
       Toast.show({
         type: "error",
         text1: "Update Failed",
@@ -84,15 +87,13 @@ export const useEditProfile = () => {
 
     try {
       if (avatarUrl && avatarUrl.startsWith("/")) {
-        // Локальный путь — загружаем в storage
         const uploadedUrl = await uploadFile(avatarUrl);
         payload.avatarUrl = uploadedUrl;
       } else if (avatarUrl && avatarUrl.startsWith("http")) {
-        // Уже URL — отправляем как есть
         payload.avatarUrl = avatarUrl;
       }
-      // Пустой — не включаем в payload
     } catch (error) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
       Toast.show({
         type: "error",
         text1: "Upload Failed",

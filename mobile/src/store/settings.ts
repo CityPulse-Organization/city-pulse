@@ -13,6 +13,7 @@ interface SettingsState {
     isBiometricEnabled: boolean;
 
     setTheme: (theme: AppTheme) => void;
+    toggleTheme: () => void;
     setMapStyle: (style: MapStyleId) => void;
     setLanguage: (language: LanguageId) => void;
     setIsBiometricEnabled: (enabled: boolean) => void;
@@ -30,6 +31,13 @@ export const settingsStore = createStore<SettingsState>()(
                 UnistylesRuntime.setTheme(theme);
                 set({ theme });
             },
+
+            toggleTheme: () => {
+                const nextTheme = settingsStore.getState().theme === 'dark' ? 'light' : 'dark';
+                UnistylesRuntime.setTheme(nextTheme);
+                set({ theme: nextTheme });
+            },
+
             setMapStyle: (mapStyle) => set({ mapStyle }),
             setLanguage: (language) => set({ language }),
             setIsBiometricEnabled: (isBiometricEnabled) => set({ isBiometricEnabled }),

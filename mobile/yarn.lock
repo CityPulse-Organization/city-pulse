@@ -3221,6 +3221,11 @@ expo-font@~14.0.11:
   dependencies:
     fontfaceobserver "^2.1.0"
 
+expo-haptics@^55.0.13:
+  version "55.0.13"
+  resolved "https://registry.yarnpkg.com/expo-haptics/-/expo-haptics-55.0.13.tgz#8cd10850795d6fdc714114bbd2be5964829a52aa"
+  integrity sha512-mfchTuKX6aiR3CEn1NyUviSnp9NwunuBlx2p5XIQymvCBwDxUddJlrStz5gMPUb6phUS+1YSH5O2S+IyFgqFjA==
+
 expo-image@~3.0.11:
   version "3.0.11"
   resolved "https://registry.yarnpkg.com/expo-image/-/expo-image-3.0.11.tgz#54195565dc710e632c10414c3609deebb7149ac5"

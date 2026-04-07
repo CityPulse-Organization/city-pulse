@@ -7,6 +7,7 @@ import { UIAlert } from '@/src/hoc';
 import Toast from 'react-native-toast-message';
 import { BiometricSupportStatus } from '@/src/types/settings';
 import { checkBiometricAvailability } from '@/src/utils/settings';
+import * as Haptics from 'expo-haptics';
 
 
 export const useBiometric = () => {
@@ -34,6 +35,7 @@ export const useBiometric = () => {
             });
             return result.success;
         } catch {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
             Toast.show({
                 type: 'error',
                 text1: 'Biometric authentication failed',
@@ -41,6 +43,7 @@ export const useBiometric = () => {
             return false;
         } finally {
             setIsAuthenticating(false);
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
             Toast.show({
                 type: 'success',
                 text1: 'Biometric authentication successful',

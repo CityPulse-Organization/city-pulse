@@ -15,6 +15,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Toast from 'react-native-toast-message';
 import { StrengthLevel } from '@/src/types/settings';
 import { getStrength, STRENGTH_COLORS, STRENGTH_LABELS } from '@/src/utils/settings';
+import * as Haptics from 'expo-haptics';
+
 
 
 const changePasswordSchema = z.object({
@@ -52,11 +54,13 @@ export default function ChangePasswordScreen() {
         try {
             // TODO: call API to change password
             router.back();
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
             Toast.show({
                 type: "success",
                 text1: "Password changed successfully",
             });
         } catch (error) {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
             Toast.show({
                 type: "error",
                 text1: "Error",

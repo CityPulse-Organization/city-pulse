@@ -12,7 +12,7 @@ export const useSettings = () => {
 
     const mapStyle = useStore(settingsStore, (state) => state.mapStyle);
     const theme = useStore(settingsStore, (state) => state.theme);
-    const setTheme = useStore(settingsStore, (state) => state.setTheme);
+    const toggleTheme = useStore(settingsStore, (state) => state.toggleTheme);
     const language = useStore(settingsStore, (state) => state.language);
     const { mutate: logout } = useLogout();
 
@@ -37,7 +37,6 @@ export const useSettings = () => {
     const navToLanguage = useCallback(() => router.push('/(settings)/language'), [router]);
 
 
-    const toggleTheme = useCallback(() => setTheme(isDarkMode ? 'light' : 'dark'), [isDarkMode, setTheme]);
     const togglePushEnabled = useCallback(() => setIsPushEnabled((prev) => !prev), []);
     const onLogoutPress = useCallback(() => logout(), [logout]);
 

@@ -155,7 +155,6 @@ const CategoryPicker = memo(({ control, errorMessage }: { control: Control<FormV
                                 <UIButton
                                     key={category.id}
                                     onPress={onPress}
-                                    hasPressEffect
                                     style={[styles.categoryChip, isActive && styles.categoryChipActive]}
                                 >
                                     <Ionicons
