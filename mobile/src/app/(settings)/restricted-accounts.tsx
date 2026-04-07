@@ -1,5 +1,5 @@
-import { UIButton, UIDivider, UIEmptyState, UIText } from "../../ui";
-import { IconInfo, ThemedBackground } from "@/src/components";
+import { UIEmptyState, UIText } from "../../ui";
+import { ThemedBackground } from "@/src/components";
 import { StyleSheet } from "react-native-unistyles";
 import { memo, useCallback, useState } from "react";
 import { NavigationHeader } from "@/src/components/NavigationHeader";
@@ -8,9 +8,8 @@ import { DiscoverUser } from "@/src/types";
 import { SearchInput } from "@/src/components/SearchInput";
 import { View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
-import { Ionicons } from "@expo/vector-icons";
 import { InfoBanner } from "@/src/components/settings/InfoBanner";
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import { SearchUserItem } from "@/src/components/SearchUserItem";
 
 
 
@@ -104,53 +103,37 @@ export const SEARCH_USERS: DiscoverUser[] = [
 
 export default function RestrictedAccountsScreen() {
     const router = useRouter();
-    const [users, setUsers] = useState(SEARCH_USERS);
 
     const handleBack = useCallback(() => {
         router.back();
     }, [router]);
 
-    const handleUnrestrict = useCallback((id: string) => {
-        setUsers((prev) => prev.filter((u) => u.id !== id));
+    const handleUnrestrict = useCallback(() => {
+        // TODO:  API call implement unrestrict logic delete from list and update count
     }, []);
 
     const keyExtractor = useCallback((item: { id: string }) => item.id, []);
 
     const renderUserItem = useCallback(
         ({ item }: { item: DiscoverUser }) => (
-            <SearchUserItem item={item} onUnrestrict={handleUnrestrict} />
+            <SearchUserItem
+                item={item}
+                buttonLabel="Unrestrict"
+                onAction={handleUnrestrict}
+            />
         ),
         [handleUnrestrict],
     );
-
-    const ListHeader = useCallback(() => (
-        <View style={styles.listHeader}>
-            <SearchInput />
-            <InfoBanner
-                icon="eye-off-outline"
-                text="Restricted accounts can't see your activity or send you direct messages. They won't know they've been restricted."
-                style={styles.infoBanner}
-            />
-            {users.length > 0 && (
-                <View style={styles.sectionHeader}>
-                    <UIText size="xs" style={styles.sectionTitle}>RESTRICTED</UIText>
-                    <View style={styles.countBadge}>
-                        <UIText size="xxs" weight="bold" style={styles.countText}>{users.length}</UIText>
-                    </View>
-                </View>
-            )}
-        </View>
-    ), [users.length]);
 
     return (
         <ThemedBackground>
             <NavigationHeader title="Restricted Accounts" onLeftAction={handleBack} />
 
             <FlashList
-                data={users}
+                data={SEARCH_USERS}
                 renderItem={renderUserItem}
                 keyExtractor={keyExtractor}
-                ListHeaderComponent={ListHeader}
+                ListHeaderComponent={<HeaderComponent count={SEARCH_USERS.length} />}
                 keyboardShouldPersistTaps="handled"
                 keyboardDismissMode="on-drag"
                 style={styles.list}
@@ -168,63 +151,27 @@ export default function RestrictedAccountsScreen() {
     );
 }
 
-
-type SearchUserItemProps = {
-    item: DiscoverUser;
-    onUnrestrict: (id: string) => void;
-};
-
-const SearchUserItem = memo(({ item, onUnrestrict }: SearchUserItemProps) => {
-    const scale = useSharedValue(1);
-
-    const handlePressIn = () => {
-        scale.value = withSpring(0.96, {
-            stiffness: 400,
-            damping: 20,
-            mass: 1
-        });
-    };
-
-    const handlePressOut = () => {
-        scale.value = withSpring(1, {
-            stiffness: 400,
-            damping: 15,
-            mass: 1
-        });
-    };
-
-    const animatedCardStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: scale.value }],
-    }));
-
-    return (
-        <Animated.View style={[styles.itemContainer, animatedCardStyle]}>
-            <View style={styles.itemInner}>
-                <IconInfo
-                    username={item.username}
-                    profileImageUrl={item.profileImageUrl}
-                    statusText={item.job}
-                    usernameWeight="bold"
-                />
-
-                <UIButton
-                    onPress={() => onUnrestrict(item.id)}
-                    onPressIn={handlePressIn}
-                    onPressOut={handlePressOut}
-                    style={styles.unrestrictButton}
-                >
-                    <Ionicons
-                        name="eye-outline"
-                        size={styles.unrestrictIcon.height}
-                        color={styles.unrestrictIcon.color}
-                    />
-                    <UIText size="xs" weight="normal" style={styles.unrestrictLabel}>Unrestrict</UIText>
-                </UIButton>
+const HeaderComponent = memo(({ count }: { count: number }) => (
+    <View style={styles.listHeader}>
+        <SearchInput />
+        <InfoBanner
+            icon="eye-off-outline"
+            text="Restricted accounts can't see your activity or send you direct messages. They won't know they've been restricted."
+            style={styles.infoBanner}
+        />
+        {count > 0 && (
+            <View style={styles.sectionHeader}>
+                <UIText size="xs" style={styles.sectionTitle}>RESTRICTED</UIText>
+                <View style={styles.countBadge}>
+                    <UIText size="xxs" weight="bold" style={styles.countText}>{count}</UIText>
+                </View>
             </View>
-            <UIDivider />
-        </Animated.View>
-    );
-});
+        )}
+    </View>
+));
+
+
+
 
 const styles = StyleSheet.create((theme) => ({
     list: {
@@ -271,37 +218,5 @@ const styles = StyleSheet.create((theme) => ({
 
     countText: {
         color: theme.colors.white,
-    },
-
-    itemContainer: {
-        paddingHorizontal: theme.utils.s(16),
-    },
-
-    itemInner: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        paddingVertical: theme.utils.vs(12),
-    },
-
-    unrestrictButton: {
-        overflow: "hidden",
-        flexDirection: "row",
-        alignItems: "center",
-        gap: theme.utils.s(5),
-        paddingVertical: theme.utils.vs(7),
-        paddingHorizontal: theme.utils.s(12),
-        borderWidth: 1,
-        borderRadius: theme.utils.ms(10),
-        borderColor: theme.colors.accent,
-    },
-
-    unrestrictIcon: {
-        height: theme.utils.s(14),
-        color: theme.colors.lightAccent,
-    },
-
-    unrestrictLabel: {
-        color: theme.colors.lightAccent,
     },
 }));

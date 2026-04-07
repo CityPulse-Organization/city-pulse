@@ -18,6 +18,7 @@ import { useProfile } from "@/src/hooks/profile/useProfile";
 import { useFollow } from "@/src/hooks/useFollow";
 import { ProfileHeader } from "./profile/ProfileHeader";
 import { SearchInput } from "./SearchInput";
+import { SearchUserItem } from "./SearchUserItem";
 
 
 
@@ -34,45 +35,16 @@ type ProfileStat = {
 
 const FollowListItem = memo(({ item }: { item: DiscoverUser }) => {
   const { isFollowing, toggleFollow, isPending, isSelf } = useFollow(item.id);
-  const navigateToProfile = useCallback(() => {
-    router.push({
-      pathname: "/user/[id]",
-      params: { id: item.id, username: item.username }
-    });
-  }, [item.id, item.username]);
 
   return (
-    <View style={styles.itemContainer}>
-      <IconInfo
-        username={item.username}
-        profileImageUrl={item.profileImageUrl}
-        statusText={item.job}
-        onPress={navigateToProfile}
-      />
-      {!isSelf && (
-        <UIButton
-          style={[
-            styles.followButton,
-            isFollowing && styles.followButtonActive,
-          ]}
-          onPress={toggleFollow}
-          isLoading={isPending}
-        >
-          <UIText
-            size="xs"
-            weight="bold"
-            ellipsizeMode="tail"
-            numberOfLines={1}
-            style={[
-              styles.followButtonText,
-              isFollowing && styles.followButtonTextActive,
-            ]}
-          >
-            {isFollowing ? "Unfollow" : "Follow"}
-          </UIText>
-        </UIButton>
-      )}
-    </View>
+    <SearchUserItem
+      item={item}
+      buttonLabel={isFollowing ? "Unfollow" : "Follow"}
+      onAction={toggleFollow}
+      isActive={isFollowing}
+      isPending={isPending}
+      isSelf={isSelf}
+    />
   );
 });
 

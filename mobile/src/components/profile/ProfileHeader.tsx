@@ -88,6 +88,11 @@ export const ProfileHeader = ({
                             onPress={toggleFollow}
                             isLoading={isPending}
                         >
+                            <Ionicons
+                                name={isFollowing ? "eye-off-outline" : "eye-outline"}
+                                size={styles.followIcon.height}
+                                color={isFollowing ? styles.followIconActive.color : styles.followIcon.color}
+                            />
                             <UIText
                                 size="xs"
                                 weight="bold"
@@ -191,22 +196,33 @@ const styles = StyleSheet.create((theme, rt) => ({
     },
 
     actionFollowButton: {
-        paddingHorizontal: theme.utils.s(16),
-        paddingVertical: theme.utils.vs(6),
-        borderRadius: theme.utils.ms(16),
-        backgroundColor: theme.colors.accent,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: theme.utils.s(5),
+        paddingVertical: theme.utils.vs(7),
+        paddingHorizontal: theme.utils.s(12),
         borderWidth: 1,
-        borderColor: theme.colors.muted,
+        borderRadius: theme.utils.ms(10),
+        borderColor: theme.colors.accent,
     },
     followButtonActive: {
         borderWidth: 1,
-        borderColor: theme.colors.muted,
-        backgroundColor: theme.colors.mutedAccent,
+        borderColor: theme.colors.darkAccent,
     },
+
+    followIcon: {
+        height: theme.utils.s(14),
+        color: theme.colors.lightAccent,
+    },
+    followIconActive: {
+        color: theme.colors.darkAccent,
+    },
+
     followButtonText: {
-        color: theme.colors.white,
+        color: theme.colors.lightAccent,
     },
+
     followButtonTextActive: {
-        color: theme.colors.muted,
+        color: theme.colors.darkAccent,
     },
 }));
