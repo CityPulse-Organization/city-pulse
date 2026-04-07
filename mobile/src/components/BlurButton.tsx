@@ -9,10 +9,11 @@ type BlurButtonProps = {
     onPress: () => void;
     iconName: ComponentProps<typeof Ionicons>["name"];
     style?: ViewStyle;
+    isLoading?: boolean;
 }
 
-export const BlurButton = memo(({ onPress, iconName, style }: BlurButtonProps) => (
-    <UIButton onPress={onPress} >
+export const BlurButton = memo(({ onPress, iconName, style, isLoading }: BlurButtonProps) => (
+    <UIButton onPress={onPress} isLoading={isLoading} >
         <BlurView intensity={80} tint="dark" style={[styles.overlayButton, style]}>
             <Ionicons
                 name={iconName}

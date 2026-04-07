@@ -497,6 +497,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   list: {
     flex: 1,
     width: "100%",
+    paddingTop: theme.utils.vs(10),
   },
 
   backButton: {
@@ -512,10 +513,6 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   listSeparator: { height: 20 },
 
-  statsTabBar: {
-    backgroundColor: theme.colors.background,
-  },
-
   itemContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -529,6 +526,9 @@ const styles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.primaryText,
   },
 
+  statsTabBar: {
+    backgroundColor: theme.colors.background,
+  },
   statsCard: {
     flexDirection: "row",
     alignItems: "center",
@@ -538,7 +538,6 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   statItemContainer: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
   },
   statButton: {

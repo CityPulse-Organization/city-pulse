@@ -69,7 +69,8 @@ export default function AddNewPostScreen() {
             value={location}
             onChangeText={setLocation}
             returnKeyType="next"
-            containerStyle={styles.locationContainer}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.input}
           />
 
           <UIInput
@@ -80,8 +81,8 @@ export default function AddNewPostScreen() {
             numberOfLines={8}
             textAlignVertical="top"
             returnKeyType="done"
-            containerStyle={styles.descriptionContainer}
-            inputStyle={styles.descriptionInput}
+            containerStyle={[styles.inputContainer, styles.descriptionContainer]}
+            inputStyle={[styles.input, styles.descriptionInput]}
           />
         </View>
 
@@ -111,17 +112,21 @@ const styles = StyleSheet.create((theme, rt) => ({
 
   formContainer: {
     paddingHorizontal: theme.utils.s(16),
-    paddingTop: theme.utils.vs(36),
+    paddingTop: theme.utils.vs(50),
     gap: theme.utils.vs(16),
   },
 
-  locationContainer: {
+  inputContainer: {
     backgroundColor: theme.colors.backgroundSubtle,
     borderBottomWidth: 0,
     borderRadius: theme.utils.s(12),
     borderWidth: 1,
     borderColor: theme.colors.borderSubtle,
     paddingHorizontal: theme.utils.s(14),
+  },
+
+  input: {
+    paddingVertical: theme.utils.vs(10),
   },
 
   locationIcon: {
@@ -131,12 +136,6 @@ const styles = StyleSheet.create((theme, rt) => ({
 
   descriptionContainer: {
     alignItems: "flex-start",
-    backgroundColor: theme.colors.backgroundSubtle,
-    borderBottomWidth: 0,
-    borderRadius: theme.utils.s(12),
-    borderWidth: 1,
-    borderColor: theme.colors.borderSubtle,
-    paddingHorizontal: theme.utils.s(14),
   },
 
   descriptionInput: {

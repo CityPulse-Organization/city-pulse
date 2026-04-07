@@ -11,8 +11,8 @@ export const getPostsByUserId = async (
   size: number = 20,
 ): Promise<PagedModelResponse<PostResponse>> => {
   const { data } = await axios.get<PagedModelResponse<PostResponse>>(
-    `/posts/user/${userId}`,
-    { params: { page, size } },
+    `/posts`,
+    { params: { authorId: userId, page, size } },
   );
   return data;
 };

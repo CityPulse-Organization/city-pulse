@@ -32,6 +32,7 @@ export default function AddNewPostImageScreen() {
     snapPoints,
     onGalleryItemPress,
     renderNullBackdrop,
+    isReady
   } = useNewPostImage();
 
   const renderHeader = useCallback(() => {
@@ -97,6 +98,7 @@ export default function AddNewPostImageScreen() {
         rightActionLabel="Next"
         onLeftAction={onCancel}
         onRightAction={onDone}
+        isLoading={!isReady}
       />
 
       <View style={styles.container}>

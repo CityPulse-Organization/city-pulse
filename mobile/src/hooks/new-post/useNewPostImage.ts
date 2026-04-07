@@ -1,7 +1,7 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useGallerySelection } from "./useGallerySelection";
 import { useMediaLibrary } from "./useMediaLibrary";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import ImagePicker from "react-native-image-crop-picker";
 import { useGalleryBottomSheet } from "./useGalleryBottomSheet";
 import { UIAlert } from "@/src/hoc";
@@ -11,6 +11,8 @@ import { GridItem, Photo } from "@/src/types/newPostImage";
 
 export const useNewPostImage = () => {
   const router = useRouter();
+  const [isReady, setIsReady] = useState(false);
+
 
   const {
     selectedImages,
@@ -40,14 +42,27 @@ export const useNewPostImage = () => {
 
   const gridItems: GridItem[] = useMemo(() => [{ id: "camera-id" }, ...photos], [photos]);
 
+  useFocusEffect(
+    useCallback(() => {
+      setIsReady(false);
 
-  const onCancel = useCallback(async () => {
-    bottomSheetRef.current?.dismiss();
+      const timer = setTimeout(() => {
+        setIsReady(true);
+      }, 400);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }, [])
+  );
+
+
+  const onCancel = useCallback(() => {
     router.back();
   }, [router]);
 
-  const onDone = useCallback(async () => {
-    bottomSheetRef.current?.dismiss();
+  const onDone = useCallback(() => {
+    bottomSheetRef.current?.forceClose();
     const processedUris = selectedImages.map((image) => image.uri);
 
     if (processedUris.length > 0) {
@@ -91,7 +106,8 @@ export const useNewPostImage = () => {
     bottomSheetRef,
     snapPoints,
     onGalleryItemPress,
-    renderNullBackdrop
+    renderNullBackdrop,
+    isReady
   };
 }
 

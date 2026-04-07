@@ -129,7 +129,7 @@ const FormFieldItem = memo(({ field, control, errorMessage, isDisabled }: {
               field.isMultiline && styles.inputContainerMultiline,
               errorMessage && styles.inputErrorBorder
             ]}
-            inputStyle={field.isMultiline && styles.inputMultilineText}
+            inputStyle={[styles.input, field.isMultiline && styles.inputMultilineText]}
             multiline={field.isMultiline}
             numberOfLines={field.isMultiline ? 12 : 1}
             textAlignVertical={field.isMultiline ? "top" : "center"}
@@ -202,6 +202,9 @@ const styles = StyleSheet.create((theme, rt) => ({
     borderWidth: 1,
     borderColor: theme.colors.borderSubtle,
     paddingHorizontal: theme.utils.s(14),
+  },
+  input: {
+    paddingVertical: theme.utils.vs(10),
   },
 
   inputContainerMultiline: {

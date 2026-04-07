@@ -28,6 +28,7 @@ export const NavigationHeader = memo(
           onPress={onLeftAction}
           iconName="chevron-back-outline"
           style={styles.headerLeftBlurButton}
+          isLoading={isLoading}
         />
 
       </View>
