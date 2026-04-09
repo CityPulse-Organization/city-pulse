@@ -5,112 +5,274 @@ import {
   BottomSheetModal,
   BottomSheetTextInput,
 } from "@gorhom/bottom-sheet";
-import { memo, useCallback, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { Comment } from "../Comment";
-import { UIBottomSheet, UIButton, UIDivider, UIText, UIEmptyState } from "@/src/ui";
-import { ActivityIndicator, View } from "react-native";
+import {
+  UIBottomSheet,
+  UIButton,
+  UIDivider,
+  UIText,
+  UIEmptyState,
+} from "@/src/ui";
+import { ActivityIndicator, View, LayoutAnimation } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Icon } from "../Icon";
 import { StyleSheet } from "react-native-unistyles";
 import type { CommentResponse, CommentItem } from "@/src/types";
 import { formatPrettyDate } from "@/src/utils";
-
+import { axios } from "@/src/config";
+import { useProfile } from "../../hooks/profile/useProfile";
+import { useCommentReplies } from "../../hooks/post/usePost";
+import {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 type CommentsBottomSheetProps = {
-  profileImageUrl: string;
   commentsBottomSheetRef: React.RefObject<BottomSheetModal | null>;
   comments: CommentResponse[];
   onSendComment: (text: string) => void;
+  onSendReply: (variables: { text: string; parentId: number }) => void;
+  onToggleLikeComment: (variables: {
+    commentId: number;
+    isCurrentlyLiked: boolean;
+  }) => void;
   fetchNextComments: () => void;
   hasNextCommentsPage: boolean;
   isFetchingNextComments: boolean;
 };
 
-export const CommentsBottomSheet = memo(({
-  profileImageUrl,
-  commentsBottomSheetRef,
-  comments,
-  onSendComment,
-  fetchNextComments,
-  hasNextCommentsPage,
-  isFetchingNextComments,
-}: CommentsBottomSheetProps) => {
-  const [footerHeight, setFooterHeight] = useState(0);
+export const CommentsBottomSheet = memo(
+  ({
+    commentsBottomSheetRef,
+    comments,
+    onSendComment,
+    onSendReply,
+    onToggleLikeComment,
+    fetchNextComments,
+    hasNextCommentsPage,
+    isFetchingNextComments,
+  }: CommentsBottomSheetProps) => {
+    const footerHeightShared = useSharedValue(0);
+    const [replyingTo, setReplyingTo] = useState<CommentResponse | null>(null);
+    const [expandedComments, setExpandedComments] = useState<Set<number>>(
+      new Set(),
+    );
 
-  const renderCommentsFooter = useCallback(
-    (footerProps: BottomSheetFooterProps) => (
-      <CommentsFooter
-        bottomSheetProps={footerProps}
-        profileImageUrl={profileImageUrl}
-        onHeightChange={setFooterHeight}
-        onSendComment={onSendComment}
-      />
-    ),
-    [profileImageUrl, onSendComment],
-  );
+    const onViewRepliesHandler = useCallback(async (commentId: string) => {
+      const id = Number(commentId);
+      setExpandedComments((prev) => {
+        const newSet = new Set(prev);
+        if (newSet.has(id)) {
+          newSet.delete(id);
+        } else {
+          newSet.add(id);
+        }
+        return newSet;
+      });
+    }, []);
 
-  const mappedComments: CommentItem[] = useMemo(() =>
-    comments.map((comment) => ({
-      id: String(comment.id),
-      username: "User",
-      commentText: comment.text,
-      timeAgo: formatPrettyDate(comment?.createdAt),
-      profileImageUrl: undefined,
-    })),
-    [comments],
-  );
+    const animatedPaddingStyle = useAnimatedStyle(() => ({
+      paddingBottom: footerHeightShared.value,
+    }));
 
-  const handleLoadMore = useCallback(() => {
-    if (hasNextCommentsPage && !isFetchingNextComments) {
-      fetchNextComments();
+    const renderCommentsFooter = useCallback(
+      (footerProps: BottomSheetFooterProps) => (
+        <CommentsFooter
+          bottomSheetProps={footerProps}
+          onHeightChange={(height: number) => {
+            footerHeightShared.value = withTiming(height, { duration: 200 });
+          }}
+          onSendComment={onSendComment}
+          onSendReply={onSendReply}
+          replyingTo={replyingTo}
+          onCancelReply={() => setReplyingTo(null)}
+        />
+      ),
+      [onSendComment, onSendReply, replyingTo],
+    );
+
+    const mappedComments: CommentItem[] = useMemo(
+      () =>
+        comments.map((comment) => ({
+          id: String(comment.id),
+          username: "User",
+          commentText: comment.text,
+          timeAgo: formatPrettyDate(comment?.createdAt),
+          profileImageUrl: undefined,
+          replyCount: comment.replyCount,
+          likeCount: comment.likeCount,
+          isLikedByMe: comment.isLikedByMe,
+        })),
+      [comments],
+    );
+
+    const handleLoadMore = useCallback(() => {
+      if (hasNextCommentsPage && !isFetchingNextComments) {
+        fetchNextComments();
+      }
+    }, [fetchNextComments, hasNextCommentsPage, isFetchingNextComments]);
+
+    const keyExtractor = useCallback(
+      (commentData: CommentItem) => commentData.id,
+      [],
+    );
+
+    const mapCommentToItem = useCallback(
+      (comment: CommentResponse): CommentItem => ({
+        id: String(comment.id),
+        username: "User", // TODO: get from user service
+        commentText: comment.text,
+        timeAgo: formatPrettyDate(comment.createdAt),
+        profileImageUrl: undefined,
+        replyCount: comment.replyCount,
+        likeCount: comment.likeCount,
+        isLikedByMe: comment.isLikedByMe,
+      }),
+      [],
+    );
+
+    const renderItem = useCallback(
+      ({ item: commentData }: { item: CommentItem }) => {
+        const comment = comments.find((c) => String(c.id) === commentData.id);
+        const isExpanded = expandedComments.has(Number(commentData.id));
+        return (
+          <View>
+            <Comment
+              comment={commentData}
+              onReplyPress={
+                comment
+                  ? () => {
+                      LayoutAnimation.configureNext(
+                        LayoutAnimation.Presets.easeInEaseOut,
+                      );
+                      setReplyingTo(comment);
+                    }
+                  : undefined
+              }
+              onViewReplies={onViewRepliesHandler}
+              isExpanded={isExpanded}
+              onToggleLike={(isCurrentlyLiked) =>
+                onToggleLikeComment({
+                  commentId: Number(commentData.id),
+                  isCurrentlyLiked,
+                })
+              }
+            />
+            {isExpanded && (
+              <CommentReplies
+                commentId={Number(commentData.id)}
+                onToggleLikeComment={onToggleLikeComment}
+              />
+            )}
+          </View>
+        );
+      },
+      [comments, expandedComments, onToggleLikeComment, onViewRepliesHandler],
+    );
+
+    return (
+      <UIBottomSheet
+        header={<CommentsHeader />}
+        ref={commentsBottomSheetRef}
+        snapPoints={["75%"]}
+        keyboardBehavior="interactive"
+        keyboardBlurBehavior="none"
+        topInset={styles.bottomSheet.top}
+        footerComponent={renderCommentsFooter}
+      >
+        <BottomSheetFlatList
+          data={mappedComments}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          contentContainerStyle={[styles.listContent, animatedPaddingStyle]}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            isFetchingNextComments ? (
+              <ActivityIndicator size="small" color={styles.loading.color} />
+            ) : null
+          }
+          ListEmptyComponent={
+            <UIEmptyState
+              icon="chatbubbles-outline"
+              title="No comments yet"
+              description="Be the first to share your thoughts!"
+            />
+          }
+        />
+      </UIBottomSheet>
+    );
+  },
+);
+
+const CommentReplies = memo(
+  ({
+    commentId,
+    onToggleLikeComment,
+  }: {
+    commentId: number;
+    onToggleLikeComment: (params: {
+      commentId: number;
+      isCurrentlyLiked: boolean;
+    }) => void;
+  }) => {
+    const { data: repliesData, isLoading } = useCommentReplies(commentId, true);
+
+    const replies = useMemo(() => {
+      if (!repliesData?.pages) return [];
+      return repliesData.pages.flatMap((page) => page.content);
+    }, [repliesData]);
+
+    const mapCommentToItem = useCallback(
+      (comment: CommentResponse): CommentItem => ({
+        id: String(comment.id),
+        username: "User", // TODO: get from user service
+        commentText: comment.text,
+        timeAgo: formatPrettyDate(comment.createdAt),
+        profileImageUrl: undefined,
+        replyCount: comment.replyCount,
+        likeCount: comment.likeCount,
+        isLikedByMe: comment.isLikedByMe,
+      }),
+      [],
+    );
+
+    if (isLoading && !repliesData) {
+      return (
+        <ActivityIndicator
+          size="small"
+          color={styles.loading.color}
+          style={{ padding: 10 }}
+        />
+      );
     }
-  }, [fetchNextComments, hasNextCommentsPage, isFetchingNextComments]);
 
-  const keyExtractor = useCallback((commentData: CommentItem) => commentData.id, []);
-
-  const renderItem = useCallback(
-    ({ item: commentData }: { item: CommentItem }) => (
-      <Comment comment={commentData} />
-    ),
-    [],
-  );
-
-  return (
-    <UIBottomSheet
-      header={<CommentsHeader />}
-      ref={commentsBottomSheetRef}
-      snapPoints={["75%"]}
-      keyboardBehavior="interactive"
-      keyboardBlurBehavior="none"
-      topInset={styles.bottomSheet.top}
-      footerComponent={renderCommentsFooter}
-    >
-      <BottomSheetFlatList
-        data={mappedComments}
-        keyExtractor={keyExtractor}
-        renderItem={renderItem}
-        contentContainerStyle={[
-          styles.listContent,
-          { paddingBottom: footerHeight },
-        ]}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          isFetchingNextComments ? (
-            <ActivityIndicator size="small" color={styles.loading.color} />
-          ) : null
-        }
-        ListEmptyComponent={
-          <UIEmptyState
-            icon="chatbubbles-outline"
-            title="No comments yet"
-            description="Be the first to share your thoughts!"
+    return (
+      <Animated.View
+        entering={FadeIn.duration(200)}
+        style={styles.repliesContainer}
+      >
+        {replies.map((reply) => (
+          <Comment
+            key={reply.id}
+            comment={mapCommentToItem(reply)}
+            isReply
+            onReplyPress={undefined}
+            onViewReplies={undefined}
+            onToggleLike={(isCurrentlyLiked) =>
+              onToggleLikeComment({
+                commentId: reply.id,
+                isCurrentlyLiked,
+              })
+            }
           />
-        }
-      />
-    </UIBottomSheet>
-  );
-},
+        ))}
+      </Animated.View>
+    );
+  },
 );
 
 const CommentsHeader = memo(() => {
@@ -134,18 +296,25 @@ const CommentsHeader = memo(() => {
 
 type CommentsFooterProps = {
   bottomSheetProps: BottomSheetFooterProps;
-  profileImageUrl: string;
   onHeightChange: (height: number) => void;
   onSendComment: (text: string) => void;
+  onSendReply: (variables: { text: string; parentId: number }) => void;
+  replyingTo: CommentResponse | null;
+  onCancelReply: () => void;
 };
 
 const CommentsFooter = memo(
   ({
     bottomSheetProps,
-    profileImageUrl,
     onHeightChange,
     onSendComment,
+    onSendReply,
+    replyingTo,
+    onCancelReply,
   }: CommentsFooterProps) => {
+    const { profile } = useProfile();
+    const currentUserAvatarUrl = profile?.avatarUrl;
+
     const [commentText, setCommentText] = useState("");
 
     const [isInputActive, setIsInputActive] = useState(false);
@@ -162,10 +331,15 @@ const CommentsFooter = memo(
 
     const handleSendComment = useCallback(() => {
       if (commentText.trim().length > 0) {
-        onSendComment(commentText.trim());
+        if (replyingTo) {
+          onSendReply({ text: commentText.trim(), parentId: replyingTo.id });
+          onCancelReply();
+        } else {
+          onSendComment(commentText.trim());
+        }
       }
       setCommentText("");
-    }, [commentText, onSendComment]);
+    }, [commentText, replyingTo, onSendComment, onSendReply, onCancelReply]);
 
     return (
       <BottomSheetFooter {...bottomSheetProps}>
@@ -175,12 +349,32 @@ const CommentsFooter = memo(
         >
           <UIDivider height={styles.footerDivider.height} />
 
+          {replyingTo && (
+            <View style={styles.replyingToContainer}>
+              <UIText
+                size="xs"
+                style={styles.replyingToText}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                Replying to @User says "{replyingTo.text}"
+              </UIText>
+              <UIButton onPress={onCancelReply} style={styles.cancelButton}>
+                <Ionicons
+                  name="close"
+                  size={16}
+                  color={styles.closeIcon.color}
+                />
+              </UIButton>
+            </View>
+          )}
+
           <View style={styles.footerInputBar(isInputActive)}>
-            <Icon profileImageUrl={profileImageUrl} size="comment" />
+            <Icon profileImageUrl={currentUserAvatarUrl} size="comment" />
 
             <BottomSheetTextInput
               style={styles.footerInput}
-              placeholder="Add a comment..."
+              placeholder={replyingTo ? "Add a reply..." : "Add a comment..."}
               placeholderTextColor={styles.inputPlaceholder.color}
               onChangeText={setCommentText}
               value={commentText}
@@ -219,7 +413,9 @@ const styles = StyleSheet.create((theme, rt) => ({
   bottomSheet: {
     top: rt.insets.top,
   },
-
+  repliesContainer: {
+    gap: theme.utils.s(16),
+  },
   listContent: {
     paddingHorizontal: theme.utils.s(10),
   },
@@ -300,6 +496,22 @@ const styles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.white,
   },
   sendButtonIconActive: {
+    color: theme.colors.muted,
+  },
+  replyingToContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: theme.utils.s(10),
+    paddingVertical: theme.utils.s(4),
+  },
+  replyingToText: {
+    color: theme.colors.muted,
+  },
+  cancelButton: {
+    padding: theme.utils.s(4),
+  },
+  closeIcon: {
     color: theme.colors.muted,
   },
 }));

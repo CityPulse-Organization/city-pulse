@@ -11,17 +11,25 @@ export type PostResponse = {
   createdAt: string;
   likeCount: number;
   commentCount: number;
-  isLikedByCurrentUser: boolean;
+  isLikedByMe: boolean;
+  isSavedByMe: boolean;
 };
 
 export type CommentResponse = {
   id: number;
   postId: number;
+  parentId: number | null;
   userId: string;
   text: string;
   createdAt: string;
   likeCount: number;
-  isLikedByCurrentUser: boolean;
+  replyCount: number;
+  isLikedByMe: boolean;
+};
+
+export type CommentRequest = {
+  text: string;
+  parentId?: number;
 };
 
 export type PostItem = {
@@ -42,6 +50,9 @@ export type CommentItem = {
   commentText: string;
   timeAgo: string;
   profileImageUrl?: string;
+  replyCount: number;
+  likeCount: number;
+  isLikedByMe: boolean;
 };
 
 export const POST_CONFIG = {

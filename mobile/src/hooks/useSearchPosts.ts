@@ -6,7 +6,10 @@ export const useSearchPosts = (caption?: string, size: number = 20) => {
     queryKey: ["posts", "search", caption],
     queryFn: ({ pageParam = 0 }) => searchPosts(caption, pageParam, size),
     getNextPageParam: (lastPage) => {
-      if (lastPage.page && lastPage.page.number < lastPage.page.totalPages - 1) {
+      if (
+        lastPage.page &&
+        lastPage.page.number < lastPage.page.totalPages - 1
+      ) {
         return lastPage.page.number + 1;
       }
       return undefined;

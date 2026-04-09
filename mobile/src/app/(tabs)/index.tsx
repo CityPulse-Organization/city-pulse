@@ -102,19 +102,14 @@ const MapSection = memo(function MapSectionComponent() {
 
   const cameraCoordinates = location?.coords.latitude
     ? {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    }
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      }
     : POINTS[0]?.coordinates;
 
-  const mapboxApiKey = process.env.EXPO_PUBLIC_MAPBOX_PUBLIC_KEY || "";
-  if (!mapboxApiKey) {
-    console.error("EXPO_PUBLIC_MAPBOX_PUBLIC_KEY is not defined in .env file");
-  }
   return (
     <View style={styles.itemContainer}>
       <MapboxMap
-        apiKey={mapboxApiKey}
         markers={MARKERS3D}
         districts={LUBLIN_DISTRICTS}
         camera={{

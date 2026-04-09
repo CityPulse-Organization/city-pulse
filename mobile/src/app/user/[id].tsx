@@ -7,11 +7,11 @@ export default function UserScreen() {
   const router = useRouter();
   const { session } = useSession();
 
-  const { id, username } = useLocalSearchParams<{ id: string, username?: string }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
 
   if (id === session?.user?.id) {
     router.replace("/profile");
   }
 
-  return <UniversalProfileScreen id={id} initialUsername={username} />;
+  return <UniversalProfileScreen id={id} />;
 }

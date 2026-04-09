@@ -1,8 +1,4 @@
-import {
-  IconInfo,
-  ThemedBackground,
-  ImagesCarousel,
-} from "@/src/components";
+import { IconInfo, ThemedBackground, ImagesCarousel } from "@/src/components";
 import { BlurButton } from "@/src/components/BlurButton";
 import { MenuOptionBottomSheet } from "@/src/components/post-details/MenuOptionBottomSheet";
 import { GradientCard } from "@/src/components/referrals";
@@ -24,11 +20,15 @@ export default function PostDetailScreen() {
     accidentTime,
     location,
     likeCount,
-    isLikedByCurrentUser,
+    isLikedByMe,
+    isSavedByMe,
     commentCount,
     toggleLike,
+    toggleSave,
     comments,
     sendComment,
+    sendReply,
+    toggleCommentLike,
     commentsBottomSheetRef,
     openPresentCommentsSheet,
     handleBack,
@@ -55,9 +55,11 @@ export default function PostDetailScreen() {
             username={username}
             accidentTime={accidentTime}
             likeCount={likeCount}
-            isLikedByCurrentUser={isLikedByCurrentUser}
+            isLikedByCurrentUser={isLikedByMe}
+            isSavedByCurrentUser={isSavedByMe}
             commentCount={commentCount}
             toggleLike={toggleLike}
+            toggleSave={toggleSave}
             openPresentCommentsSheet={openPresentCommentsSheet}
           />
 
@@ -85,10 +87,11 @@ export default function PostDetailScreen() {
       </View>
 
       <CommentsBottomSheet
-        profileImageUrl={profileImageUrl}
         commentsBottomSheetRef={commentsBottomSheetRef}
         comments={comments}
         onSendComment={sendComment}
+        onSendReply={sendReply}
+        onToggleLikeComment={toggleCommentLike}
         fetchNextComments={fetchNextComments}
         hasNextCommentsPage={hasNextCommentsPage}
         isFetchingNextComments={isFetchingNextComments}
@@ -108,8 +111,10 @@ type UserInfoRowProps = {
   accidentTime: string;
   likeCount: number;
   isLikedByCurrentUser: boolean;
+  isSavedByCurrentUser: boolean;
   commentCount: number;
   toggleLike: (isCurrentlyLiked: boolean) => void;
+  toggleSave: (isCurrentlySaved: boolean) => void;
   openPresentCommentsSheet: () => void;
 };
 
@@ -120,18 +125,19 @@ const UserInfoRow = memo(
     accidentTime,
     likeCount,
     isLikedByCurrentUser,
+    isSavedByCurrentUser,
     commentCount,
     toggleLike,
+    toggleSave,
     openPresentCommentsSheet,
   }: UserInfoRowProps) => {
     const toggleLikeStatus = useCallback(() => {
       toggleLike(isLikedByCurrentUser);
     }, [isLikedByCurrentUser, toggleLike]);
 
-    const [isSavedByCurrentUser, setIsSavedByCurrentUser] = useState(false);
     const toggleSaveStatus = useCallback(() => {
-      setIsSavedByCurrentUser((prev) => !prev);
-    }, []);
+      toggleSave(isSavedByCurrentUser);
+    }, [isSavedByCurrentUser, toggleSave]);
 
     return (
       <View style={styles.userInfoRow}>
@@ -148,7 +154,7 @@ const UserInfoRow = memo(
               isActive={isLikedByCurrentUser}
               iconName={isLikedByCurrentUser ? "heart" : "heart-outline"}
               iconColor={
-                isLikedByCurrentUser // TODO: Must get from API
+                isLikedByCurrentUser
                   ? styles.likeIconActive.color
                   : styles.likeIcon.color
               }
@@ -199,36 +205,41 @@ const UserInfoRow = memo(
   },
 );
 
-const GradientIconBox = memo(({ isActive, iconName, iconColor }: {
-  isActive: boolean;
-  iconName: keyof typeof Ionicons.glyphMap;
-  iconColor: string;
-}) => {
-  return (
-    <LinearGradient
-      colors={
-        isActive
-          ? [
-            styles.activeGradientActionIconStop0.backgroundColor,
-            styles.activeGradientActionIconStop1.backgroundColor,
-          ]
-          : [
-            styles.inactiveGradientActionIconStop0.backgroundColor,
-            styles.inactiveGradientActionIconStop1.backgroundColor,
-          ]
-      }
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={styles.actionIconGrad}
-    >
-      <Ionicons
-        name={iconName}
-        size={styles.actionIcon.height}
-        color={iconColor}
-      />
-    </LinearGradient>
-  );
-},
+const GradientIconBox = memo(
+  ({
+    isActive,
+    iconName,
+    iconColor,
+  }: {
+    isActive: boolean;
+    iconName: keyof typeof Ionicons.glyphMap;
+    iconColor: string;
+  }) => {
+    return (
+      <LinearGradient
+        colors={
+          isActive
+            ? [
+                styles.activeGradientActionIconStop0.backgroundColor,
+                styles.activeGradientActionIconStop1.backgroundColor,
+              ]
+            : [
+                styles.inactiveGradientActionIconStop0.backgroundColor,
+                styles.inactiveGradientActionIconStop1.backgroundColor,
+              ]
+        }
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.actionIconGrad}
+      >
+        <Ionicons
+          name={iconName}
+          size={styles.actionIcon.height}
+          color={iconColor}
+        />
+      </LinearGradient>
+    );
+  },
 );
 
 const styles = StyleSheet.create((theme, rt) => ({
