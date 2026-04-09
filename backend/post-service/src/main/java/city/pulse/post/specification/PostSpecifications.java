@@ -8,15 +8,20 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.UUID;
 
 @Component
 public class PostSpecifications {
-    public Specification<Post> getSpecification(PostFilterRequest filter) {
+    public Specification<Post> getSpecification(PostFilterRequest filter, UUID currentUserId) {
         return (root, criteriaQuery, criteriaBuilder) -> {
             var predicates = new ArrayList<Predicate>();
 
+            if (currentUserId != null && (filter == null || filter.authorId() == null)) {
+                predicates.add(criteriaBuilder.notEqual(root.get("userId"), currentUserId));
+            }
+
             if (filter == null) {
-                return criteriaBuilder.conjunction();
+                return predicates.isEmpty() ? criteriaBuilder.conjunction() : criteriaBuilder.and(predicates.toArray(new Predicate[0]));
             }
 
             if (filter.caption() != null && !filter.caption().isBlank()) {

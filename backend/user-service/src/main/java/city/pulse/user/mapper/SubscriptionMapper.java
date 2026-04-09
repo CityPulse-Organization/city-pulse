@@ -7,11 +7,9 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface SubscriptionMapper {
-    @Mapping(source = "subscriber.id", target = "id")
-    @Mapping(source = "subscriber.username", target = "username")
+    @Mapping(source = "subscriber", target = ".")
     UserProfileResponse toFollowerResponse(Subscription subscription);
 
-    @Mapping(source = "target.id", target = "id")
-    @Mapping(source = "target.username", target = "username")
+    @Mapping(source = "target", target = ".")
     UserProfileResponse toFollowingResponse(Subscription subscription);
 }

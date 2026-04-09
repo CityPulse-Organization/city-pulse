@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
@@ -48,6 +50,18 @@ public class UserProfileServiceImpl implements UserProfileService {
             log.error("Race condition detected. Profile creation failed for user ID: {}", userId, e);
             throw new UsernameAlreadyExistsException("Username already exists (race condition detected).");
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserProfileResponse> getUserProfilesByIds(Set<UUID> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return List.of();
+        }
+
+        return service.findAllById(userIds).stream()
+                .map(mapper::toResponse)
+                .toList();
     }
 
     @Override
