@@ -26,7 +26,7 @@ public class FeedServiceImpl implements FeedService {
     public PagedModel<FeedPostResponse> getFeed(int page, int size, UUID userId) {
         var postsPage = postClient.getPosts(page, size, null, userId);
 
-        if (postsPage.getContent().isEmpty()) {
+        if (postsPage.content().isEmpty()) {
             return new PagedModel<>(new PageImpl<>(
                     List.of(),
                     PageRequest.of(page, size),
@@ -34,7 +34,7 @@ public class FeedServiceImpl implements FeedService {
             ));
         }
 
-        var userIds = postsPage.getContent().stream()
+        var userIds = postsPage.content().stream()
                 .map(PostResponse::userId)
                 .collect(Collectors.toSet());
 
@@ -45,7 +45,7 @@ public class FeedServiceImpl implements FeedService {
                         profile -> profile
                 ));
 
-        var enrichedPosts = postsPage.getContent().stream()
+        var enrichedPosts = postsPage.content().stream()
                 .map(post -> {
                     var user = userProfilesMap.get(post.userId());
                     return FeedPostResponse.from(post, user);
@@ -55,7 +55,7 @@ public class FeedServiceImpl implements FeedService {
         return new PagedModel<>(new PageImpl<>(
                 enrichedPosts,
                 PageRequest.of(page, size),
-                postsPage.getMetadata().totalElements()
+                postsPage.page().totalElements()
         ));
     }
 
@@ -64,14 +64,14 @@ public class FeedServiceImpl implements FeedService {
         var authorProfile = userClient.getUserProfileById(authorId);
         var postsPage = postClient.getPosts(page, size, authorId, currentUserId);
 
-        var enrichedPosts = postsPage.getContent().stream()
+        var enrichedPosts = postsPage.content().stream()
                 .map(post -> FeedPostResponse.from(post, authorProfile))
                 .toList();
 
         var pagedPosts = new PagedModel<>(new PageImpl<>(
                 enrichedPosts,
                 PageRequest.of(page, size),
-                postsPage.getMetadata().totalElements()
+                postsPage.page().totalElements()
         ));
 
         return UserProfileScreenResponse.from(authorProfile, pagedPosts);
