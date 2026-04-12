@@ -28,6 +28,8 @@ public class PostController {
         var created = service.createPost(
                 dto.imageUrl(),
                 dto.caption(),
+                dto.latitude(),
+                dto.longitude(),
                 userInfo.id());
 
         var location = ServletUriComponentsBuilder

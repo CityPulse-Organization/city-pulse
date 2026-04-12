@@ -48,11 +48,12 @@ public class Post {
         this.caption = caption;
     }
 
-    public static Post create(UUID userId, String imageUrl, String caption) {
+    public static Post create(UUID userId, String imageUrl, String caption, Point location) {
         return Post.builder()
                 .userId(userId)
                 .imageUrl(imageUrl)
                 .caption(caption)
+                .location(location)
                 .build();
     }
 }

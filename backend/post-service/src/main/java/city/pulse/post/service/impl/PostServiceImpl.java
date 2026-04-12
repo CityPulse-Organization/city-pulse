@@ -12,6 +12,8 @@ import city.pulse.post.service.PostService;
 import city.pulse.post.specification.PostSpecifications;
 import city.pulse.post.validator.OwnershipValidator;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,8 +29,10 @@ public class PostServiceImpl implements PostService {
     private final PostSpecifications specifications;
     private final PostRepository postRepository;
     private final OwnershipValidator validator;
+    private final GeometryFactory factory;
     private final PostEnricher enricher;
     private final PostMapper mapper;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -47,8 +51,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostResponse createPost(String imageUrl, String caption, UUID userId) {
-        var post = postRepository.save(Post.create(userId, imageUrl, caption));
+    public PostResponse createPost(String imageUrl, String caption, Double latitude, Double longitude, UUID userId) {
+        var point = factory.createPoint(new Coordinate(longitude, latitude));;
+        var post = postRepository.save(Post.create(userId, imageUrl, caption, point));
         return mapper.toDto(post, false, false);
     }
 
