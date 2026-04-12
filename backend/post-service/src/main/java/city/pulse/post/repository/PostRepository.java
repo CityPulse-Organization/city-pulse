@@ -16,13 +16,16 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     Page<Post> findSavedPostsByUserId(@Param("userId") UUID userId, Pageable pageable);
 
     @Query(value = """
-        SELECT * FROM posts 
+        SELECT p.id, p.user_id, p.image_url, p.caption, p.location, p.created_at,
+               (SELECT count(*) FROM post_likes l WHERE l.post_id = p.id) as likeCount,
+               (SELECT count(*) FROM comments c WHERE c.post_id = p.id) as commentCount
+        FROM posts p
         WHERE ST_DWithin(
-            location::geography, 
+            p.location::geography, 
             ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography, 
             :radiusInMeters
         )
-        ORDER BY ST_Distance(location::geography, ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography)
+        ORDER BY ST_Distance(p.location::geography, ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography)
     """, nativeQuery = true)
     List<Post> findNearby(
             @Param("lat") double lat,
@@ -31,8 +34,11 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     );
 
     @Query(value = """
-        SELECT * FROM posts 
-        WHERE location && ST_MakeEnvelope(:minLon, :minLat, :maxLon, :maxLat, 4326)
+        SELECT p.id, p.user_id, p.image_url, p.caption, p.location, p.created_at,
+               (SELECT count(*) FROM post_likes l WHERE l.post_id = p.id) as likeCount,
+               (SELECT count(*) FROM comments c WHERE c.post_id = p.id) as commentCount
+        FROM posts p
+        WHERE p.location && ST_MakeEnvelope(:minLon, :minLat, :maxLon, :maxLat, 4326)
     """, nativeQuery = true)
     List<Post> findWithinBoundingBox(
             @Param("minLon") double minLon,
