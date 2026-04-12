@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
+import org.locationtech.jts.geom.Point;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -27,6 +28,9 @@ public class Post {
 
     @Column(name = "caption", columnDefinition = "TEXT", length = 256)
     private String caption;
+
+    @Column(name = "location", columnDefinition = "geometry(Point,4326)")
+    private Point location;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
