@@ -1,11 +1,13 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
+const FULL_API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-if (!API_URL) {
+if (!FULL_API_URL) {
   throw new Error("EXPO_PUBLIC_API_URL is missing in .env file");
 }
+const CORE_BASE_URL = `${FULL_API_URL}/api/v1`;
+const BFF_BASE_URL = `${FULL_API_URL}/mobile/api/v1`;
 
 const ACCESS_TOKEN_KEY = "access_token";
 const REFRESH_TOKEN_KEY = "refresh_token";
@@ -37,109 +39,112 @@ export const tokenStorage = {
   },
 };
 
-export const axiosInstance = axios.create({
-  baseURL: API_URL,
-  timeout: 5000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-let isRefreshing = false;
-let failedQueue: Array<{
-  resolve: (token: string | null) => void;
-  reject: (err: any) => void;
-}> = [];
-
-const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
+const createInstance = (baseURL: string) => {
+  const instance = axios.create({
+    baseURL,
+    timeout: 5000,
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
-  failedQueue = [];
-};
 
-axiosInstance.interceptors.request.use(
-  async (config) => {
-    const token = await tokenStorage.getAccessToken();
-    if (token) {
-      if (config.headers) {
+  let isRefreshing = false;
+  let failedQueue: Array<{
+    resolve: (token: string | null) => void;
+    reject: (err: any) => void;
+  }> = [];
+
+  const processQueue = (error: any, token: string | null = null) => {
+    failedQueue.forEach((prom) => {
+      if (error) {
+        prom.reject(error);
+      } else {
+        prom.resolve(token);
+      }
+    });
+    failedQueue = [];
+  };
+
+  instance.interceptors.request.use(
+    async (config) => {
+      const token = await tokenStorage.getAccessToken();
+      if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
-    }
-    return config;
-  },
-  (error) => Promise.reject(error),
-);
+      return config;
+    },
+    (error) => Promise.reject(error),
+  );
 
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+  instance.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-            return axiosInstance(originalRequest);
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
           })
-          .catch((err) => Promise.reject(err));
+            .then((token) => {
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+              return instance(originalRequest);
+            })
+            .catch((err) => Promise.reject(err));
+        }
+
+        originalRequest._retry = true;
+        isRefreshing = true;
+
+        const refreshToken = await tokenStorage.getRefreshToken();
+
+        if (!refreshToken) {
+          isRefreshing = false;
+          return Promise.reject(error);
+        }
+
+        try {
+          const response = await axios.post(`${CORE_BASE_URL}/auth/refresh`, {
+            refreshToken,
+          });
+
+          const { accessToken, refreshToken: newRefreshToken } = response.data;
+          await tokenStorage.setTokens(accessToken, newRefreshToken);
+          processQueue(null, accessToken);
+
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+          return instance(originalRequest);
+        } catch (refreshError) {
+          processQueue(refreshError, null);
+          await tokenStorage.clearTokens();
+          return Promise.reject(refreshError);
+        } finally {
+          isRefreshing = false;
+        }
       }
 
-      originalRequest._retry = true;
-      isRefreshing = true;
+      const isRegistrationRequired =
+        error.response?.status === 202 &&
+        (error.response?.data?.status === "REGISTRATION_REQUIRED" ||
+          (typeof error.response?.data === "string" &&
+            error.response.data.includes("REGISTRATION_REQUIRED")));
 
-      const refreshToken = await tokenStorage.getRefreshToken();
-
-      if (!refreshToken) {
-        isRefreshing = false;
-        return Promise.reject(error);
-      }
-
-      try {
-        const response = await axios.post(`${API_URL}/auth/refresh`, {
-          refreshToken,
+      if (!isRegistrationRequired) {
+        console.error("[Axios Error Details]", {
+          url: error.config?.url,
+          method: error.config?.method,
+          status: error.response?.status,
+          data: JSON.stringify(error.response?.data, null, 2),
+          params: error.config?.params,
+          message: error.message,
         });
-
-        const { accessToken, refreshToken: newRefreshToken } = response.data;
-
-        await tokenStorage.setTokens(accessToken, newRefreshToken);
-
-        processQueue(null, accessToken);
-
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return axiosInstance(originalRequest);
-      } catch (refreshError) {
-        processQueue(refreshError, null);
-        await tokenStorage.clearTokens();
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
       }
-    }
+      return Promise.reject(error);
+    },
+  );
 
-    const isRegistrationRequired =
-      error.response?.status === 202 &&
-      (error.response?.data?.status === "REGISTRATION_REQUIRED" ||
-        (typeof error.response?.data === "string" &&
-          error.response.data.includes("REGISTRATION_REQUIRED")));
+  return instance;
+};
 
-    if (!isRegistrationRequired) {
-      console.error("[Axios Error Details]", {
-        url: error.config?.url,
-        method: error.config?.method,
-        status: error.response?.status,
-        data: JSON.stringify(error.response?.data, null, 2),
-        params: error.config?.params,
-        message: error.message,
-      });
-    }
-    return Promise.reject(error);
-  },
-);
+export const axiosInstance = createInstance(CORE_BASE_URL);
+export const bffAxios = createInstance(BFF_BASE_URL);

@@ -167,8 +167,8 @@ export default function DiscoverScreen() {
 
           return {
             id: String(p.id),
-            username: p.username ?? "User",
-            profileImageUrl: p.avatarUrl ?? "",
+            username: p.authorUsername ?? "User",
+            profileImageUrl: p.authorAvatarUrl ?? "",
             accidentTime: timeLabel,
             imagesUrl: [p.imageUrl],
             description: p.caption ?? "",
@@ -191,8 +191,8 @@ export default function DiscoverScreen() {
 
           return {
             id: String(p.id),
-            username: p.username ?? "User",
-            profileImageUrl: p.avatarUrl ?? "",
+            username: p.authorUsername ?? "User",
+            profileImageUrl: p.authorAvatarUrl ?? "",
             accidentTime: dateLabel,
             imagesUrl: [p.imageUrl],
             description: p.caption ?? "",

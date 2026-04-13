@@ -1,9 +1,10 @@
-import { axios } from "../config";
+import { axios, bffAxios } from "../config";
 import type {
   PagedModelResponse,
   PostResponse,
   CommentResponse,
   CommentRequest,
+  BffPostResponse,
 } from "../types";
 
 export const getPostsByUserId = async (
@@ -125,14 +126,17 @@ export const searchPosts = async (
   caption?: string,
   page: number = 0,
   size: number = 20,
-): Promise<PagedModelResponse<PostResponse>> => {
-  const { data } = await axios.get<PagedModelResponse<PostResponse>>("/posts", {
-    params: {
-      caption: caption?.trim() || undefined,
-      page,
-      size,
+): Promise<PagedModelResponse<BffPostResponse>> => {
+  const { data } = await bffAxios.get<PagedModelResponse<BffPostResponse>>(
+    "/feed",
+    {
+      params: {
+        caption: caption?.trim() || undefined,
+        page,
+        size,
+      },
     },
-  });
+  );
   return data;
 };
 
@@ -140,13 +144,16 @@ export const getPulsePosts = async (
   search?: string,
   page: number = 0,
   size: number = 20,
-): Promise<PagedModelResponse<PostResponse>> => {
-  const { data } = await axios.get<PagedModelResponse<PostResponse>>("/posts", {
-    params: {
-      caption: search?.trim() || undefined,
-      page,
-      size,
+): Promise<PagedModelResponse<BffPostResponse>> => {
+  const { data } = await bffAxios.get<PagedModelResponse<BffPostResponse>>(
+    "/feed",
+    {
+      params: {
+        caption: search?.trim() || undefined,
+        page,
+        size,
+      },
     },
-  });
+  );
   return data;
 };

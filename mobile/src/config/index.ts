@@ -1,1 +1,1 @@
-export { tokenStorage, axiosInstance as axios } from "./axios";
+export { tokenStorage, axiosInstance as axios, bffAxios } from "./axios";

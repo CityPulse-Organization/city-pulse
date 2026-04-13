@@ -33,3 +33,26 @@ export type DiscoverUser = {
   profileImageUrl: string;
   job: string;
 };
+
+export type BffPostResponse = {
+  id: number;
+  imageUrl: string;
+  caption: string;
+  createdAt: string;
+  likeCount: number;
+  commentCount: number;
+  isLikedByMe: boolean;
+  isSavedByMe: boolean;
+  authorId: string;
+  authorUsername: string;
+  authorAvatarUrl: string | null;
+};
+
+export type BffProfileResponse = {
+  id: string;
+  username: string;
+  bio?: string;
+  jobTitle?: string;
+  avatarUrl?: string | null;
+  posts: PagedModelResponse<BffPostResponse>;
+};

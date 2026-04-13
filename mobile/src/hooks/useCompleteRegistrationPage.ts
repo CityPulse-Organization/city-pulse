@@ -14,7 +14,7 @@ const schema = z.object({
 export type CompleteRegistrationFormData = z.infer<typeof schema>;
 
 export const useCompleteRegistrationPage = () => {
-  const { token } = useLocalSearchParams<{ token: string }>();
+  const { token, idToken } = useLocalSearchParams<{ token: string; idToken: string }>();
   const { mutateAsync: completeRegistration, isPending } =
     useCompleteGoogleRegistration();
 
@@ -38,7 +38,7 @@ export const useCompleteRegistrationPage = () => {
       }
 
       try {
-        await completeRegistration({ token, username: data.username });
+        await completeRegistration({ token, username: data.username, idToken: idToken || token });
       } catch (error: any) {
         console.error("Complete registration failed:", error);
         let message = "Failed to complete registration";
