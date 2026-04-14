@@ -8,6 +8,8 @@ import java.util.UUID;
 @Builder
 public record FeedCommentResponse(
         Long id,
+        Long postId,
+        Long parentId,
         String text,
         OffsetDateTime createdAt,
         int likeCount,
@@ -24,6 +26,8 @@ public record FeedCommentResponse(
 
         return FeedCommentResponse.builder()
                 .id(comment.id())
+                .postId(comment.postId())
+                .parentId(comment.parentId())
                 .text(comment.text())
                 .createdAt(comment.createdAt())
                 .likeCount(comment.likeCount())
