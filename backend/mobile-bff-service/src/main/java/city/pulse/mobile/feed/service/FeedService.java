@@ -1,7 +1,7 @@
 package city.pulse.mobile.feed.service;
 
-import city.pulse.mobile.feed.dto.FeedPostResponse;
-import city.pulse.mobile.feed.dto.UserProfileScreenResponse;
+import city.pulse.mobile.feed.dto.post.FeedPostResponse;
+import city.pulse.mobile.feed.dto.user.UserProfileScreenResponse;
 import org.springframework.data.web.PagedModel;
 
 import java.util.UUID;

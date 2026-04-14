@@ -1,6 +1,6 @@
 package city.pulse.mobile.feed.client;
 
-import city.pulse.mobile.feed.dto.UserProfileResponse;
+import city.pulse.mobile.feed.dto.user.UserProfileResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

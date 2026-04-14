@@ -1,4 +1,4 @@
-package city.pulse.mobile.feed.dto;
+package city.pulse.mobile.feed.dto.user;
 
 import java.util.UUID;
 
@@ -7,5 +7,5 @@ public record UserProfileResponse(
         String username,
         String bio,
         String jobTitle,
-        String avatarUrl) {
-}
+        String avatarUrl
+) {}
