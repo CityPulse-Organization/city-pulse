@@ -1,4 +1,4 @@
-package city.pulse.mobile.feed.dto;
+package city.pulse.mobile.feed.dto.post;
 
 import lombok.Builder;
 

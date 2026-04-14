@@ -1,5 +1,6 @@
-package city.pulse.mobile.feed.dto;
+package city.pulse.mobile.feed.dto.post;
 
+import city.pulse.mobile.feed.dto.user.UserProfileResponse;
 import lombok.Builder;
 
 import java.time.OffsetDateTime;

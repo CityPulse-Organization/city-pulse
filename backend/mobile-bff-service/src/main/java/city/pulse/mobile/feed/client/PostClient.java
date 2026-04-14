@@ -1,7 +1,7 @@
 package city.pulse.mobile.feed.client;
 
-import city.pulse.mobile.feed.dto.PostResponse;
-import city.pulse.mobile.feed.dto.RestPage;
+import city.pulse.mobile.feed.dto.post.PostResponse;
+import city.pulse.mobile.feed.dto.common.RestPage;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
