@@ -1,5 +1,9 @@
 import { axios, bffAxios } from "../config";
-import type { PageResponse, BffProfileResponse, UserSearchResponse } from "../types";
+import {
+  PageResponse,
+  UserProfileResponse,
+  UserSearchResponse,
+} from "../types";
 
 export const searchUsers = async (
   username: string,
@@ -48,24 +52,18 @@ export const getFollowing = async (
   return data;
 };
 
-export const getMyProfile = async (): Promise<UserSearchResponse> => {
-  const { data } = await axios.get<UserSearchResponse>("/users/me");
+export const getMyProfile = async (): Promise<UserProfileResponse> => {
+  const { data } = await axios.get<UserProfileResponse>("/users/me");
   return data;
 };
 
 export const getUserProfile = async (
   userId: string,
-): Promise<UserSearchResponse> => {
-  const { data } = await bffAxios.get<BffProfileResponse>(
+): Promise<UserProfileResponse> => {
+  const { data } = await bffAxios.get<UserProfileResponse>(
     `/users/${userId}/profile`,
   );
-  return {
-    id: data.id,
-    username: data.username,
-    bio: data.bio,
-    jobTitle: data.jobTitle,
-    avatarUrl: data.avatarUrl ?? undefined,
-  };
+  return data;
 };
 
 export const updateCurrentUser = async (

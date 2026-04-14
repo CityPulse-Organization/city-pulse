@@ -8,7 +8,12 @@ import {
 } from "@/src/api";
 import { useSession } from "@/src/hoc";
 import { useCallback, useMemo } from "react";
-import type { DiscoverUser, PostItem, PostResponse } from "@/src/types";
+import {
+  DiscoverUser,
+  PostItem,
+  PostResponse,
+  UserProfileResponse,
+} from "@/src/types";
 
 import { getUserProfile } from "@/src/api/user";
 import { formatPrettyDate } from "@/src/utils";
@@ -23,7 +28,7 @@ export const useProfile = (userId?: string, initialUsername?: string) => {
     isLoading: isProfileLoading,
     refetch: refetchProfile,
     isRefetching: isRefetchingProfile,
-  } = useQuery({
+  } = useQuery<UserProfileResponse>({
     queryKey: ["profile", targetUserId],
     queryFn: () => (userId ? getUserProfile(userId) : getMyProfile()),
     enabled: !!targetUserId,

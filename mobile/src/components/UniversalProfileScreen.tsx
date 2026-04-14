@@ -154,7 +154,7 @@ export function UniversalProfileScreen({ id }: UniversalProfileScreenProps) {
               username={username}
               bio={profile?.bio}
               jobTitle={profile?.jobTitle}
-              avatarUrl={profile?.avatarUrl}
+              avatarUrl={profile?.avatarUrl!}
               isSelf={isSelf}
             />
           )}

@@ -19,12 +19,14 @@ export type CommentResponse = {
   id: number;
   postId: number;
   parentId: number | null;
-  userId: string;
   text: string;
   createdAt: string;
   likeCount: number;
   replyCount: number;
   isLikedByMe: boolean;
+  authorId: string;
+  authorUsername: string;
+  authorAvatarUrl: string | null;
 };
 
 export type CommentRequest = {

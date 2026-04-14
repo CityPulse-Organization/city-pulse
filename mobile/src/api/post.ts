@@ -80,7 +80,7 @@ export const getComments = async (
   page: number = 0,
   size: number = 20,
 ): Promise<PagedModelResponse<CommentResponse>> => {
-  const { data } = await axios.get<PagedModelResponse<CommentResponse>>(
+  const { data } = await bffAxios.get<PagedModelResponse<CommentResponse>>(
     `/posts/${postId}/comments`,
     { params: { page, size } },
   );
@@ -92,7 +92,7 @@ export const getReplies = async (
   page: number = 0,
   size: number = 20,
 ): Promise<PagedModelResponse<CommentResponse>> => {
-  const { data } = await axios.get<PagedModelResponse<CommentResponse>>(
+  const { data } = await bffAxios.get<PagedModelResponse<CommentResponse>>(
     `/comments/${commentId}/replies`,
     { params: { page, size } },
   );

@@ -98,10 +98,10 @@ export const CommentsBottomSheet = memo(
       () =>
         comments.map((comment) => ({
           id: String(comment.id),
-          username: "User",
+          username: comment.authorUsername ?? "Loading...",
           commentText: comment.text,
           timeAgo: formatPrettyDate(comment?.createdAt),
-          profileImageUrl: undefined,
+          profileImageUrl: comment.authorAvatarUrl ?? undefined,
           replyCount: comment.replyCount,
           likeCount: comment.likeCount,
           isLikedByMe: comment.isLikedByMe,
@@ -123,10 +123,10 @@ export const CommentsBottomSheet = memo(
     const mapCommentToItem = useCallback(
       (comment: CommentResponse): CommentItem => ({
         id: String(comment.id),
-        username: "User", // TODO: get from user service
+        username: comment.authorUsername ?? "Loading...",
         commentText: comment.text,
         timeAgo: formatPrettyDate(comment.createdAt),
-        profileImageUrl: undefined,
+        profileImageUrl: comment.authorAvatarUrl ?? undefined,
         replyCount: comment.replyCount,
         likeCount: comment.likeCount,
         isLikedByMe: comment.isLikedByMe,
@@ -229,10 +229,10 @@ const CommentReplies = memo(
     const mapCommentToItem = useCallback(
       (comment: CommentResponse): CommentItem => ({
         id: String(comment.id),
-        username: "User", // TODO: get from user service
+        username: comment.authorUsername ?? "Loading...",
         commentText: comment.text,
         timeAgo: formatPrettyDate(comment.createdAt),
-        profileImageUrl: undefined,
+        profileImageUrl: comment.authorAvatarUrl ?? undefined,
         replyCount: comment.replyCount,
         likeCount: comment.likeCount,
         isLikedByMe: comment.isLikedByMe,
@@ -357,7 +357,8 @@ const CommentsFooter = memo(
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                Replying to @User says "{replyingTo.text}"
+                Replying to @{replyingTo.authorUsername ?? "Loading..."} says "
+                {replyingTo.text}"
               </UIText>
               <UIButton onPress={onCancelReply} style={styles.cancelButton}>
                 <Ionicons
@@ -370,7 +371,7 @@ const CommentsFooter = memo(
           )}
 
           <View style={styles.footerInputBar(isInputActive)}>
-            <Icon profileImageUrl={currentUserAvatarUrl} size="comment" />
+            <Icon profileImageUrl={currentUserAvatarUrl!} size="comment" />
 
             <BottomSheetTextInput
               style={styles.footerInput}

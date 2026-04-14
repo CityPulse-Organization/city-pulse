@@ -48,7 +48,7 @@ export type BffPostResponse = {
   authorAvatarUrl: string | null;
 };
 
-export type BffProfileResponse = {
+export type UserProfileResponse = {
   id: string;
   username: string;
   bio?: string;

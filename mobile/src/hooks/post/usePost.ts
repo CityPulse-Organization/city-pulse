@@ -120,9 +120,10 @@ export const usePost = (postId: number) => {
   const { mutate: sendReply } = useMutation({
     mutationFn: ({ text, parentId }: { text: string; parentId: number }) =>
       createComment(postId, { text, parentId }),
-    onSuccess: () => {
+    onSuccess: ({ parentId }) => {
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
       queryClient.invalidateQueries({ queryKey: ["post", postId] });
+      queryClient.invalidateQueries({ queryKey: ["replies", parentId] });
     },
   });
 
@@ -158,7 +159,8 @@ export const usePost = (postId: number) => {
     }: {
       commentId: number;
       isCurrentlyLiked: boolean;
-    }) => (isCurrentlyLiked ? unlikeComment(commentId) : likeComment(commentId)),
+    }) =>
+      isCurrentlyLiked ? unlikeComment(commentId) : likeComment(commentId),
     onSuccess: (_, { commentId, isCurrentlyLiked }) => {
       const update = (old: any) => {
         if (!old?.pages) return old;

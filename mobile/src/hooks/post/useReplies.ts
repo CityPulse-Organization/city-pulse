@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getReplies } from "@/src/api";
-import type { CommentResponse } from "@/src/types";
+import { CommentResponse } from "@/src/types";
 import { useMemo } from "react";
 
 export const useReplies = (commentId: number) => {
