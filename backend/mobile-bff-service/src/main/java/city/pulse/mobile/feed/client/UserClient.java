@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-@FeignClient(name = "user-service", url = "${app.services.user.url}")
+@FeignClient(name = "user-service", contextId = "users", url = "${app.services.user.url}")
 public interface UserClient {
     @PostMapping("/internal/users/batch")
     List<UserProfileResponse> getUsersBatch(@RequestBody Set<UUID> userIds);

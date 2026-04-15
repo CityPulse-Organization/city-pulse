@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.UUID;
 
-@FeignClient(name = "user-service", url = "${app.services.user.url}")
+@FeignClient(name = "user-service", contextId = "profile", url = "${app.services.user.url}")
 public interface UserClient {
     @GetMapping("/users/{userId}")
     UserProfileResponse getUserProfileById(@PathVariable UUID userId);
