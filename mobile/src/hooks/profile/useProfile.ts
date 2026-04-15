@@ -9,11 +9,13 @@ import {
 import { useSession } from "@/src/hoc";
 import { useCallback, useMemo } from "react";
 import {
+  BffPostResponse,
   DiscoverUser,
   PostItem,
   PostResponse,
   UserProfileResponse,
 } from "@/src/types";
+
 
 import { getUserProfile } from "@/src/api/user";
 import { formatPrettyDate } from "@/src/utils";
@@ -98,10 +100,10 @@ export const useProfile = (userId?: string, initialUsername?: string) => {
   const savedPosts: PostItem[] = useMemo(() => {
     if (!savedPostsData?.pages) return [];
     return savedPostsData.pages.flatMap((page) =>
-      page.content.map((post: PostResponse) => ({
+      page.content.map((post: BffPostResponse) => ({
         id: String(post.id),
-        username: post.username ?? "",
-        profileImageUrl: post.avatarUrl ?? "",
+        username: post.authorUsername,
+        profileImageUrl: post.authorAvatarUrl ?? "",
         accidentTime: formatPrettyDate(post.createdAt),
         imagesUrl: [post.imageUrl],
         description: post.caption ?? undefined,
@@ -111,6 +113,7 @@ export const useProfile = (userId?: string, initialUsername?: string) => {
       })),
     );
   }, [savedPostsData]);
+
 
   const {
     data: followersData,

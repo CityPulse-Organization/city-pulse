@@ -67,13 +67,14 @@ export const unsavePost = async (id: number): Promise<void> => {
 export const getSavedPosts = async (
   page: number = 0,
   size: number = 20,
-): Promise<PagedModelResponse<PostResponse>> => {
-  const { data } = await axios.get<PagedModelResponse<PostResponse>>(
+): Promise<PagedModelResponse<BffPostResponse>> => {
+  const { data } = await bffAxios.get<PagedModelResponse<BffPostResponse>>(
     `/posts/saved`,
     { params: { page, size } },
   );
   return data;
 };
+
 
 export const getComments = async (
   postId: number,
