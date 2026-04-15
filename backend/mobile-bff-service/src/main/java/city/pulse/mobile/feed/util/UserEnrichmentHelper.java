@@ -25,8 +25,8 @@ public class UserEnrichmentHelper {
             int page,
             int size,
             Function<T, UUID> userIdExtractor,
-            BiFunction<T, UserProfileResponse, R> responseMapper) {
-
+            BiFunction<T, UserProfileResponse, R> responseMapper
+    ) {
         if (pageData.content().isEmpty()) {
             return new PagedModel<>(new PageImpl<>(
                     List.of(),
