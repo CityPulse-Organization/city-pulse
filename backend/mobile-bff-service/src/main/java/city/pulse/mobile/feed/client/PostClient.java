@@ -18,4 +18,11 @@ public interface PostClient {
             @RequestParam(value = "authorId", required = false) UUID authorId,
             @RequestHeader("X-User-Id") UUID userId
     );
+
+    @GetMapping("/saved")
+    RestPage<PostResponse> getSaved(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestHeader("X-User-Id") UUID userId
+    );
 }

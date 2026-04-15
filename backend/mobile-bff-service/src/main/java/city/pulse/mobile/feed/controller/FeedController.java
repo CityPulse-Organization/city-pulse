@@ -26,13 +26,12 @@ public class FeedController {
         return service.getFeed(page, size, userInfo.id());
     }
 
-    @GetMapping("/users/{authorId}/profile")
-    public UserProfileScreenResponse getUserProfile(
-            @PathVariable UUID authorId,
+    @GetMapping("/posts/saved")
+    public PagedModel<FeedPostResponse> getSaved(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @CurrentUser UserInfo userInfo
     ) {
-        return service.getUserProfile(authorId, page, size, userInfo.id());
+        return service.getSaved(page, size, userInfo.id());
     }
 }
