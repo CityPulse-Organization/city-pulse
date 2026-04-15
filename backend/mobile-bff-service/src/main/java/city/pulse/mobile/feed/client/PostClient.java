@@ -19,7 +19,7 @@ public interface PostClient {
             @RequestHeader("X-User-Id") UUID userId
     );
 
-    @GetMapping("/saved")
+    @GetMapping("/posts/saved")
     RestPage<PostResponse> getSaved(
             @RequestParam("page") int page,
             @RequestParam("size") int size,
