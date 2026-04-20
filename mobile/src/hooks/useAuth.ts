@@ -50,7 +50,7 @@ export const useGoogleSignIn = () => {
         const temporaryToken = (result.data as any)?.temporaryToken;
         router.push({
           pathname: "/(auth)/complete-registration",
-          params: { token: temporaryToken || idToken },
+          params: { token: temporaryToken || idToken, idToken },
         });
       }
     },
@@ -62,8 +62,8 @@ export const useCompleteGoogleRegistration = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ token, username }: { token: string; username: string }) =>
-      completeGoogleRegistration(token, username),
+    mutationFn: ({ token, username, idToken }: { token: string; username: string; idToken: string }) =>
+      completeGoogleRegistration(token, username, idToken),
     onSuccess: async () => {
       queryClient.clear();
       const user = await tokenStorage.getUser();

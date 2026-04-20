@@ -9,83 +9,120 @@ import type { CommentItem } from "../types";
 type CommentProps = {
   comment: CommentItem;
   isReply?: boolean;
+  onReplyPress?: () => void;
+  onViewReplies?: (commentId: string) => void | Promise<void>;
+  isExpanded?: boolean;
+  onToggleLike?: (isLiked: boolean) => void;
 };
 
-export const Comment = memo(({ comment, isReply = false }: CommentProps) => {
-  const iconSize = isReply ? "small" : "comment";
-  const [isLikedByCurrentUser, setIsLikedByCurrentUser] = useState(false);
-  const [totalLikeCount, setTotalLikeCount] = useState(0);
+export const Comment = memo(
+  ({
+    comment,
+    isReply = false,
+    onReplyPress,
+    onViewReplies,
+    isExpanded = false,
+    onToggleLike,
+  }: CommentProps) => {
+    const iconSize = isReply ? "small" : "comment";
 
-  // TODO: Add like mutation
-  const toggleLikeStatus = useCallback(() => {
-    setIsLikedByCurrentUser((prev) => {
-      const nextStatus = !prev;
-      setTotalLikeCount((currentCount) =>
-        nextStatus ? currentCount + 1 : currentCount - 1,
-      );
-      return nextStatus;
-    });
-  }, []);
+    const [isLiked, setIsLiked] = useState(comment.isLikedByMe);
 
-  const handleReply = useCallback(() => {
-    // TODO: Keyboard opening / user tagging logic
-  }, []);
+    const likeCount =
+      (comment.likeCount || 0) +
+      (isLiked === comment.isLikedByMe ? 0 : isLiked ? 1 : -1);
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.commentHeaderRow}>
-        <View style={styles.iconContainer}>
-          <Icon profileImageUrl={comment.profileImageUrl} size={iconSize} />
-        </View>
+    const toggleLikeStatus = useCallback(() => {
+      setIsLiked((prev) => !prev);
+      onToggleLike?.(isLiked);
+    }, [isLiked, onToggleLike]);
 
-        <View style={styles.commentBody}>
-          <View style={styles.commentMeta}>
-            <View style={styles.usernameWrapper}>
-              <UIText size="sm" weight="bold" style={styles.username} numberOfLines={1} ellipsizeMode="tail">
-                {comment.username}
+    const handleReply = useCallback(() => {
+      onReplyPress?.();
+    }, [onReplyPress]);
+
+    return (
+      <View style={styles.container(isReply)}>
+        <View style={styles.commentHeaderRow}>
+          <View style={styles.iconContainer}>
+            <Icon profileImageUrl={comment.profileImageUrl} size={iconSize} />
+          </View>
+
+          <View style={styles.commentBody}>
+            <View style={styles.commentMeta}>
+              <View style={styles.usernameWrapper}>
+                <UIText
+                  size="sm"
+                  weight="bold"
+                  style={styles.username}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {comment.username}
+                </UIText>
+              </View>
+
+              <UIText size="xs" style={styles.commentTime}>
+                {comment.timeAgo}
               </UIText>
             </View>
 
-            <UIText size="xs" style={styles.commentTime}>
-              {comment.timeAgo}
+            <UIText size="sm" style={styles.commentText}>
+              {comment.commentText}
             </UIText>
+
+            {!isReply && (
+              <UIButton onPress={handleReply} style={styles.actionButton}>
+                <UIText size="sm" weight="normal" style={styles.actionText}>
+                  Reply
+                </UIText>
+              </UIButton>
+            )}
+
+            {comment.replyCount > 0 && !isReply && (
+              <UIButton
+                onPress={() => onViewReplies?.(comment.id)}
+                style={styles.actionButton}
+              >
+                <UIText size="sm" weight="normal" style={styles.actionText}>
+                  View {comment.replyCount}{" "}
+                  {comment.replyCount === 1 ? "reply" : "replies"}
+                </UIText>
+                <Ionicons
+                  name={isExpanded ? "chevron-up" : "chevron-down"}
+                  size={14}
+                  color={styles.actionText.color}
+                />
+              </UIButton>
+            )}
           </View>
 
-          <UIText size="sm" style={styles.commentText}>
-            {comment.commentText}
-          </UIText>
-
-          <UIButton onPress={handleReply} style={styles.actionButton}>
-            <UIText size="sm" weight="normal" style={styles.actionText}>
-              Reply
+          <UIButton onPress={toggleLikeStatus} style={styles.likeContainer}>
+            <Ionicons
+              name={isLiked ? "heart" : "heart-outline"}
+              size={styles.likeSize.height}
+              color={
+                isLiked
+                  ? styles.likeActive.color
+                  : styles.likeInactive.color
+              }
+            />
+            <UIText size="xs" weight="normal" style={styles.likeCountText}>
+              {likeCount}
             </UIText>
           </UIButton>
         </View>
-
-        <UIButton onPress={toggleLikeStatus} style={styles.likeContainer}>
-          <Ionicons
-            name={isLikedByCurrentUser ? "heart" : "heart-outline"}
-            size={styles.likeSize.height}
-            color={
-              isLikedByCurrentUser
-                ? styles.likeActive.color
-                : styles.likeInactive.color
-            }
-          />
-          <UIText size="xs" weight="normal" style={styles.likeCountText}>
-            {totalLikeCount}
-          </UIText>
-        </UIButton>
       </View>
-    </View>
-  );
-});
+    );
+  },
+);
 
 const styles = StyleSheet.create((theme) => ({
-  container: {
+  container: (isReply: boolean) => ({
     width: "100%",
     paddingBottom: theme.utils.vs(6),
-  },
+    paddingLeft: isReply ? theme.utils.s(40) : 0,
+  }),
 
   commentHeaderRow: {
     flexDirection: "row",
@@ -144,6 +181,9 @@ const styles = StyleSheet.create((theme) => ({
   actionButton: {
     alignSelf: "flex-start",
     paddingVertical: theme.utils.vs(4),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   actionText: {
     color: theme.colors.muted,

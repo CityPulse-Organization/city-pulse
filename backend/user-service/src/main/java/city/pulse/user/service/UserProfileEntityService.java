@@ -10,6 +10,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -37,5 +39,10 @@ public class UserProfileEntityService {
     @Transactional(readOnly = true)
     public boolean existsByUsername(String username) {
         return repository.existsByUsername(username);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserProfile> findAllById(Set<UUID> userIds) {
+        return repository.findAllById(userIds);
     }
 }

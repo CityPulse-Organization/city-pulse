@@ -7,6 +7,10 @@ app:
       url: ${AUTH_SERVICE_URL}/api/v1
     registration:
       url: ${REGISTRATION_SERVICE_URL}/api/v1
+    user:
+      url: ${USER_SERVICE_URL}/api/v1
+    post:
+      url: ${POST_SERVICE_URL}/api/v1
 
 spring:
   application:

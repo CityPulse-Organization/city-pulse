@@ -1,4 +1,4 @@
-import { tokenStorage, axios } from "../config";
+import { tokenStorage, axios, bffAxios } from "../config";
 import { AuthRequest, AuthResponse, User } from "../types";
 
 import { jwtDecode } from "jwt-decode";
@@ -13,8 +13,16 @@ const decodeJWT = (token: string): User | null => {
 };
 
 export const register = async (data: AuthRequest): Promise<AuthResponse> => {
-  await axios.post("/registration/local", data);
-  return login({ email: data.email, password: data.password });
+  const response = await bffAxios.post<AuthResponse>("/signup", data);
+  const { accessToken, refreshToken } = response.data || {};
+
+  if (accessToken && refreshToken) {
+    await tokenStorage.setTokens(accessToken, refreshToken);
+    const user = decodeJWT(accessToken);
+    await tokenStorage.setUser(user);
+  }
+
+  return response.data;
 };
 
 export const login = async (data: AuthRequest): Promise<AuthResponse> => {
@@ -52,21 +60,26 @@ export const loginWithGoogle = async (
 export const completeGoogleRegistration = async (
   token: string,
   username: string,
+  idToken: string,
 ): Promise<AuthResponse> => {
-  const response = await axios.post<AuthResponse>(
+  await axios.post(
     "/registration/oauth2",
     { username },
     { headers: { Authorization: `Bearer ${token}` } },
   );
-  const { accessToken, refreshToken } = response.data || {};
 
+  const loginResponse = await axios.post<AuthResponse>("/oauth2/google", {
+    idToken,
+  });
+
+  const { accessToken, refreshToken } = loginResponse.data || {};
   if (accessToken && refreshToken) {
     await tokenStorage.setTokens(accessToken, refreshToken);
     const user = decodeJWT(accessToken);
     await tokenStorage.setUser(user);
   }
 
-  return response.data;
+  return loginResponse.data;
 };
 
 export const logout = async (): Promise<void> => {

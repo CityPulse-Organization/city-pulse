@@ -44,10 +44,11 @@ export const useEditProfile = () => {
 
   useEffect(() => {
     if (profile) {
+      const p = profile;
       reset({
-        jobTitle: profile.jobTitle ?? "",
-        bio: profile.bio ?? "",
-        avatarUrl: profile.avatarUrl ?? "",
+        jobTitle: p.jobTitle ?? "",
+        bio: p.bio ?? "",
+        avatarUrl: p.avatarUrl ?? "",
       });
     }
   }, [profile, reset]);
@@ -81,29 +82,31 @@ export const useEditProfile = () => {
     router.back();
   }, [router]);
 
-  const onSubmit = useCallback(async (data: ProfileData) => {
-    const { avatarUrl, ...rest } = data;
-    const payload: Record<string, any> = { ...rest };
+  const onSubmit = useCallback(
+    async (data: ProfileData) => {
+      const { avatarUrl, ...rest } = data;
+      const payload: Record<string, any> = { ...rest };
 
-    try {
-      if (avatarUrl && avatarUrl.startsWith("/")) {
-        const uploadedUrl = await uploadFile(avatarUrl);
-        payload.avatarUrl = uploadedUrl;
-      } else if (avatarUrl && avatarUrl.startsWith("http")) {
-        payload.avatarUrl = avatarUrl;
+      try {
+        if (avatarUrl && avatarUrl.startsWith("/")) {
+          const uploadedUrl = await uploadFile(avatarUrl);
+          payload.avatarUrl = uploadedUrl;
+        } else if (avatarUrl && avatarUrl.startsWith("http")) {
+          payload.avatarUrl = avatarUrl;
+        }
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          text1: "Upload Failed",
+          text2: "Could not upload avatar image.",
+        });
+        return;
       }
-    } catch (error) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
-      Toast.show({
-        type: "error",
-        text1: "Upload Failed",
-        text2: "Could not upload avatar image.",
-      });
-      return;
-    }
 
-    updateProfile(payload);
-  }, [updateProfile]);
+      updateProfile(payload);
+    },
+    [updateProfile],
+  );
 
   const onSave = handleSubmit(onSubmit);
 

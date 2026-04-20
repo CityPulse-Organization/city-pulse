@@ -4,10 +4,18 @@ import {
   getFollowing,
   getMyProfile,
   getPostsByUserId,
+  getSavedPosts,
 } from "@/src/api";
 import { useSession } from "@/src/hoc";
 import { useCallback, useMemo } from "react";
-import type { DiscoverUser, PostItem, PostResponse } from "@/src/types";
+import {
+  BffPostResponse,
+  DiscoverUser,
+  PostItem,
+  PostResponse,
+  UserProfileResponse,
+} from "@/src/types";
+
 
 import { getUserProfile } from "@/src/api/user";
 import { formatPrettyDate } from "@/src/utils";
@@ -22,7 +30,7 @@ export const useProfile = (userId?: string, initialUsername?: string) => {
     isLoading: isProfileLoading,
     refetch: refetchProfile,
     isRefetching: isRefetchingProfile,
-  } = useQuery({
+  } = useQuery<UserProfileResponse>({
     queryKey: ["profile", targetUserId],
     queryFn: () => (userId ? getUserProfile(userId) : getMyProfile()),
     enabled: !!targetUserId,
@@ -54,8 +62,8 @@ export const useProfile = (userId?: string, initialUsername?: string) => {
     return postsData.pages.flatMap((page) =>
       page.content.map((post: PostResponse) => ({
         id: String(post.id),
-        username: post.username ?? (profile?.username ?? ""),
-        profileImageUrl: post.avatarUrl ?? (profile?.avatarUrl ?? ""),
+        username: post.username ?? profile?.username ?? "",
+        profileImageUrl: post.avatarUrl ?? profile?.avatarUrl ?? "",
         accidentTime: formatPrettyDate(post.createdAt),
         imagesUrl: [post.imageUrl],
         description: post.caption ?? undefined,
@@ -65,6 +73,47 @@ export const useProfile = (userId?: string, initialUsername?: string) => {
       })),
     );
   }, [postsData, profile]);
+
+  const isOwnProfile = !userId || userId === sessionUserId;
+
+  const {
+    data: savedPostsData,
+    isLoading: isSavedPostsLoading,
+    fetchNextPage: fetchNextSavedPosts,
+    hasNextPage: hasNextSavedPostsPage,
+    isFetchingNextPage: isFetchingNextSavedPosts,
+    refetch: refetchSavedPosts,
+    isRefetching: isRefetchingSavedPosts,
+  } = useInfiniteQuery({
+    queryKey: ["savedPosts"],
+    queryFn: ({ pageParam = 0 }) => getSavedPosts(pageParam),
+    getNextPageParam: (lastPage) => {
+      const currentPage = lastPage.page.number;
+      if (currentPage + 1 >= lastPage.page.totalPages) return undefined;
+      return currentPage + 1;
+    },
+    initialPageParam: 0,
+    enabled: isOwnProfile && !!targetUserId,
+    retry: false,
+  });
+
+  const savedPosts: PostItem[] = useMemo(() => {
+    if (!savedPostsData?.pages) return [];
+    return savedPostsData.pages.flatMap((page) =>
+      page.content.map((post: BffPostResponse) => ({
+        id: String(post.id),
+        username: post.authorUsername,
+        profileImageUrl: post.authorAvatarUrl ?? "",
+        accidentTime: formatPrettyDate(post.createdAt),
+        imagesUrl: [post.imageUrl],
+        description: post.caption ?? undefined,
+        location: "",
+        likeCount: post.likeCount,
+        commentCount: post.commentCount,
+      })),
+    );
+  }, [savedPostsData]);
+
 
   const {
     data: followersData,
@@ -131,17 +180,26 @@ export const useProfile = (userId?: string, initialUsername?: string) => {
   const followersCount = followersData?.pages?.[0]?.totalElements ?? 0;
   const followingCount = followingData?.pages?.[0]?.totalElements ?? 0;
   const postsCount = postsData?.pages?.[0]?.page?.totalElements ?? 0;
+  const savedPostsCount = savedPostsData?.pages?.[0]?.page?.totalElements ?? 0;
 
   const refetchAll = useCallback(() => {
     refetchProfile();
     refetchPosts();
+    refetchSavedPosts();
     refetchFollowers();
     refetchFollowing();
-  }, [refetchProfile, refetchPosts, refetchFollowers, refetchFollowing]);
+  }, [
+    refetchProfile,
+    refetchPosts,
+    refetchSavedPosts,
+    refetchFollowers,
+    refetchFollowing,
+  ]);
 
   const isRefetching =
     isRefetchingProfile ||
     isRefetchingPosts ||
+    isRefetchingSavedPosts ||
     isRefetchingFollowers ||
     isRefetchingFollowing;
 
@@ -156,6 +214,12 @@ export const useProfile = (userId?: string, initialUsername?: string) => {
     fetchNextPosts,
     hasNextPostsPage,
     isFetchingNextPosts,
+    savedPosts,
+    savedPostsCount,
+    isSavedPostsLoading,
+    fetchNextSavedPosts,
+    hasNextSavedPostsPage,
+    isFetchingNextSavedPosts,
     followers,
     followersCount,
     fetchNextFollowers,

@@ -1,10 +1,6 @@
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
-import { IconInfo, Post, ThemedBackground } from "@/src/components";
-import {
-  UIButton,
-  UIEmptyState,
-  UIText,
-} from "@/src/ui";
+import { Post, ThemedBackground } from "@/src/components";
+import { UIButton, UIEmptyState, UIText } from "@/src/ui";
 import { router, useRouter } from "expo-router";
 import { ComponentProps, memo, useCallback, useState } from "react";
 import React from "react";
@@ -20,8 +16,6 @@ import { ProfileHeader } from "./profile/ProfileHeader";
 import { SearchInput } from "./SearchInput";
 import { SearchUserItem } from "./SearchUserItem";
 
-
-
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
 type ProfileStat = {
@@ -32,9 +26,14 @@ type ProfileStat = {
   quantity: number;
 };
 
-
 const FollowListItem = memo(({ item }: { item: DiscoverUser }) => {
   const { isFollowing, toggleFollow, isPending, isSelf } = useFollow(item.id);
+  const navigateToProfile = useCallback(() => {
+    router.push({
+      pathname: "/user/[id]",
+      params: { id: item.id, username: item.username },
+    });
+  }, [item.id, item.username]);
 
   return (
     <SearchUserItem
@@ -48,14 +47,11 @@ const FollowListItem = memo(({ item }: { item: DiscoverUser }) => {
   );
 });
 
-
-
 type UniversalProfileScreenProps = {
   id?: string;
-  initialUsername?: string;
 };
 
-export function UniversalProfileScreen({ id, initialUsername }: UniversalProfileScreenProps) {
+export function UniversalProfileScreen({ id }: UniversalProfileScreenProps) {
   const isSelf = !id;
 
   const router = useRouter();
@@ -69,6 +65,11 @@ export function UniversalProfileScreen({ id, initialUsername }: UniversalProfile
     fetchNextPosts,
     hasNextPostsPage,
     isFetchingNextPosts,
+    savedPosts,
+    savedPostsCount,
+    fetchNextSavedPosts,
+    hasNextSavedPostsPage,
+    isFetchingNextSavedPosts,
     followers,
     followersCount,
     fetchNextFollowers,
@@ -118,7 +119,6 @@ export function UniversalProfileScreen({ id, initialUsername }: UniversalProfile
     [],
   );
 
-
   return (
     <ThemedBackground>
       {!isSelf && <ProfileBackButton />}
@@ -127,13 +127,12 @@ export function UniversalProfileScreen({ id, initialUsername }: UniversalProfile
         <Tabs.Container
           revealHeaderOnScroll={false}
           renderHeader={() => (
-
             <ProfileHeader
               userId={userId}
               username={username}
               bio={profile?.bio}
               jobTitle={profile?.jobTitle}
-              avatarUrl={profile?.avatarUrl}
+              avatarUrl={profile?.avatarUrl!}
               isSelf={isSelf}
             />
           )}
@@ -143,6 +142,7 @@ export function UniversalProfileScreen({ id, initialUsername }: UniversalProfile
               postsCount={postsCount}
               followersCount={followersCount}
               followingCount={followingCount}
+              savedPostsCount={savedPostsCount}
               isSelf={isSelf}
             />
           )}
@@ -241,7 +241,7 @@ export function UniversalProfileScreen({ id, initialUsername }: UniversalProfile
           {isSelf ? (
             <Tabs.Tab name="saves" label="Saves">
               <Tabs.FlashList
-                data={[]}
+                data={savedPosts}
                 renderItem={renderPostItem}
                 keyExtractor={keyExtractor}
                 numColumns={2}
@@ -250,6 +250,11 @@ export function UniversalProfileScreen({ id, initialUsername }: UniversalProfile
                 contentContainerStyle={styles.listContainerStyle}
                 showsVerticalScrollIndicator={false}
                 refreshControl={refreshControl}
+                onEndReached={() => {
+                  if (hasNextSavedPostsPage && !isFetchingNextSavedPosts)
+                    fetchNextSavedPosts();
+                }}
+                onEndReachedThreshold={0.3}
                 ListEmptyComponent={
                   <UIEmptyState
                     icon="bookmark-outline"
@@ -260,13 +265,11 @@ export function UniversalProfileScreen({ id, initialUsername }: UniversalProfile
               />
             </Tabs.Tab>
           ) : null}
-
         </Tabs.Container>
       </View>
     </ThemedBackground>
   );
 }
-
 
 const ProfileBackButton = () => {
   const theme = UnistylesRuntime.getTheme();
@@ -281,11 +284,11 @@ const ProfileBackButton = () => {
   );
 };
 
-
 type ProfileTabBarProps = TabBarProps<string> & {
   postsCount: number;
   followersCount: number;
   followingCount: number;
+  savedPostsCount: number;
   isSelf: boolean;
 };
 
@@ -334,7 +337,7 @@ const ProfileTabBar = (props: ProfileTabBarProps) => {
       name: "saves",
       title: "Saves",
       iconName: "bookmark-outline",
-      quantity: 0,
+      quantity: props.savedPostsCount,
     });
   }
 
@@ -382,7 +385,6 @@ const ProfileTabBar = (props: ProfileTabBarProps) => {
           {props.isSelf && <NewPostButton />}
         </View>
       )}
-
     </View>
   );
 };
@@ -562,9 +564,6 @@ const styles = StyleSheet.create((theme, rt) => ({
     color: theme.colors.primaryText,
     height: theme.utils.s(20),
   },
-
-
-
 
   followButton: {
     paddingHorizontal: theme.utils.s(20),

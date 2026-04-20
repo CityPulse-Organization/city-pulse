@@ -1,5 +1,9 @@
-import { axios } from "../config";
-import type { PageResponse, UserSearchResponse } from "../types";
+import { axios, bffAxios } from "../config";
+import {
+  PageResponse,
+  UserProfileResponse,
+  UserSearchResponse,
+} from "../types";
 
 export const searchUsers = async (
   username: string,
@@ -7,9 +11,12 @@ export const searchUsers = async (
   size: number = 24,
   sort?: string | string[],
 ): Promise<PageResponse<UserSearchResponse>> => {
-  const { data } = await axios.get<PageResponse<UserSearchResponse>>("/users/search", {
-    params: { username: username || undefined, page, size, sort },
-  });
+  const { data } = await axios.get<PageResponse<UserSearchResponse>>(
+    "/users/search",
+    {
+      params: { username: username || undefined, page, size, sort },
+    },
+  );
   return data;
 };
 
@@ -45,15 +52,17 @@ export const getFollowing = async (
   return data;
 };
 
-export const getMyProfile = async (): Promise<UserSearchResponse> => {
-  const { data } = await axios.get<UserSearchResponse>("/users/me");
+export const getMyProfile = async (): Promise<UserProfileResponse> => {
+  const { data } = await axios.get<UserProfileResponse>("/users/me");
   return data;
 };
 
 export const getUserProfile = async (
   userId: string,
-): Promise<UserSearchResponse> => {
-  const { data } = await axios.get<UserSearchResponse>(`/users/${userId}`);
+): Promise<UserProfileResponse> => {
+  const { data } = await bffAxios.get<UserProfileResponse>(
+    `/users/${userId}/profile`,
+  );
   return data;
 };
 

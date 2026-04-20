@@ -33,7 +33,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public Page<PostResponse> getPosts(PostFilterRequest filter, UUID currentUserId, Pageable pageable) {
-        var spec = specifications.getSpecification(filter);
+        var spec = specifications.getSpecification(filter, currentUserId);
         var postsPage = postRepository.findAll(spec, pageable);
         return enricher.enrichPage(postsPage, currentUserId);
     }

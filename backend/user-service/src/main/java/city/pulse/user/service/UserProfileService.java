@@ -8,10 +8,14 @@ import city.pulse.user.dto.UserProfileUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface UserProfileService {
     void createProfile(ProfileCreationRequest dto);
+
+    List<UserProfileResponse> getUserProfilesByIds(Set<UUID> userIds);
 
     Page<UserProfileResponse> searchByUsername(String username, UserInfo userInfo, Pageable pageable);
 

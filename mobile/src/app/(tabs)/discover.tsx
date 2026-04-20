@@ -3,7 +3,13 @@ import { UIText, UIEmptyState } from "@/src/ui";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { memo, useCallback, useMemo, useState } from "react";
-import { Platform, Pressable, RefreshControl, TextInput, View } from "react-native";
+import {
+  Platform,
+  Pressable,
+  RefreshControl,
+  TextInput,
+  View,
+} from "react-native";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";
@@ -17,7 +23,7 @@ const DiscoverItem = memo(({ item }: { item: DiscoverUser }) => {
   const navigateToProfile = useCallback(() => {
     router.push({
       pathname: "/user/[id]",
-      params: { id: item.id, username: item.username }
+      params: { id: item.id, username: item.username },
     });
   }, [item.id, item.username]);
   return (
@@ -109,22 +115,28 @@ const DiscoverTabBar = (props: TabBarProps<string>) => {
 export default function DiscoverScreen() {
   const [input, setInput] = useState("");
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch: refetchUsers, isRefetching: isRefetchingUsers } =
-    useSearchUsers(input, ["username,asc"]);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch: refetchUsers,
+    isRefetching: isRefetchingUsers,
+  } = useSearchUsers(input, ["username,asc"]);
 
-  const { 
-    data: pulseData, 
-    fetchNextPage: fetchNextPulse, 
-    hasNextPage: hasNextPulsePage, 
+  const {
+    data: pulseData,
+    fetchNextPage: fetchNextPulse,
+    hasNextPage: hasNextPulsePage,
     isFetchingNextPage: isFetchingNextPulse,
     refetch: refetchPulse,
     isRefetching: isRefetchingPulse,
   } = usePulse(input);
 
-  const { 
-    data: postsData, 
-    fetchNextPage: fetchNextPosts, 
-    hasNextPage: hasNextPostsPage, 
+  const {
+    data: postsData,
+    fetchNextPage: fetchNextPosts,
+    hasNextPage: hasNextPostsPage,
     isFetchingNextPage: isFetchingNextPosts,
     refetch: refetchPosts,
     isRefetching: isRefetchingPosts,
@@ -149,14 +161,14 @@ export default function DiscoverScreen() {
       return pulseData.pages.flatMap((page) =>
         page.content.map((p) => {
           const date = new Date(p.createdAt);
-          const timeLabel = !isNaN(date.getTime()) 
-            ? `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+          const timeLabel = !isNaN(date.getTime())
+            ? `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`
             : "Live";
-            
+
           return {
             id: String(p.id),
-            username: p.username ?? "User",
-            profileImageUrl: p.avatarUrl ?? "",
+            username: p.authorUsername ?? "User",
+            profileImageUrl: p.authorAvatarUrl ?? "",
             accidentTime: timeLabel,
             imagesUrl: [p.imageUrl],
             description: p.caption ?? "",
@@ -173,14 +185,14 @@ export default function DiscoverScreen() {
       return postsData.pages.flatMap((page) =>
         page.content.map((p) => {
           const date = new Date(p.createdAt);
-          const dateLabel = !isNaN(date.getTime()) 
-            ? `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`
+          const dateLabel = !isNaN(date.getTime())
+            ? `${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getFullYear()}`
             : "";
 
           return {
             id: String(p.id),
-            username: p.username ?? "User",
-            profileImageUrl: p.avatarUrl ?? "",
+            username: p.authorUsername ?? "User",
+            profileImageUrl: p.authorAvatarUrl ?? "",
             accidentTime: dateLabel,
             imagesUrl: [p.imageUrl],
             description: p.caption ?? "",
@@ -210,10 +222,6 @@ export default function DiscoverScreen() {
     },
     [router],
   );
-  const filteredPosts: PostItem[] = useMemo(() => {
-    // TODO: Wire to a real feed endpoint when available
-    return [];
-  }, [input]);
 
   const renderPost = useCallback(
     ({ item }: { item: PostItem }) => (
@@ -266,7 +274,11 @@ export default function DiscoverScreen() {
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
             refreshControl={
-              <RefreshControl refreshing={isRefetchingPulse} onRefresh={refetchPulse} tintColor={styles.refreshTint.color} />
+              <RefreshControl
+                refreshing={isRefetchingPulse}
+                onRefresh={refetchPulse}
+                tintColor={styles.refreshTint.color}
+              />
             }
             onEndReached={() => {
               if (hasNextPulsePage && !isFetchingNextPulse) fetchNextPulse();
@@ -295,7 +307,11 @@ export default function DiscoverScreen() {
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
             refreshControl={
-              <RefreshControl refreshing={isRefetchingUsers} onRefresh={refetchUsers} tintColor={styles.refreshTint.color} />
+              <RefreshControl
+                refreshing={isRefetchingUsers}
+                onRefresh={refetchUsers}
+                tintColor={styles.refreshTint.color}
+              />
             }
             onEndReached={() => {
               if (
@@ -326,7 +342,11 @@ export default function DiscoverScreen() {
             contentContainerStyle={styles.containerStyle}
             showsVerticalScrollIndicator={false}
             refreshControl={
-              <RefreshControl refreshing={isRefetchingPosts} onRefresh={refetchPosts} tintColor={styles.refreshTint.color} />
+              <RefreshControl
+                refreshing={isRefetchingPosts}
+                onRefresh={refetchPosts}
+                tintColor={styles.refreshTint.color}
+              />
             }
             onEndReached={() => {
               if (hasNextPostsPage && !isFetchingNextPosts) fetchNextPosts();
