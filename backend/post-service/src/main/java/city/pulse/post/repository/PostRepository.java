@@ -16,7 +16,9 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     Page<Post> findSavedPostsByUserId(@Param("userId") UUID userId, Pageable pageable);
 
     @Query(value = """
-        SELECT *
+        SELECT p.id, p.user_id, p.image_url, p.caption, p.location, p.created_at,
+               (SELECT count(*) FROM post_likes l WHERE l.post_id = p.id) as likeCount,
+               (SELECT count(*) FROM comments c WHERE c.post_id = p.id) as commentCount
         FROM posts p
         WHERE ST_DWithin(
             p.location::geography,
@@ -33,7 +35,9 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     );
 
     @Query(value = """
-        SELECT *
+        SELECT p.id, p.user_id, p.image_url, p.caption, p.location, p.created_at,
+               (SELECT count(*) FROM post_likes l WHERE l.post_id = p.id) as likeCount,
+               (SELECT count(*) FROM comments c WHERE c.post_id = p.id) as commentCount
         FROM posts p
         WHERE p.location && ST_MakeEnvelope(:minLon, :minLat, :maxLon, :maxLat, 4326)
         LIMIT 500
