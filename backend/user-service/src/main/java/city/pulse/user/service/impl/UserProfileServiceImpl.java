@@ -5,6 +5,7 @@ import city.pulse.user.dto.ChangeUsernameRequest;
 import city.pulse.user.dto.ProfileCreationRequest;
 import city.pulse.user.dto.UserProfileResponse;
 import city.pulse.user.dto.UserProfileUpdateRequest;
+import city.pulse.user.event.UserDeletedEvent;
 import city.pulse.user.exception.UsernameAlreadyExistsException;
 import city.pulse.user.mapper.UserProfileMapper;
 import city.pulse.user.model.UserProfile;
@@ -13,6 +14,7 @@ import city.pulse.user.service.UserProfileService;
 import city.pulse.user.specification.UserProfileSpecifications;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,13 +29,14 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UserProfileServiceImpl implements UserProfileService {
+    private final ApplicationEventPublisher eventPublisher;
     private final UserProfileSpecifications specifications;
     private final UserProfileEntityService service;
     private final UserProfileMapper mapper;
 
     @Override
     @Transactional
-    public void createProfile(ProfileCreationRequest dto) {
+    public void createUserProfile(ProfileCreationRequest dto) {
         var username = dto.username();
         var userId = dto.userId();
 
@@ -115,5 +118,14 @@ public class UserProfileServiceImpl implements UserProfileService {
         }
 
         return mapper.toResponse(profile);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUserProfile(UUID userId) {
+        service.deleteById(userId);
+
+        eventPublisher.publishEvent(new UserDeletedEvent(userId));
+        log.info("User profile locally deleted and event published for ID: {}", userId);
     }
 }

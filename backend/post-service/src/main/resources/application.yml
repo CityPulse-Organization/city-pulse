@@ -5,6 +5,7 @@ app:
   kafka:
     topics:
       file-deletion-requests: ${KAFKA_TOPIC_FILE_DELETION:file-deletion-requests}
+      user-deleted: ${KAFKA_TOPIC_USER_DELETED:user-deleted}
 
 spring:
   application:
@@ -47,6 +48,13 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
         spring.json.type.mapping: file-deletion:city.pulse.post.event.FileDeleteRequestEvent
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:post-service-group}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.type.mapping: user-deleted:city.pulse.post.event.UserDeletedEvent
+        spring.json.trusted.packages: "*"
 
   data:
     web:

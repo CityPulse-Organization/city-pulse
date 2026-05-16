@@ -9,7 +9,6 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>registration-service</artifactId>
-    <version>${revision}</version>
     <name>registration-service</name>
     <url/>
     <licenses>

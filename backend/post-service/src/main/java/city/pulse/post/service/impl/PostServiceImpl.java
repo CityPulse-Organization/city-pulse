@@ -52,7 +52,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostResponse createPost(String imageUrl, String caption, Double latitude, Double longitude, UUID userId) {
-        var point = factory.createPoint(new Coordinate(longitude, latitude));;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
         var post = postRepository.save(Post.create(userId, imageUrl, caption, point));
         return mapper.toDto(post, false, false);
     }
@@ -82,6 +82,20 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(post);
 
         eventPublisher.publishEvent(new PostDeletedEvent(post.getImageUrl(), post.getId()));
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllUserPosts(UUID userId) {
+        var userPosts = postRepository.findAllByUserId(userId);
+
+        userPosts.forEach(post -> {
+            if (post.getImageUrl() != null) {
+                eventPublisher.publishEvent(new PostDeletedEvent(post.getImageUrl(), post.getId()));
+            }
+        });
+
+        postRepository.deleteAllByUserId(userId);
     }
 
     private Post getPostEntityByIdOrThrow(Long postId) {

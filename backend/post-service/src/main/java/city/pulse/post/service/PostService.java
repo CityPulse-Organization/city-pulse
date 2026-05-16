@@ -19,4 +19,6 @@ public interface PostService {
     PostResponse updatePostCaption(Long postId, UUID currentUserId, String newCaption);
 
     void deletePost(Long postId, UUID currentUserId);
+
+    void deleteAllUserPosts(UUID userId);
 }

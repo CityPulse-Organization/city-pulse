@@ -45,4 +45,9 @@ public class UserProfileEntityService {
     public List<UserProfile> findAllById(Set<UUID> userIds) {
         return repository.findAllById(userIds);
     }
+
+    @Transactional
+    public void deleteById(UUID userId) {
+        repository.deleteById(userId);
+    }
 }

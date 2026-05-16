@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface UserProfileService {
-    void createProfile(ProfileCreationRequest dto);
+    void createUserProfile(ProfileCreationRequest dto);
 
     List<UserProfileResponse> getUserProfilesByIds(Set<UUID> userIds);
 
@@ -24,4 +24,6 @@ public interface UserProfileService {
     UserProfileResponse updateUserProfile(UserProfileUpdateRequest dto, UUID userId);
 
     UserProfileResponse changeUsername(ChangeUsernameRequest dto, UUID userId);
+
+    void deleteUserProfile(UUID userId);
 }

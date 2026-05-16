@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
+    List<Post> findAllByUserId(UUID userId);
+
     @Query("SELECT p FROM Post p, SavedPost sp WHERE p.id = sp.postId AND sp.userId = :userId ORDER BY sp.savedAt DESC")
     Page<Post> findSavedPostsByUserId(@Param("userId") UUID userId, Pageable pageable);
 
@@ -48,4 +51,8 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
             @Param("maxLon") double maxLon,
             @Param("maxLat") double maxLat
     );
+
+    @Modifying
+    @Query("DELETE FROM Post p WHERE p.userId = :userId")
+    void deleteAllByUserId(@Param("userId") UUID userId);
 }
