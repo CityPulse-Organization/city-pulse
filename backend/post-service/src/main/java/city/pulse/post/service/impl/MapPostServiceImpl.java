@@ -19,19 +19,8 @@ public class MapPostServiceImpl implements MapPostService {
 
     @Override
     @Transactional(readOnly = true)
-    public FeatureCollection getPostsInBoundingBox(String bbox) {
-        var coords = bbox.split(",");
-        if (coords.length != 4) {
-            throw new IllegalArgumentException("Invalid bbox format. Expected: minLon,minLat,maxLon,maxLat");
-        }
-
-        var minLon = Double.parseDouble(coords[0]);
-        var minLat = Double.parseDouble(coords[1]);
-        var maxLon = Double.parseDouble(coords[2]);
-        var maxLat = Double.parseDouble(coords[3]);
-
+    public FeatureCollection getPostsInBoundingBox(double minLon, double minLat, double maxLon, double maxLat) {
         var posts = repository.findWithinBoundingBox(minLon, minLat, maxLon, maxLat);
-
         return toFeatureCollection(posts);
     }
 

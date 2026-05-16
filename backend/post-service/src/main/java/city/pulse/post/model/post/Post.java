@@ -36,12 +36,12 @@ public class Post {
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 
-    @Formula("(SELECT count(*) FROM post_likes l WHERE l.post_id = id)")
     @Builder.Default
+    @Formula("(SELECT count(*) FROM post_likes l WHERE l.post_id = id)")
     private int likeCount = 0;
 
-    @Formula("(SELECT count(*) FROM comments c WHERE c.post_id = id)")
     @Builder.Default
+    @Formula("(SELECT count(*) FROM comments c WHERE c.post_id = id)")
     private int commentCount = 0;
 
     public void updateCaption(String caption) {
