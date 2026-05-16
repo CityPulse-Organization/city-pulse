@@ -92,6 +92,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-spatial</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>3.1.0</version>

@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 public interface PostService {
-    PostResponse createPost(String imageUrl, String caption, UUID userId);
+    PostResponse createPost(String imageUrl, String caption, Double latitude, Double longitude, UUID userId);
 
     Page<PostResponse> getPosts(PostFilterRequest filter, UUID currentUserId, Pageable pageable);
 

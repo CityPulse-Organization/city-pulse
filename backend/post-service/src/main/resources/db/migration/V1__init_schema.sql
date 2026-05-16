@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS posts
     user_id    UUID                     NOT NULL,
     image_url  TEXT                     NOT NULL,
     caption    TEXT,
+    location   geometry(Point, 4326),
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
@@ -73,3 +74,4 @@ CREATE INDEX idx_comments_post_id ON comments(post_id);
 CREATE INDEX idx_comments_parent_id ON comments(parent_id);
 CREATE INDEX idx_comment_likes_user_id ON comment_likes(user_id);
 CREATE INDEX idx_saved_posts_user_id ON saved_posts(user_id);
+CREATE INDEX idx_posts_location ON posts USING GIST (location);

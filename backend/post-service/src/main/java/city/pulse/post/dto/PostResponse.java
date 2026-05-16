@@ -15,5 +15,7 @@ public record PostResponse(
         int likeCount,
         int commentCount,
         boolean isLikedByMe,
-        boolean isSavedByMe
+        boolean isSavedByMe,
+        Double latitude,
+        Double longitude
 ) {}

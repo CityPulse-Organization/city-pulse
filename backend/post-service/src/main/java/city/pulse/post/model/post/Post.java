@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
+import org.locationtech.jts.geom.Point;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -28,27 +29,31 @@ public class Post {
     @Column(name = "caption", columnDefinition = "TEXT", length = 256)
     private String caption;
 
+    @Column(name = "location", columnDefinition = "geometry(Point,4326)")
+    private Point location;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 
-    @Formula("(SELECT count(*) FROM post_likes l WHERE l.post_id = id)")
     @Builder.Default
+    @Formula("(SELECT count(*) FROM post_likes l WHERE l.post_id = id)")
     private int likeCount = 0;
 
-    @Formula("(SELECT count(*) FROM comments c WHERE c.post_id = id)")
     @Builder.Default
+    @Formula("(SELECT count(*) FROM comments c WHERE c.post_id = id)")
     private int commentCount = 0;
 
     public void updateCaption(String caption) {
         this.caption = caption;
     }
 
-    public static Post create(UUID userId, String imageUrl, String caption) {
+    public static Post create(UUID userId, String imageUrl, String caption, Point location) {
         return Post.builder()
                 .userId(userId)
                 .imageUrl(imageUrl)
                 .caption(caption)
+                .location(location)
                 .build();
     }
 }
