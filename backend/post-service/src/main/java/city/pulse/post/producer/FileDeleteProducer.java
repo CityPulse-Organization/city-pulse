@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class FileDeleteProducer {
     private final KafkaTemplate<String, Object> kafka;
 
-    @Value("${app.kafka.topics.file-deletion-requests}")
+    @Value("${app.kafka.topics.file-deleted}")
     private String topic;
 
     public void sendFileDeleteRequest(String fileUrl, Long postId) {

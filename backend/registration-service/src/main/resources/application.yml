@@ -2,6 +2,9 @@ app:
   base-path: /api/${app.api.version}
   api:
     version: ${APP_API_VERSION:v1}
+  kafka:
+    topics:
+      user-deleted: ${KAFKA_TOPIC_USER_DELETED:user-deleted}
   services:
     auth:
       url: ${AUTH_SERVICE_URL}/api/v1
@@ -14,6 +17,16 @@ spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
 
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:registration-service-group}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.type.mapping: user-deleted:city.pulse.registration.event.UserDeletedEvent
+        spring.json.trusted.packages: "*"
+
 server:
   port: ${APP_PORT:8083}
 
@@ -22,3 +35,8 @@ springdoc:
     enabled: ${SPRINGDOC_ENABLED:true}
   swagger-ui:
     enabled: ${SPRINGDOC_ENABLED:true}
+
+logging:
+  level:
+    org.apache.kafka: WARN
+    org.springframework.kafka: WARN

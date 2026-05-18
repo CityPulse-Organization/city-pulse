@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -54,5 +55,11 @@ public class UserProfileController {
             @CurrentUser UserInfo userInfo
     ) {
         return service.changeUsername(dto, userInfo.id());
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteCurrentUser(@CurrentUser UserInfo userInfo) {
+        service.deleteUserProfile(userInfo.id());
+        return ResponseEntity.noContent().build();
     }
 }

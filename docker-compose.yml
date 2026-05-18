@@ -28,6 +28,10 @@ services:
     depends_on:
       auth-service:
         condition: service_started
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
     env_file:
       - .env-shared
       - .env-user
@@ -42,6 +46,10 @@ services:
     depends_on:
       auth-service:
         condition: service_started
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
     env_file:
       - .env-shared
       - .env-storage
@@ -59,6 +67,10 @@ services:
     depends_on:
       storage-service:
         condition: service_started
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
     env_file:
       - .env-shared
       - .env-post
@@ -71,8 +83,14 @@ services:
     networks:
       - city-pulse-network
     depends_on:
-      - auth-service
-      - user-service
+      auth-service:
+        condition: service_started
+      user-service:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
     env_file:
       - .env-shared
       - .env-registration
@@ -130,6 +148,20 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
+      start_period: 30s
+
+  kafka-init:
+    image: confluentinc/cp-kafka:7.7.0
+    container_name: city-pulse-kafka-init
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - city-pulse-network
+    volumes:
+      - ./kafka-init.sh:/kafka-init.sh
+    command: ["sh", "/kafka-init.sh"]
+    restart: "no"
 
 networks:
   city-pulse-network:
