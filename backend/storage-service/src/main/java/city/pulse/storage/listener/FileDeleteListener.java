@@ -15,8 +15,7 @@ public class FileDeleteListener {
 
     @KafkaListener(
             topics = "${app.kafka.topics.file-deleted}",
-            groupId = "${spring.kafka.consumer.group-id}",
-            containerFactory = "kafkaListenerContainerFactory"
+            groupId = "${spring.kafka.consumer.group-id}"
     )
     public void handleFileDeleteRequest(FileDeleteRequestEvent event) {
         log.info("Received file deletion request: fileUrl={}, postId={}, requestId={}", event.fileUrl(), event.postId(), event.requestId());
