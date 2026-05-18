@@ -10,10 +10,10 @@ kafka-topics --create \
   --partitions 3 \
   --replication-factor 1
 
-# Create file-deletion-requests topic
+# Create file-deleted topic
 kafka-topics --create \
   --if-not-exists \
-  --topic file-deletion-requests \
+  --topic file-deleted \
   --bootstrap-server kafka:9092 \
   --partitions 3 \
   --replication-factor 1

@@ -1,0 +1,10 @@
+# Default behavior: auto-detect line endings
+* text=auto
+
+# Shell scripts must always use LF (Unix line endings)
+*.sh text eol=lf
+
+# Docker and config files
+Dockerfile text eol=lf
+docker-compose*.yml text eol=lf
+.env* text eol=lf

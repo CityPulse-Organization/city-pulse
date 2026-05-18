@@ -4,7 +4,7 @@ app:
     version: ${APP_API_VERSION:v1}
   kafka:
     topics:
-      file-deletion-requests: ${KAFKA_TOPIC_FILE_DELETION:file-deletion-requests}
+      file-deleted: ${KAFKA_TOPIC_FILE_DELETED:file-deleted}
 
 spring:
   application:
@@ -20,7 +20,7 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
-      group-id: ${KAFKA_GROUP_ID:storage-service-group}
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:storage-service-group}
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
@@ -56,3 +56,8 @@ springdoc:
     enabled: ${SPRINGDOC_ENABLED:true}
   swagger-ui:
     enabled: ${SPRINGDOC_ENABLED:true}
+
+logging:
+  level:
+    org.apache.kafka: WARN
+    org.springframework.kafka: WARN

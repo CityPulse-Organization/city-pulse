@@ -4,7 +4,7 @@ app:
     version: ${APP_API_VERSION:v1}
   kafka:
     topics:
-      file-deletion-requests: ${KAFKA_TOPIC_FILE_DELETION:file-deletion-requests}
+      file-deleted: ${KAFKA_TOPIC_FILE_DELETED:file-deleted}
       user-deleted: ${KAFKA_TOPIC_USER_DELETED:user-deleted}
 
 spring:
@@ -70,3 +70,8 @@ springdoc:
     enabled: ${SPRINGDOC_ENABLED:true}
   swagger-ui:
     enabled: ${SPRINGDOC_ENABLED:true}
+
+logging:
+  level:
+    org.apache.kafka: WARN
+    org.springframework.kafka: WARN

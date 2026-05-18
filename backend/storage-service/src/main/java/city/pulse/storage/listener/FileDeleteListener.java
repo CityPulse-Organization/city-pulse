@@ -14,7 +14,7 @@ public class FileDeleteListener {
     private final FileUploadService service;
 
     @KafkaListener(
-            topics = "${app.kafka.topics.file-deletion-requests}",
+            topics = "${app.kafka.topics.file-deleted}",
             groupId = "${spring.kafka.consumer.group-id}",
             containerFactory = "kafkaListenerContainerFactory"
     )

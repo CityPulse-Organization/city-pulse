@@ -10,7 +10,7 @@ import org.springframework.kafka.support.converter.JsonMessageConverter;
 
 @Configuration
 public class KafkaProducerConfig {
-    @Value("${app.kafka.topics.file-deletion-requests}")
+    @Value("${app.kafka.topics.file-deleted}")
     private String fileDeletionTopic;
 
     @Bean
