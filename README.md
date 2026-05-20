@@ -242,8 +242,8 @@ Push to backend/city-pulse-common/** → triggers ALL service pipelines
 | Name | Role |
 |---|---|
 | **Denys Mamchura** | Backend Developer |
-| **Kyrilo Karpov** | Mobile Developer |
-| **Vasyl Shchuk** | Mobile Developer |
+| **Kyrylo Kapinos** | Mobile Developer |
+| **Vasyl Ishchuk** | Mobile Developer |
 
 ---
 
