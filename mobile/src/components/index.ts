@@ -8,3 +8,4 @@ export * from "./Post";
 export * from "./post-details";
 export * from "./profile";
 export * from "./ThemedBackground";
+export * from "./PostMap";

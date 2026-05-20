@@ -71,6 +71,32 @@ export const POST_CONFIG = {
 
 export type GridItem = Photo | { id: "camera-id" };
 
+export type GeoJSONFeature = {
+  type: "Feature";
+  geometry: {
+    type: "Point";
+    coordinates: [number, number]; // [lon, lat]
+  };
+  properties: {
+    id: number;
+    userId: string;
+    imageUrl: string;
+    caption: string | null;
+    createdAt: string;
+    likeCount: number;
+    commentCount: number;
+    isLikedByMe: boolean;
+    isSavedByMe: boolean;
+    latitude: number;
+    longitude: number;
+  };
+};
+
+export type GeoJSONFeatureCollection = {
+  type: "FeatureCollection";
+  features: GeoJSONFeature[];
+};
+
 const GAP = 4;
 export const ITEM_SIZE =
   (POST_CONFIG.SCREEN_WIDTH - GAP * (POST_CONFIG.COLUMN_COUNT - 1)) /

@@ -5,6 +5,7 @@ import type {
   CommentResponse,
   CommentRequest,
   BffPostResponse,
+  GeoJSONFeatureCollection,
 } from "../types";
 
 export const getPostsByUserId = async (
@@ -26,10 +27,14 @@ export const getPostById = async (id: number): Promise<PostResponse> => {
 export const createPost = async (
   imageUrl: string,
   caption?: string,
+  latitude?: number,
+  longitude?: number,
 ): Promise<PostResponse> => {
   const { data } = await axios.post<PostResponse>("/posts", {
     imageUrl,
     caption,
+    latitude,
+    longitude,
   });
   return data;
 };
@@ -74,7 +79,6 @@ export const getSavedPosts = async (
   );
   return data;
 };
-
 
 export const getComments = async (
   postId: number,
@@ -155,6 +159,29 @@ export const getPulsePosts = async (
         size,
       },
     },
+  );
+  return data;
+};
+
+export const getMapPosts = async (
+  minLon: number,
+  minLat: number,
+  maxLon: number,
+  maxLat: number,
+): Promise<GeoJSONFeatureCollection> => {
+  console.log(
+    `[getMapPosts] GET /posts/map/bounds bbox=${minLon},${minLat},${maxLon},${maxLat}`,
+  );
+  const { data } = await axios.get<GeoJSONFeatureCollection>(
+    "/posts/map/bounds",
+    {
+      params: {
+        bbox: `${minLon},${minLat},${maxLon},${maxLat}`,
+      },
+    },
+  );
+  console.log(
+    `[getMapPosts] Response: ${data?.features?.length ?? 0} features`,
   );
   return data;
 };
