@@ -6,9 +6,15 @@ on:
       - 'backend/auth-service/**'
       - 'backend/city-pulse-common/**'
       - 'backend/pom.xml'
+      - '.github/workflows/auth-service-ci.yml'
+      - '.github/workflows/common-service-ci.yml'
   release:
     types: [published]
   workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   call-common-ci:
