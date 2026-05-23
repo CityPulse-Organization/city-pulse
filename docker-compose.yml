@@ -10,10 +10,10 @@ services:
     networks:
       - city-pulse-network
     env_file:
-      - .env-shared
-      - .env-auth
+      - infra/envs/.env-shared
+      - backend/auth-service/.env-auth
     volumes:
-      - ./secrets/jwt:/app/secrets/jwt:ro
+      - ./infra/secrets/jwt:/app/secrets/jwt:ro
 
   # ==========================================
   # 3. INTERMEDIATE SERVICES (Depends on Auth/Infra)
@@ -33,8 +33,8 @@ services:
       kafka-init:
         condition: service_completed_successfully
     env_file:
-      - .env-shared
-      - .env-user
+      - infra/envs/.env-shared
+      - backend/user-service/.env-user
 
   storage-service:
     image: ghcr.io/citypulse-organization/city-pulse-storage-service:${STORAGE_SERVICE_VERSION:-latest}
@@ -51,8 +51,8 @@ services:
       kafka-init:
         condition: service_completed_successfully
     env_file:
-      - .env-shared
-      - .env-storage
+      - infra/envs/.env-shared
+      - backend/storage-service/.env-storage
 
   # ==========================================
   # 4. COMPOSITE SERVICES (Depends on Intermediate)
@@ -72,8 +72,8 @@ services:
       kafka-init:
         condition: service_completed_successfully
     env_file:
-      - .env-shared
-      - .env-post
+      - infra/envs/.env-shared
+      - backend/post-service/.env-post
 
   registration-service:
     image: ghcr.io/citypulse-organization/city-pulse-registration-service:${REGISTRATION_SERVICE_VERSION:-latest}
@@ -92,8 +92,8 @@ services:
       kafka-init:
         condition: service_completed_successfully
     env_file:
-      - .env-shared
-      - .env-registration
+      - infra/envs/.env-shared
+      - backend/registration-service/.env-registration
 
   # ==========================================
   # 5. BFF / AGGREGATOR SERVICES
@@ -109,7 +109,7 @@ services:
       - auth-service
       - registration-service
     env_file:
-      - .env-shared
+      - infra/envs/.env-shared
 
   # ==========================================
   # 6. EDGE / ENTRYPOINT (Depends on everything)
@@ -129,14 +129,14 @@ services:
       - storage-service
       - mobile-bff-service
     env_file:
-      - .env-shared
-      - .env-gateway
+      - infra/envs/.env-shared
+      - backend/api-gateway/.env-gateway
 
   kafka:
     image: confluentinc/cp-kafka:7.7.0
     container_name: city-pulse-kafka
     env_file:
-      - .env-kafka
+      - infra/envs/.env-kafka
     ports:
       - "9092:9092"
     networks:
