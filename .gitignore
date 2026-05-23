@@ -32,8 +32,11 @@ yarn-error.*
 # macOS
 *.pem
 
-# local env files
-.env*
+**/.env*
+
+!**/.env*.example
+
+infra/secrets/jwt/*
 
 # typescript
 *.tsbuildinfo
