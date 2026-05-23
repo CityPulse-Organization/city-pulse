@@ -159,7 +159,7 @@ services:
     networks:
       - city-pulse-network
     volumes:
-      - ./kafka-init.sh:/kafka-init.sh
+      - ./infra/scripts/kafka-init.sh:/kafka-init.sh
     command: ["sh", "/kafka-init.sh"]
     restart: "no"
 
