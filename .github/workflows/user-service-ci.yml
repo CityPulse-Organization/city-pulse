@@ -16,4 +16,3 @@ jobs:
     with:
       service_name: 'user-service'
       service_path: 'backend/user-service'
-    secrets: inherit
