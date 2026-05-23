@@ -6,6 +6,8 @@ on:
       - 'backend/api-gateway/**'
       - 'backend/city-pulse-common/**'
       - 'backend/pom.xml'
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -14,4 +16,3 @@ jobs:
     with:
       service_name: 'api-gateway'
       service_path: 'backend/api-gateway'
-    secrets: inherit

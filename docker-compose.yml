@@ -3,7 +3,7 @@ services:
   # FOUNDATION SERVICES (Depends on Infra)
   # ==========================================
   auth-service:
-    image: denys1204/city-pulse-auth-service:${AUTH_SERVICE_VERSION:-latest}
+    image: ghcr.io/citypulse-organization/city-pulse-auth-service:${AUTH_SERVICE_VERSION:-latest}
     container_name: city-pulse-auth-service
     expose:
       - "8081"
@@ -19,7 +19,7 @@ services:
   # 3. INTERMEDIATE SERVICES (Depends on Auth/Infra)
   # ==========================================
   user-service:
-    image: denys1204/city-pulse-user-service:${USER_SERVICE_VERSION:-latest}
+    image: ghcr.io/citypulse-organization/city-pulse-user-service:${USER_SERVICE_VERSION:-latest}
     container_name: city-pulse-user-service
     expose:
       - "8084"
@@ -37,7 +37,7 @@ services:
       - .env-user
 
   storage-service:
-    image: denys1204/city-pulse-storage-service:${STORAGE_SERVICE_VERSION:-latest}
+    image: ghcr.io/citypulse-organization/city-pulse-storage-service:${STORAGE_SERVICE_VERSION:-latest}
     container_name: city-pulse-storage-service
     expose:
       - "8085"
@@ -58,7 +58,7 @@ services:
   # 4. COMPOSITE SERVICES (Depends on Intermediate)
   # ==========================================
   post-service:
-    image: denys1204/city-pulse-post-service:${POST_SERVICE_VERSION:-latest}
+    image: ghcr.io/citypulse-organization/city-pulse-post-service:${POST_SERVICE_VERSION:-latest}
     container_name: city-pulse-post-service
     expose:
       - "8082"
@@ -76,7 +76,7 @@ services:
       - .env-post
 
   registration-service:
-    image: denys1204/city-pulse-registration-service:${REGISTRATION_SERVICE_VERSION:-latest}
+    image: ghcr.io/citypulse-organization/city-pulse-registration-service:${REGISTRATION_SERVICE_VERSION:-latest}
     container_name: city-pulse-registration-service
     expose:
       - "8083"
@@ -99,7 +99,7 @@ services:
   # 5. BFF / AGGREGATOR SERVICES
   # ==========================================
   mobile-bff-service:
-    image: denys1204/city-pulse-mobile-bff-service:${MOBILE_BFF_SERVICE_VERSION:-latest}
+    image: ghcr.io/citypulse-organization/city-pulse-mobile-bff-service:${MOBILE_BFF_SERVICE_VERSION:-latest}
     container_name: city-pulse-mobile-bff-service
     expose:
       - "8086"
@@ -115,7 +115,7 @@ services:
   # 6. EDGE / ENTRYPOINT (Depends on everything)
   # ==========================================
   api-gateway:
-    image: denys1204/city-pulse-api-gateway:${API_GATEWAY_VERSION:-latest}
+    image: ghcr.io/citypulse-organization/city-pulse-api-gateway:${API_GATEWAY_VERSION:-latest}
     container_name: city-pulse-api-gateway
     ports:
       - "8080:8080"

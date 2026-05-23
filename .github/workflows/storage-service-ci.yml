@@ -6,6 +6,8 @@ on:
       - 'backend/storage-service/**'
       - 'backend/city-pulse-common/**'
       - 'backend/pom.xml'
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -14,4 +16,3 @@ jobs:
     with:
       service_name: 'storage-service'
       service_path: 'backend/storage-service'
-    secrets: inherit
