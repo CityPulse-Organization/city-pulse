@@ -3,26 +3,40 @@ services:
   # SERVICE OVERRIDES — inject observability env
   # ==========================================
   auth-service:
-    env_file:
-      - infra/envs/.env-observability
+    environment:
+      - SPRING_PROFILES_INCLUDE=observability
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
+      - LOKI_URL=http://loki:3100
   user-service:
-    env_file:
-      - infra/envs/.env-observability
+    environment:
+      - SPRING_PROFILES_INCLUDE=observability
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
+      - LOKI_URL=http://loki:3100
   storage-service:
-    env_file:
-      - infra/envs/.env-observability
+    environment:
+      - SPRING_PROFILES_INCLUDE=observability
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
+      - LOKI_URL=http://loki:3100
   post-service:
-    env_file:
-      - infra/envs/.env-observability
+    environment:
+      - SPRING_PROFILES_INCLUDE=observability
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
+      - LOKI_URL=http://loki:3100
   registration-service:
-    env_file:
-      - infra/envs/.env-observability
+    environment:
+      - SPRING_PROFILES_INCLUDE=observability
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
+      - LOKI_URL=http://loki:3100
   mobile-bff-service:
-    env_file:
-      - infra/envs/.env-observability
+    environment:
+      - SPRING_PROFILES_INCLUDE=observability
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
+      - LOKI_URL=http://loki:3100
   api-gateway:
-    env_file:
-      - infra/envs/.env-observability
+    environment:
+      - SPRING_PROFILES_INCLUDE=observability
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
+      - LOKI_URL=http://loki:3100
 
   # ==========================================
   # OBSERVABILITY STACK
