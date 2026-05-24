@@ -143,8 +143,11 @@ services:
       - city-pulse-network
     volumes:
       - kafka_data:/var/lib/kafka/data
+    tmpfs:
+      - /etc/kafka/secrets
+      - /etc/confluent/docker
     healthcheck:
-      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092"]
+      test: [ "CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092" ]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -160,7 +163,11 @@ services:
       - city-pulse-network
     volumes:
       - ./infra/scripts/kafka-init.sh:/kafka-init.sh
-    command: ["sh", "/kafka-init.sh"]
+    tmpfs:
+      - /var/lib/kafka/data
+      - /etc/kafka/secrets
+      - /etc/confluent/docker
+    command: [ "sh", "/kafka-init.sh" ]
     restart: "no"
 
 networks:
