@@ -1,7 +1,5 @@
 {
-  "annotations": {
-    "list": []
-  },
+  "annotations": { "list": [] },
   "description": "Comprehensive observability dashboard for all City Pulse microservices",
   "editable": true,
   "fiscalYearStartMonth": 0,
@@ -12,11 +10,11 @@
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
       "id": 100,
-      "title": "🏙️ Service Overview",
+      "title": "\uD83C\uDFD9\uFE0F Service Overview",
       "type": "row"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "mappings": [
@@ -48,7 +46,7 @@
       ]
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "s",
@@ -70,13 +68,13 @@
       "type": "stat",
       "targets": [
         {
-          "expr": "process_uptime_seconds{application=~\"$service\"}",
+          "expr": "process_uptime_seconds{job=\"city-pulse-services\", application=~\"$service\"}",
           "legendFormat": "{{application}}"
         }
       ]
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -100,7 +98,7 @@
       "type": "stat",
       "targets": [
         {
-          "expr": "system_cpu_usage{application=~\"$service\"} * 100",
+          "expr": "system_cpu_usage{job=\"city-pulse-services\", application=~\"$service\"} * 100",
           "legendFormat": "{{application}}"
         }
       ]
@@ -109,21 +107,15 @@
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 },
       "id": 200,
-      "title": "📊 HTTP RED Metrics (Rate / Errors / Duration)",
+      "title": "\uD83D\uDCCA HTTP RED Metrics (Rate / Errors / Duration)",
       "type": "row"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "reqps",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
-            "spanNulls": true
-          },
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "gradientMode": "scheme", "showPoints": "never", "spanNulls": true },
           "color": { "mode": "palette-classic" }
         }
       },
@@ -137,23 +129,17 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "sum by (application) (rate(http_server_requests_seconds_count{application=~\"$service\"}[$__rate_interval]))",
+          "expr": "sum by (application) (rate(http_server_requests_seconds_count{job=\"city-pulse-services\", application=~\"$service\"}[$__rate_interval]))",
           "legendFormat": "{{application}}"
         }
       ]
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "reqps",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
-            "spanNulls": true
-          },
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "gradientMode": "scheme", "showPoints": "never", "spanNulls": true },
           "color": { "mode": "palette-classic" }
         }
       },
@@ -167,23 +153,17 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "sum by (application) (rate(http_server_requests_seconds_count{application=~\"$service\", status=~\"5..\"}[$__rate_interval]))",
+          "expr": "sum by (application) (rate(http_server_requests_seconds_count{job=\"city-pulse-services\", application=~\"$service\", status=~\"5..\"}[$__rate_interval]))",
           "legendFormat": "{{application}}"
         }
       ]
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "s",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
-            "spanNulls": true
-          },
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "gradientMode": "scheme", "showPoints": "never", "spanNulls": true },
           "color": { "mode": "palette-classic" }
         }
       },
@@ -197,24 +177,17 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum by (le, application) (rate(http_server_requests_seconds_bucket{application=~\"$service\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.95, sum by (le, application) (rate(http_server_requests_seconds_bucket{job=\"city-pulse-services\", application=~\"$service\"}[$__rate_interval])))",
           "legendFormat": "{{application}}"
         }
       ]
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "reqps",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "gradientMode": "scheme",
-            "showPoints": "never",
-            "spanNulls": true,
-            "stacking": { "mode": "normal" }
-          },
+          "custom": { "lineWidth": 1, "fillOpacity": 10, "gradientMode": "scheme", "showPoints": "never", "spanNulls": true, "stacking": { "mode": "normal" } },
           "color": { "mode": "palette-classic" }
         }
       },
@@ -228,7 +201,7 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "sum by (uri, method) (rate(http_server_requests_seconds_count{application=~\"$service\", uri!~\"/actuator.*\"}[$__rate_interval])) > 0",
+          "expr": "sum by (uri, method) (rate(http_server_requests_seconds_count{job=\"city-pulse-services\", application=~\"$service\", uri!~\"/actuator.*\"}[$__rate_interval])) > 0",
           "legendFormat": "{{method}} {{uri}}"
         }
       ]
@@ -237,21 +210,15 @@
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 },
       "id": 300,
-      "title": "☕ JVM Monitoring",
+      "title": "\u2615 JVM Monitoring",
       "type": "row"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 20,
-            "gradientMode": "scheme",
-            "showPoints": "never",
-            "spanNulls": true
-          },
+          "custom": { "lineWidth": 2, "fillOpacity": 20, "gradientMode": "scheme", "showPoints": "never", "spanNulls": true },
           "color": { "mode": "palette-classic" }
         }
       },
@@ -265,23 +232,17 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "sum by (application) (jvm_memory_used_bytes{application=~\"$service\", area=\"heap\"})",
+          "expr": "sum by (application) (jvm_memory_used_bytes{job=\"city-pulse-services\", application=~\"$service\", area=\"heap\"})",
           "legendFormat": "{{application}}"
         }
       ]
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
-            "spanNulls": true
-          },
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "gradientMode": "scheme", "showPoints": "never", "spanNulls": true },
           "color": { "mode": "palette-classic" }
         }
       },
@@ -295,23 +256,17 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "jvm_threads_live_threads{application=~\"$service\"}",
+          "expr": "jvm_threads_live_threads{job=\"city-pulse-services\", application=~\"$service\"}",
           "legendFormat": "{{application}}"
         }
       ]
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "ops",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
-            "spanNulls": true
-          },
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "gradientMode": "scheme", "showPoints": "never", "spanNulls": true },
           "color": { "mode": "palette-classic" }
         }
       },
@@ -325,25 +280,19 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "sum by (application) (rate(jvm_gc_pause_seconds_count{application=~\"$service\"}[$__rate_interval]))",
+          "expr": "sum by (application) (rate(jvm_gc_pause_seconds_count{job=\"city-pulse-services\", application=~\"$service\"}[$__rate_interval]))",
           "legendFormat": "{{application}}"
         }
       ]
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "percentunit",
           "min": 0,
           "max": 1,
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 20,
-            "gradientMode": "scheme",
-            "showPoints": "never",
-            "spanNulls": true
-          },
+          "custom": { "lineWidth": 2, "fillOpacity": 20, "gradientMode": "scheme", "showPoints": "never", "spanNulls": true },
           "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 0.7 }, { "color": "red", "value": 0.9 }] },
           "color": { "mode": "continuous-GrYlRd" }
         }
@@ -358,7 +307,7 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "sum by (application) (jvm_memory_used_bytes{application=~\"$service\", area=\"heap\"}) / sum by (application) (jvm_memory_max_bytes{application=~\"$service\", area=\"heap\"})",
+          "expr": "sum by (application) (jvm_memory_used_bytes{job=\"city-pulse-services\", application=~\"$service\", area=\"heap\"}) / sum by (application) (jvm_memory_max_bytes{job=\"city-pulse-services\", application=~\"$service\", area=\"heap\"})",
           "legendFormat": "{{application}}"
         }
       ]
@@ -367,21 +316,15 @@
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 43 },
       "id": 400,
-      "title": "📨 Kafka Monitoring",
+      "title": "\uD83D\uDCE8 Kafka Monitoring",
       "type": "row"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
-            "spanNulls": true
-          },
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "gradientMode": "scheme", "showPoints": "never", "spanNulls": true },
           "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 100 }, { "color": "red", "value": 1000 }] },
           "color": { "mode": "palette-classic" }
         }
@@ -396,23 +339,17 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "kafka_consumer_fetch_manager_records_lag_max{application=~\"$service\"}",
+          "expr": "kafka_consumer_fetch_manager_records_lag_max{job=\"city-pulse-services\", application=~\"$service\"}",
           "legendFormat": "{{application}}"
         }
       ]
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "ops",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
-            "spanNulls": true
-          },
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "gradientMode": "scheme", "showPoints": "never", "spanNulls": true },
           "color": { "mode": "palette-classic" }
         }
       },
@@ -426,23 +363,17 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "kafka_consumer_fetch_manager_records_consumed_rate{application=~\"$service\"}",
+          "expr": "kafka_consumer_fetch_manager_records_consumed_rate{job=\"city-pulse-services\", application=~\"$service\"}",
           "legendFormat": "{{application}}"
         }
       ]
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
-            "spanNulls": true
-          },
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "gradientMode": "scheme", "showPoints": "never", "spanNulls": true },
           "color": { "mode": "palette-classic" }
         }
       },
@@ -456,7 +387,7 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "kafka_consumer_coordinator_assigned_partitions{application=~\"$service\"}",
+          "expr": "kafka_consumer_coordinator_assigned_partitions{job=\"city-pulse-services\", application=~\"$service\"}",
           "legendFormat": "{{application}}"
         }
       ]
@@ -465,22 +396,15 @@
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 52 },
       "id": 500,
-      "title": "🐘 Database (HikariCP Connection Pool)",
+      "title": "\uD83D\uDC18 Database (HikariCP Connection Pool)",
       "type": "row"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 20,
-            "gradientMode": "scheme",
-            "showPoints": "never",
-            "spanNulls": true,
-            "stacking": { "mode": "normal" }
-          },
+          "custom": { "lineWidth": 2, "fillOpacity": 20, "gradientMode": "scheme", "showPoints": "never", "spanNulls": true },
           "color": { "mode": "palette-classic" }
         }
       },
@@ -494,27 +418,21 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "hikaricp_connections_active{application=~\"$service\"}",
+          "expr": "hikaricp_connections_active{job=\"city-pulse-services\", application=~\"$service\"}",
           "legendFormat": "{{application}} — active"
         },
         {
-          "expr": "hikaricp_connections_idle{application=~\"$service\"}",
+          "expr": "hikaricp_connections_idle{job=\"city-pulse-services\", application=~\"$service\"}",
           "legendFormat": "{{application}} — idle"
         }
       ]
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
-            "spanNulls": true
-          },
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "gradientMode": "scheme", "showPoints": "never", "spanNulls": true },
           "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] },
           "color": { "mode": "palette-classic" }
         }
@@ -529,23 +447,17 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "hikaricp_connections_pending{application=~\"$service\"}",
+          "expr": "hikaricp_connections_pending{job=\"city-pulse-services\", application=~\"$service\"}",
           "legendFormat": "{{application}}"
         }
       ]
     },
     {
-      "datasource": { "type": "prometheus", "uid": "" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": {
         "defaults": {
           "unit": "s",
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
-            "spanNulls": true
-          },
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "gradientMode": "scheme", "showPoints": "never", "spanNulls": true },
           "color": { "mode": "palette-classic" }
         }
       },
@@ -559,7 +471,7 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "rate(hikaricp_connections_acquire_seconds_sum{application=~\"$service\"}[$__rate_interval]) / rate(hikaricp_connections_acquire_seconds_count{application=~\"$service\"}[$__rate_interval])",
+          "expr": "rate(hikaricp_connections_acquire_seconds_sum{job=\"city-pulse-services\", application=~\"$service\"}[$__rate_interval]) / rate(hikaricp_connections_acquire_seconds_count{job=\"city-pulse-services\", application=~\"$service\"}[$__rate_interval])",
           "legendFormat": "{{application}}"
         }
       ]
@@ -568,46 +480,36 @@
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 61 },
       "id": 600,
-      "title": "📋 Logs (Loki)",
+      "title": "\uD83D\uDCCB Logs (Loki)",
       "type": "row"
     },
     {
       "datasource": { "type": "loki", "uid": "loki" },
-      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 62 },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 62 },
       "id": 50,
-      "options": {
-        "showLabels": false,
-        "showCommonLabels": false,
-        "showTime": true,
-        "showLogContextToggle": false,
-        "wrapLogMessage": true,
-        "prettifyLogMessage": false,
-        "enableLogDetails": true,
-        "sortOrder": "Descending",
-        "dedupStrategy": "none"
-      },
-      "title": "Log Level Distribution",
-      "type": "barchart",
+      "title": "Log Volume by Service",
+      "type": "timeseries",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "fillOpacity": 80,
-            "gradientMode": "scheme",
-            "stacking": { "mode": "normal" }
-          },
+          "unit": "short",
+          "custom": { "fillOpacity": 40, "gradientMode": "scheme", "stacking": { "mode": "normal" }, "lineWidth": 0, "showPoints": "never" },
           "color": { "mode": "palette-classic" }
         }
       },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "calcs": ["sum"] },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
       "targets": [
         {
-          "expr": "sum by (level) (count_over_time({service_name=~\"$service\"} [$__interval]))",
-          "legendFormat": "{{level}}"
+          "expr": "sum by (service_name) (count_over_time({service_name=~\"$service\"} [$__interval]))",
+          "legendFormat": "{{service_name}}"
         }
       ]
     },
     {
       "datasource": { "type": "loki", "uid": "loki" },
-      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 66 },
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 68 },
       "id": 51,
       "options": {
         "showLabels": false,
@@ -636,16 +538,16 @@
     "list": [
       {
         "current": { "selected": true, "text": "All", "value": "$__all" },
-        "definition": "label_values(up{job=\"city-pulse-services\"}, application)",
+        "definition": "label_values(process_uptime_seconds{job=\"city-pulse-services\"}, application)",
         "includeAll": true,
         "multi": true,
         "name": "service",
         "options": [],
-        "query": { "query": "label_values(up{job=\"city-pulse-services\"}, application)", "refId": "StandardVariableQuery" },
+        "query": { "query": "label_values(process_uptime_seconds{job=\"city-pulse-services\"}, application)", "refId": "StandardVariableQuery" },
         "refresh": 2,
         "regex": "",
         "type": "query",
-        "datasource": { "type": "prometheus", "uid": "" }
+        "datasource": { "type": "prometheus", "uid": "prometheus" }
       },
       {
         "current": { "selected": false, "text": "", "value": "" },
@@ -658,7 +560,7 @@
   "time": { "from": "now-1h", "to": "now" },
   "timepicker": {},
   "timezone": "",
-  "title": "City Pulse — Observability",
+  "title": "City Pulse \u2014 Observability",
   "uid": "city-pulse-observability",
-  "version": 1
+  "version": 2
 }
