@@ -145,7 +145,6 @@ services:
       - kafka_data:/var/lib/kafka/data
     tmpfs:
       - /etc/kafka/secrets
-      - /etc/confluent/docker
     healthcheck:
       test: [ "CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092" ]
       interval: 10s
@@ -164,9 +163,8 @@ services:
     volumes:
       - ./infra/scripts/kafka-init.sh:/kafka-init.sh
     tmpfs:
-      - /var/lib/kafka/data
       - /etc/kafka/secrets
-      - /etc/confluent/docker
+      - /var/lib/kafka/data
     command: [ "sh", "/kafka-init.sh" ]
     restart: "no"
 

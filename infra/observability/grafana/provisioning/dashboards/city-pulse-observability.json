@@ -1,4 +1,4 @@
-﻿{
+{
   "annotations": {
     "list": []
   },
@@ -17,7 +17,7 @@
         "y": 0
       },
       "id": 100,
-      "title": "ðŸ™ï¸ Service Overview",
+      "title": "\uD83C\uDFD9\uFE0F Service Overview",
       "type": "row"
     },
     {
@@ -210,7 +210,7 @@
         "y": 9
       },
       "id": 200,
-      "title": "ðŸ“Š HTTP RED Metrics (Rate / Errors / Duration)",
+      "title": "\uD83D\uDCCA HTTP RED Metrics (Rate / Errors / Duration)",
       "type": "row"
     },
     {
@@ -273,9 +273,9 @@
           "unit": "reqps",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "auto",
             "spanNulls": true
           },
           "color": {
@@ -323,9 +323,9 @@
           "unit": "s",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "auto",
             "spanNulls": true
           },
           "color": {
@@ -422,7 +422,7 @@
         "y": 36
       },
       "id": 300,
-      "title": "â˜• JVM Monitoring",
+      "title": "\u2615 JVM Monitoring",
       "type": "row"
     },
     {
@@ -587,9 +587,9 @@
           "max": 1,
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 20,
-            "gradientMode": "scheme",
-            "showPoints": "never",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "auto",
             "spanNulls": true
           },
           "thresholds": {
@@ -653,7 +653,7 @@
         "y": 69
       },
       "id": 400,
-      "title": "ðŸ“¨ Kafka Monitoring",
+      "title": "\uD83D\uDD28 Kafka Monitoring",
       "type": "row"
     },
     {
@@ -666,9 +666,9 @@
           "unit": "short",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "auto",
             "spanNulls": true
           },
           "thresholds": {
@@ -694,7 +694,7 @@
         }
       },
       "gridPos": {
-        "h": 8,
+        "h": 16,
         "w": 8,
         "x": 0,
         "y": 70
@@ -718,7 +718,7 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "kafka_consumer_fetch_manager_records_lag_max{job=\"city-pulse-services\", application=~\"$service\"}",
+          "expr": "max by (application) (kafka_consumer_fetch_manager_records_lag_max{job=\"city-pulse-services\", application=~\"$service\"})",
           "legendFormat": "{{application}}"
         }
       ]
@@ -733,9 +733,9 @@
           "unit": "ops",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "auto",
             "spanNulls": true
           },
           "color": {
@@ -744,7 +744,7 @@
         }
       },
       "gridPos": {
-        "h": 8,
+        "h": 16,
         "w": 8,
         "x": 8,
         "y": 70
@@ -768,7 +768,7 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "kafka_consumer_fetch_manager_records_consumed_rate{job=\"city-pulse-services\", application=~\"$service\"}",
+          "expr": "sum by (application) (kafka_consumer_fetch_manager_records_consumed_rate{job=\"city-pulse-services\", application=~\"$service\"})",
           "legendFormat": "{{application}}"
         }
       ]
@@ -783,9 +783,9 @@
           "unit": "short",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "auto",
             "spanNulls": true
           },
           "color": {
@@ -794,7 +794,7 @@
         }
       },
       "gridPos": {
-        "h": 8,
+        "h": 16,
         "w": 8,
         "x": 16,
         "y": 70
@@ -817,7 +817,7 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "kafka_consumer_coordinator_assigned_partitions{job=\"city-pulse-services\", application=~\"$service\"}",
+          "expr": "sum by (application) (kafka_consumer_coordinator_assigned_partitions{job=\"city-pulse-services\", application=~\"$service\"})",
           "legendFormat": "{{application}}"
         }
       ]
@@ -828,10 +828,10 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 78
+        "y": 86
       },
       "id": 500,
-      "title": "ðŸ˜ Database (HikariCP Connection Pool)",
+      "title": "\uD83D\uDDC4 Database (HikariCP Connection Pool)",
       "type": "row"
     },
     {
@@ -844,9 +844,9 @@
           "unit": "short",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 20,
-            "gradientMode": "scheme",
-            "showPoints": "never",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "auto",
             "spanNulls": true
           },
           "color": {
@@ -855,10 +855,10 @@
         }
       },
       "gridPos": {
-        "h": 8,
+        "h": 16,
         "w": 8,
         "x": 0,
-        "y": 79
+        "y": 87
       },
       "id": 40,
       "options": {
@@ -874,16 +874,16 @@
           "sort": "desc"
         }
       },
-      "title": "Connection Pool â€” Active vs Idle",
+      "title": "Connection Pool \u2014 Active vs Idle",
       "type": "timeseries",
       "targets": [
         {
           "expr": "hikaricp_connections_active{job=\"city-pulse-services\", application=~\"$service\"}",
-          "legendFormat": "{{application}} Ã¢â‚¬â€ active"
+          "legendFormat": "{{application}} \u2014 active"
         },
         {
           "expr": "hikaricp_connections_idle{job=\"city-pulse-services\", application=~\"$service\"}",
-          "legendFormat": "{{application}} Ã¢â‚¬â€ idle"
+          "legendFormat": "{{application}} \u2014 idle"
         }
       ]
     },
@@ -897,9 +897,9 @@
           "unit": "short",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "auto",
             "spanNulls": true
           },
           "thresholds": {
@@ -921,10 +921,10 @@
         }
       },
       "gridPos": {
-        "h": 8,
+        "h": 16,
         "w": 8,
         "x": 8,
-        "y": 79
+        "y": 87
       },
       "id": 41,
       "options": {
@@ -960,9 +960,9 @@
           "unit": "s",
           "custom": {
             "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
-            "showPoints": "never",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "auto",
             "spanNulls": true
           },
           "color": {
@@ -971,10 +971,10 @@
         }
       },
       "gridPos": {
-        "h": 8,
+        "h": 16,
         "w": 8,
         "x": 16,
-        "y": 79
+        "y": 87
       },
       "id": 42,
       "options": {
@@ -1006,10 +1006,10 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 87
+        "y": 103
       },
       "id": 600,
-      "title": "ðŸ“‹ Logs (Loki)",
+      "title": "\uD83D\uDCCB Logs (Loki)",
       "type": "row"
     },
     {
@@ -1018,10 +1018,10 @@
         "uid": "loki"
       },
       "gridPos": {
-        "h": 6,
+        "h": 10,
         "w": 24,
         "x": 0,
-        "y": 88
+        "y": 104
       },
       "id": 50,
       "title": "Log Volume by Service",
@@ -1031,12 +1031,12 @@
           "unit": "short",
           "custom": {
             "fillOpacity": 40,
-            "gradientMode": "scheme",
+            "gradientMode": "none",
             "stacking": {
               "mode": "normal"
             },
             "lineWidth": 0,
-            "showPoints": "never"
+            "showPoints": "auto"
           },
           "color": {
             "mode": "palette-classic"
@@ -1072,7 +1072,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 94
+        "y": 114
       },
       "id": 51,
       "options": {
@@ -1143,9 +1143,10 @@
     "from": "now-1h",
     "to": "now"
   },
+  "refresh": "3s",
   "timepicker": {},
   "timezone": "",
-  "title": "City Pulse â€” Observability",
+  "title": "City Pulse \u2014 Observability",
   "uid": "city-pulse-observability",
   "version": 2
 }

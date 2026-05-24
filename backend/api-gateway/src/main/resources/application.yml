@@ -126,6 +126,10 @@ management:
   endpoint:
     health:
       show-details: ${MANAGEMENT_HEALTH_SHOW_DETAILS:always}
+  prometheus:
+    metrics:
+      export:
+        step: 3s
   metrics:
     tags:
       application: ${spring.application.name}
