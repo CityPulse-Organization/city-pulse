@@ -98,7 +98,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
-      - GF_DASHBOARDS_MIN_REFRESH_INTERVAL=2s
+      - GF_DASHBOARDS_MIN_REFRESH_INTERVAL=3s
     volumes:
       - ./infra/observability/grafana/provisioning:/etc/grafana/provisioning:ro
       - grafana_data:/var/lib/grafana
