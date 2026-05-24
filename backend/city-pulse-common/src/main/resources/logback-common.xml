@@ -11,19 +11,12 @@
         <http>
             <url>${LOKI_URL:-http://loki:3100}/loki/api/v1/push</url>
         </http>
-        <format>
-            <label>
-                <pattern>service_name=${spring.application.name:-unknown},level=%level,host=${HOSTNAME:-localhost}</pattern>
-            </label>
-            <message class="com.github.loki4j.logback.JsonLayout">
-                <customProvider class="com.github.loki4j.logback.LogbackBackedProvider">
-                    <layout class="ch.qos.logback.classic.PatternLayout">
-                        <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId:-},%X{spanId:-}] %-5level %logger{36} - %msg%n</pattern>
-                    </layout>
-                </customProvider>
-            </message>
-            <sortByTime>true</sortByTime>
-        </format>
+        <labels>
+            <pattern>service_name=${spring.application.name:-unknown},level=%level,host=${HOSTNAME:-localhost}</pattern>
+        </labels>
+        <message>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId:-},%X{spanId:-}] %-5level %logger{36} - %msg%n</pattern>
+        </message>
         <batch>
             <maxItems>100</maxItems>
             <timeoutMs>3000</timeoutMs>
