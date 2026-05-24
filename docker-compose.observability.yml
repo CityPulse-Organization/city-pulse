@@ -1,5 +1,30 @@
 services:
   # ==========================================
+  # SERVICE OVERRIDES — inject observability env
+  # ==========================================
+  auth-service:
+    env_file:
+      - infra/envs/.env-observability
+  user-service:
+    env_file:
+      - infra/envs/.env-observability
+  storage-service:
+    env_file:
+      - infra/envs/.env-observability
+  post-service:
+    env_file:
+      - infra/envs/.env-observability
+  registration-service:
+    env_file:
+      - infra/envs/.env-observability
+  mobile-bff-service:
+    env_file:
+      - infra/envs/.env-observability
+  api-gateway:
+    env_file:
+      - infra/envs/.env-observability
+
+  # ==========================================
   # OBSERVABILITY STACK
   # ==========================================
   prometheus:
