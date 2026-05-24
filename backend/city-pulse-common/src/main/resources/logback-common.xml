@@ -12,7 +12,7 @@
             <url>${LOKI_URL:-http://loki:3100}/loki/api/v1/push</url>
         </http>
         <labels>
-            <pattern>service_name=${spring.application.name:-unknown},level=%level,host=${HOSTNAME:-localhost}</pattern>
+            <pattern>service_name=${springAppName:-unknown},level=%level,host=${HOSTNAME:-localhost}</pattern>
         </labels>
         <message>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId:-},%X{spanId:-}] %-5level %logger{36} - %msg%n</pattern>
