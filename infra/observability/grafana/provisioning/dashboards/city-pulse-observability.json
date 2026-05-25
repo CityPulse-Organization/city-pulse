@@ -1058,8 +1058,8 @@
       },
       "targets": [
         {
-          "expr": "sum by (service_name) (count_over_time({service_name=~\"$service\"} [$__interval]))",
-          "legendFormat": "{{service_name}}"
+          "expr": "sum by (service) (count_over_time({service=~\"$service\"} [$__interval]))",
+          "legendFormat": "{{service}}"
         }
       ]
     },
@@ -1090,7 +1090,7 @@
       "type": "logs",
       "targets": [
         {
-          "expr": "{service_name=~\"$service\"} |~ \"$log_filter\"",
+          "expr": "{service=~\"$service\"} |~ \"$log_filter\" | json | __error__=\"\" | line_format \"[{{.logger_name}}] {{.message}}\"",
           "legendFormat": ""
         }
       ]

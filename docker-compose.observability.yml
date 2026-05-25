@@ -62,7 +62,7 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
 
   promtail:
-    image: grafana/promtail:2.9.3
+    image: grafana/promtail:latest
     container_name: city-pulse-promtail
     networks:
       - city-pulse-network
