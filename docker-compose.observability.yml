@@ -6,37 +6,30 @@ services:
     environment:
       - SPRING_PROFILES_INCLUDE=observability
       - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
-      - LOKI_URL=http://loki:3100
   user-service:
     environment:
       - SPRING_PROFILES_INCLUDE=observability
       - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
-      - LOKI_URL=http://loki:3100
   storage-service:
     environment:
       - SPRING_PROFILES_INCLUDE=observability
       - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
-      - LOKI_URL=http://loki:3100
   post-service:
     environment:
       - SPRING_PROFILES_INCLUDE=observability
       - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
-      - LOKI_URL=http://loki:3100
   registration-service:
     environment:
       - SPRING_PROFILES_INCLUDE=observability
       - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
-      - LOKI_URL=http://loki:3100
   mobile-bff-service:
     environment:
       - SPRING_PROFILES_INCLUDE=observability
       - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
-      - LOKI_URL=http://loki:3100
   api-gateway:
     environment:
       - SPRING_PROFILES_INCLUDE=observability
       - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
-      - LOKI_URL=http://loki:3100
 
   # ==========================================
   # OBSERVABILITY STACK
@@ -67,6 +60,19 @@ services:
       - ./infra/observability/loki/loki.yml:/etc/loki/local-config.yaml:ro
       - loki_data:/loki
     command: -config.file=/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail:2.9.3
+    container_name: city-pulse-promtail
+    networks:
+      - city-pulse-network
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./infra/observability/promtail/promtail.yml:/etc/promtail/config.yml:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
 
   tempo:
     image: grafana/tempo:2.9.0

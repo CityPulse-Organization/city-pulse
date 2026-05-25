@@ -1,28 +1,8 @@
 <included>
-    <!-- Console: structured output with traceId/spanId correlation -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId:-},%X{spanId:-}] %-5level %logger{36} - %msg%n</pattern>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeCallerData>true</includeCallerData>
         </encoder>
-    </appender>
-
-    <!-- Loki: push logs directly to Loki instance -->
-    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
-        <http>
-            <url>${LOKI_URL:-http://loki:3100}/loki/api/v1/push</url>
-        </http>
-        <labels>
-            service_name=${springAppName:-unknown}
-            level=%level
-            host=${HOSTNAME:-localhost}
-        </labels>
-        <message>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId:-},%X{spanId:-}] %-5level %logger{36} - %msg%n</pattern>
-        </message>
-        <batch>
-            <maxItems>100</maxItems>
-            <timeoutMs>3000</timeoutMs>
-        </batch>
     </appender>
 
     <!-- Suppress noisy loggers -->
