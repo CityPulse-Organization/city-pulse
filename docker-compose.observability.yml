@@ -5,31 +5,24 @@ services:
   auth-service:
     environment:
       - SPRING_PROFILES_INCLUDE=observability
-      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
   user-service:
     environment:
       - SPRING_PROFILES_INCLUDE=observability
-      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
   storage-service:
     environment:
       - SPRING_PROFILES_INCLUDE=observability
-      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
   post-service:
     environment:
       - SPRING_PROFILES_INCLUDE=observability
-      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
   registration-service:
     environment:
       - SPRING_PROFILES_INCLUDE=observability
-      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
   mobile-bff-service:
     environment:
       - SPRING_PROFILES_INCLUDE=observability
-      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
   api-gateway:
     environment:
       - SPRING_PROFILES_INCLUDE=observability
-      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
 
   # ==========================================
   # OBSERVABILITY STACK

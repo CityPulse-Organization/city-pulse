@@ -73,6 +73,8 @@ springdoc:
 
 logging:
   level:
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    city.pulse: ${LOGGING_LEVEL_CITY_PULSE:INFO}
     org.apache.kafka: WARN
     org.springframework.kafka: WARN
   pattern:
@@ -90,7 +92,7 @@ management:
   prometheus:
     metrics:
       export:
-        step: 3s
+        step: ${MANAGEMENT_METRICS_EXPORT_STEP:3s}
   metrics:
     tags:
       application: ${spring.application.name}

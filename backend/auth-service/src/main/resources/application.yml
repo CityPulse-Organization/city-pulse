@@ -61,6 +61,8 @@ server:
 
 logging:
   level:
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    city.pulse: ${LOGGING_LEVEL_CITY_PULSE:INFO}
     org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer: ERROR
   pattern:
     correlation: "[${spring.application.name:},%X{traceId:-},%X{spanId:-}] "
@@ -83,7 +85,7 @@ management:
   prometheus:
     metrics:
       export:
-        step: 3s
+        step: ${MANAGEMENT_METRICS_EXPORT_STEP:3s}
   metrics:
     tags:
       application: ${spring.application.name}

@@ -129,7 +129,7 @@ management:
   prometheus:
     metrics:
       export:
-        step: 3s
+        step: ${MANAGEMENT_METRICS_EXPORT_STEP:3s}
   metrics:
     tags:
       application: ${spring.application.name}
@@ -138,5 +138,8 @@ management:
       probability: ${TRACING_SAMPLING_PROBABILITY:1.0}
 
 logging:
+  level:
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    city.pulse: ${LOGGING_LEVEL_CITY_PULSE:INFO}
   pattern:
     correlation: "[${spring.application.name:},%X{traceId:-},%X{spanId:-}] "
