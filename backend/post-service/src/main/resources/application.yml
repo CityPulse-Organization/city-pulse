@@ -45,7 +45,4 @@ spring:
 server:
   port: ${APP_PORT:8082}
 
-logging:
-  level:
-    org.apache.kafka: WARN
-    org.springframework.kafka: WARN
+

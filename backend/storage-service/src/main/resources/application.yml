@@ -53,7 +53,4 @@ gcp:
   bucket:
     name: ${GCP_BUCKET_NAME:}
 
-logging:
-  level:
-    org.apache.kafka: WARN
-    org.springframework.kafka: WARN
+
