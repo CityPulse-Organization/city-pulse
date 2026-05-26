@@ -88,7 +88,7 @@ public class BaseExceptionHandler {
                 .body(ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred"));
     }
 
-    @ExceptionHandler(org.springframework.web.context.request.async.AsyncRequestNotUsableException.class)
+    @ExceptionHandler(AsyncRequestNotUsableException.class)
     public void handleAsyncRequestNotUsableException(AsyncRequestNotUsableException ex) {
         log.warn("Client disconnected during request processing: {}", ex.getMessage());
     }
