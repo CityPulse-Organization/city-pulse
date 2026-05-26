@@ -1,2 +1,3 @@
 city.pulse.common.exception.BaseExceptionHandler
 city.pulse.common.security.config.SecurityAutoConfiguration
+city.pulse.common.observability.KafkaObservabilityAutoConfiguration

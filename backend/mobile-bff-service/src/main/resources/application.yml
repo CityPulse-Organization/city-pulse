@@ -13,6 +13,8 @@ app:
       url: ${POST_SERVICE_URL}/api/v1
 
 spring:
+  config:
+    import: "classpath:application-common.yml"
   application:
     name: mobile-bff-service
   profiles:
@@ -20,9 +22,3 @@ spring:
 
 server:
   port: ${APP_PORT:8086}
-
-springdoc:
-  api-docs:
-    enabled: ${SPRINGDOC_ENABLED:true}
-  swagger-ui:
-    enabled: ${SPRINGDOC_ENABLED:true}

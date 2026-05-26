@@ -7,6 +7,8 @@ app:
       file-deleted: ${KAFKA_TOPIC_FILE_DELETED:file-deleted}
 
 spring:
+  config:
+    import: "classpath:application-common.yml"
   application:
     name: storage-service
   profiles:
@@ -51,13 +53,4 @@ gcp:
   bucket:
     name: ${GCP_BUCKET_NAME:}
 
-springdoc:
-  api-docs:
-    enabled: ${SPRINGDOC_ENABLED:true}
-  swagger-ui:
-    enabled: ${SPRINGDOC_ENABLED:true}
 
-logging:
-  level:
-    org.apache.kafka: WARN
-    org.springframework.kafka: WARN

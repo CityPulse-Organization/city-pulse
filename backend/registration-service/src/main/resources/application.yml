@@ -12,6 +12,8 @@ app:
       url: ${USER_SERVICE_URL}/api/v1
 
 spring:
+  config:
+    import: "classpath:application-common.yml"
   application:
     name: registration-service
   profiles:
@@ -30,13 +32,4 @@ spring:
 server:
   port: ${APP_PORT:8083}
 
-springdoc:
-  api-docs:
-    enabled: ${SPRINGDOC_ENABLED:true}
-  swagger-ui:
-    enabled: ${SPRINGDOC_ENABLED:true}
 
-logging:
-  level:
-    org.apache.kafka: WARN
-    org.springframework.kafka: WARN

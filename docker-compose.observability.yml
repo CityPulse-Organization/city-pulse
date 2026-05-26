@@ -1,0 +1,109 @@
+services:
+  # ==========================================
+  # SERVICE OVERRIDES — inject observability env
+  # ==========================================
+  auth-service:
+    environment:
+      - SPRING_PROFILES_INCLUDE=observability
+  user-service:
+    environment:
+      - SPRING_PROFILES_INCLUDE=observability
+  storage-service:
+    environment:
+      - SPRING_PROFILES_INCLUDE=observability
+  post-service:
+    environment:
+      - SPRING_PROFILES_INCLUDE=observability
+  registration-service:
+    environment:
+      - SPRING_PROFILES_INCLUDE=observability
+  mobile-bff-service:
+    environment:
+      - SPRING_PROFILES_INCLUDE=observability
+  api-gateway:
+    environment:
+      - SPRING_PROFILES_INCLUDE=observability
+
+  # ==========================================
+  # OBSERVABILITY STACK
+  # ==========================================
+  prometheus:
+    image: prom/prometheus:v3.11.3
+    container_name: city-pulse-prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - city-pulse-network
+    volumes:
+      - ./infra/observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=7d'
+      - '--web.enable-remote-write-receiver'
+
+  loki:
+    image: grafana/loki:3.7.2
+    container_name: city-pulse-loki
+    ports:
+      - "3100:3100"
+    networks:
+      - city-pulse-network
+    volumes:
+      - ./infra/observability/loki/loki.yml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: city-pulse-promtail
+    networks:
+      - city-pulse-network
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./infra/observability/promtail/promtail.yml:/etc/promtail/config.yml:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+
+  tempo:
+    image: grafana/tempo:2.9.0
+    container_name: city-pulse-tempo
+    ports:
+      - "3200:3200"
+      - "4317:4317"
+      - "4318:4318"
+    networks:
+      - city-pulse-network
+    volumes:
+      - ./infra/observability/tempo/tempo.yml:/etc/tempo/tempo.yml:ro
+      - tempo_data:/var/tempo
+    command: -config.file=/etc/tempo/tempo.yml
+
+  grafana:
+    image: grafana/grafana:13.0.1
+    container_name: city-pulse-grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - city-pulse-network
+    depends_on:
+      - prometheus
+      - loki
+      - tempo
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_DASHBOARDS_MIN_REFRESH_INTERVAL=3s
+    volumes:
+      - ./infra/observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  prometheus_data:
+  loki_data:
+  tempo_data:
+  grafana_data:

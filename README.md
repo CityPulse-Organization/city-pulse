@@ -1,4 +1,4 @@
-<div align="center">
+<div>
 
 # 🏙️ City Pulse
 
@@ -6,7 +6,7 @@
 
 [![Java](https://img.shields.io/badge/Java-21-ED8B00?style=flat&logo=openjdk&logoColor=white)](https://openjdk.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-6DB33F?style=flat&logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-7.7-231F20?style=flat&logo=apachekafka&logoColor=white)](https://kafka.apache.org/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat&logo=docker&logoColor=white)](https://www.docker.com/)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?style=flat&logo=githubactions&logoColor=white)](https://github.com/features/actions)
@@ -121,17 +121,17 @@ sequenceDiagram
 ## 🔐 Security Architecture
 
 ```
-┌─────────────┐     JWT      ┌──────────────┐    X-User-Id     ┌─────────────────┐
-│  Mobile App  │ ──Bearer──▸ │  API Gateway  │ ──X-User-Roles──▸│  Microservices   │
-└─────────────┘    Token     │  (validates   │    Headers       │  (trust gateway) │
-                             │   via JWKS)   │                  └─────────────────┘
-                             └──────┬───────┘
-                                    │ fetches public keys
-                             ┌──────▼───────┐
-                             │ Auth Service  │
+┌─────────────┐     JWT      ┌───────────────┐     X-User-Id    ┌───────────────────┐
+│  Mobile App │ ──Bearer──▸  │  API Gateway  │ ──X-User-Roles──▸│   Microservices   │
+└─────────────┘    Token     │  (validates   │    Headers       │  (trust gateway)  │
+                             │   via JWKS)   │                  └───────────────────┘
+                             └───────┬───────┘
+                                     │  fetches public keys
+                             ┌───────▼───────┐
+                             │  Auth Service │
                              │ /.well-known/ │
                              │  jwks.json    │
-                             └──────────────┘
+                             └───────────────┘
 ```
 
 - **Auth Service** acts as an Identity Provider with RSA key-pair signing
@@ -181,7 +181,6 @@ city-pulse/
 ├── mobile/                        # React Native app (Expo)
 ├── landing/                       # Landing page (Next.js)
 ├── docker-compose.yml             # Full stack orchestration
-├── kafka-init.sh                  # Kafka topic initialization
 └── .github/workflows/             # 8 CI/CD pipelines
 ```
 
@@ -247,6 +246,6 @@ Push to backend/city-pulse-common/** → triggers ALL service pipelines
 
 ---
 
-<div align="center">
+<div>
   <sub>Built with ☕ Java and ❤️ by the City Pulse team</sub>
 </div>

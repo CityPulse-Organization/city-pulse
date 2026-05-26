@@ -7,42 +7,20 @@ app:
       user-deleted: ${KAFKA_TOPIC_USER_DELETED:user-deleted}
 
 spring:
+  config:
+    import: "classpath:application-common.yml"
   application:
     name: user-service
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
-  datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      minimum-idle: ${DB_MIN_IDLE:1}
-      maximum-pool-size: ${DB_MAX_POOL_SIZE:3}
-      connection-timeout: ${DB_CONNECTION_TIMEOUT:20000}
-      idle-timeout: ${DB_IDLE_TIMEOUT:300000}
-      max-lifetime: ${DB_MAX_LIFETIME:1200000}
 
   jpa:
-    open-in-view: false
     properties:
       hibernate:
         default_schema: ${DB_SCHEMA:user_schema}
-    hibernate:
-      ddl-auto: ${HIBERNATE_DDL_AUTO:validate}
 
   flyway:
-    enabled: ${FLYWAY_ENABLED:true}
     default-schema: ${DB_SCHEMA:user_schema}
-    create-schemas: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-
-  data:
-    web:
-      pageable:
-        default-page-size: ${PAGEABLE_DEFAULT_SIZE:20}
-        max-page-size: ${PAGEABLE_MAX_SIZE:50}
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
@@ -55,13 +33,4 @@ spring:
 server:
   port: ${APP_PORT:8084}
 
-springdoc:
-  api-docs:
-    enabled: ${SPRINGDOC_ENABLED:true}
-  swagger-ui:
-    enabled: ${SPRINGDOC_ENABLED:true}
 
-logging:
-  level:
-    org.apache.kafka: WARN
-    org.springframework.kafka: WARN
