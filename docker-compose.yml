@@ -30,8 +30,6 @@ services:
         condition: service_started
       kafka:
         condition: service_healthy
-      kafka-init:
-        condition: service_completed_successfully
     env_file:
       - infra/envs/.env-shared
       - backend/user-service/.env-user
@@ -48,8 +46,6 @@ services:
         condition: service_started
       kafka:
         condition: service_healthy
-      kafka-init:
-        condition: service_completed_successfully
     env_file:
       - infra/envs/.env-shared
       - backend/storage-service/.env-storage
@@ -69,8 +65,6 @@ services:
         condition: service_started
       kafka:
         condition: service_healthy
-      kafka-init:
-        condition: service_completed_successfully
     env_file:
       - infra/envs/.env-shared
       - backend/post-service/.env-post
@@ -89,8 +83,6 @@ services:
         condition: service_started
       kafka:
         condition: service_healthy
-      kafka-init:
-        condition: service_completed_successfully
     env_file:
       - infra/envs/.env-shared
       - backend/registration-service/.env-registration
@@ -151,22 +143,6 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
-
-  kafka-init:
-    image: confluentinc/cp-kafka:7.7.0
-    container_name: city-pulse-kafka-init
-    depends_on:
-      kafka:
-        condition: service_healthy
-    networks:
-      - city-pulse-network
-    volumes:
-      - ./infra/scripts/kafka-init.sh:/kafka-init.sh
-    tmpfs:
-      - /etc/kafka/secrets
-      - /var/lib/kafka/data
-    command: [ "sh", "/kafka-init.sh" ]
-    restart: "no"
 
 networks:
   city-pulse-network:
