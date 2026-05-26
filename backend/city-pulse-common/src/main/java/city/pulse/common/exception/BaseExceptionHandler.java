@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.async.AsyncRequestNotUsableException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -48,7 +49,7 @@ public class BaseExceptionHandler {
     public ResponseEntity<ErrorResponse> handleBadRequestExceptions(Exception ex) {
         log.error("Bad Request Exception: ", ex);
         String message = switch (ex) {
-            case HttpMessageNotReadableException e -> "The request body could not be read";
+            case HttpMessageNotReadableException ignored -> "The request body could not be read";
             case MissingServletRequestParameterException e -> String.format("Required parameter '%s' was not presented", e.getParameterName());
             case MethodArgumentTypeMismatchException e -> String.format("The request parameter '%s' has an invalid value: '%s'", e.getName(), e.getValue());
             case MissingServletRequestPartException e -> String.format("The request part '%s' was not presented", e.getRequestPartName());
@@ -73,7 +74,7 @@ public class BaseExceptionHandler {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ErrorResponse> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
+    public ResponseEntity<ErrorResponse> handleMethodNotSupported() {
         return ResponseEntity
                 .status(HttpStatus.METHOD_NOT_ALLOWED)
                 .body(ErrorResponse.of(HttpStatus.METHOD_NOT_ALLOWED, "Method not supported"));
@@ -85,5 +86,10 @@ public class BaseExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred"));
+    }
+
+    @ExceptionHandler(org.springframework.web.context.request.async.AsyncRequestNotUsableException.class)
+    public void handleAsyncRequestNotUsableException(AsyncRequestNotUsableException ex) {
+        log.warn("Client disconnected during request processing: {}", ex.getMessage());
     }
 }
