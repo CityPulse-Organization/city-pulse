@@ -1,4 +1,4 @@
-<div align="center">
+<div>
 
 # 🏙️ City Pulse
 
@@ -121,17 +121,17 @@ sequenceDiagram
 ## 🔐 Security Architecture
 
 ```
-┌─────────────┐     JWT      ┌──────────────┐    X-User-Id     ┌─────────────────┐
-│  Mobile App  │ ──Bearer──▸ │  API Gateway  │ ──X-User-Roles──▸│  Microservices   │
-└─────────────┘    Token     │  (validates   │    Headers       │  (trust gateway) │
-                             │   via JWKS)   │                  └─────────────────┘
-                             └──────┬───────┘
-                                    │ fetches public keys
-                             ┌──────▼───────┐
-                             │ Auth Service  │
+┌─────────────┐     JWT      ┌───────────────┐     X-User-Id    ┌───────────────────┐
+│  Mobile App │ ──Bearer──▸  │  API Gateway  │ ──X-User-Roles──▸│   Microservices   │
+└─────────────┘    Token     │  (validates   │    Headers       │  (trust gateway)  │
+                             │   via JWKS)   │                  └───────────────────┘
+                             └───────┬───────┘
+                                     │  fetches public keys
+                             ┌───────▼───────┐
+                             │  Auth Service │
                              │ /.well-known/ │
                              │  jwks.json    │
-                             └──────────────┘
+                             └───────────────┘
 ```
 
 - **Auth Service** acts as an Identity Provider with RSA key-pair signing
@@ -246,6 +246,6 @@ Push to backend/city-pulse-common/** → triggers ALL service pipelines
 
 ---
 
-<div align="center">
+<div>
   <sub>Built with ☕ Java and ❤️ by the City Pulse team</sub>
 </div>
