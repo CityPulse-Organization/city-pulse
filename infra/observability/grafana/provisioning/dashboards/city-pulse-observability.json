@@ -1090,7 +1090,7 @@
       "type": "logs",
       "targets": [
         {
-          "expr": "{service=~\"$service\"} |~ \"$log_filter\" | json | __error__=\"\" | line_format \"{{.message}}{{if .stack_trace}}\\n{{.stack_trace}}{{end}}\"",
+          "expr": "{service=~\"$service\"} |~ \"$log_filter\" | json | __error__=\"\" | line_format \"{{if .traceId}}[TraceID: {{.traceId}}] {{end}}{{.message}}{{if .stack_trace}}\\n{{.stack_trace}}{{end}}\"",
           "legendFormat": ""
         }
       ]
@@ -1148,5 +1148,5 @@
   "timezone": "",
   "title": "City Pulse \u2014 Observability",
   "uid": "city-pulse-observability",
-  "version": 2
+  "version": 100
 }
