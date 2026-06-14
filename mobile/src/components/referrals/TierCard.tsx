@@ -4,9 +4,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import { memo } from "react";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
+import { useTranslation } from "react-i18next";
 import type { Milestone } from "@/src/types/referrals";
 
 export const TierCard = memo(({ milestone }: { milestone: Milestone }) => {
+  const { t } = useTranslation();
   return (
     <LinearGradient
       colors={
@@ -55,7 +57,7 @@ export const TierCard = memo(({ milestone }: { milestone: Milestone }) => {
                 weight="bold"
                 style={milestone.unlocked ? styles.whiteTxt : styles.mutedText}
               >
-                {milestone.count} invites
+                {t("referralsCount.invites", { count: milestone.count, defaultValue: `${milestone.count} invites` })}
               </UIText>
             </LinearGradient>
           </View>

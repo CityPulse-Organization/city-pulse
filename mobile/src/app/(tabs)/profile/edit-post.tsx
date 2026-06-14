@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { NavigationHeader } from "@/src/components/NavigationHeader";
+import { useTranslation } from 'react-i18next';
 
 export default function EditPostScreen() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function EditPostScreen() {
 
   const { post, isPostLoading, editPost, isEditing } = usePost(postId);
   const [caption, setCaption] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (post?.caption) {
@@ -52,18 +54,18 @@ export default function EditPostScreen() {
         style={{ flex: 1 }}
       >
         <NavigationHeader
-          title="Edit Post"
+          title={t('profile.editPost')}
           onLeftAction={onCancel}
           onRightAction={onSave}
-          rightActionLabel="Done"
+          rightActionLabel={t('profile.done')}
           isLoading={isEditing}
         />
         <ScrollView contentContainerStyle={styles.content}>
           <UIText size="sm" weight="bold" style={styles.label}>
-            Caption
+            {t('profile.caption')}
           </UIText>
           <UIInput
-            placeholder="Write a caption..."
+            placeholder={t('profile.captionPlaceholder')}
             value={caption}
             onChangeText={setCaption}
             multiline

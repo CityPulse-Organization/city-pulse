@@ -1,0 +1,318 @@
+{
+    "auth": {
+        "start": "Start",
+        "signIn": "Sign in",
+        "signUp": "Sign up",
+        "email": "Email",
+        "password": "Password",
+        "username": "Username",
+        "repeatPassword": "Repeat your password",
+        "forgotPassword": "Forgot password?",
+        "continueWithGoogle": "Continue with Google",
+        "dontHaveAccount": "Don't have an account?",
+        "alreadyHaveAccount": "Already have an account?",
+        "next": "Next",
+        "finish": "Finish",
+        "lastStep": "Last step",
+        "lastStepDescription": "Please choose a unique username to finish creating your account."
+    },
+    "home": {
+        "logout": "Logout",
+        "showAlert": "Show Alert",
+        "testAlertTitle": "Test Alert Popup",
+        "testAlertMessage": "This is a test of the new custom UIAlert component.",
+        "confirm": "Confirm"
+    },
+    "tabs": {
+        "map": "Map",
+        "discover": "Discover",
+        "chats": "Chats",
+        "referrals": "Referrals",
+        "profile": "Profile"
+    },
+    "biometric": {
+        "authSuccess": "Biometric authentication successful",
+        "unavailableTitle": "Biometrics Unavailable",
+        "unavailableMessage": "Your device does not have compatible biometric hardware.",
+        "notEnrolledTitle": "No Biometrics Enrolled",
+        "notEnrolledIos": "Please set up Face ID or Touch ID in your iPhone Settings.",
+        "notEnrolledAndroid": "Please enroll a fingerprint or face in your device Settings.",
+        "enablePrompt": "Authenticate to enable biometric unlock",
+        "disablePrompt": "Authenticate to disable biometric unlock"
+    },
+    "permissions": {
+        "photoAccessTitle": "Photo Access Required",
+        "photoAccessMessage": "City Pulse needs access to your photo library to select images. Please enable it in your device Settings.",
+        "photoAccessShort": "City Pulse needs access to your photo library to select images.",
+        "cameraAccessTitle": "No media access",
+        "cameraAccessMessage": "To take a photo, you need to allow the app to access the photos in your phone's Settings",
+        "cancel": "Cancel",
+        "deny": "Deny",
+        "allow": "Allow",
+        "openSettings": "Open Settings"
+    },
+    "discover": {
+        "search": "Search...",
+        "pulse": "Pulse",
+        "people": "People",
+        "posts": "Posts",
+        "noPulseTitle": "No Pulse Found",
+        "noPulseDesc": "We couldn't find any recent activities in your area right now.",
+        "noResultsTitle": "No results found",
+        "noResultsDesc": "We couldn't find any users matching \"{{query}}\"",
+        "noPostsTitle": "No Posts",
+        "noPostsDesc": "Be the first one to share something in this area!"
+    },
+    "chats": {
+        "chats": "Chats",
+        "events": "Events",
+        "noChatsTitle": "No Chats Yet",
+        "noChatsDesc": "Your conversation history is empty. Start a new chat!",
+        "noEventsTitle": "No Events Found",
+        "noEventsDesc": "You haven't joined any group conversations or events yet."
+    },
+    "profile": {
+        "posts": "Posts",
+        "followers": "Followers",
+        "followings": "Followings",
+        "saves": "Saves",
+        "follow": "Follow",
+        "unfollow": "Unfollow",
+        "editProfile": "Edit Profile",
+        "changePhoto": "Change Photo",
+        "save": "Save",
+        "jobPlaceholder": "Job or Title",
+        "bioPlaceholder": "Biography. Tell us about yourself.",
+        "editPost": "Edit Post",
+        "done": "Done",
+        "caption": "Caption",
+        "captionPlaceholder": "Write a caption...",
+        "noPostsSelfTitle": "No Posts Yet",
+        "noPostsSelfDesc": "Share your first photo to see it here!",
+        "noPostsOtherTitle": "No Posts",
+        "noPostsOtherDesc": "This user hasn't shared any photos yet.",
+        "noFollowersTitle": "No Followers",
+        "noFollowersSelfDesc": "When people follow you, they'll appear here.",
+        "noFollowersOtherDesc": "When people follow this user, they'll appear here.",
+        "noFollowingTitle": "No Following",
+        "noFollowingSelfDesc": "Start following people to see their activities.",
+        "noFollowingOtherDesc": "This user isn't following anyone yet.",
+        "noSavedTitle": "No Saved Posts",
+        "noSavedDesc": "Keep track of what you love by saving posts.",
+        "replyingTo": "Replying to @{{username}} says \""
+    },
+    "comments": {
+        "title": "Comments",
+        "noCommentsTitle": "No comments yet",
+        "noCommentsDesc": "Be the first to share your thoughts!",
+        "addComment": "Add a comment...",
+        "addReply": "Add a reply...",
+        "replyingTo": "Replying to @{{username}} says \"{{text}}\""
+    },
+    "postMenu": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "share": "Share",
+        "report": "Report",
+        "deleteTitle": "Delete Post",
+        "deleteMessage": "Are you sure you want to delete this post?",
+        "cancel": "Cancel"
+    },
+    "referrals": {
+        "swipeHint": "Swipe for your journey ➔",
+        "yourJourney": "Your Journey",
+        "rewardMilestones": "Reward Milestones",
+        "yourReferrals": "Your Referrals",
+        "referralCode": "YOUR REFERRAL CODE",
+        "copy": "Copy",
+        "copied": "Copied!",
+        "shareInviteLink": "Share Invite Link",
+        "howItWorks": "How it works",
+        "inviteAndEarn": "Invite & Earn",
+        "inviteAndEarnDesc": "Bring {{count}} friends to City Pulse and unlock Premium — forever, for free.",
+        "premiumIncludes": "Premium Includes",
+        "milestones": {
+            "bronze": "Bronze",
+            "silver": "Silver",
+            "gold": "Gold",
+            "diamond": "Diamond",
+            "rewards": {
+                "bronze": "Custom profile frame",
+                "silver": "Verified badge",
+                "gold": "Advanced analytics",
+                "diamond": "Full Premium — forever"
+            }
+        },
+        "perks": {
+            "verifiedBadge": "Verified Badge",
+            "verifiedBadgeDesc": "Stand out with verification",
+            "analytics": "Analytics",
+            "analyticsDesc": "Deep performance insights",
+            "themes": "Themes",
+            "themesDesc": "Exclusive customization",
+            "priority": "Priority",
+            "priorityDesc": "Boosted in Discover",
+            "hdStream": "HD Stream",
+            "hdStreamDesc": "High quality broadcast",
+            "unlimited": "Unlimited",
+            "unlimitedDesc": "Save everything"
+        },
+        "steps": {
+            "step1Title": "Share your code",
+            "step1Desc": "Send your referral link to friends",
+            "step2Title": "Friends join",
+            "step2Desc": "They sign up with your code",
+            "step3Title": "Unlock rewards",
+            "step3Desc": "Hit milestones, earn Premium"
+        },
+        "shareMessage": "Join me on City Pulse! Use my referral code: {{code}}\n\nhttps://citypulse.app/invite/{{code}}"
+    },
+    "settings": {
+        "title": "Settings",
+        "sections": {
+            "appearance": "APPEARANCE",
+            "general": "GENERAL",
+            "security": "SECURITY",
+            "aboutSupport": "ABOUT & SUPPORT",
+            "account": "ACCOUNT"
+        },
+        "darkMode": "Dark Mode",
+        "mapStyle": "Map Style",
+        "language": "Language",
+        "pushNotifications": "Push Notifications",
+        "restrictedAccounts": "Restricted Accounts",
+        "changePassword": "Change Password",
+        "biometricUnlock": "Biometric Unlock",
+        "biometricChecking": "Checking device support…",
+        "biometricUnavailable": "Not available on this device",
+        "biometricNotEnrolled": "No biometrics enrolled",
+        "biometricReady": "Use Face ID or fingerprint to open the app",
+        "helpCenter": "Help Center",
+        "reportProblem": "Report a Problem",
+        "rateApp": "Rate the App",
+        "privacyPolicy": "Privacy Policy",
+        "termsOfService": "Terms of Service",
+        "removeAccount": "Remove Account",
+        "signOut": "Sign Out"
+    },
+    "languageScreen": {
+        "title": "Language",
+        "banner": "Choose the display language for the app. This affects menus, buttons, and other interface text."
+    },
+    "languages": {
+        "en": "English",
+        "uk": "Ukrainian",
+        "de": "German",
+        "fr": "French",
+        "es": "Spanish",
+        "pl": "Polish",
+        "it": "Italian",
+        "pt": "Portuguese",
+        "ru": "Russian",
+        "regions": {
+            "en": "United States",
+            "uk": "Ukraine",
+            "de": "Germany",
+            "fr": "France",
+            "es": "Spain",
+            "pl": "Poland",
+            "it": "Italy",
+            "pt": "Portugal",
+            "ru": "Russia"
+        }
+    },
+    "changePasswordScreen": {
+        "title": "Change Password",
+        "banner": "Choose a strong password you haven't used before. We'll log you out after saving.",
+        "currentPassword": "CURRENT PASSWORD",
+        "newPassword": "NEW PASSWORD",
+        "confirmPassword": "CONFIRM NEW PASSWORD",
+        "currentPlaceholder": "Enter current password",
+        "newPlaceholder": "Enter new password",
+        "confirmPlaceholder": "Repeat new password",
+        "saveButton": "Save Password",
+        "successToast": "Password changed successfully",
+        "errorTitle": "Error",
+        "errorFallback": "Failed to change password. Please try again."
+    },
+    "deleteAccount": {
+        "title": "Delete Account",
+        "message": "This will permanently delete your account and all your data. This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete",
+        "successTitle": "Account deleted",
+        "successMessage": "Your account has been permanently removed.",
+        "errorTitle": "Error",
+        "errorMessage": "Failed to delete account. Please try again."
+    },
+    "mapStyleScreen": {
+        "title": "Map Style",
+        "banner": "Choose how the map looks across the whole app. Switching to a light style helps readability in bright sunlight.",
+        "currentlySelected": "{{style}} — Currently selected"
+    },
+    "reportProblemScreen": {
+        "title": "Report a Problem",
+        "banner": "We appreciate you taking the time to report this. Describe what happened and we'll do our best to fix it.",
+        "category": "CATEGORY",
+        "summary": "SUMMARY",
+        "summaryPlaceholder": "e.g. App crashes on map zoom",
+        "details": "DETAILS",
+        "detailsPlaceholder": "Describe the steps to reproduce the issue, what you expected to happen, and what actually happened…",
+        "sendReport": "Send Report",
+        "reportSent": "Report Sent!",
+        "thankYou": "Thank you for helping us improve City Pulse. Our team will look into this shortly.",
+        "sendAnother": "Send another report"
+    },
+    "restrictedAccountsScreen": {
+        "title": "Restricted Accounts",
+        "banner": "Restricted accounts can't see your activity or send you direct messages. They won't know they've been restricted.",
+        "restricted": "RESTRICTED",
+        "unrestrict": "Unrestrict",
+        "noRestrictedTitle": "No Restricted Accounts",
+        "noRestrictedDesc": "Start restricting people to hide their posts from your feed."
+    },
+    "newPost": {
+        "title": "New Post",
+        "next": "Next",
+        "recents": "Recents",
+        "location": "Location",
+        "description": "Description",
+        "post": "Post"
+    },
+    "referralsCount": {
+        "invites": "{{count}} invites",
+        "moreInvites": "{{count}} more invites to go",
+        "moreInvites_one": "{{count}} more invite to go",
+        "premiumUnlocked": "🎉 Premium unlocked!"
+    },
+    "mapStyles": {
+        "dark": {
+            "label": "Dark",
+            "description": "Default night-mode style for the map."
+        },
+        "light": {
+            "label": "Light",
+            "description": "Bright map style for daytime."
+        },
+        "satellite": {
+            "label": "Satellite",
+            "description": "Real satellite imagery from space."
+        }
+    },
+    "editProfile": {
+        "jobPlaceholder": "Job or Title",
+        "bioPlaceholder": "Biography. Tell us about yourself."
+    },
+    "dateTime": {
+        "justNow": "Just now",
+        "mAgo": "{{count}}m ago",
+        "hAgo": "{{count}}h ago",
+        "yesterday": "Yesterday",
+        "dAgo": "{{count}}d ago",
+        "wAgo": "{{count}}w ago",
+        "moAgo": "{{count}}mo ago"
+    },
+    "search": {
+        "placeholder": "Search..."
+    }
+}

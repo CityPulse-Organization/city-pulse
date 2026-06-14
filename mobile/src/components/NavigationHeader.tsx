@@ -29,11 +29,18 @@ export const NavigationHeader = memo(
           iconName="chevron-back-outline"
           style={styles.headerLeftBlurButton}
         />
-
       </View>
 
       <View style={styles.headerCenter} pointerEvents="none">
-        <UIText style={styles.headerCenterText} size="md" weight="bold">
+        <UIText
+          style={styles.headerCenterText}
+          size="md"
+          weight="bold"
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          minimumFontScale={0.75}
+          ellipsizeMode="tail"
+        >
           {title}
         </UIText>
       </View>
@@ -44,7 +51,15 @@ export const NavigationHeader = memo(
         ) : (
           onRightAction && (
             <UIButton onPress={onRightAction} isLoading={isLoading}>
-              <UIText style={styles.headerRightText} size="lg" weight="bold">
+              <UIText
+                style={styles.headerRightText}
+                size="lg"
+                weight="bold"
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.75}
+                ellipsizeMode="tail"
+              >
                 {rightActionLabel}
               </UIText>
             </UIButton>
@@ -60,14 +75,14 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     alignSelf: "stretch",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingBottom: theme.utils.vs(10),
     paddingHorizontal: theme.utils.s(12),
   },
 
   headerLeft: {
-    zIndex: 10,
+    flex: 1,
     alignItems: "flex-start",
+    zIndex: 10,
   },
   headerLeftBlurButton: {
     paddingHorizontal: theme.utils.s(4),
@@ -75,22 +90,20 @@ const styles = StyleSheet.create((theme) => ({
   },
 
   headerCenter: {
-    position: "absolute",
-    left: theme.utils.s(60),
-    right: theme.utils.s(60),
-    top: 0,
-    bottom: theme.utils.vs(10),
+    flex: 2,
     alignItems: "center",
     justifyContent: "center",
-    zIndex: 1,
+    paddingHorizontal: theme.utils.s(8),
   },
   headerCenterText: {
     color: theme.colors.primaryText,
+    textAlign: "center",
   },
 
   headerRight: {
-    zIndex: 10,
+    flex: 1,
     alignItems: "flex-end",
+    zIndex: 10,
   },
   headerRightText: {
     color: theme.colors.accent,

@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import { View } from "react-native";
 import { useFollow } from "@/src/hooks";
 import { Icon } from "../Icon";
+import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native-unistyles";
 
 type ProfileHeaderProps = {
@@ -25,6 +26,7 @@ export const ProfileHeader = ({
     isSelf,
 }: ProfileHeaderProps) => {
     const router = useRouter();
+    const { t } = useTranslation();
 
     const navigateToEditProfile = useCallback(() => {
         router.navigate("/(tabs)/profile/edit-profile");
@@ -96,7 +98,7 @@ export const ProfileHeader = ({
                                     isFollowing && styles.followButtonTextActive,
                                 ]}
                             >
-                                {isFollowing ? "Unfollow" : "Follow"}
+                                {isFollowing ? t('profile.unfollow') : t('profile.follow')}
                             </UIText>
                         </UIButton>
                     )}

@@ -17,6 +17,7 @@ import { FooterButton } from '@/src/components/SaveButton';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CATEGORIES } from '@/src/utils/settings';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -36,6 +37,7 @@ export default function ReportProblemScreen() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const { t } = useTranslation();
 
     const { control, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
         resolver: zodResolver(reportFormSchema),
@@ -62,17 +64,17 @@ export default function ReportProblemScreen() {
 
 
 
-    if (isSubmitted) return <SuccessView onReset={resetForm} onBack={handleBack} />
+    if (isSubmitted) return <SuccessView onReset={resetForm} onBack={handleBack} t={t} />
 
     return (
         <ThemedBackground>
-            <NavigationHeader title="Report a Problem" onLeftAction={handleBack} />
+            <NavigationHeader title={t('reportProblemScreen.title')} onLeftAction={handleBack} />
 
             <UIKeyboardAvoidingScrollView
                 contentContainerStyle={styles.scrollContent}
             >
                 <InfoBanner
-                    text="We appreciate you taking the time to report this. Describe what happened and we'll do our best to fix it."
+                    text={t('reportProblemScreen.banner')}
                 />
 
                 <CategoryPicker
@@ -83,22 +85,22 @@ export default function ReportProblemScreen() {
                 <InputField
                     control={control}
                     name="title"
-                    label="SUMMARY"
-                    placeholder="e.g. App crashes on map zoom"
+                    label={t('reportProblemScreen.summary')}
+                    placeholder={t('reportProblemScreen.summaryPlaceholder')}
                     errorMessage={errors.title?.message}
                 />
 
                 <TextAreaField
                     control={control}
                     name="description"
-                    label="DETAILS"
-                    placeholder="Describe the steps to reproduce the issue, what you expected to happen, and what actually happened…"
+                    label={t('reportProblemScreen.details')}
+                    placeholder={t('reportProblemScreen.detailsPlaceholder')}
                     errorMessage={errors.description?.message}
                 />
             </UIKeyboardAvoidingScrollView>
 
             <FooterButton
-                label="Send Report"
+                label={t('reportProblemScreen.sendReport')}
                 onPress={onSubmit}
                 isLoading={isLoading}
             />
@@ -106,9 +108,9 @@ export default function ReportProblemScreen() {
     );
 }
 
-const SuccessView = memo(({ onReset, onBack }: { onReset: () => void, onBack: () => void }) => (
+const SuccessView = memo(({ onReset, onBack, t }: { onReset: () => void, onBack: () => void, t: (key: string) => string }) => (
     <ThemedBackground>
-        <NavigationHeader title="Report a Problem" onLeftAction={onBack} />
+        <NavigationHeader title={t('reportProblemScreen.title')} onLeftAction={onBack} />
 
         <View style={styles.successContainer}>
             <View style={styles.successIconWrap}>
@@ -120,14 +122,14 @@ const SuccessView = memo(({ onReset, onBack }: { onReset: () => void, onBack: ()
                 <Ionicons name="checkmark" size={styles.successIcon.height} color={styles.successIcon.color} />
             </View>
 
-            <UIText size="xl" weight="bold" style={styles.successTitle}>Report Sent!</UIText>
+            <UIText size="xl" weight="bold" style={styles.successTitle}>{t('reportProblemScreen.reportSent')}</UIText>
 
             <UIText size="sm" style={styles.successSubtitle}>
-                Thank you for helping us improve City Pulse. Our team will look into this shortly.
+                {t('reportProblemScreen.thankYou')}
             </UIText>
 
             <UIButton onPress={onReset} style={({ pressed }) => [styles.anotherButton, pressed && styles.anotherButtonPressed]}>
-                <UIText size="sm" style={styles.anotherButtonText}>Send another report</UIText>
+                <UIText size="sm" style={styles.anotherButtonText}>{t('reportProblemScreen.sendAnother')}</UIText>
             </UIButton>
         </View>
     </ThemedBackground>
@@ -137,10 +139,11 @@ const SuccessView = memo(({ onReset, onBack }: { onReset: () => void, onBack: ()
 
 
 const CategoryPicker = memo(({ control, errorMessage }: { control: Control<FormValues>; errorMessage?: string }) => {
+    const { t } = useTranslation();
 
     return (
         <View style={styles.fieldGroup}>
-            <UIText size="xs" style={styles.fieldLabel}>CATEGORY</UIText>
+            <UIText size="xs" style={styles.fieldLabel}>{t('reportProblemScreen.category')}</UIText>
             <Controller
                 control={control}
                 name="category"

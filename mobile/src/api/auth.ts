@@ -93,6 +93,21 @@ export const logout = async (): Promise<void> => {
   }
 };
 
+export const deleteAccount = async (): Promise<void> => {
+  try {
+    await axios.delete("/users/me");
+  } finally {
+    await tokenStorage.clearTokens();
+  }
+};
+
+export const changePassword = async (
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> => {
+  await axios.put("/users/me/password", { currentPassword, newPassword });
+};
+
 export const refreshToken = async (): Promise<string> => {
   const currentRefreshToken = await tokenStorage.getRefreshToken();
   if (!currentRefreshToken) throw new Error("No refresh token available");

@@ -1,0 +1,318 @@
+{
+    "auth": {
+        "start": "Начать",
+        "signIn": "Войти",
+        "signUp": "Регистрация",
+        "email": "Электронная почта",
+        "password": "Пароль",
+        "username": "Имя пользователя",
+        "repeatPassword": "Повторите пароль",
+        "forgotPassword": "Забыли пароль?",
+        "continueWithGoogle": "Продолжить с Google",
+        "dontHaveAccount": "Нет аккаунта?",
+        "alreadyHaveAccount": "Уже есть аккаунт?",
+        "next": "Далее",
+        "finish": "Завершить",
+        "lastStep": "Последний шаг",
+        "lastStepDescription": "Выберите уникальное имя пользователя для завершения создания аккаунта."
+    },
+    "home": {
+        "logout": "Выйти",
+        "showAlert": "Показать уведомление",
+        "testAlertTitle": "Тестовое уведомление",
+        "testAlertMessage": "Это тест нового UIAlert.",
+        "confirm": "Подтвердить"
+    },
+    "tabs": {
+        "map": "Карта",
+        "discover": "Обзор",
+        "chats": "Чаты",
+        "referrals": "Рефералы",
+        "profile": "Профиль"
+    },
+    "biometric": {
+        "authSuccess": "Биометрическая аутентификация успешна",
+        "unavailableTitle": "Биометрия недоступна",
+        "unavailableMessage": "Ваше устройство не поддерживает биометрию.",
+        "notEnrolledTitle": "Биометрия не настроена",
+        "notEnrolledIos": "Пожалуйста, настройте Face ID или Touch ID.",
+        "notEnrolledAndroid": "Пожалуйста, добавьте отпечаток пальца или лицо в настройках.",
+        "enablePrompt": "Пройдите аутентификацию для включения",
+        "disablePrompt": "Пройдите аутентификацию для отключения"
+    },
+    "permissions": {
+        "photoAccessTitle": "Нужен доступ к фото",
+        "photoAccessMessage": "City Pulse нужен доступ к фото для выбора изображений. Включите его в настройках.",
+        "photoAccessShort": "City Pulse нужен доступ к фото для выбора изображений.",
+        "cameraAccessTitle": "Нет доступа к камере",
+        "cameraAccessMessage": "Чтобы сделать фото, разрешите доступ к камере в настройках.",
+        "cancel": "Отмена",
+        "deny": "Запретить",
+        "allow": "Разрешить",
+        "openSettings": "Открыть настройки"
+    },
+    "discover": {
+        "search": "Поиск...",
+        "pulse": "Пульс",
+        "people": "Люди",
+        "posts": "Публикации",
+        "noPulseTitle": "Пульс не найден",
+        "noPulseDesc": "Мы не нашли недавних активностей в вашем районе.",
+        "noResultsTitle": "Ничего не найдено",
+        "noResultsDesc": "Мы не нашли пользователей по запросу \"{{query}}\"",
+        "noPostsTitle": "Нет публикаций",
+        "noPostsDesc": "Будьте первым, кто поделится чем-то в этом районе!"
+    },
+    "chats": {
+        "chats": "Чаты",
+        "events": "События",
+        "noChatsTitle": "Пока нет чатов",
+        "noChatsDesc": "Ваша история сообщений пуста. Начните новый чат!",
+        "noEventsTitle": "Событий не найдено",
+        "noEventsDesc": "Вы ещё не присоединились ни к одной группе или событию."
+    },
+    "profile": {
+        "posts": "Публикации",
+        "followers": "Подписчики",
+        "followings": "Подписки",
+        "saves": "Сохранённое",
+        "follow": "Подписаться",
+        "unfollow": "Отписаться",
+        "editProfile": "Редактировать профиль",
+        "changePhoto": "Изменить фото",
+        "save": "Сохранить",
+        "jobPlaceholder": "Должность или профессия",
+        "bioPlaceholder": "Биография. Расскажите о себе.",
+        "editPost": "Редактировать публикацию",
+        "done": "Готово",
+        "caption": "Подпись",
+        "captionPlaceholder": "Напишите подпись...",
+        "noPostsSelfTitle": "Пока нет публикаций",
+        "noPostsSelfDesc": "Поделитесь первым фото, чтобы увидеть его здесь!",
+        "noPostsOtherTitle": "Нет публикаций",
+        "noPostsOtherDesc": "Этот пользователь ещё не поделился фотографиями.",
+        "noFollowersTitle": "Нет подписчиков",
+        "noFollowersSelfDesc": "Когда люди подпишутся на вас, они появятся здесь.",
+        "noFollowersOtherDesc": "Когда люди подпишутся на этого пользователя, они появятся здесь.",
+        "noFollowingTitle": "Нет подписок",
+        "noFollowingSelfDesc": "Начните подписываться на людей, чтобы видеть их активность.",
+        "noFollowingOtherDesc": "Этот пользователь ещё ни на кого не подписан.",
+        "noSavedTitle": "Нет сохранённых публикаций",
+        "noSavedDesc": "Сохраняйте публикации, которые вам нравятся.",
+        "replyingTo": "В ответ @{{username}}: \""
+    },
+    "comments": {
+        "title": "Комментарии",
+        "noCommentsTitle": "Пока нет комментариев",
+        "noCommentsDesc": "Будьте первым, кто поделится мнением!",
+        "addComment": "Добавить комментарий...",
+        "addReply": "Добавить ответ...",
+        "replyingTo": "Ответ @{{username}} говорит \"{{text}}\""
+    },
+    "postMenu": {
+        "edit": "Редактировать",
+        "delete": "Удалить",
+        "share": "Поделиться",
+        "report": "Пожаловаться",
+        "deleteTitle": "Удалить публикацию",
+        "deleteMessage": "Вы уверены, что хотите удалить эту публикацию?",
+        "cancel": "Отмена"
+    },
+    "referrals": {
+        "swipeHint": "Проведите для вашего путешествия ➔",
+        "yourJourney": "Ваше путешествие",
+        "rewardMilestones": "Этапы наград",
+        "yourReferrals": "Ваши рефералы",
+        "referralCode": "ВАШ РЕФЕРАЛЬНЫЙ КОД",
+        "copy": "Копировать",
+        "copied": "Скопировано!",
+        "shareInviteLink": "Поделиться ссылкой-приглашением",
+        "howItWorks": "Как это работает",
+        "inviteAndEarn": "Приглашай и зарабатывай",
+        "inviteAndEarnDesc": "Пригласите {{count}} друзей в City Pulse и получите Premium — навсегда, бесплатно.",
+        "premiumIncludes": "Premium включает",
+        "milestones": {
+            "bronze": "Бронза",
+            "silver": "Серебро",
+            "gold": "Золото",
+            "diamond": "Бриллиант",
+            "rewards": {
+                "bronze": "Уникальная рамка профиля",
+                "silver": "Значок проверки",
+                "gold": "Продвинутая аналитика",
+                "diamond": "Полный Premium — навсегда"
+            }
+        },
+        "perks": {
+            "verifiedBadge": "Значок проверки",
+            "verifiedBadgeDesc": "Выделяйтесь с помощью проверки",
+            "analytics": "Аналитика",
+            "analyticsDesc": "Глубокий анализ",
+            "themes": "Темы",
+            "themesDesc": "Эксклюзивный дизайн",
+            "priority": "Приоритет",
+            "priorityDesc": "Продвижение в Обзоре",
+            "hdStream": "HD Стрим",
+            "hdStreamDesc": "Трансляции высокого качества",
+            "unlimited": "Безлимит",
+            "unlimitedDesc": "Сохраняйте всё"
+        },
+        "steps": {
+            "step1Title": "Поделитесь кодом",
+            "step1Desc": "Отправьте ссылку друзьям",
+            "step2Title": "Друзья присоединяются",
+            "step2Desc": "Они регистрируются с вашим кодом",
+            "step3Title": "Получайте награды",
+            "step3Desc": "Достигайте целей, получайте Premium"
+        },
+        "shareMessage": "Присоединяйся к City Pulse! Используй мой код: {{code}}\n\nhttps://citypulse.app/invite/{{code}}"
+    },
+    "settings": {
+        "title": "Настройки",
+        "sections": {
+            "appearance": "ВНЕШНИЙ ВИД",
+            "general": "ОБЩЕЕ",
+            "security": "БЕЗОПАСНОСТЬ",
+            "aboutSupport": "О ПРИЛОЖЕНИИ",
+            "account": "АККАУНТ"
+        },
+        "darkMode": "Тёмный режим",
+        "mapStyle": "Стиль карты",
+        "language": "Язык",
+        "pushNotifications": "Push-уведомления",
+        "restrictedAccounts": "Ограниченные аккаунты",
+        "changePassword": "Изменить пароль",
+        "biometricUnlock": "Биометрическая разблокировка",
+        "biometricChecking": "Проверка поддержки устройства…",
+        "biometricUnavailable": "Недоступно на этом устройстве",
+        "biometricNotEnrolled": "Биометрия не настроена",
+        "biometricReady": "Используйте Face ID или отпечаток для входа",
+        "helpCenter": "Центр помощи",
+        "reportProblem": "Сообщить о проблеме",
+        "rateApp": "Оценить приложение",
+        "privacyPolicy": "Политика конфиденциальности",
+        "termsOfService": "Условия использования",
+        "removeAccount": "Удалить аккаунт",
+        "signOut": "Выйти"
+    },
+    "languageScreen": {
+        "title": "Язык",
+        "banner": "Выберите язык интерфейса приложения. Это повлияет на меню, кнопки и другие тексты."
+    },
+    "languages": {
+        "en": "Английский",
+        "uk": "Украинский",
+        "de": "Немецкий",
+        "fr": "Французский",
+        "es": "Испанский",
+        "pl": "Польский",
+        "it": "Итальянский",
+        "pt": "Португальский",
+        "ru": "Русский",
+        "regions": {
+            "en": "Соединённые Штаты",
+            "uk": "Украина",
+            "de": "Германия",
+            "fr": "Франция",
+            "es": "Испания",
+            "pl": "Польша",
+            "it": "Италия",
+            "pt": "Португалия",
+            "ru": "Россия"
+        }
+    },
+    "changePasswordScreen": {
+        "title": "Изменить пароль",
+        "banner": "Выберите надёжный пароль, который вы ещё не использовали. Мы выйдем из аккаунта после сохранения.",
+        "currentPassword": "ТЕКУЩИЙ ПАРОЛЬ",
+        "newPassword": "НОВЫЙ ПАРОЛЬ",
+        "confirmPassword": "ПОДТВЕРДИТЬ ПАРОЛЬ",
+        "currentPlaceholder": "Введите текущий пароль",
+        "newPlaceholder": "Введите новый пароль",
+        "confirmPlaceholder": "Повторите новый пароль",
+        "saveButton": "Сохранить пароль",
+        "successToast": "Пароль успешно изменён",
+        "errorTitle": "Ошибка",
+        "errorFallback": "Не удалось изменить пароль. Попробуйте ещё раз."
+    },
+    "deleteAccount": {
+        "title": "Удалить аккаунт",
+        "message": "Это навсегда удалит ваш аккаунт и все ваши данные. Это действие нельзя отменить.",
+        "cancel": "Отмена",
+        "confirm": "Удалить",
+        "successTitle": "Аккаунт удалён",
+        "successMessage": "Ваш аккаунт был навсегда удалён.",
+        "errorTitle": "Ошибка",
+        "errorMessage": "Не удалось удалить аккаунт. Попробуйте ещё раз."
+    },
+    "mapStyleScreen": {
+        "title": "Стиль карты",
+        "banner": "Выберите, как выглядит карта во всём приложении. Светлый стиль помогает при ярком солнце.",
+        "currentlySelected": "{{style}} — Текущий выбор"
+    },
+    "reportProblemScreen": {
+        "title": "Сообщить о проблеме",
+        "banner": "Спасибо за уделённое время. Опишите, что произошло, и мы сделаем всё возможное.",
+        "category": "КАТЕГОРИЯ",
+        "summary": "ОПИСАНИЕ",
+        "summaryPlaceholder": "напр. Приложение закрывается при масштабировании карты",
+        "details": "ДЕТАЛИ",
+        "detailsPlaceholder": "Опишите шаги воспроизведения проблемы, что вы ожидали и что произошло…",
+        "sendReport": "Отправить отчёт",
+        "reportSent": "Отчёт отправлен!",
+        "thankYou": "Спасибо за помощь в улучшении City Pulse. Наша команда рассмотрит это в ближайшее время.",
+        "sendAnother": "Отправить ещё один отчёт"
+    },
+    "restrictedAccountsScreen": {
+        "title": "Ограниченные аккаунты",
+        "banner": "Ограниченные аккаунты не могут видеть вашу активность или отправлять вам сообщения. Они не узнают, что были ограничены.",
+        "restricted": "ОГРАНИЧЕННЫЕ",
+        "unrestrict": "Снять ограничение",
+        "noRestrictedTitle": "Нет ограниченных аккаунтов",
+        "noRestrictedDesc": "Ограничивайте людей, чтобы скрыть их публикации из вашей ленты."
+    },
+    "newPost": {
+        "title": "Новая публикация",
+        "next": "Далее",
+        "recents": "Недавние",
+        "location": "Местоположение",
+        "description": "Описание",
+        "post": "Опубликовать"
+    },
+    "referralsCount": {
+        "invites": "{{count}} приглашений",
+        "moreInvites": "Осталось {{count}} приглашений",
+        "moreInvites_one": "Осталось {{count}} приглашение",
+        "premiumUnlocked": "🎉 Premium разблокирован!"
+    },
+    "mapStyles": {
+        "dark": {
+            "label": "Темный",
+            "description": "Ночной стиль карты по умолчанию."
+        },
+        "light": {
+            "label": "Светлый",
+            "description": "Светлый стиль карты для дня."
+        },
+        "satellite": {
+            "label": "Спутник",
+            "description": "Реальные спутниковые снимки из космоса."
+        }
+    },
+    "editProfile": {
+        "jobPlaceholder": "Профессия или должность",
+        "bioPlaceholder": "Биография. Расскажите о себе."
+    },
+    "dateTime": {
+        "justNow": "Только что",
+        "mAgo": "{{count}}м назад",
+        "hAgo": "{{count}}ч назад",
+        "yesterday": "Вчера",
+        "dAgo": "{{count}}д назад",
+        "wAgo": "{{count}}н назад",
+        "moAgo": "{{count}}мес назад"
+    },
+    "search": {
+        "placeholder": "Поиск..."
+    }
+}

@@ -1,4 +1,4 @@
-import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 import { IconInfo, Post, ThemedBackground } from "@/src/components";
 import { UIButton, UIEmptyState, UIText } from "@/src/ui";
 import { router, useRouter } from "expo-router";
@@ -14,6 +14,7 @@ import { useProfile } from "@/src/hooks/profile/useProfile";
 import { useFollow } from "@/src/hooks/useFollow";
 import { ProfileHeader } from "./profile/ProfileHeader";
 import { SearchInput } from "./SearchInput";
+import { useTranslation } from 'react-i18next';
 
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
@@ -26,6 +27,7 @@ type ProfileStat = {
 };
 
 const FollowListItem = memo(({ item }: { item: DiscoverUser }) => {
+  const { t } = useTranslation();
   const { isFollowing, toggleFollow, isPending, isSelf } = useFollow(item.id);
   const navigateToProfile = useCallback(() => {
     router.push({
@@ -61,7 +63,7 @@ const FollowListItem = memo(({ item }: { item: DiscoverUser }) => {
               isFollowing && styles.followButtonTextActive,
             ]}
           >
-            {isFollowing ? "Unfollow" : "Follow"}
+            {isFollowing ? t('profile.unfollow') : t('profile.follow')}
           </UIText>
         </UIButton>
       )}
@@ -75,6 +77,7 @@ type UniversalProfileScreenProps = {
 
 export function UniversalProfileScreen({ id }: UniversalProfileScreenProps) {
   const isSelf = !id;
+  const { t } = useTranslation();
 
   const router = useRouter();
 
@@ -169,7 +172,7 @@ export function UniversalProfileScreen({ id }: UniversalProfileScreenProps) {
             />
           )}
         >
-          <Tabs.Tab name="posts" label="Posts">
+          <Tabs.Tab name="posts" label={t('profile.posts')}>
             <Tabs.FlashList
               data={posts}
               renderItem={renderPostItem}
@@ -187,18 +190,18 @@ export function UniversalProfileScreen({ id }: UniversalProfileScreenProps) {
               ListEmptyComponent={
                 <UIEmptyState
                   icon="image-outline"
-                  title={isSelf ? "No Posts Yet" : "No Posts"}
+                  title={isSelf ? t('profile.noPostsSelfTitle') : t('profile.noPostsOtherTitle')}
                   description={
                     isSelf
-                      ? "Share your first photo to see it here!"
-                      : "This user hasn't shared any photos yet."
+                      ? t('profile.noPostsSelfDesc')
+                      : t('profile.noPostsOtherDesc')
                   }
                 />
               }
             />
           </Tabs.Tab>
 
-          <Tabs.Tab name="followers" label="Followers">
+          <Tabs.Tab name="followers" label={t('profile.followers')}>
             <Tabs.FlatList
               data={followers}
               renderItem={renderUserItem}
@@ -218,18 +221,18 @@ export function UniversalProfileScreen({ id }: UniversalProfileScreenProps) {
               ListEmptyComponent={
                 <UIEmptyState
                   icon="people-outline"
-                  title="No Followers"
+                  title={t('profile.noFollowersTitle')}
                   description={
                     isSelf
-                      ? "When people follow you, they'll appear here."
-                      : "When people follow this user, they'll appear here."
+                      ? t('profile.noFollowersSelfDesc')
+                      : t('profile.noFollowersOtherDesc')
                   }
                 />
               }
             />
           </Tabs.Tab>
 
-          <Tabs.Tab name="followings" label="Followings">
+          <Tabs.Tab name="followings" label={t('profile.followings')}>
             <Tabs.FlatList
               data={following}
               renderItem={renderUserItem}
@@ -249,11 +252,11 @@ export function UniversalProfileScreen({ id }: UniversalProfileScreenProps) {
               ListEmptyComponent={
                 <UIEmptyState
                   icon="person-add-outline"
-                  title="No Following"
+                  title={t('profile.noFollowingTitle')}
                   description={
                     isSelf
-                      ? "Start following people to see their activities."
-                      : "This user isn't following anyone yet."
+                      ? t('profile.noFollowingSelfDesc')
+                      : t('profile.noFollowingOtherDesc')
                   }
                 />
               }
@@ -261,7 +264,7 @@ export function UniversalProfileScreen({ id }: UniversalProfileScreenProps) {
           </Tabs.Tab>
 
           {isSelf ? (
-            <Tabs.Tab name="saves" label="Saves">
+            <Tabs.Tab name="saves" label={t('profile.saves')}>
               <Tabs.FlashList
                 data={savedPosts}
                 renderItem={renderPostItem}
@@ -280,8 +283,8 @@ export function UniversalProfileScreen({ id }: UniversalProfileScreenProps) {
                 ListEmptyComponent={
                   <UIEmptyState
                     icon="bookmark-outline"
-                    title="No Saved Posts"
-                    description="Keep track of what you love by saving posts."
+                    title={t('profile.noSavedTitle')}
+                    description={t('profile.noSavedDesc')}
                   />
                 }
               />
@@ -294,13 +297,12 @@ export function UniversalProfileScreen({ id }: UniversalProfileScreenProps) {
 }
 
 const ProfileBackButton = () => {
-  const theme = UnistylesRuntime.getTheme();
   return (
     <UIButton style={styles.backButton} onPress={router.back}>
       <Ionicons
         name="chevron-back"
         size={24}
-        color={theme.colors.primaryText}
+        color={styles.backButtonIcon.color}
       />
     </UIButton>
   );
@@ -315,6 +317,7 @@ type ProfileTabBarProps = TabBarProps<string> & {
 };
 
 const ProfileTabBar = (props: ProfileTabBarProps) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("posts");
 
   useAnimatedReaction(
@@ -333,21 +336,21 @@ const ProfileTabBar = (props: ProfileTabBarProps) => {
     {
       id: "1",
       name: "posts",
-      title: "Posts",
+      title: t('profile.posts'),
       iconName: "document-text-outline",
       quantity: props.postsCount,
     },
     {
       id: "2",
       name: "followers",
-      title: "Followers",
+      title: t('profile.followers'),
       iconName: "people-outline",
       quantity: props.followersCount,
     },
     {
       id: "3",
       name: "followings",
-      title: "Followings",
+      title: t('profile.followings'),
       iconName: "grid-outline",
       quantity: props.followingCount,
     },
@@ -357,7 +360,7 @@ const ProfileTabBar = (props: ProfileTabBarProps) => {
     stats.push({
       id: "4",
       name: "saves",
-      title: "Saves",
+      title: t('profile.saves'),
       iconName: "bookmark-outline",
       quantity: props.savedPostsCount,
     });
@@ -402,7 +405,7 @@ const ProfileTabBar = (props: ProfileTabBarProps) => {
       {isPostsTabFocused && (
         <View style={styles.postsHeader}>
           <UIText size="lg" weight="bold" style={styles.text}>
-            Posts
+            {t('profile.posts')}
           </UIText>
           {props.isSelf && <NewPostButton />}
         </View>
@@ -452,7 +455,14 @@ const StatsButton = memo(
         <UIText style={styles.statQuantity} size="md" weight="bold">
           {quantity}
         </UIText>
-        <UIText style={styles.statTitle} size="xxs">
+        <UIText
+          style={styles.statTitle}
+          size="xxs"
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          minimumFontScale={0.7}
+          ellipsizeMode="tail"
+        >
           {title}
         </UIText>
       </UIButton>
@@ -607,5 +617,9 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   followButtonTextActive: {
     color: theme.colors.muted,
+  },
+
+  backButtonIcon: {
+    color: theme.colors.primaryText,
   },
 }));

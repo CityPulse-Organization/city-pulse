@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Share } from "react-native";
+import { useTranslation } from "react-i18next";
 import {
   Easing,
   useSharedValue,
@@ -60,36 +61,36 @@ export const MILESTONES: Milestone[] = [
 
 export const PREMIUM_PERKS: PremiumPerk[] = [
   {
-    id: "1",
+    id: "verifiedBadge",
     icon: "shield-checkmark",
     title: "Verified Badge",
     desc: "Stand out with verification",
   },
   {
-    id: "2",
+    id: "analytics",
     icon: "analytics",
     title: "Analytics",
     desc: "Deep performance insights",
   },
   {
-    id: "3",
+    id: "themes",
     icon: "color-palette",
     title: "Themes",
     desc: "Exclusive customization",
   },
   {
-    id: "4",
+    id: "priority",
     icon: "megaphone",
     title: "Priority",
     desc: "Boosted in Discover",
   },
   {
-    id: "5",
+    id: "hdStream",
     icon: "videocam",
     title: "HD Stream",
     desc: "High quality broadcast",
   },
-  { id: "6", icon: "infinite", title: "Unlimited", desc: "Save everything" },
+  { id: "unlimited", icon: "infinite", title: "Unlimited", desc: "Save everything" },
 ];
 
 export const RECENT_REFERRALS: Referral[] = [
@@ -122,6 +123,7 @@ export const HOW_IT_WORKS: HowItWorksStep[] = [
 
 export function useReferrals() {
   const [codeCopied, setCodeCopied] = useState(false);
+  const { t } = useTranslation();
 
   const ringPulse = useSharedValue(1);
 
@@ -140,10 +142,10 @@ export function useReferrals() {
   const handleShare = useCallback(async () => {
     try {
       await Share.share({
-        message: `Join me on City Pulse! Use my referral code: ${REFERRAL_CODE}\n\nhttps://citypulse.app/invite/${REFERRAL_CODE}`,
+        message: t('referrals.shareMessage', { code: REFERRAL_CODE }),
       });
     } catch (_) {}
-  }, []);
+  }, [t]);
 
   const handleCopy = useCallback(() => {
     setCodeCopied(true);

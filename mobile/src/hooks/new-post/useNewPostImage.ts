@@ -7,9 +7,11 @@ import { useGalleryBottomSheet } from "./useGalleryBottomSheet";
 import { UIAlert } from "@/src/hoc";
 import { Linking, Platform } from "react-native";
 import { GridItem, Photo } from "@/src/types/newPostImage";
+import { useTranslation } from "react-i18next";
 
 
 export const useNewPostImage = () => {
+  const { t } = useTranslation();
   const router = useRouter();
 
   const {
@@ -73,9 +75,9 @@ export const useNewPostImage = () => {
         });
       })
       .catch((e: unknown) => {
-        handleImagePickerError(e);
+        handleImagePickerError(e, t);
       });
-  }, [router]);
+  }, [router, t]);
 
   return {
     gridItems,
@@ -96,7 +98,7 @@ export const useNewPostImage = () => {
 }
 
 
-const handleImagePickerError = async (error: unknown) => {
+const handleImagePickerError = async (error: unknown, t: any) => {
   if (Platform.OS !== "android") return;
 
   if (typeof error !== 'object' || error === null) {
@@ -117,12 +119,12 @@ const handleImagePickerError = async (error: unknown) => {
     message.includes("denied")
   ) {
     UIAlert.alert(
-      "No media access",
-      "To take a photo, you need to allow the app to access the photos in your phone’s Settings",
+      t('permissions.cameraAccessTitle'),
+      t('permissions.cameraAccessMessage'),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t('permissions.cancel'), style: "cancel" },
         {
-          text: "Open Settings",
+          text: t('permissions.openSettings'),
           onPress: () => Linking.openSettings(),
         },
       ]

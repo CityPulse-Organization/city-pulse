@@ -2,6 +2,7 @@ import { UIText } from "@/src/ui";
 import { LinearGradient } from "expo-linear-gradient";
 import { memo, useEffect } from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -70,6 +71,7 @@ export const GlowRing = memo(
     milestones,
     animations,
   }: GlowRingProps) => {
+    const { t } = useTranslation();
     const { ringPulse } = animations;
 
     const ringStyle = useAnimatedStyle(() => ({
@@ -132,8 +134,8 @@ export const GlowRing = memo(
 
         <UIText size="sm" style={styles.subtitle}>
           {remaining > 0
-            ? `${remaining} more invite${remaining === 1 ? "" : "s"} to go`
-            : "🎉 Premium unlocked!"}
+            ? t("referralsCount.moreInvites", { count: remaining })
+            : t("referralsCount.premiumUnlocked")}
         </UIText>
       </View>
     );

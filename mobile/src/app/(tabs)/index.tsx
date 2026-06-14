@@ -5,9 +5,11 @@ import { UIAlert } from "@/src/hoc";
 import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
+import { useTranslation } from 'react-i18next';
 
 export default function HomeScreen() {
   const { mutate: handleLogout } = useLogout();
+  const { t } = useTranslation();
 
   return (
     <ThemedBackground style={styles.screen} withoutSafeArea>
@@ -15,20 +17,20 @@ export default function HomeScreen() {
 
       <UIButton style={styles.logoutButton} onPress={() => handleLogout()}>
         <Ionicons name="log-out-outline" size={20} color={styles.icon.color} />
-        <UIText style={styles.logoutText}>Logout</UIText>
+        <UIText style={styles.logoutText}>{t('home.logout')}</UIText>
       </UIButton>
 
       <UIButton
         style={[styles.logoutButton, { top: 120, right: 20, left: undefined }]}
         onPress={() => {
           UIAlert.alert(
-            "Test Alert Popup",
-            "This is a test of the new custom UIAlert component.",
+            t('home.testAlertTitle'),
+            t('home.testAlertMessage'),
             [
-              { text: "Cancel", style: "cancel" },
-              { text: "Confirm", style: "default" },
+              { text: t('postMenu.cancel'), style: "cancel" },
+              { text: t('home.confirm'), style: "default" },
               {
-                text: "Delete",
+                text: t('postMenu.delete'),
                 style: "destructive",
                 onPress: () => console.log("Deleted!"),
               },
@@ -41,7 +43,7 @@ export default function HomeScreen() {
           size={20}
           color={styles.icon.color}
         />
-        <UIText style={styles.logoutText}>Show Alert</UIText>
+        <UIText style={styles.logoutText}>{t('home.showAlert')}</UIText>
       </UIButton>
     </ThemedBackground>
   );

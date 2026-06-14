@@ -2,8 +2,10 @@ import { AuthButton } from "@/src/components";
 import { router } from "expo-router";
 import { Image, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
+import { useTranslation } from 'react-i18next';
 
 export default function IntroPage() {
+  const { t } = useTranslation();
   return (
     <View style={styles.mainContainer}>
       <Image
@@ -11,7 +13,7 @@ export default function IntroPage() {
         style={styles.image}
         source={require("@assets/images/intro.jpg")}
       />
-      <AuthButton label="Start" onPress={() => router.push("/sign-up")} />
+      <AuthButton label={t('auth.start')} onPress={() => router.push("/sign-up")} />
     </View>
   );
 }

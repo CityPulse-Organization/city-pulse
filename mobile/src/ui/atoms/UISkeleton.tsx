@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { UnistylesRuntime } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 import { Skeleton, type SkeletonProps } from "react-native-ease-skeleton";
 
 export type UISkeletonProps = Partial<SkeletonProps> & {
@@ -8,14 +8,20 @@ export type UISkeletonProps = Partial<SkeletonProps> & {
 
 export const UISkeleton = memo(
   ({ show = false, colorMode, ...props }: UISkeletonProps) => {
-    const themeName = UnistylesRuntime.themeName;
 
     return (
       <Skeleton
         show={show}
-        colorMode={colorMode || (themeName as "light" | "dark")}
+        colorMode={colorMode || (styles.container.color as "light" | "dark")}
         {...props}
       />
     );
   },
 );
+
+const styles = StyleSheet.create((theme, rt) => ({
+  container: {
+    color: rt.themeName,
+  }
+}));
+

@@ -4,35 +4,37 @@ import { BottomTabBar } from "@/src/components";
 import { Tabs, useSegments, Slot } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native-unistyles";
+import { useTranslation } from 'react-i18next';
 
 export default function TabLayout() {
+  const { t } = useTranslation();
   if (Platform.OS === "ios") {
     return (
       <NativeTabs>
         <NativeTabs.Trigger name="index">
           <Icon sf="map" selectedColor={styles.icon.color} />
 
-          <Label>Map</Label>
+          <Label>{t('tabs.map')}</Label>
         </NativeTabs.Trigger>
 
         <NativeTabs.Trigger name="discover">
           <Icon sf="waveform.path.ecg" selectedColor={styles.icon.color} />
-          <Label>Discover</Label>
+          <Label>{t('tabs.discover')}</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="chats">
           <Icon
             sf="bubble.left.and.bubble.right"
             selectedColor={styles.icon.color}
           />
-          <Label>Chats</Label>
+          <Label>{t('tabs.chats')}</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="referrals">
           <Icon sf="gift" selectedColor={styles.icon.color} />
-          <Label>Referrals</Label>
+          <Label>{t('tabs.referrals')}</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="profile">
           <Icon sf="person" selectedColor={styles.icon.color} />
-          <Label>Profile</Label>
+          <Label>{t('tabs.profile')}</Label>
         </NativeTabs.Trigger>
       </NativeTabs>
     );

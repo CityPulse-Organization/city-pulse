@@ -1,0 +1,318 @@
+{
+    "auth": {
+        "start": "Почати",
+        "signIn": "Увійти",
+        "signUp": "Зареєструватись",
+        "email": "Електронна пошта",
+        "password": "Пароль",
+        "username": "Ім'я користувача",
+        "repeatPassword": "Повторіть пароль",
+        "forgotPassword": "Забули пароль?",
+        "continueWithGoogle": "Продовжити з Google",
+        "dontHaveAccount": "Немає акаунту?",
+        "alreadyHaveAccount": "Вже маєте акаунт?",
+        "next": "Далі",
+        "finish": "Завершити",
+        "lastStep": "Останній крок",
+        "lastStepDescription": "Оберіть унікальне ім'я користувача, щоб завершити створення акаунту."
+    },
+    "home": {
+        "logout": "Вийти",
+        "showAlert": "Показати сповіщення",
+        "testAlertTitle": "Тестове сповіщення",
+        "testAlertMessage": "Це тест нового компонента UIAlert.",
+        "confirm": "Підтвердити"
+    },
+    "tabs": {
+        "map": "Карта",
+        "discover": "Огляд",
+        "chats": "Чати",
+        "referrals": "Реферали",
+        "profile": "Профіль"
+    },
+    "biometric": {
+        "authSuccess": "Біометрична автентифікація успішна",
+        "unavailableTitle": "Біометрія недоступна",
+        "unavailableMessage": "Ваш пристрій не підтримує біометрію.",
+        "notEnrolledTitle": "Біометрію не налаштовано",
+        "notEnrolledIos": "Будь ласка, налаштуйте Face ID або Touch ID в налаштуваннях.",
+        "notEnrolledAndroid": "Будь ласка, додайте відбиток пальця або обличчя в налаштуваннях.",
+        "enablePrompt": "Пройдіть автентифікацію, щоб увімкнути",
+        "disablePrompt": "Пройдіть автентифікацію, щоб вимкнути"
+    },
+    "permissions": {
+        "photoAccessTitle": "Доступ до фото",
+        "photoAccessMessage": "City Pulse потрібен доступ до фото для вибору зображень. Увімкніть його в налаштуваннях.",
+        "photoAccessShort": "City Pulse потрібен доступ до фото для вибору зображень.",
+        "cameraAccessTitle": "Немає доступу до камери",
+        "cameraAccessMessage": "Щоб зробити фото, дозвольте доступ до камери в налаштуваннях.",
+        "cancel": "Скасувати",
+        "deny": "Заборонити",
+        "allow": "Дозволити",
+        "openSettings": "Відкрити налаштування"
+    },
+    "discover": {
+        "search": "Пошук...",
+        "pulse": "Пульс",
+        "people": "Люди",
+        "posts": "Публікації",
+        "noPulseTitle": "Пульс не знайдено",
+        "noPulseDesc": "Ми не знайшли жодної нещодавньої активності у вашому районі.",
+        "noResultsTitle": "Нічого не знайдено",
+        "noResultsDesc": "Ми не знайшли жодного користувача за запитом \"{{query}}\"",
+        "noPostsTitle": "Немає публікацій",
+        "noPostsDesc": "Будьте першим, хто поділиться чимось у цьому районі!"
+    },
+    "chats": {
+        "chats": "Чати",
+        "events": "Події",
+        "noChatsTitle": "Ще немає чатів",
+        "noChatsDesc": "Ваша історія розмов порожня. Почніть новий чат!",
+        "noEventsTitle": "Подій не знайдено",
+        "noEventsDesc": "Ви ще не приєднались до жодної групової розмови чи події."
+    },
+    "profile": {
+        "posts": "Публікації",
+        "followers": "Підписники",
+        "followings": "Підписки",
+        "saves": "Збережене",
+        "follow": "Стежити",
+        "unfollow": "Не стежити",
+        "editProfile": "Редагувати профіль",
+        "changePhoto": "Змінити фото",
+        "save": "Зберегти",
+        "jobPlaceholder": "Посада або професія",
+        "bioPlaceholder": "Біографія. Розкажіть про себе.",
+        "editPost": "Редагувати публікацію",
+        "done": "Готово",
+        "caption": "Підпис",
+        "captionPlaceholder": "Напишіть підпис...",
+        "noPostsSelfTitle": "Ще немає публікацій",
+        "noPostsSelfDesc": "Поділіться першим фото, щоб побачити його тут!",
+        "noPostsOtherTitle": "Немає публікацій",
+        "noPostsOtherDesc": "Цей користувач ще не поділився жодним фото.",
+        "noFollowersTitle": "Немає підписників",
+        "noFollowersSelfDesc": "Коли люди підпишуться на вас, вони з'являться тут.",
+        "noFollowersOtherDesc": "Коли люди підпишуться на цього користувача, вони з'являться тут.",
+        "noFollowingTitle": "Немає підписок",
+        "noFollowingSelfDesc": "Почніть підписуватись на людей, щоб бачити їхню активність.",
+        "noFollowingOtherDesc": "Цей користувач ще ні на кого не підписаний.",
+        "noSavedTitle": "Немає збережених публікацій",
+        "noSavedDesc": "Зберігайте публікації, які вам подобаються.",
+        "replyingTo": "Відповідь @{{username}}: \""
+    },
+    "comments": {
+        "title": "Коментарі",
+        "noCommentsTitle": "Ще немає коментарів",
+        "noCommentsDesc": "Будьте першим, хто поділиться думкою!",
+        "addComment": "Додати коментар...",
+        "addReply": "Додати відповідь...",
+        "replyingTo": "Відповідь @{{username}} каже \"{{text}}\""
+    },
+    "postMenu": {
+        "edit": "Редагувати",
+        "delete": "Видалити",
+        "share": "Поділитись",
+        "report": "Поскаржитись",
+        "deleteTitle": "Видалити публікацію",
+        "deleteMessage": "Ви впевнені, що хочете видалити цю публікацію?",
+        "cancel": "Скасувати"
+    },
+    "referrals": {
+        "swipeHint": "Свайпніть для вашої подорожі ➔",
+        "yourJourney": "Ваша подорож",
+        "rewardMilestones": "Нагороди за досягнення",
+        "yourReferrals": "Ваші запрошення",
+        "referralCode": "ВАШ КОД ЗАПРОШЕННЯ",
+        "copy": "Копіювати",
+        "copied": "Скопійовано!",
+        "shareInviteLink": "Поділитись посиланням",
+        "howItWorks": "Як це працює",
+        "inviteAndEarn": "Запрошуй та отримуй",
+        "inviteAndEarnDesc": "Запросіть {{count}} друзів до City Pulse та отримайте Premium — назавжди, безкоштовно.",
+        "premiumIncludes": "Premium включає",
+        "milestones": {
+            "bronze": "Бронза",
+            "silver": "Срібло",
+            "gold": "Золото",
+            "diamond": "Діамант",
+            "rewards": {
+                "bronze": "Унікальна рамка",
+                "silver": "Значок перевірки",
+                "gold": "Розширена аналітика",
+                "diamond": "Повний Premium — назавжди"
+            }
+        },
+        "perks": {
+            "verifiedBadge": "Значок перевірки",
+            "verifiedBadgeDesc": "Виділяйтеся з перевіркою",
+            "analytics": "Аналітика",
+            "analyticsDesc": "Глибокий аналіз",
+            "themes": "Теми",
+            "themesDesc": "Ексклюзивний дизайн",
+            "priority": "Пріоритет",
+            "priorityDesc": "Підняття в Огляді",
+            "hdStream": "HD Стрім",
+            "hdStreamDesc": "Трансляції високої якості",
+            "unlimited": "Безліміт",
+            "unlimitedDesc": "Зберігайте все"
+        },
+        "steps": {
+            "step1Title": "Поділіться кодом",
+            "step1Desc": "Надішліть код друзям",
+            "step2Title": "Друзі приєднуються",
+            "step2Desc": "Вони реєструються з кодом",
+            "step3Title": "Отримуйте нагороди",
+            "step3Desc": "Досягайте цілей, заробляйте Premium"
+        },
+        "shareMessage": "Приєднуйся до City Pulse! Використай мій код: {{code}}\n\nhttps://citypulse.app/invite/{{code}}"
+    },
+    "settings": {
+        "title": "Налаштування",
+        "sections": {
+            "appearance": "ВИГЛЯД",
+            "general": "ЗАГАЛЬНЕ",
+            "security": "БЕЗПЕКА",
+            "aboutSupport": "ПРО ДОДАТОК",
+            "account": "АКАУНТ"
+        },
+        "darkMode": "Темний режим",
+        "mapStyle": "Стиль карти",
+        "language": "Мова",
+        "pushNotifications": "Push-сповіщення",
+        "restrictedAccounts": "Обмежені акаунти",
+        "changePassword": "Змінити пароль",
+        "biometricUnlock": "Біометричний вхід",
+        "biometricChecking": "Перевірка підтримки пристрою…",
+        "biometricUnavailable": "Недоступно на цьому пристрої",
+        "biometricNotEnrolled": "Біометрія не налаштована",
+        "biometricReady": "Використовуйте Face ID або відбиток для входу",
+        "helpCenter": "Центр допомоги",
+        "reportProblem": "Повідомити про проблему",
+        "rateApp": "Оцінити додаток",
+        "privacyPolicy": "Політика конфіденційності",
+        "termsOfService": "Умови використання",
+        "removeAccount": "Видалити акаунт",
+        "signOut": "Вийти"
+    },
+    "languageScreen": {
+        "title": "Мова",
+        "banner": "Оберіть мову інтерфейсу додатку. Це вплине на меню, кнопки та інші елементи."
+    },
+    "languages": {
+        "en": "Англійська",
+        "uk": "Українська",
+        "de": "Німецька",
+        "fr": "Французька",
+        "es": "Іспанська",
+        "pl": "Польська",
+        "it": "Італійська",
+        "pt": "Португальська",
+        "ru": "Російська",
+        "regions": {
+            "en": "Сполучені Штати",
+            "uk": "Україна",
+            "de": "Німеччина",
+            "fr": "Франція",
+            "es": "Іспанія",
+            "pl": "Польща",
+            "it": "Італія",
+            "pt": "Португалія",
+            "ru": "Росія"
+        }
+    },
+    "changePasswordScreen": {
+        "title": "Змінити пароль",
+        "banner": "Оберіть надійний пароль, який ви ще не використовували. Ми вас розлогінимо після збереження.",
+        "currentPassword": "ПОТОЧНИЙ ПАРОЛЬ",
+        "newPassword": "НОВИЙ ПАРОЛЬ",
+        "confirmPassword": "ПІДТВЕРДИТИ НОВИЙ ПАРОЛЬ",
+        "currentPlaceholder": "Введіть поточний пароль",
+        "newPlaceholder": "Введіть новий пароль",
+        "confirmPlaceholder": "Повторіть новий пароль",
+        "saveButton": "Зберегти пароль",
+        "successToast": "Пароль успішно змінено",
+        "errorTitle": "Помилка",
+        "errorFallback": "Не вдалося змінити пароль. Спробуйте ще раз."
+    },
+    "deleteAccount": {
+        "title": "Видалити акаунт",
+        "message": "Це назавжди видалить ваш акаунт та всі ваші дані. Цю дію не можна скасувати.",
+        "cancel": "Скасувати",
+        "confirm": "Видалити",
+        "successTitle": "Акаунт видалено",
+        "successMessage": "Ваш акаунт було назавжди видалено.",
+        "errorTitle": "Помилка",
+        "errorMessage": "Не вдалося видалити акаунт. Спробуйте ще раз."
+    },
+    "mapStyleScreen": {
+        "title": "Стиль карти",
+        "banner": "Оберіть, як виглядатиме карта в додатку. Світлий стиль допомагає при яскравому сонці.",
+        "currentlySelected": "{{style}} — Поточний вибір"
+    },
+    "reportProblemScreen": {
+        "title": "Повідомити про проблему",
+        "banner": "Дякуємо, що повідомляєте про це. Опишіть, що сталося, і ми зробимо все можливе, щоб виправити.",
+        "category": "КАТЕГОРІЯ",
+        "summary": "ОПИС",
+        "summaryPlaceholder": "напр. Додаток вилітає при масштабуванні карти",
+        "details": "ДЕТАЛІ",
+        "detailsPlaceholder": "Опишіть кроки відтворення проблеми, що ви очікували і що сталося насправді…",
+        "sendReport": "Надіслати звіт",
+        "reportSent": "Звіт надіслано!",
+        "thankYou": "Дякуємо, що допомагаєте покращити City Pulse. Наша команда розгляне це найближчим часом.",
+        "sendAnother": "Надіслати ще один звіт"
+    },
+    "restrictedAccountsScreen": {
+        "title": "Обмежені акаунти",
+        "banner": "Обмежені акаунти не можуть бачити вашу активність або надсилати вам повідомлення. Вони не дізнаються, що їх обмежили.",
+        "restricted": "ОБМЕЖЕНІ",
+        "unrestrict": "Зняти обмеження",
+        "noRestrictedTitle": "Немає обмежених акаунтів",
+        "noRestrictedDesc": "Почніть обмежувати людей, щоб приховати їхні публікації зі стрічки."
+    },
+    "newPost": {
+        "title": "Нова публікація",
+        "next": "Далі",
+        "recents": "Останні",
+        "location": "Локація",
+        "description": "Опис",
+        "post": "Опублікувати"
+    },
+    "referralsCount": {
+        "invites": "{{count}} запрошень",
+        "moreInvites": "Залишилось ще {{count}} запрошень",
+        "moreInvites_one": "Залишилось ще {{count}} запрошення",
+        "premiumUnlocked": "🎉 Premium розблоковано!"
+    },
+    "mapStyles": {
+        "dark": {
+            "label": "Темний",
+            "description": "Типовий нічний стиль карти."
+        },
+        "light": {
+            "label": "Світлий",
+            "description": "Світлий стиль карти для дня."
+        },
+        "satellite": {
+            "label": "Супутник",
+            "description": "Реальні супутникові знімки з космосу."
+        }
+    },
+    "editProfile": {
+        "jobPlaceholder": "Професія або посада",
+        "bioPlaceholder": "Біографія. Розкажіть про себе."
+    },
+    "dateTime": {
+        "justNow": "Щойно",
+        "mAgo": "{{count}}хв тому",
+        "hAgo": "{{count}}год тому",
+        "yesterday": "Вчора",
+        "dAgo": "{{count}}д тому",
+        "wAgo": "{{count}}т тому",
+        "moAgo": "{{count}}міс тому"
+    },
+    "search": {
+        "placeholder": "Пошук..."
+    }
+}

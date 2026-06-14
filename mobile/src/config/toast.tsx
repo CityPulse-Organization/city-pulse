@@ -3,7 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { View, Text } from "react-native";
 import { ToastConfig, ToastConfigParams } from "react-native-toast-message";
-import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 
 interface ModernToastProps {
   props: ToastConfigParams<any>;
@@ -16,8 +16,6 @@ const ModernToast = ({
   gradientColors,
   icon = "✨",
 }: ModernToastProps) => {
-  const themeName = UnistylesRuntime.themeName;
-  const blurTint = themeName === "dark" ? "dark" : "extraLight";
 
   const transparentColors = gradientColors.map((color) => `${color}33`) as [
     string,
@@ -29,7 +27,7 @@ const ModernToast = ({
     <View style={styles.outerContainer}>
       <BlurView
         intensity={60}
-        tint={blurTint}
+        tint={styles.blurTint.color as any}
         style={StyleSheet.absoluteFill}
       />
       <LinearGradient
@@ -84,9 +82,8 @@ export const toastConfig: ToastConfig = {
   ),
 };
 
-const styles = StyleSheet.create((theme) => {
-  const themeName = UnistylesRuntime.themeName;
-  const isDark = themeName === "dark";
+const styles = StyleSheet.create((theme, rt) => {
+  const isDark = rt.themeName === "dark";
 
   return {
     outerContainer: {
@@ -102,6 +99,9 @@ const styles = StyleSheet.create((theme) => {
       borderColor: isDark
         ? "rgba(255, 255, 255, 0.1)"
         : "rgba(255, 255, 255, 0.5)",
+    },
+    blurTint: {
+      color: isDark ? "dark" : "extraLight"
     },
     mainGradient: {
       paddingVertical: 14,

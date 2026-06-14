@@ -4,8 +4,10 @@ import { Linking, PermissionsAndroid, Platform } from "react-native";
 import { NEW_POST_IMAGE_CONFIG } from "@/src/utils/newPostImageUtils";
 import { Photo } from "@/src/types/newPostImage";
 import { UIAlert } from "@/src/hoc";
+import { useTranslation } from "react-i18next";
 
 export const useMediaLibrary = (onInitialLoad: (firstAsset: Photo) => void) => {
+  const { t } = useTranslation();
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [endCursor, setEndCursor] = useState<string | undefined>(undefined);
   const [hasNextPage, setHasNextPage] = useState(true);
@@ -54,12 +56,12 @@ export const useMediaLibrary = (onInitialLoad: (firstAsset: Photo) => void) => {
         error?.message?.toLowerCase().includes("denied")
       ) {
         UIAlert.alert(
-          "Photo Access Required",
-          "City Pulse needs access to your photo library to select images. Please enable it in your device Settings.",
+          t('permissions.photoAccessTitle'),
+          t('permissions.photoAccessMessage'),
           [
-            { text: "Cancel", style: "cancel" },
+            { text: t('permissions.cancel'), style: "cancel" },
             {
-              text: "Open Settings",
+              text: t('permissions.openSettings'),
               onPress: () => Linking.openSettings(),
             },
           ],
@@ -74,7 +76,7 @@ export const useMediaLibrary = (onInitialLoad: (firstAsset: Photo) => void) => {
     let cancelled = false;
 
     const requestAndLoad = async () => {
-      const granted = await requestMediaPermission();
+      const granted = await requestMediaPermission(t);
 
       if (cancelled) return;
 
@@ -90,7 +92,7 @@ export const useMediaLibrary = (onInitialLoad: (firstAsset: Photo) => void) => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [t]);
 
   return {
     photos,
@@ -98,7 +100,7 @@ export const useMediaLibrary = (onInitialLoad: (firstAsset: Photo) => void) => {
   };
 };
 
-const requestMediaPermission = async () => {
+const requestMediaPermission = async (t: any) => {
   if (Platform.OS !== "android") return true;
 
   const sdkVersion = parseInt(String(Platform.Version), 10);
@@ -113,16 +115,16 @@ const requestMediaPermission = async () => {
 
   return new Promise((resolve) => {
     UIAlert.alert(
-      "Photo Access Required",
-      "City Pulse needs access to your photo library to select images.",
+      t('permissions.photoAccessTitle'),
+      t('permissions.photoAccessShort'),
       [
         {
-          text: "Deny",
+          text: t('permissions.deny'),
           style: "cancel",
           onPress: () => resolve(false),
         },
         {
-          text: "Allow",
+          text: t('permissions.allow'),
           onPress: async () => {
             const result = await PermissionsAndroid.request(permission);
 

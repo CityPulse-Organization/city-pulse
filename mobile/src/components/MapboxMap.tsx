@@ -222,39 +222,39 @@ export const MapboxMap = memo(
 
         {((districts && districts.length > 0) ||
           (markers && markers.length > 0)) && (
-          <View style={styles.overlayControls}>
-            <BlurView intensity={80} tint="dark" style={styles.blurContainer}>
-              {districts && districts.length > 0 && (
-                <Pressable
-                  onPress={() => setShowDistricts(!showDistricts)}
-                  style={styles.toggleButton}
-                >
-                  <Ionicons
-                    name={showDistricts ? "layers" : "layers-outline"}
-                    size={22}
-                    style={styles.marker(showDistricts)}
-                  />
-                </Pressable>
-              )}
-              {districts &&
-                districts.length > 0 &&
-                markers &&
-                markers.length > 0 && <View style={styles.divider} />}
-              {markers && markers.length > 0 && (
-                <Pressable
-                  onPress={() => setShowMarkers(!showMarkers)}
-                  style={styles.toggleButton}
-                >
-                  <Ionicons
-                    name={showMarkers ? "location" : "location-outline"}
-                    size={22}
-                    style={styles.marker(showMarkers)}
-                  />
-                </Pressable>
-              )}
-            </BlurView>
-          </View>
-        )}
+            <View style={styles.overlayControls}>
+              <BlurView intensity={80} tint="dark" style={styles.blurContainer}>
+                {districts && districts.length > 0 && (
+                  <Pressable
+                    onPress={() => setShowDistricts(!showDistricts)}
+                    style={styles.toggleButton}
+                  >
+                    <Ionicons
+                      name={showDistricts ? "layers" : "layers-outline"}
+                      size={22}
+                      style={styles.marker(showDistricts)}
+                    />
+                  </Pressable>
+                )}
+                {districts &&
+                  districts.length > 0 &&
+                  markers &&
+                  markers.length > 0 && <View style={styles.divider} />}
+                {markers && markers.length > 0 && (
+                  <Pressable
+                    onPress={() => setShowMarkers(!showMarkers)}
+                    style={styles.toggleButton}
+                  >
+                    <Ionicons
+                      name={showMarkers ? "location" : "location-outline"}
+                      size={22}
+                      style={styles.marker(showMarkers)}
+                    />
+                  </Pressable>
+                )}
+              </BlurView>
+            </View>
+          )}
       </View>
     );
   },

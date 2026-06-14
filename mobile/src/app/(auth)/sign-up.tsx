@@ -10,6 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Controller } from "react-hook-form";
 import { Image, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
+import { useTranslation } from 'react-i18next';
 
 export default function SignUpPage() {
   const {
@@ -20,6 +21,7 @@ export default function SignUpPage() {
     onSignInPress,
     onGoogleSignIn,
   } = useSignUpPage();
+  const { t } = useTranslation();
 
   return (
     <View style={styles.mainContainer}>
@@ -38,7 +40,7 @@ export default function SignUpPage() {
         </UIButton>
         <View style={styles.signUpContainer}>
           <UIText weight="normal" size="extraLarge" style={styles.signUpText}>
-            Sign up
+            {t('auth.signUp')}
           </UIText>
         </View>
         <View style={styles.inputsContainer}>
@@ -48,7 +50,7 @@ export default function SignUpPage() {
             render={({ field: { onChange, onBlur, value }, fieldState }) => (
               <UIInput
                 placeholderTextColor={styles.input.borderColor}
-                placeholder="Username"
+                placeholder={t('auth.username')}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -65,7 +67,7 @@ export default function SignUpPage() {
             render={({ field: { onChange, onBlur, value }, fieldState }) => (
               <UIInput
                 placeholderTextColor={styles.input.borderColor}
-                placeholder="Email"
+                placeholder={t('auth.email')}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -84,7 +86,7 @@ export default function SignUpPage() {
             render={({ field: { onChange, onBlur, value }, fieldState }) => (
               <UIInput
                 placeholderTextColor={styles.input.borderColor}
-                placeholder="Password"
+                placeholder={t('auth.password')}
                 secureTextEntry
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -102,7 +104,7 @@ export default function SignUpPage() {
             render={({ field: { onChange, onBlur, value }, fieldState }) => (
               <UIInput
                 placeholderTextColor={styles.input.borderColor}
-                placeholder="Repeat your password"
+                placeholder={t('auth.repeatPassword')}
                 secureTextEntry
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -121,7 +123,7 @@ export default function SignUpPage() {
             disabled={isLoading}
           >
             <Ionicons name="logo-google" size={26} color="white" />
-            <UIText style={styles.googleText}>Continue with Google</UIText>
+            <UIText style={styles.googleText}>{t('auth.continueWithGoogle')}</UIText>
           </UIButton>
           <UIButton
             onPress={onSignInPress}
@@ -129,13 +131,13 @@ export default function SignUpPage() {
             disabled={isLoading}
           >
             <UIText style={styles.dontHaveAccountText}>
-              Already have an account?
+              {t('auth.alreadyHaveAccount')}
             </UIText>
-            <UIText style={styles.signUpBottomText}>Sign in</UIText>
+            <UIText style={styles.signUpBottomText}>{t('auth.signIn')}</UIText>
           </UIButton>
         </View>
       </UIKeyboardAvoidingScrollView>
-      <AuthButton label="Next" onPress={onSubmit} loading={isLoading} />
+      <AuthButton label={t('auth.next')} onPress={onSubmit} loading={isLoading} />
     </View>
   );
 }

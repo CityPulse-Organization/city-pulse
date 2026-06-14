@@ -8,6 +8,7 @@ import { BlurButton } from "../BlurButton";
 import { GradientCard } from "../GradientCard";
 import { View } from "react-native";
 import { Alert } from "react-native";
+import { useTranslation } from 'react-i18next';
 
 type PostMenuOptionItem = {
   id: string;
@@ -26,24 +27,25 @@ type MenuOptionBottomSheetProps = {
 export const MenuOptionBottomSheet = memo(
   ({ isOwnPost, postId, removePost }: MenuOptionBottomSheetProps) => {
     const router = useRouter();
+    const { t } = useTranslation();
 
     const handleDelete = useCallback(() => {
-      Alert.alert("Delete Post", "Are you sure you want to delete this post?", [
-        { text: "Cancel", style: "cancel" },
+      Alert.alert(t('postMenu.deleteTitle'), t('postMenu.deleteMessage'), [
+        { text: t('postMenu.cancel'), style: "cancel" },
         {
-          text: "Delete",
+          text: t('postMenu.delete'),
           style: "destructive",
           onPress: () => removePost?.(),
         },
       ]);
-    }, [removePost]);
+    }, [removePost, t]);
 
     const postMenuOptions: PostMenuOptionItem[] = useMemo(() => {
       if (isOwnPost) {
         return [
           {
             id: "edit",
-            title: "Edit",
+            title: t('postMenu.edit'),
             iconName: "pencil-outline",
             onExecuteAction: () => {
               router.navigate({
@@ -54,7 +56,7 @@ export const MenuOptionBottomSheet = memo(
           },
           {
             id: "delete",
-            title: "Delete",
+            title: t('postMenu.delete'),
             iconName: "trash-outline",
             color: "red",
             onExecuteAction: handleDelete,
@@ -65,13 +67,13 @@ export const MenuOptionBottomSheet = memo(
       return [
         {
           id: "share",
-          title: "Share",
+          title: t('postMenu.share'),
           iconName: "share-social-outline",
           onExecuteAction: () => { },
         },
         {
           id: "report",
-          title: "Report",
+          title: t('postMenu.report'),
           iconName: "alert-circle-outline",
           color: "red",
           onExecuteAction: () => {

@@ -11,6 +11,7 @@ import { FlashList } from "@shopify/flash-list";
 import { Ionicons } from "@expo/vector-icons";
 import { InfoBanner } from "@/src/components/settings/InfoBanner";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -105,6 +106,7 @@ export const SEARCH_USERS: DiscoverUser[] = [
 export default function RestrictedAccountsScreen() {
     const router = useRouter();
     const [users, setUsers] = useState(SEARCH_USERS);
+    const { t } = useTranslation();
 
     const handleBack = useCallback(() => {
         router.back();
@@ -128,12 +130,12 @@ export default function RestrictedAccountsScreen() {
             <SearchInput />
             <InfoBanner
                 icon="eye-off-outline"
-                text="Restricted accounts can't see your activity or send you direct messages. They won't know they've been restricted."
+                text={t('restrictedAccountsScreen.banner')}
                 style={styles.infoBanner}
             />
             {users.length > 0 && (
                 <View style={styles.sectionHeader}>
-                    <UIText size="xs" style={styles.sectionTitle}>RESTRICTED</UIText>
+                    <UIText size="xs" style={styles.sectionTitle}>{t('restrictedAccountsScreen.restricted')}</UIText>
                     <View style={styles.countBadge}>
                         <UIText size="xxs" weight="bold" style={styles.countText}>{users.length}</UIText>
                     </View>
@@ -144,7 +146,7 @@ export default function RestrictedAccountsScreen() {
 
     return (
         <ThemedBackground>
-            <NavigationHeader title="Restricted Accounts" onLeftAction={handleBack} />
+            <NavigationHeader title={t('restrictedAccountsScreen.title')} onLeftAction={handleBack} />
 
             <FlashList
                 data={users}
@@ -159,8 +161,8 @@ export default function RestrictedAccountsScreen() {
                 ListEmptyComponent={
                     <UIEmptyState
                         icon="person-add-outline"
-                        title="No Restricted Accounts"
-                        description="Start restricting people to hide their posts from your feed."
+                        title={t('restrictedAccountsScreen.noRestrictedTitle')}
+                        description={t('restrictedAccountsScreen.noRestrictedDesc')}
                     />
                 }
             />
@@ -175,6 +177,7 @@ type SearchUserItemProps = {
 };
 
 const SearchUserItem = memo(({ item, onUnrestrict }: SearchUserItemProps) => {
+    const { t } = useTranslation();
     const scale = useSharedValue(1);
 
     const handlePressIn = () => {
@@ -218,7 +221,7 @@ const SearchUserItem = memo(({ item, onUnrestrict }: SearchUserItemProps) => {
                         size={styles.unrestrictIcon.height}
                         color={styles.unrestrictIcon.color}
                     />
-                    <UIText size="xs" weight="normal" style={styles.unrestrictLabel}>Unrestrict</UIText>
+                    <UIText size="xs" weight="normal" style={styles.unrestrictLabel}>{t('restrictedAccountsScreen.unrestrict')}</UIText>
                 </UIButton>
             </View>
             <UIDivider />

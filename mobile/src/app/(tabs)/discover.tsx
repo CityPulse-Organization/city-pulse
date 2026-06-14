@@ -11,13 +11,14 @@ import {
   View,
 } from "react-native";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
-import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 import { TabBarProps, Tabs } from "react-native-collapsible-tab-view";
 import { router } from "expo-router";
 import { useSearchUsers } from "@/src/hooks/useSearchUsers";
 import { usePulse } from "@/src/hooks/usePulse";
 import { useSearchPosts } from "@/src/hooks/useSearchPosts";
 import { DiscoverUser, PostItem } from "@/src/types";
+import { useTranslation } from 'react-i18next';
 
 const DiscoverItem = memo(({ item }: { item: DiscoverUser }) => {
   const navigateToProfile = useCallback(() => {
@@ -53,9 +54,8 @@ const DiscoverTab = ({
   focusedTab: any;
   icon?: React.ReactNode;
 }) => {
-  const theme = UnistylesRuntime.getTheme();
-  const activeColor = theme.colors.accent;
-  const inactiveColor = theme.colors.background;
+  const activeColor = styles.activeColor.color;
+  const inactiveColor = styles.inactiveColor.color;
 
   const animatedStyle = useAnimatedStyle(() => {
     const isSelected = focusedTab.value === name;
@@ -75,6 +75,7 @@ const DiscoverTab = ({
 };
 
 const DiscoverTabBar = (props: TabBarProps<string>) => {
+  const { t } = useTranslation();
   const onPulsePress = useCallback(() => {
     props.onTabPress("pulse");
   }, [props]);
@@ -89,21 +90,21 @@ const DiscoverTabBar = (props: TabBarProps<string>) => {
     <View style={styles.tabBar}>
       <DiscoverTab
         name="pulse"
-        label="Pulse"
+        label={t('discover.pulse')}
         onPress={onPulsePress}
         focusedTab={props.focusedTab}
         icon={<Ionicons name="pulse" size={20} style={styles.pulseIcon} />}
       />
       <DiscoverTab
         name="people"
-        label="People"
+        label={t('discover.people')}
         onPress={onPeoplePress}
         focusedTab={props.focusedTab}
         icon={<Ionicons name="people" size={20} style={styles.tabIcon} />}
       />
       <DiscoverTab
         name="posts"
-        label="Posts"
+        label={t('discover.posts')}
         onPress={onPostsPress}
         focusedTab={props.focusedTab}
         icon={<Ionicons name="list" size={20} style={styles.tabIcon} />}
@@ -114,6 +115,7 @@ const DiscoverTabBar = (props: TabBarProps<string>) => {
 
 export default function DiscoverScreen() {
   const [input, setInput] = useState("");
+  const { t } = useTranslation();
 
   const {
     data,
@@ -238,7 +240,7 @@ export default function DiscoverScreen() {
     <ThemedBackground withoutSafeArea={true}>
       <View style={styles.searchHeader}>
         <BlurView
-          tint={UnistylesRuntime.themeName}
+          tint={styles.blurTint.color}
           intensity={60}
           style={styles.searchContainer}
         >
@@ -246,7 +248,7 @@ export default function DiscoverScreen() {
           <TextInput
             value={input}
             onChangeText={setInput}
-            placeholder="Search..."
+            placeholder={t('discover.search')}
             placeholderTextColor={styles.placeHolderTextColor.color}
             style={styles.search}
             selectionColor={styles.icon.color}
@@ -263,7 +265,7 @@ export default function DiscoverScreen() {
         </BlurView>
       </View>
       <Tabs.Container renderTabBar={DiscoverTabBar}>
-        <Tabs.Tab name="pulse" label="Pulse">
+        <Tabs.Tab name="pulse" label={t('discover.pulse')}>
           <Tabs.FlashList
             data={pulsePosts}
             renderItem={renderPost}
@@ -287,13 +289,13 @@ export default function DiscoverScreen() {
             ListEmptyComponent={
               <UIEmptyState
                 icon="pulse"
-                title="No Pulse Found"
-                description="We couldn't find any recent activities in your area right now."
+                title={t('discover.noPulseTitle')}
+                description={t('discover.noPulseDesc')}
               />
             }
           />
         </Tabs.Tab>
-        <Tabs.Tab name="people" label="People">
+        <Tabs.Tab name="people" label={t('discover.people')}>
           <Tabs.FlashList
             data={paginatedUsers}
             renderItem={renderItem}
@@ -325,13 +327,13 @@ export default function DiscoverScreen() {
             ListEmptyComponent={
               <UIEmptyState
                 icon="people-outline"
-                title="No results found"
-                description={`We couldn't find any users matching "${input}"`}
+                title={t('discover.noResultsTitle')}
+                description={t('discover.noResultsDesc', { query: input })}
               />
             }
           />
         </Tabs.Tab>
-        <Tabs.Tab name="posts" label="Posts">
+        <Tabs.Tab name="posts" label={t('discover.posts')}>
           <Tabs.FlashList
             data={paginatedPosts}
             renderItem={renderPost}
@@ -355,8 +357,8 @@ export default function DiscoverScreen() {
             ListEmptyComponent={
               <UIEmptyState
                 icon="list-outline"
-                title="No Posts"
-                description="Be the first one to share something in this area!"
+                title={t('discover.noPostsTitle')}
+                description={t('discover.noPostsDesc')}
               />
             }
           />
@@ -387,6 +389,9 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingTop: rt.insets.top + theme.utils.vs(10),
     paddingBottom: theme.utils.vs(15),
     backgroundColor: theme.colors.background,
+  },
+  blurTint: {
+    color: rt.themeName,
   },
   tabIcon: {
     color: theme.colors.accent,
@@ -486,5 +491,11 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingVertical: theme.utils.vs(12),
     flex: 1,
     gap: theme.utils.s(6),
+  },
+  activeColor: {
+    color: theme.colors.accent,
+  },
+  inactiveColor: {
+    color: theme.colors.background,
   },
 }));

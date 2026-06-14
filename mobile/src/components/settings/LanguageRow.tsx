@@ -12,6 +12,7 @@ import { LanguageId } from '@/src/types/settings';
 import { LanguageOption } from '@/src/types/settings';
 import { UIDivider, UIText } from '@/src/ui';
 import { StyleSheet } from 'react-native-unistyles';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -24,6 +25,7 @@ type LanguageRowProps = {
 };
 
 export const LanguageRow = ({ option, isSelected, onSelect, isLast }: LanguageRowProps) => {
+    const { t } = useTranslation();
     const scale = useSharedValue(1);
     const pressed = useSharedValue(0);
 
@@ -80,10 +82,10 @@ export const LanguageRow = ({ option, isSelected, onSelect, isLast }: LanguageRo
                         weight="normal"
                         style={isSelected ? styles.labelSelected : styles.label}
                     >
-                        {option.label}
+                        {t(`languages.${option.id}`)}
                     </UIText>
                     <UIText size="xs" style={styles.subLabel}>
-                        {option.nativeLabel} · {option.region}
+                        {option.nativeLabel} · {t(`languages.regions.${option.id}`)}
                     </UIText>
                 </View>
 

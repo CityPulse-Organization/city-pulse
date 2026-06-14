@@ -15,6 +15,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Toast from 'react-native-toast-message';
 import { StrengthLevel } from '@/src/types/settings';
 import { getStrength, STRENGTH_COLORS, STRENGTH_LABELS } from '@/src/utils/settings';
+import { changePassword } from '@/src/api/auth';
+import { useTranslation } from 'react-i18next';
 
 
 const changePasswordSchema = z.object({
@@ -38,6 +40,7 @@ type FormValues = z.infer<typeof changePasswordSchema>;
 export default function ChangePasswordScreen() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const { t } = useTranslation();
 
     const { control, handleSubmit, formState: { errors } } = useForm<FormValues>({
         resolver: zodResolver(changePasswordSchema),
@@ -50,17 +53,21 @@ export default function ChangePasswordScreen() {
     const onSubmit = handleSubmit(async (values) => {
         setIsLoading(true);
         try {
-            // TODO: call API to change password
+            await changePassword(values.currentPassword, values.newPassword);
             router.back();
             Toast.show({
                 type: "success",
-                text1: "Password changed successfully",
+                text1: t('changePasswordScreen.successToast'),
             });
-        } catch (error) {
+        } catch (error: any) {
+            const message =
+                error?.response?.data?.message ||
+                error?.response?.data?.error ||
+                t('changePasswordScreen.errorFallback');
             Toast.show({
                 type: "error",
-                text1: "Error",
-                text2: "Failed to change password",
+                text1: t('changePasswordScreen.errorTitle'),
+                text2: message,
             });
         } finally {
             setIsLoading(false);
@@ -69,11 +76,11 @@ export default function ChangePasswordScreen() {
 
     return (
         <ThemedBackground>
-            <NavigationHeader title="Change Password" onLeftAction={handleBack} />
+            <NavigationHeader title={t('changePasswordScreen.title')} onLeftAction={handleBack} />
 
             <UIKeyboardAvoidingScrollView contentContainerStyle={styles.scrollContent}>
                 <InfoBanner
-                    text="Choose a strong password you haven't used before. We'll log you out after saving."
+                    text={t('changePasswordScreen.banner')}
                     icon="shield-checkmark-outline"
                     style={styles.infoBanner}
                 />
@@ -83,8 +90,8 @@ export default function ChangePasswordScreen() {
                     <PasswordField
                         control={control}
                         name="currentPassword"
-                        label="CURRENT PASSWORD"
-                        placeholder="Enter current password"
+                        label={t('changePasswordScreen.currentPassword')}
+                        placeholder={t('changePasswordScreen.currentPlaceholder')}
                         errorMessage={errors.currentPassword?.message}
                     />
 
@@ -93,8 +100,8 @@ export default function ChangePasswordScreen() {
                     <PasswordField
                         control={control}
                         name="newPassword"
-                        label="NEW PASSWORD"
-                        placeholder="Enter new password"
+                        label={t('changePasswordScreen.newPassword')}
+                        placeholder={t('changePasswordScreen.newPlaceholder')}
                         errorMessage={errors.newPassword?.message}
                     />
 
@@ -103,8 +110,8 @@ export default function ChangePasswordScreen() {
                     <PasswordField
                         control={control}
                         name="confirmPassword"
-                        label="CONFIRM NEW PASSWORD"
-                        placeholder="Repeat new password"
+                        label={t('changePasswordScreen.confirmPassword')}
+                        placeholder={t('changePasswordScreen.confirmPlaceholder')}
                         errorMessage={errors.confirmPassword?.message}
                     />
 
@@ -112,7 +119,7 @@ export default function ChangePasswordScreen() {
 
             </UIKeyboardAvoidingScrollView>
 
-            <FooterButton label="Save Password" onPress={onSubmit} isLoading={isLoading} />
+            <FooterButton label={t('changePasswordScreen.saveButton')} onPress={onSubmit} isLoading={isLoading} />
 
         </ThemedBackground>
     );

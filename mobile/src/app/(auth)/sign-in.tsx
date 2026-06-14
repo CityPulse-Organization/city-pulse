@@ -11,10 +11,12 @@ import { useSignInPage } from "@/src/hooks";
 import { Controller } from "react-hook-form";
 import { Image, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
+import { useTranslation } from 'react-i18next';
 
 export default function SignUpPage() {
   const { control, onSubmit, onGoogleSignIn, onSignUpPress, isLoading } =
     useSignInPage();
+  const { t } = useTranslation();
 
   return (
     <View style={styles.mainContainer}>
@@ -33,7 +35,7 @@ export default function SignUpPage() {
         </UIButton>
         <View style={styles.signUpContainer}>
           <UIText weight="normal" size="extraLarge" style={styles.signUpText}>
-            Sign in
+            {t('auth.signIn')}
           </UIText>
         </View>
         <View style={styles.inputsContainer}>
@@ -45,7 +47,7 @@ export default function SignUpPage() {
                 placeholderTextColor={styles.input.borderColor}
                 dividerColor="accent"
                 inputStyle={styles.input}
-                placeholder="Email"
+                placeholder={t('auth.email')}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -63,7 +65,7 @@ export default function SignUpPage() {
                 placeholderTextColor={styles.input.borderColor}
                 dividerColor="accent"
                 inputStyle={styles.input}
-                placeholder="Password"
+                placeholder={t('auth.password')}
                 secureTextEntry
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -73,7 +75,7 @@ export default function SignUpPage() {
             )}
           />
 
-          <UIText style={styles.forgotPassword}>Forgot password?</UIText>
+          <UIText style={styles.forgotPassword}>{t('auth.forgotPassword')}</UIText>
         </View>
         <View style={styles.bottomContainer}>
           <UIButton
@@ -82,7 +84,7 @@ export default function SignUpPage() {
             disabled={isLoading}
           >
             <Ionicons name="logo-google" size={26} color="white" />
-            <UIText style={styles.googleText}>Continue with Google</UIText>
+            <UIText style={styles.googleText}>{t('auth.continueWithGoogle')}</UIText>
           </UIButton>
           <UIButton
             onPress={onSignUpPress}
@@ -90,14 +92,14 @@ export default function SignUpPage() {
             disabled={isLoading}
           >
             <UIText style={styles.dontHaveAccountText}>
-              Don't have an account?
+              {t('auth.dontHaveAccount')}
             </UIText>
-            <UIText style={styles.signUpBottomText}>Sign up</UIText>
+            <UIText style={styles.signUpBottomText}>{t('auth.signUp')}</UIText>
           </UIButton>
         </View>
       </UIKeyboardAvoidingScrollView>
 
-      <AuthButton label="Next" onPress={onSubmit} loading={isLoading} />
+      <AuthButton label={t('auth.next')} onPress={onSubmit} loading={isLoading} />
     </View>
   );
 }

@@ -121,7 +121,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     borderRadius: theme.utils.s(12),
     borderWidth: 1,
     borderColor: theme.colors.borderSubtle,
-    paddingHorizontal: theme.utils.s(14),
+    padding: theme.utils.s(14),
   },
 
   locationIcon: {
@@ -136,7 +136,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     borderRadius: theme.utils.s(12),
     borderWidth: 1,
     borderColor: theme.colors.borderSubtle,
-    paddingHorizontal: theme.utils.s(14),
+    padding: theme.utils.s(14),
   },
 
   descriptionInput: {

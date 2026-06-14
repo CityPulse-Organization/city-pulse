@@ -1,0 +1,318 @@
+{
+    "auth": {
+        "start": "Comenzar",
+        "signIn": "Iniciar sesión",
+        "signUp": "Registrarse",
+        "email": "Correo electrónico",
+        "password": "Contraseña",
+        "username": "Nombre de usuario",
+        "repeatPassword": "Repite tu contraseña",
+        "forgotPassword": "¿Olvidaste tu contraseña?",
+        "continueWithGoogle": "Continuar con Google",
+        "dontHaveAccount": "¿No tienes cuenta?",
+        "alreadyHaveAccount": "¿Ya tienes cuenta?",
+        "next": "Siguiente",
+        "finish": "Finalizar",
+        "lastStep": "Último paso",
+        "lastStepDescription": "Elige un nombre de usuario único para completar la creación de tu cuenta."
+    },
+    "home": {
+        "logout": "Cerrar sesión",
+        "showAlert": "Mostrar alerta",
+        "testAlertTitle": "Alerta de prueba",
+        "testAlertMessage": "Esta es una prueba del nuevo UIAlert.",
+        "confirm": "Confirmar"
+    },
+    "tabs": {
+        "map": "Mapa",
+        "discover": "Descubrir",
+        "chats": "Chats",
+        "referrals": "Referidos",
+        "profile": "Perfil"
+    },
+    "biometric": {
+        "authSuccess": "Autenticación biométrica exitosa",
+        "unavailableTitle": "Biometría no disponible",
+        "unavailableMessage": "Tu dispositivo no soporta biometría.",
+        "notEnrolledTitle": "Sin biometría configurada",
+        "notEnrolledIos": "Por favor configura Face ID o Touch ID.",
+        "notEnrolledAndroid": "Por favor configura tu huella o rostro en los ajustes.",
+        "enablePrompt": "Autenticar para activar",
+        "disablePrompt": "Autenticar para desactivar"
+    },
+    "permissions": {
+        "photoAccessTitle": "Acceso a fotos requerido",
+        "photoAccessMessage": "City Pulse necesita acceso a tus fotos. Por favor actívalo en los ajustes.",
+        "photoAccessShort": "City Pulse necesita acceso a tus fotos.",
+        "cameraAccessTitle": "Sin acceso a cámara",
+        "cameraAccessMessage": "Para tomar una foto, permite el acceso a la cámara en los ajustes.",
+        "cancel": "Cancelar",
+        "deny": "Denegar",
+        "allow": "Permitir",
+        "openSettings": "Abrir ajustes"
+    },
+    "discover": {
+        "search": "Buscar...",
+        "pulse": "Pulso",
+        "people": "Personas",
+        "posts": "Publicaciones",
+        "noPulseTitle": "Sin Pulso",
+        "noPulseDesc": "No encontramos actividades recientes en tu zona.",
+        "noResultsTitle": "Sin resultados",
+        "noResultsDesc": "No encontramos usuarios para \"{{query}}\"",
+        "noPostsTitle": "Sin publicaciones",
+        "noPostsDesc": "¡Sé el primero en compartir algo en esta zona!"
+    },
+    "chats": {
+        "chats": "Chats",
+        "events": "Eventos",
+        "noChatsTitle": "Sin chats aún",
+        "noChatsDesc": "Tu historial de conversaciones está vacío. ¡Inicia un nuevo chat!",
+        "noEventsTitle": "Sin eventos",
+        "noEventsDesc": "Aún no te has unido a ninguna conversación grupal o evento."
+    },
+    "profile": {
+        "posts": "Publicaciones",
+        "followers": "Seguidores",
+        "followings": "Siguiendo",
+        "saves": "Guardados",
+        "follow": "Seguir",
+        "unfollow": "Dejar de seguir",
+        "editProfile": "Editar perfil",
+        "changePhoto": "Cambiar foto",
+        "save": "Guardar",
+        "jobPlaceholder": "Trabajo o título",
+        "bioPlaceholder": "Biografía. Cuéntanos sobre ti.",
+        "editPost": "Editar publicación",
+        "done": "Hecho",
+        "caption": "Descripción",
+        "captionPlaceholder": "Escribe una descripción...",
+        "noPostsSelfTitle": "Sin publicaciones aún",
+        "noPostsSelfDesc": "¡Comparte tu primera foto para verla aquí!",
+        "noPostsOtherTitle": "Sin publicaciones",
+        "noPostsOtherDesc": "Este usuario aún no ha compartido fotos.",
+        "noFollowersTitle": "Sin seguidores",
+        "noFollowersSelfDesc": "Cuando te sigan, aparecerán aquí.",
+        "noFollowersOtherDesc": "Cuando sigan a este usuario, aparecerán aquí.",
+        "noFollowingTitle": "Sin seguidos",
+        "noFollowingSelfDesc": "Sigue personas para ver sus actividades.",
+        "noFollowingOtherDesc": "Este usuario aún no sigue a nadie.",
+        "noSavedTitle": "Sin publicaciones guardadas",
+        "noSavedDesc": "Guarda publicaciones que te gusten.",
+        "replyingTo": "Respondiendo a @{{username}}: \""
+    },
+    "comments": {
+        "title": "Comentarios",
+        "noCommentsTitle": "Sin comentarios aún",
+        "noCommentsDesc": "¡Sé el primero en compartir tu opinión!",
+        "addComment": "Añadir un comentario...",
+        "addReply": "Añadir una respuesta...",
+        "replyingTo": "Respondiendo a @{{username}} dice \"{{text}}\""
+    },
+    "postMenu": {
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "share": "Compartir",
+        "report": "Reportar",
+        "deleteTitle": "Eliminar publicación",
+        "deleteMessage": "¿Estás seguro de que quieres eliminar esta publicación?",
+        "cancel": "Cancelar"
+    },
+    "referrals": {
+        "swipeHint": "Desliza para tu viaje ➔",
+        "yourJourney": "Tu viaje",
+        "rewardMilestones": "Hitos de recompensa",
+        "yourReferrals": "Tus referidos",
+        "referralCode": "TU CÓDIGO DE REFERIDO",
+        "copy": "Copiar",
+        "copied": "¡Copiado!",
+        "shareInviteLink": "Compartir enlace de invitación",
+        "howItWorks": "Cómo funciona",
+        "inviteAndEarn": "Invita y gana",
+        "inviteAndEarnDesc": "Trae {{count}} amigos a City Pulse y desbloquea Premium — para siempre, gratis.",
+        "premiumIncludes": "Premium incluye",
+        "milestones": {
+            "bronze": "Bronce",
+            "silver": "Plata",
+            "gold": "Oro",
+            "diamond": "Diamante",
+            "rewards": {
+                "bronze": "Marco de perfil personalizado",
+                "silver": "Insignia verificada",
+                "gold": "Analíticas avanzadas",
+                "diamond": "Premium completo — para siempre"
+            }
+        },
+        "perks": {
+            "verifiedBadge": "Insignia verificada",
+            "verifiedBadgeDesc": "Destaca con verificación",
+            "analytics": "Analíticas",
+            "analyticsDesc": "Información detallada",
+            "themes": "Temas",
+            "themesDesc": "Personalización exclusiva",
+            "priority": "Prioridad",
+            "priorityDesc": "Destacado en Descubrir",
+            "hdStream": "Stream HD",
+            "hdStreamDesc": "Transmisión de alta calidad",
+            "unlimited": "Ilimitado",
+            "unlimitedDesc": "Guarda todo"
+        },
+        "steps": {
+            "step1Title": "Comparte tu código",
+            "step1Desc": "Envía tu enlace a amigos",
+            "step2Title": "Tus amigos se unen",
+            "step2Desc": "Se registran con tu código",
+            "step3Title": "Desbloquea recompensas",
+            "step3Desc": "Alcanza metas, gana Premium"
+        },
+        "shareMessage": "¡Únete a City Pulse! Usa mi código: {{code}}\n\nhttps://citypulse.app/invite/{{code}}"
+    },
+    "settings": {
+        "title": "Ajustes",
+        "sections": {
+            "appearance": "APARIENCIA",
+            "general": "GENERAL",
+            "security": "SEGURIDAD",
+            "aboutSupport": "ACERCA DE Y SOPORTE",
+            "account": "CUENTA"
+        },
+        "darkMode": "Modo oscuro",
+        "mapStyle": "Estilo de mapa",
+        "language": "Idioma",
+        "pushNotifications": "Notificaciones push",
+        "restrictedAccounts": "Cuentas restringidas",
+        "changePassword": "Cambiar contraseña",
+        "biometricUnlock": "Desbloqueo biométrico",
+        "biometricChecking": "Verificando compatibilidad…",
+        "biometricUnavailable": "No disponible en este dispositivo",
+        "biometricNotEnrolled": "Sin biometría registrada",
+        "biometricReady": "Usa Face ID o huella para abrir la app",
+        "helpCenter": "Centro de ayuda",
+        "reportProblem": "Reportar un problema",
+        "rateApp": "Calificar la app",
+        "privacyPolicy": "Política de privacidad",
+        "termsOfService": "Términos de servicio",
+        "removeAccount": "Eliminar cuenta",
+        "signOut": "Cerrar sesión"
+    },
+    "languageScreen": {
+        "title": "Idioma",
+        "banner": "Elige el idioma de la app. Esto afecta menús, botones y otros textos."
+    },
+    "languages": {
+        "en": "Inglés",
+        "uk": "Ucraniano",
+        "de": "Alemán",
+        "fr": "Francés",
+        "es": "Español",
+        "pl": "Polaco",
+        "it": "Italiano",
+        "pt": "Portugués",
+        "ru": "Ruso",
+        "regions": {
+            "en": "Estados Unidos",
+            "uk": "Ucrania",
+            "de": "Alemania",
+            "fr": "Francia",
+            "es": "España",
+            "pl": "Polonia",
+            "it": "Italia",
+            "pt": "Portugal",
+            "ru": "Rusia"
+        }
+    },
+    "changePasswordScreen": {
+        "title": "Cambiar contraseña",
+        "banner": "Elige una contraseña segura que no hayas usado antes. Te cerraremos sesión después de guardar.",
+        "currentPassword": "CONTRASEÑA ACTUAL",
+        "newPassword": "NUEVA CONTRASEÑA",
+        "confirmPassword": "CONFIRMAR CONTRASEÑA",
+        "currentPlaceholder": "Ingresa la contraseña actual",
+        "newPlaceholder": "Ingresa la nueva contraseña",
+        "confirmPlaceholder": "Repite la nueva contraseña",
+        "saveButton": "Guardar contraseña",
+        "successToast": "Contraseña cambiada con éxito",
+        "errorTitle": "Error",
+        "errorFallback": "No se pudo cambiar la contraseña. Inténtalo de nuevo."
+    },
+    "deleteAccount": {
+        "title": "Eliminar cuenta",
+        "message": "Esto eliminará permanentemente tu cuenta y todos tus datos. Esta acción no se puede deshacer.",
+        "cancel": "Cancelar",
+        "confirm": "Eliminar",
+        "successTitle": "Cuenta eliminada",
+        "successMessage": "Tu cuenta ha sido eliminada permanentemente.",
+        "errorTitle": "Error",
+        "errorMessage": "No se pudo eliminar la cuenta. Inténtalo de nuevo."
+    },
+    "mapStyleScreen": {
+        "title": "Estilo de mapa",
+        "banner": "Elige cómo se ve el mapa en toda la app. Un estilo claro ayuda con la luz del sol.",
+        "currentlySelected": "{{style}} — Seleccionado actualmente"
+    },
+    "reportProblemScreen": {
+        "title": "Reportar un problema",
+        "banner": "Agradecemos que tomes el tiempo de reportar esto. Describe qué pasó y haremos lo posible por solucionarlo.",
+        "category": "CATEGORÍA",
+        "summary": "RESUMEN",
+        "summaryPlaceholder": "ej. La app se cierra al hacer zoom en el mapa",
+        "details": "DETALLES",
+        "detailsPlaceholder": "Describe los pasos para reproducir el problema, qué esperabas y qué pasó…",
+        "sendReport": "Enviar reporte",
+        "reportSent": "¡Reporte enviado!",
+        "thankYou": "Gracias por ayudarnos a mejorar City Pulse. Nuestro equipo revisará esto pronto.",
+        "sendAnother": "Enviar otro reporte"
+    },
+    "restrictedAccountsScreen": {
+        "title": "Cuentas restringidas",
+        "banner": "Las cuentas restringidas no pueden ver tu actividad ni enviarte mensajes. No sabrán que fueron restringidas.",
+        "restricted": "RESTRINGIDAS",
+        "unrestrict": "Quitar restricción",
+        "noRestrictedTitle": "Sin cuentas restringidas",
+        "noRestrictedDesc": "Restringe personas para ocultar sus publicaciones de tu feed."
+    },
+    "newPost": {
+        "title": "Nueva publicación",
+        "next": "Siguiente",
+        "recents": "Recientes",
+        "location": "Ubicación",
+        "description": "Descripción",
+        "post": "Publicar"
+    },
+    "referralsCount": {
+        "invites": "{{count}} invitaciones",
+        "moreInvites": "Faltan {{count}} invitaciones más",
+        "moreInvites_one": "Falta {{count}} invitación más",
+        "premiumUnlocked": "🎉 ¡Premium desbloqueado!"
+    },
+    "mapStyles": {
+        "dark": {
+            "label": "Oscuro",
+            "description": "Estilo de mapa nocturno predeterminado."
+        },
+        "light": {
+            "label": "Claro",
+            "description": "Estilo de mapa brillante para el día."
+        },
+        "satellite": {
+            "label": "Satélite",
+            "description": "Imágenes de satélite reales desde el espacio."
+        }
+    },
+    "editProfile": {
+        "jobPlaceholder": "Trabajo o título",
+        "bioPlaceholder": "Biografía. Cuéntanos sobre ti."
+    },
+    "dateTime": {
+        "justNow": "Justo ahora",
+        "mAgo": "hace {{count}}m",
+        "hAgo": "hace {{count}}h",
+        "yesterday": "Ayer",
+        "dAgo": "hace {{count}}d",
+        "wAgo": "hace {{count}}sem",
+        "moAgo": "hace {{count}}mes"
+    },
+    "search": {
+        "placeholder": "Buscar..."
+    }
+}

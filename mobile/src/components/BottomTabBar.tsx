@@ -1,7 +1,7 @@
 import { BlurView } from "expo-blur";
 import React from "react";
 import { View } from "react-native";
-import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 import { UIButton } from "../ui";
 
 export const BottomTabBar = ({ state, descriptors, navigation }: any) => {
@@ -9,7 +9,7 @@ export const BottomTabBar = ({ state, descriptors, navigation }: any) => {
     <View style={styles.container}>
       <BlurView
         intensity={80}
-        tint={UnistylesRuntime.themeName}
+        tint={styles.tint.color}
         style={styles.glass}
       >
         {state.routes.map((route: any, index: number) => {
@@ -63,6 +63,9 @@ const styles = StyleSheet.create((theme, rt) => ({
     borderWidth: 1.5,
     borderColor: theme.colors.tabBarBorder,
     overflow: "hidden",
+  },
+  tint: {
+    color: rt.themeName,
   },
   tabBarIcon: ({ isFocused }: { isFocused: boolean }) => ({
     color: isFocused

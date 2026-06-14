@@ -11,9 +11,11 @@ import { useCompleteRegistrationPage } from "@/src/hooks";
 import { Controller } from "react-hook-form";
 import { Image, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
+import { useTranslation } from 'react-i18next';
 
 export default function CompleteRegistrationPage() {
   const { control, onSubmit, isPending } = useCompleteRegistrationPage();
+  const { t } = useTranslation();
 
   return (
     <View style={styles.mainContainer}>
@@ -32,10 +34,10 @@ export default function CompleteRegistrationPage() {
         </UIButton>
         <View style={styles.signUpContainer}>
           <UIText weight="normal" size="extraLarge" style={styles.signUpText}>
-            Last step
+            {t('auth.lastStep')}
           </UIText>
           <UIText style={styles.description}>
-            Please choose a unique username to finish creating your account.
+            {t('auth.lastStepDescription')}
           </UIText>
         </View>
         <View style={styles.inputsContainer}>
@@ -47,7 +49,7 @@ export default function CompleteRegistrationPage() {
                 placeholderTextColor={styles.input.borderColor}
                 inputStyle={styles.input}
                 dividerColor="accent"
-                placeholder="Username"
+                placeholder={t('auth.username')}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -59,7 +61,7 @@ export default function CompleteRegistrationPage() {
         </View>
       </UIKeyboardAvoidingScrollView>
 
-      <AuthButton label="Finish" onPress={onSubmit} loading={isPending} />
+      <AuthButton label={t('auth.finish')} onPress={onSubmit} loading={isPending} />
     </View>
   );
 }

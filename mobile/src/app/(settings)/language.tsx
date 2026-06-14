@@ -3,6 +3,7 @@ import { ScrollView, View } from 'react-native';
 
 import { StyleSheet } from 'react-native-unistyles';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 import { ThemedBackground } from '../../components';
 import { NavigationHeader } from '../../components/NavigationHeader';
@@ -19,6 +20,7 @@ export default function LanguageScreen() {
     const router = useRouter();
     const currentLanguage = useStore(settingsStore, (s) => s.language);
     const setLanguage = useStore(settingsStore, (s) => s.setLanguage);
+    const { t } = useTranslation();
 
     const handleSelect = useCallback((id: LanguageId) => {
         setLanguage(id);
@@ -31,7 +33,7 @@ export default function LanguageScreen() {
     return (
         <ThemedBackground>
             <NavigationHeader
-                title="Language"
+                title={t('languageScreen.title')}
                 onLeftAction={handleBack}
             />
 
@@ -42,7 +44,7 @@ export default function LanguageScreen() {
             >
                 <InfoBanner
                     icon="language-outline"
-                    text="Choose the display language for the app. This affects menus, buttons, and other interface text."
+                    text={t('languageScreen.banner')}
                 />
 
                 <View style={styles.listCard}>

@@ -3,8 +3,11 @@ import { UIInput } from "../ui";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native-unistyles";
 
+import { useTranslation } from "react-i18next";
+
 export const SearchInput = memo(() => {
     const [input, setInput] = useState("");
+    const { t } = useTranslation();
 
     return (
         <UIInput
@@ -17,7 +20,7 @@ export const SearchInput = memo(() => {
             }
             containerStyle={styles.searchContainer}
             inputStyle={styles.searchInput}
-            placeholder={"Search..."}
+            placeholder={t('search.placeholder')}
             placeholderTextColor={styles.placeholderInput.color}
             value={input}
             onChangeText={setInput}
@@ -36,7 +39,7 @@ const styles = StyleSheet.create((theme) => ({
         borderRadius: theme.utils.ms(22),
         paddingHorizontal: theme.utils.s(16),
         marginHorizontal: theme.utils.s(20),
-        marginBottom: theme.utils.vs(14),
+        margin: theme.utils.vs(14),
     },
     placeholderInput: {
         color: theme.colors.muted,

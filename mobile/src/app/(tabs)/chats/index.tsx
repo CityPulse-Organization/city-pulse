@@ -9,7 +9,8 @@ import { Dimensions, Platform, Pressable, View } from "react-native";
 import { ListRenderItem } from "@shopify/flash-list";
 import { Tabs, TabBarProps } from "react-native-collapsible-tab-view";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
-import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
+import { useTranslation } from 'react-i18next';
 
 const USER_CHATS = [
   {
@@ -172,8 +173,7 @@ const ChatTab = ({
   focusedTab: any;
   icon: React.ReactNode;
 }) => {
-  const theme = UnistylesRuntime.getTheme();
-  const activeColor = theme.colors.accent;
+  const activeColor = styles.activeColor.color;
   const inactiveColor = "transparent";
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -194,6 +194,7 @@ const ChatTab = ({
 };
 
 const ChatTabBar = (props: TabBarProps<string>) => {
+  const { t } = useTranslation();
   const onChatsPress = useCallback(() => props.onTabPress("chats"), [props]);
   const onEventsPress = useCallback(() => props.onTabPress("events"), [props]);
 
@@ -201,7 +202,7 @@ const ChatTabBar = (props: TabBarProps<string>) => {
     <View style={styles.tabBar}>
       <ChatTab
         name="chats"
-        label="Chats"
+        label={t('chats.chats')}
         onPress={onChatsPress}
         focusedTab={props.focusedTab}
         icon={
@@ -214,7 +215,7 @@ const ChatTabBar = (props: TabBarProps<string>) => {
       />
       <ChatTab
         name="events"
-        label="Events"
+        label={t('chats.events')}
         onPress={onEventsPress}
         focusedTab={props.focusedTab}
         icon={<Ionicons name="business" size={18} style={styles.tabIcon} />}
@@ -230,6 +231,7 @@ const Header = () => <View style={{ height: HEADER_HEIGHT }} />;
 const ChatSeparator = memo(() => <View style={styles.chatSeparator} />);
 
 export default function ChatsScreen() {
+  const { t } = useTranslation();
   const renderChat: ListRenderItem<ChatItem> = useCallback(
     ({ item }) => <ChatRow item={item} />,
     [],
@@ -244,7 +246,7 @@ export default function ChatsScreen() {
         headerHeight={HEADER_HEIGHT}
         renderTabBar={ChatTabBar}
       >
-        <Tabs.Tab name="chats" label="Chats">
+        <Tabs.Tab name="chats" label={t('chats.chats')}>
           <Tabs.FlashList
             data={USER_CHATS}
             renderItem={renderChat}
@@ -255,13 +257,13 @@ export default function ChatsScreen() {
             ListEmptyComponent={
               <UIEmptyState
                 icon="chatbubble-outline"
-                title="No Chats Yet"
-                description="Your conversation history is empty. Start a new chat!"
+                title={t('chats.noChatsTitle')}
+                description={t('chats.noChatsDesc')}
               />
             }
           />
         </Tabs.Tab>
-        <Tabs.Tab name="events" label="Events">
+        <Tabs.Tab name="events" label={t('chats.events')}>
           <Tabs.FlashList
             data={ORGANIZER_CHATS}
             renderItem={renderChat}
@@ -272,8 +274,8 @@ export default function ChatsScreen() {
             ListEmptyComponent={
               <UIEmptyState
                 icon="people-outline"
-                title="No Events Found"
-                description="You haven't joined any group conversations or events yet."
+                title={t('chats.noEventsTitle')}
+                description={t('chats.noEventsDesc')}
               />
             }
           />
@@ -390,4 +392,8 @@ const styles = StyleSheet.create((theme, rt) => ({
     backgroundColor: theme.colors.divider,
     marginLeft: theme.utils.s(68),
   },
+
+  activeColor: {
+    color: theme.colors.accent,
+  }
 }));

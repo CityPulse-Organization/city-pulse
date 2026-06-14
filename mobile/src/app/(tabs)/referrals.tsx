@@ -24,8 +24,9 @@ import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef } from "react";
 import { Pressable, ScrollView, View } from "react-native";
-import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 import { useSharedValue } from "react-native-reanimated";
+import { useTranslation } from 'react-i18next';
 import Carousel, {
   ICarouselInstance,
   Pagination,
@@ -40,6 +41,7 @@ export default function ReferralsScreen() {
     progress,
     remaining,
   } = useReferrals();
+  const { t } = useTranslation();
   const ref = useRef<BottomSheetModal>(null);
 
   const carouselRef = useRef<ICarouselInstance>(null);
@@ -75,7 +77,7 @@ export default function ReferralsScreen() {
                     />
                     <View style={styles.swipeHint}>
                       <UIText size="xs" style={styles.swipeHintText}>
-                        Swipe for your journey ➔
+                        {t('referrals.swipeHint')}
                       </UIText>
                     </View>
                   </View>
@@ -98,7 +100,7 @@ export default function ReferralsScreen() {
                       weight="bold"
                       style={styles.backCardTitle}
                     >
-                      Your Journey
+                      {t('referrals.yourJourney')}
                     </UIText>
                   </View>
 
@@ -113,11 +115,18 @@ export default function ReferralsScreen() {
                     {/* ── Milestones ── */}
                     <SectionHeader
                       colors={["#FFD700", "#FF8C00"]}
-                      title="Reward Milestones"
+                      title={t('referrals.rewardMilestones')}
                     />
                     <View style={styles.tiersCol}>
                       {MILESTONES.map((m) => (
-                        <TierCard key={m.id} milestone={m} />
+                        <TierCard
+                          key={m.id}
+                          milestone={{
+                            ...m,
+                            label: t(`referrals.milestones.${m.id}`),
+                            reward: t(`referrals.milestones.rewards.${m.id}`)
+                          }}
+                        />
                       ))}
                     </View>
 
@@ -136,7 +145,7 @@ export default function ReferralsScreen() {
                         weight="bold"
                         style={styles.sectionTitle}
                       >
-                        Your Referrals
+                        {t('referrals.yourReferrals')}
                       </UIText>
                       <LinearGradient
                         colors={["#a824e0", "#7C4DFF"]}
@@ -207,7 +216,7 @@ export default function ReferralsScreen() {
           <View style={styles.codeCardContent}>
             <View style={styles.codeTop}>
               <UIText size="xxs" style={styles.codeLbl}>
-                YOUR REFERRAL CODE
+                {t('referrals.referralCode')}
               </UIText>
               <Pressable onPress={handleCopy} style={styles.copyBtn}>
                 <LinearGradient
@@ -230,7 +239,7 @@ export default function ReferralsScreen() {
                     weight="bold"
                     style={codeCopied ? styles.whiteTxt : styles.accentText}
                   >
-                    {codeCopied ? "Copied!" : "Copy"}
+                    {codeCopied ? t('referrals.copied') : t('referrals.copy')}
                   </UIText>
                 </LinearGradient>
               </Pressable>
@@ -249,7 +258,7 @@ export default function ReferralsScreen() {
               >
                 <Ionicons name="share-social" size={18} color="#fff" />
                 <UIText size="sm" weight="bold" style={styles.whiteTxt}>
-                  Share Invite Link
+                  {t('referrals.shareInviteLink')}
                 </UIText>
               </LinearGradient>
             </UIButton>
@@ -271,7 +280,7 @@ export default function ReferralsScreen() {
                 color="#a824e0"
               />
               <UIText size="sm" weight="bold" style={styles.accentText}>
-                How it works
+                {t('referrals.howItWorks')}
               </UIText>
             </LinearGradient>
           </UIButton>
@@ -304,11 +313,10 @@ export default function ReferralsScreen() {
               <View style={styles.heroRow}>
                 <View style={styles.heroLeft}>
                   <UIText size="xxl" weight="bold" style={styles.heroTitle}>
-                    Invite & Earn
+                    {t('referrals.inviteAndEarn')}
                   </UIText>
                   <UIText size="sm" style={styles.heroSub}>
-                    Bring {REQUIRED_REFERRALS} friends to City Pulse and unlock
-                    Premium — forever, for free.
+                    {t('referrals.inviteAndEarnDesc', { count: REQUIRED_REFERRALS })}
                   </UIText>
                 </View>
                 <LinearGradient
@@ -324,12 +332,16 @@ export default function ReferralsScreen() {
 
             <SectionHeader
               colors={["#a824e0", "#7C4DFF"]}
-              title="How It Works"
+              title={t('referrals.howItWorks')}
             />
             <View style={styles.stepsCol}>
               {HOW_IT_WORKS.map((s, i) => (
                 <React.Fragment key={s.step}>
-                  <StepCard {...s} />
+                  <StepCard
+                    {...s}
+                    title={t(`referrals.steps.step${s.step}Title`)}
+                    desc={t(`referrals.steps.step${s.step}Desc`)}
+                  />
                   {i < HOW_IT_WORKS.length - 1 && (
                     <View style={styles.stepConnector}>
                       <LinearGradient
@@ -350,15 +362,15 @@ export default function ReferralsScreen() {
 
             <SectionHeader
               colors={["#E040FB", "#7C4DFF"]}
-              title="Premium Includes"
+              title={t('referrals.premiumIncludes')}
             />
             <View style={styles.perksGrid}>
               {PREMIUM_PERKS.map((p) => (
                 <PerkCard
                   key={p.id}
                   icon={p.icon}
-                  title={p.title}
-                  desc={p.desc}
+                  title={t(`referrals.perks.${p.id}`)}
+                  desc={t(`referrals.perks.${p.id}Desc`)}
                 />
               ))}
             </View>

@@ -20,7 +20,6 @@ import { Icon } from "../Icon";
 import { StyleSheet } from "react-native-unistyles";
 import type { CommentResponse, CommentItem } from "@/src/types";
 import { formatPrettyDate } from "@/src/utils";
-import { axios } from "@/src/config";
 import { useProfile } from "../../hooks/profile/useProfile";
 import { useCommentReplies } from "../../hooks/post/usePost";
 import {
@@ -29,6 +28,7 @@ import {
   withTiming,
 } from "react-native-reanimated";
 import Animated, { FadeIn } from "react-native-reanimated";
+import { useTranslation } from 'react-i18next';
 
 type CommentsBottomSheetProps = {
   commentsBottomSheetRef: React.RefObject<BottomSheetModal | null>;
@@ -55,6 +55,7 @@ export const CommentsBottomSheet = memo(
     hasNextCommentsPage,
     isFetchingNextComments,
   }: CommentsBottomSheetProps) => {
+    const { t } = useTranslation();
     const footerHeightShared = useSharedValue(0);
     const [replyingTo, setReplyingTo] = useState<CommentResponse | null>(null);
     const [expandedComments, setExpandedComments] = useState<Set<number>>(
@@ -145,11 +146,11 @@ export const CommentsBottomSheet = memo(
               onReplyPress={
                 comment
                   ? () => {
-                      LayoutAnimation.configureNext(
-                        LayoutAnimation.Presets.easeInEaseOut,
-                      );
-                      setReplyingTo(comment);
-                    }
+                    LayoutAnimation.configureNext(
+                      LayoutAnimation.Presets.easeInEaseOut,
+                    );
+                    setReplyingTo(comment);
+                  }
                   : undefined
               }
               onViewReplies={onViewRepliesHandler}
@@ -198,8 +199,8 @@ export const CommentsBottomSheet = memo(
           ListEmptyComponent={
             <UIEmptyState
               icon="chatbubbles-outline"
-              title="No comments yet"
-              description="Be the first to share your thoughts!"
+              title={t('comments.noCommentsTitle')}
+              description={t('comments.noCommentsDesc')}
             />
           }
         />
@@ -276,6 +277,7 @@ const CommentReplies = memo(
 );
 
 const CommentsHeader = memo(() => {
+  const { t } = useTranslation();
   return (
     <View style={styles.headerContainer}>
       <View style={styles.header}>
@@ -285,7 +287,7 @@ const CommentsHeader = memo(() => {
           color={styles.headerIcon.color}
         />
         <UIText size="md" weight="normal" style={styles.headerText}>
-          Comments
+          {t('comments.title')}
         </UIText>
       </View>
 
@@ -312,6 +314,7 @@ const CommentsFooter = memo(
     replyingTo,
     onCancelReply,
   }: CommentsFooterProps) => {
+    const { t } = useTranslation();
     const { profile } = useProfile();
     const currentUserAvatarUrl = profile?.avatarUrl;
 
@@ -357,7 +360,7 @@ const CommentsFooter = memo(
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                Replying to @{replyingTo.authorUsername ?? "Loading..."} says "
+                {t('profile.replyingTo', { username: replyingTo.authorUsername ?? "Loading..." })}
                 {replyingTo.text}"
               </UIText>
               <UIButton onPress={onCancelReply} style={styles.cancelButton}>
@@ -375,7 +378,7 @@ const CommentsFooter = memo(
 
             <BottomSheetTextInput
               style={styles.footerInput}
-              placeholder={replyingTo ? "Add a reply..." : "Add a comment..."}
+              placeholder={replyingTo ? t('comments.addReply') : t('comments.addComment')}
               placeholderTextColor={styles.inputPlaceholder.color}
               onChangeText={setCommentText}
               value={commentText}

@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { View } from "react-native";
-import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 import { Ionicons } from "@expo/vector-icons";
 import { UIText } from "./UIText";
 import { LinearGradient } from "expo-linear-gradient";
@@ -23,8 +23,6 @@ export const UIEmptyState = memo(
     title = "No data found",
     description = "There are no items to display right now.",
   }: UIEmptyStateProps) => {
-    const theme = UnistylesRuntime.getTheme();
-
     return (
       <View style={styles.container}>
         <LinearGradient
@@ -35,8 +33,8 @@ export const UIEmptyState = memo(
         >
           <Ionicons
             name={icon}
-            size={theme.utils.s(48)}
-            color={theme.colors.accent}
+            size={styles.icon.height}
+            color={styles.icon.color}
           />
         </LinearGradient>
 
@@ -81,4 +79,8 @@ const styles = StyleSheet.create((theme) => ({
     lineHeight: theme.utils.vs(22),
     maxWidth: "80%",
   },
+  icon: {
+    color: theme.colors.accent,
+    height: theme.utils.s(48),
+  }
 }));

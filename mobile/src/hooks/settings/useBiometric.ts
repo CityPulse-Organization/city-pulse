@@ -4,14 +4,16 @@ import { Platform } from 'react-native';
 import { settingsStore } from '@/src/store/settings';
 import { useStore } from 'zustand';
 import { UIAlert } from '@/src/hoc';
+import { useTranslation } from 'react-i18next';
 import Toast from 'react-native-toast-message';
 import { BiometricSupportStatus } from '@/src/types/settings';
 import { checkBiometricAvailability } from '@/src/utils/settings';
 
 
 export const useBiometric = () => {
-    const isBiometricEnabled = useStore(settingsStore, (state) => state.isBiometricEnabled);
-    const setIsBiometricEnabled = useStore(settingsStore, (state) => state.setIsBiometricEnabled);
+    const isBiometricEnabled = useStore(settingsStore, (s) => s.isBiometricEnabled);
+    const setIsBiometricEnabled = useStore(settingsStore, (s) => s.setIsBiometricEnabled);
+    const { t } = useTranslation();
 
     const [supportStatus, setSupportStatus] = useState<BiometricSupportStatus>('checking');
     const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -43,7 +45,7 @@ export const useBiometric = () => {
             setIsAuthenticating(false);
             Toast.show({
                 type: 'success',
-                text1: 'Biometric authentication successful',
+                text1: t('biometric.authSuccess'),
             });
         }
     }, [supportStatus],
@@ -53,25 +55,25 @@ export const useBiometric = () => {
     const toggleBiometric = useCallback(async () => {
         if (supportStatus === 'unavailable') {
             UIAlert.alert(
-                'Biometrics Unavailable',
-                'Your device does not have compatible biometric hardware.',
+                t('biometric.unavailableTitle'),
+                t('biometric.unavailableMessage'),
             );
             return;
         }
 
         if (supportStatus === 'not_enrolled') {
             UIAlert.alert(
-                'No Biometrics Enrolled',
+                t('biometric.notEnrolledTitle'),
                 Platform.OS === 'ios'
-                    ? 'Please set up Face ID or Touch ID in your iPhone Settings.'
-                    : 'Please enroll a fingerprint or face in your device Settings.',
+                    ? t('biometric.notEnrolledIos')
+                    : t('biometric.notEnrolledAndroid'),
             );
             return;
         }
 
         const promptMessage = isBiometricEnabled
-            ? 'Authenticate to disable biometric unlock'
-            : 'Authenticate to enable biometric unlock';
+            ? t('biometric.disablePrompt')
+            : t('biometric.enablePrompt');
 
         const success = await authenticate(promptMessage);
         if (success) {

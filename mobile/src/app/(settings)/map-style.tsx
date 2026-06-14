@@ -16,6 +16,7 @@ import { InfoBanner } from '@/src/components/settings/InfoBanner';
 import { SelectableCard } from '@/src/components/settings/SelectableCard';
 import { MapStyleId } from '@/src/types/settings';
 import { MAP_STYLES } from '@/src/utils/settings';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -25,6 +26,7 @@ export default function MapStyleScreen() {
     const router = useRouter();
     const currentMapStyle = useStore(settingsStore, (state) => state.mapStyle);
     const setMapStyle = useStore(settingsStore, (state) => state.setMapStyle);
+    const { t } = useTranslation();
 
 
     const handleSelect = useCallback((id: MapStyleId) => {
@@ -42,7 +44,7 @@ export default function MapStyleScreen() {
     return (
         <ThemedBackground>
             <NavigationHeader
-                title="Map Style"
+                title={t('mapStyleScreen.title')}
                 onLeftAction={handleBack}
             />
 
@@ -52,7 +54,7 @@ export default function MapStyleScreen() {
                 showsVerticalScrollIndicator={false}
             >
                 <InfoBanner
-                    text="Choose how the map looks across the whole app. Switching to a light style helps readability in bright sunlight."
+                    text={t('mapStyleScreen.banner')}
                     icon="map"
                 />
 
@@ -64,8 +66,8 @@ export default function MapStyleScreen() {
                             onSelect={handleSelect}
                             previewContent={<MapPreviewTile gradient={option.previewGradient} accentColor={option.accentColor} />}
                             id={option.id}
-                            title={option.label}
-                            description={option.description}
+                            title={t(`mapStyles.${option.id}.label`)}
+                            description={t(`mapStyles.${option.id}.description`)}
                             iconName={option.icon}
                         />
                     ))}
@@ -80,7 +82,7 @@ export default function MapStyleScreen() {
                             end={{ x: 1, y: 1 }}
                         />
                         <UIText size="sm" weight="bold" style={styles.activeCardTitle}>
-                            {selectedOption.label} — Currently selected
+                        {t('mapStyleScreen.currentlySelected', { style: selectedOption.label })}
                         </UIText>
                     </View>
                     <UIText size="xs" style={styles.activeCardDesc}>

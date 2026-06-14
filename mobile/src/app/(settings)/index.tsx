@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, Switch, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { ThemedBackground } from '../../components';
 import { UIButton, UIDivider, UIText } from '../../ui';
@@ -19,11 +20,12 @@ type RightElement =
 
 export default function SettingsScreen() {
     const { state, actions } = useSettings();
+    const { t } = useTranslation();
 
     return (
         <ThemedBackground>
             <NavigationHeader
-                title="Settings"
+                title={t('settings.title')}
                 onLeftAction={actions.handleBack}
             />
 
@@ -33,10 +35,10 @@ export default function SettingsScreen() {
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
-                <SettingsSection title="APPEARANCE">
+                <SettingsSection title={t('settings.sections.appearance')}>
                     <SettingsRow
                         icon="moon-outline"
-                        title="Dark Mode"
+                        title={t('settings.darkMode')}
                         rightElement={{
                             type: 'switch',
                             value: state.isDarkMode,
@@ -46,35 +48,35 @@ export default function SettingsScreen() {
                     />
                     <SettingsRow
                         icon="map-outline"
-                        title="Map Style"
+                        title={t('settings.mapStyle')}
                         rightElement={{ type: 'text', value: state.mapStyle.toUpperCase() }}
                         onPress={actions.navToMapStyle}
                     />
                 </SettingsSection>
 
-                <SettingsSection title="GENERAL">
+                <SettingsSection title={t('settings.sections.general')}>
                     <SettingsRow
                         icon="globe-outline"
-                        title="Language"
+                        title={t('settings.language')}
                         rightElement={{ type: 'text', value: state.language.toUpperCase() }}
                         onPress={actions.navToLanguage}
                         showDivider
                     />
                     <SettingsRow
                         icon="notifications-outline"
-                        title="Push Notifications"
+                        title={t('settings.pushNotifications')}
                         rightElement={{
                             type: 'switch',
                             value: state.isPushEnabled,
-                            onToggle: actions.togglePushEnabled,
+                            onToggle: actions.togglePush,
                         }}
                     />
                 </SettingsSection>
 
-                <SettingsSection title="SECURITY">
+                <SettingsSection title={t('settings.sections.security')}>
                     <SettingsRow
                         icon="shield-outline"
-                        title="Restricted Accounts"
+                        title={t('settings.restrictedAccounts')}
                         rightElement={{ type: 'chevron' }}
                         onPress={actions.navToRestrictedAccounts}
                         showDivider
@@ -82,7 +84,7 @@ export default function SettingsScreen() {
 
                     <SettingsRow
                         icon="key-outline"
-                        title="Change Password"
+                        title={t('settings.changePassword')}
                         rightElement={{ type: 'chevron' }}
                         onPress={actions.navToChangePassword}
                         showDivider
@@ -90,15 +92,15 @@ export default function SettingsScreen() {
 
                     <SettingsRow
                         icon="finger-print-outline"
-                        title="Biometric Unlock"
+                        title={t('settings.biometricUnlock')}
                         subtitle={
                             state.biometricSupportStatus === 'checking'
-                                ? 'Checking device support…'
+                                ? t('settings.biometricChecking')
                                 : state.biometricSupportStatus === 'unavailable'
-                                    ? 'Not available on this device'
+                                    ? t('settings.biometricUnavailable')
                                     : state.biometricSupportStatus === 'not_enrolled'
-                                        ? 'No biometrics enrolled'
-                                        : 'Use Face ID or fingerprint to open the app'
+                                        ? t('settings.biometricNotEnrolled')
+                                        : t('settings.biometricReady')
                         }
                         rightElement={{
                             type: 'switch',
@@ -114,53 +116,54 @@ export default function SettingsScreen() {
                     />
                 </SettingsSection>
 
-                <SettingsSection title="ABOUT & SUPPORT">
+                <SettingsSection title={t('settings.sections.aboutSupport')}>
                     <SettingsRow
                         icon="help-circle-outline"
-                        title="Help Center"
+                        title={t('settings.helpCenter')}
                         rightElement={{ type: 'chevron' }}
                         onPress={actions.openHelpUrl}
                         showDivider
                     />
                     <SettingsRow
                         icon="bug-outline"
-                        title="Report a Problem"
+                        title={t('settings.reportProblem')}
                         rightElement={{ type: 'chevron' }}
                         onPress={actions.navToReportProblem}
                         showDivider
                     />
                     <SettingsRow
                         icon="star-outline"
-                        title="Rate the App"
+                        title={t('settings.rateApp')}
                         rightElement={{ type: 'chevron' }}
                         onPress={actions.handleRateApp}
                         showDivider
                     />
                     <SettingsRow
                         icon="document-text-outline"
-                        title="Privacy Policy"
+                        title={t('settings.privacyPolicy')}
                         rightElement={{ type: 'chevron' }}
                         onPress={actions.openPrivacyUrl}
                         showDivider
                     />
                     <SettingsRow
                         icon="reader-outline"
-                        title="Terms of Service"
+                        title={t('settings.termsOfService')}
                         rightElement={{ type: 'chevron' }}
                         onPress={actions.openTermsUrl}
                     />
                 </SettingsSection>
 
-                <SettingsSection title="ACCOUNT">
+                <SettingsSection title={t('settings.sections.account')}>
                     <SettingsRow
                         icon="person-remove-outline"
-                        title="Remove Account"
+                        title={t('settings.removeAccount')}
                         isDestructive
+                        onPress={actions.handleDeleteAccount}
                         showDivider
                     />
                     <SettingsRow
                         icon="log-out-outline"
-                        title="Sign Out"
+                        title={t('settings.signOut')}
                         onPress={actions.onLogoutPress}
                     />
                 </SettingsSection>

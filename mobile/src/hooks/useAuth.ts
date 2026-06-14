@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { register, login, logout, loginWithGoogle, completeGoogleRegistration } from "../api";
+import { register, login, logout, loginWithGoogle, completeGoogleRegistration, deleteAccount } from "../api";
 import { router } from "expo-router";
 import { useSession } from "../hoc";
 import { tokenStorage } from "../config";
@@ -79,6 +79,20 @@ export const useLogout = () => {
 
   return useMutation({
     mutationFn: logout,
+    onSuccess: () => {
+      queryClient.clear();
+      setSession(null);
+      router.replace("/(auth)");
+    },
+  });
+};
+
+export const useDeleteAccount = () => {
+  const { setSession } = useSession();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteAccount,
     onSuccess: () => {
       queryClient.clear();
       setSession(null);

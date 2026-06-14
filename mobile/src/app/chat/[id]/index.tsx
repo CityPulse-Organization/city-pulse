@@ -17,12 +17,11 @@ import {
   SendProps,
 } from "react-native-gifted-chat";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 
 export default function ChatScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const theme = UnistylesRuntime.getTheme();
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
@@ -100,12 +99,12 @@ export default function ChatScreen() {
       return (
         <Send {...props} containerStyle={styles.sendContainer}>
           <View style={styles.sendButtonInner}>
-            <Ionicons name="send" size={theme.utils.s(16)} color="#fff" />
+            <Ionicons name="send" size={styles.sendButtonIcon.height} color="#fff" />
           </View>
         </Send>
       );
     },
-    [theme],
+    [],
   );
 
   const headerTitle = id === "organizer" ? "Organizer" : "Anna Kowalska";
@@ -116,21 +115,21 @@ export default function ChatScreen() {
     <View style={styles.container}>
       <LinearGradient
         colors={[
-          theme.colors.background,
-          theme.colors.backgroundOverlay || theme.colors.background,
+          styles.linearGradientEnd.color,
+          styles.linearGradientStart.color,
         ]}
         style={StyleSheet.absoluteFillObject}
       />
       <BlurView
         intensity={80}
-        tint={UnistylesRuntime.themeName === "dark" ? "dark" : "light"}
-        style={[styles.header, { paddingTop: insets.top + theme.utils.vs(10) }]}
+        tint={styles.blurTint.color}
+        style={[styles.header, { paddingTop: insets.top + styles.headerPaddingTop.paddingTop }]}
       >
         <Pressable onPress={() => router.back()} style={styles.backButton}>
           <Ionicons
             name="chevron-back"
-            size={theme.utils.s(26)}
-            color={theme.colors.primaryText}
+            size={styles.headerBackButton.height}
+            color={styles.headerBackButton.color}
           />
         </Pressable>
         <View style={styles.headerInfo}>
@@ -162,7 +161,7 @@ export default function ChatScreen() {
         renderSend={renderSend}
         textInputProps={{
           style: styles.composerTextInput,
-          placeholderTextColor: theme.colors.muted,
+          placeholderTextColor: styles.composerTextInputColor.color,
         }}
       />
     </View>
@@ -173,6 +172,12 @@ const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
     paddingBottom: rt.insets.bottom,
+  },
+  linearGradientStart: {
+    color: theme.colors.background,
+  },
+  linearGradientEnd: {
+    color: theme.colors.backgroundOverlay || theme.colors.background,
   },
   header: {
     paddingBottom: theme.utils.vs(12),
@@ -187,8 +192,14 @@ const styles = StyleSheet.create((theme, rt) => ({
     right: 0,
     zIndex: 10,
   },
+  headerPaddingTop: {
+    paddingTop: theme.utils.vs(10),
+  },
   backButton: {
     padding: theme.utils.s(4),
+  },
+  blurTint: {
+    color: rt.themeName,
   },
   headerInfo: {
     flex: 1,
@@ -283,4 +294,15 @@ const styles = StyleSheet.create((theme, rt) => ({
     alignItems: "center",
     paddingLeft: 2,
   },
+  sendButtonIcon: {
+    height: theme.utils.s(16),
+  },
+  headerBackButton: {
+    height: theme.utils.s(26),
+    color: theme.colors.primaryText,
+  },
+  composerTextInputColor: {
+    color: theme.colors.muted,
+  },
+
 }));

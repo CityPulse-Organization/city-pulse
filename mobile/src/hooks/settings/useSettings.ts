@@ -1,23 +1,29 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { Linking } from 'react-native';
 import { useRouter } from 'expo-router';
 import { settingsStore } from '@/src/store/settings';
 import { useStore } from 'zustand';
-import { useLogout } from '../../hooks';
+import { useLogout, useDeleteAccount } from '../../hooks';
 import { useBiometric } from './useBiometric';
+import { useNotifications } from './useNotifications';
+import { UIAlert } from '@/src/hoc';
+import Toast from 'react-native-toast-message';
+import { useTranslation } from 'react-i18next';
 
 
 export const useSettings = () => {
     const router = useRouter();
+    const { t } = useTranslation();
 
     const mapStyle = useStore(settingsStore, (state) => state.mapStyle);
     const theme = useStore(settingsStore, (state) => state.theme);
     const setTheme = useStore(settingsStore, (state) => state.setTheme);
     const language = useStore(settingsStore, (state) => state.language);
     const { mutate: logout } = useLogout();
+    const { mutate: deleteAccountMutate, isPending: isDeletingAccount } = useDeleteAccount();
 
 
-    const [isPushEnabled, setIsPushEnabled] = useState(true);
+    const { isPushEnabled, togglePush } = useNotifications();
 
     const {
         isBiometricEnabled,
@@ -38,8 +44,39 @@ export const useSettings = () => {
 
 
     const toggleTheme = useCallback(() => setTheme(isDarkMode ? 'light' : 'dark'), [isDarkMode, setTheme]);
-    const togglePushEnabled = useCallback(() => setIsPushEnabled((prev) => !prev), []);
     const onLogoutPress = useCallback(() => logout(), [logout]);
+
+    const handleDeleteAccount = useCallback(() => {
+        UIAlert.alert(
+            t('deleteAccount.title'),
+            t('deleteAccount.message'),
+            [
+                { text: t('deleteAccount.cancel'), style: 'cancel' },
+                {
+                    text: t('deleteAccount.confirm'),
+                    style: 'destructive',
+                    onPress: () => {
+                        deleteAccountMutate(undefined, {
+                            onSuccess: () => {
+                                Toast.show({
+                                    type: 'success',
+                                    text1: t('deleteAccount.successTitle'),
+                                    text2: t('deleteAccount.successMessage'),
+                                });
+                            },
+                            onError: () => {
+                                Toast.show({
+                                    type: 'error',
+                                    text1: t('deleteAccount.errorTitle'),
+                                    text2: t('deleteAccount.errorMessage'),
+                                });
+                            },
+                        });
+                    },
+                },
+            ],
+        );
+    }, [deleteAccountMutate, t]);
 
 
     const openUrl = useCallback((url: string) => {
@@ -57,7 +94,8 @@ export const useSettings = () => {
         actions: {
             handleBack, navToMapStyle, navToChangePassword, navToReportProblem,
             navToRestrictedAccounts, navToLanguage, openHelpUrl, openPrivacyUrl, openTermsUrl,
-            handleRateApp, toggleTheme, togglePushEnabled, toggleBiometric, onLogoutPress
+            handleRateApp, toggleTheme, togglePush, toggleBiometric, onLogoutPress,
+            handleDeleteAccount,
         }
     };
 };

@@ -16,8 +16,10 @@ import {
 } from "@/src/utils/newPostImageUtils";
 import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
 import { GridItem, Photo } from "@/src/types/newPostImage";
+import { useTranslation } from "react-i18next";
 
 export default function AddNewPostImageScreen() {
+  const { t } = useTranslation();
   const {
     gridItems,
     loadAssets,
@@ -93,7 +95,7 @@ export default function AddNewPostImageScreen() {
   return (
     <ThemedBackground>
       <NavigationHeader
-        title="New Post"
+        title={t('newPost.title')}
         rightActionLabel="Next"
         onLeftAction={onCancel}
         onRightAction={onDone}
@@ -113,6 +115,7 @@ export default function AddNewPostImageScreen() {
           <BottomSheetFlashList
             data={gridItems}
             renderItem={renderItem}
+            // @ts-expect-error getItemType is valid in FlashList but missing in BottomSheetFlashList types
             getItemType={getItemType}
             keyExtractor={keyExtractor}
             numColumns={NEW_POST_IMAGE_CONFIG.COLUMN_COUNT}

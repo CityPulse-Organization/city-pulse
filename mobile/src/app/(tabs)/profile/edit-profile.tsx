@@ -8,6 +8,7 @@ import { ComponentProps, memo } from "react";
 import { Control, Controller, FieldErrors, useWatch } from "react-hook-form";
 import { View, ActivityIndicator } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
+import { useTranslation } from 'react-i18next';
 
 type FormFieldConfig = {
   id: keyof ProfileData;
@@ -35,6 +36,7 @@ const FORM_FIELDS_CONFIG: FormFieldConfig[] = [
 
 export default function EditProfileScreen() {
   const { control, errors, handleAvatarPress, onCancel, onSave, isLoading } = useEditProfile()
+  const { t } = useTranslation();
 
   const avatarUrl = useWatch({
     control,
@@ -44,10 +46,10 @@ export default function EditProfileScreen() {
   return (
     <ThemedBackground>
       <NavigationHeader
-        title="Edit Profile"
+        title={t('profile.editProfile')}
         onLeftAction={onCancel}
         onRightAction={onSave}
-        rightActionLabel={isLoading ? "" : "Save"}
+        rightActionLabel={isLoading ? "" : t('profile.save')}
         rightElement={isLoading ? <ActivityIndicator size="small" color={styles.accentColor.color} /> : undefined}
       />
 
@@ -73,7 +75,7 @@ export default function EditProfileScreen() {
           </UIButton>
 
           <UIText size="md" weight="bold" style={styles.editPhotoText}>
-            Change Photo
+            {t('profile.changePhoto')}
           </UIText>
         </View>
 
@@ -110,6 +112,8 @@ const FormFieldItem = memo(({ field, control, errorMessage, isDisabled }: {
   errorMessage?: string;
   isDisabled?: boolean;
 }) => {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.fieldWrapper}>
       <Controller
@@ -133,7 +137,7 @@ const FormFieldItem = memo(({ field, control, errorMessage, isDisabled }: {
             multiline={field.isMultiline}
             numberOfLines={field.isMultiline ? 12 : 1}
             textAlignVertical={field.isMultiline ? "top" : "center"}
-            placeholder={field.placeholder}
+            placeholder={field.id === 'jobTitle' ? t('editProfile.jobPlaceholder') : t('editProfile.bioPlaceholder')}
             placeholderTextColor={styles.placeholderInput.color}
             autoCapitalize={field.autoCapitalize}
             value={value}
@@ -201,7 +205,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     borderRadius: theme.utils.s(12),
     borderWidth: 1,
     borderColor: theme.colors.borderSubtle,
-    paddingHorizontal: theme.utils.s(14),
+    padding: theme.utils.s(14),
   },
 
   inputContainerMultiline: {
